@@ -1,6 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
-
+apply plugin: 'maven'
 
 group = 'com.iexec.common'
 version = '0.0.1-SNAPSHOT'
@@ -11,10 +11,30 @@ repositories {
     jcenter()
 }
 
+configurations {
+    deployerJars
+}
+
 ext {
     junitVersion = '4.12'
 }
 
 dependencies {
     testCompile "junit:junit:$junitVersion"
+
+    deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
 }
+
+def gitBranch = 'git name-rev --name-only HEAD'.execute().text.trim()
+def isMasterBranch = gitBranch == "remotes/origin/master"
+def canUploadArchives = isMasterBranch
+
+uploadArchives {
+    repositories.mavenDeployer {
+        configuration = configurations.deployerJars
+        repository(url: "packagecloud+https://packagecloud.io/iexec/common-new") {
+            authentication(password: packageCloudPassword)
+        }
+    }
+}
+uploadArchives.enabled = canUploadArchives
