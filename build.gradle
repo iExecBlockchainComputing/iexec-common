@@ -22,6 +22,10 @@ ext {
 dependencies {
     testCompile "junit:junit:$junitVersion"
 
+    // lombok
+    compileOnly "org.projectlombok:lombok:1.18.2"
+
+    // package cloud
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
 }
 
