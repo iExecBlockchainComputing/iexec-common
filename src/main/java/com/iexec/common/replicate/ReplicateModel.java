@@ -22,12 +22,4 @@ public class ReplicateModel {
     private String cmd;
     private ReplicateStatus replicateStatus;
 
-
-    public ReplicateModel(String taskId, String workerAddress, DappType dappType, String dappName, String cmd) {
-        this.taskId = taskId;
-        this.workerAddress = workerAddress;
-        this.dappType = dappType;
-        this.dappName = dappName;
-        this.cmd = cmd;
-    }
 }
