@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UploadResultMessage {
+public class TaskNotification {
 
     String taskId;
     String workerAddress;
+    TaskNotificationType taskNotificationType;
 
 }
