@@ -1,9 +1,10 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.4.RELEASE'
+        springBootVersion = '2.0.5.RELEASE'
     }
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -13,6 +14,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 group = 'com.iexec.common'
 version = '0.0.1-SNAPSHOT'
@@ -31,9 +33,15 @@ ext {
     junitVersion = '4.12'
 }
 
-bootRepackage {
+// only a simple (library) jar should be built
+// not a spring boot executable one
+jar {
+    enabled = true
+}
+bootJar {
     enabled = false
 }
+
 
 dependencies {
     testCompile "junit:junit:$junitVersion"
