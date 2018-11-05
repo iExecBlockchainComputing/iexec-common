@@ -17,10 +17,14 @@ configurations {
 
 ext {
     junitVersion = '4.12'
+    web3jVersion = '3.6.0'
 }
 
 dependencies {
     testCompile "junit:junit:$junitVersion"
+
+    // web3j dependency
+    compile "org.web3j:core:$web3jVersion"
 
     // lombok
     compileOnly "org.projectlombok:lombok:1.18.2"
