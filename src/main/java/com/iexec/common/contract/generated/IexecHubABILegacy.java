@@ -44,6 +44,10 @@ import rx.functions.Func1;
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
  *
  * <p>Generated with web3j version 3.6.0.
+ *
+ * PoCo commit - https://github.com/iExecBlockchainComputing/PoCo-dev/commit/b7015ecb9e3b623cfc089b57dfc13e2bd2928bff
+ * Oct 25th
+ *
  */
 public class IexecHubABILegacy extends Contract {
     private static final String BINARY = "0x";
