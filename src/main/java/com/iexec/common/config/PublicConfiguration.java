@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PublicConfiguration {
 
-    private String blockchainAddress;
+    private String blockchainURL;
+    private String workerPoolAddress;
 }
 
