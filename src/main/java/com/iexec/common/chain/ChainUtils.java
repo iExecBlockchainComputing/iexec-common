@@ -2,6 +2,7 @@ package com.iexec.common.chain;
 
 import com.iexec.common.contract.generated.IexecClerkABILegacy;
 import com.iexec.common.contract.generated.IexecHubABILegacy;
+import com.iexec.common.contract.generated.Dapp;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
@@ -62,6 +63,21 @@ public class ChainUtils {
             IexecClerkABILegacy iexecClerkABILegacy = IexecClerkABILegacy.load(addressClerk, web3j, credentials, new DefaultGasProvider());
             log.info("Loaded contract IexecClerkLegacy [address:{}] ", addressClerk);
             return iexecClerkABILegacy;
+        } catch (Exception e) {
+            throw exceptionInInitializerError;
+        }
+    }
+
+    public static Dapp loadDappContract(Credentials credentials, Web3j web3j, String dappAddress){
+        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load Dapp contract address " + dappAddress);
+        try {
+            if (dappAddress == null || dappAddress.isEmpty()) {
+                throw exceptionInInitializerError;
+            }
+
+            Dapp dapp = Dapp.load(dappAddress, web3j, credentials, new DefaultGasProvider());
+            log.info("Loaded contract dapp [address:{}] ", dappAddress);
+            return dapp;
         } catch (Exception e) {
             throw exceptionInInitializerError;
         }
