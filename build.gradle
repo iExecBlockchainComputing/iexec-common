@@ -1,6 +1,19 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.3'
+    }
+}
+
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.iexec.common'
 version = '0.0.1-SNAPSHOT'
@@ -33,6 +46,14 @@ dependencies {
     // package cloud
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
 }
+
+shadowJar { //required if we want to embed web3j dependency inside
+    baseName = rootProject.name
+    classifier = null
+    version = version
+}
+
+build.dependsOn(shadowJar)
 
 def gitBranch = 'git name-rev --name-only HEAD'.execute().text.trim()
 def isMasterBranch = gitBranch == "remotes/origin/master"

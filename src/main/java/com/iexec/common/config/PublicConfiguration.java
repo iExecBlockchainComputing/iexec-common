@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class PublicConfiguration {
 
     private String blockchainURL;
+    private String iexecHubAddress;
     private String workerPoolAddress;
 }
 
