@@ -16,7 +16,7 @@ import java.util.List;
 public class ReplicateModel {
 
     private String taskId;
-    private byte[] chainTaskId;
+    private String chainTaskId;
     private String workerAddress;
     private DappType dappType;
     private String dappName;
