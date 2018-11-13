@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class WorkerConfigurationModel {
 
     private String name;
+    private String walletAddress;
     private String os;
     private String cpu;
     private int cpuNb;
