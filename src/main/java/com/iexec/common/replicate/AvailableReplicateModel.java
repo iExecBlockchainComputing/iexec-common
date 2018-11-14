@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AvailableReplicateModel {
 
-    private String taskId;
     private String chainTaskId;
     private String workerAddress;
     private DappType dappType;
