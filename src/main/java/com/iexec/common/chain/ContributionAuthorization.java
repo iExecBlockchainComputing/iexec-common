@@ -13,7 +13,7 @@ import org.web3j.crypto.Sign;
 public class ContributionAuthorization {
 
     private String workerWallet;
-    private String taskId;
+    private String chainTaskId;
     private String enclave;
     private Sign.SignatureData sign;
 }
