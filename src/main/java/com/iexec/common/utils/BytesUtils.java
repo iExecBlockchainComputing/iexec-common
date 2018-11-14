@@ -1,19 +1,19 @@
 package com.iexec.common.utils;
 
-import javax.xml.bind.DatatypeConverter;
+import org.web3j.utils.Numeric;
 
 public class BytesUtils {
 
-    private BytesUtils(){
+    private BytesUtils() {
         throw new UnsupportedOperationException();
     }
 
-    public static String bytesToString(byte[] bytes){
-        return DatatypeConverter.printHexBinary(bytes);
+    public static String bytesToString(byte[] bytes) {
+        return Numeric.toHexString(bytes);
     }
 
-    public static byte[] stringToBytes(String hexaString){
-        return DatatypeConverter.parseHexBinary(hexaString);
+    public static byte[] stringToBytes(String hexaString) {
+        return Numeric.hexStringToByteArray(hexaString);
     }
 
 }
