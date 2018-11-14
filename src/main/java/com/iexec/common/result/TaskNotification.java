@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 public class TaskNotification {
 
-    String taskId;
+    String chainTaskId;
     String workerAddress;
     TaskNotificationType taskNotificationType;
 
