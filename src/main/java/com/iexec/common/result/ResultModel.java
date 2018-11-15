@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ResultModel {
 
-    private String taskId;
+    private String chainTaskId;
     private String image;
     private String cmd;
     private byte[] zip;
+    private String consensusHash;
 
 }
