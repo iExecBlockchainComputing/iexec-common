@@ -16,6 +16,6 @@ public class ResultModel {
     private String image;
     private String cmd;
     private byte[] zip;
-    private String consensusHash;
+    private String deterministHash;
 
 }
