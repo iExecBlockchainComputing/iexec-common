@@ -14,5 +14,6 @@ public class PublicConfiguration {
     private String blockchainURL;
     private String iexecHubAddress;
     private String workerPoolAddress;
+    private String schedulerPublicAddress;
 }
 
