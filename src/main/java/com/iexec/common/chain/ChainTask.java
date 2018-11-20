@@ -53,7 +53,7 @@ public class ChainTask {
     }
 
     private void setConsensusDeadline(BigInteger consensusDeadline) {
-        this.consensusDeadline = consensusDeadline.intValue();
+        this.consensusDeadline = consensusDeadline.longValue() * 1000L;
     }
 
     private void setConsensusValue(byte[] consensusValue) {
