@@ -11,16 +11,16 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @Builder
 @Setter
-public class Contribution {
+public class ChainContribution {
 
-    private ContributionStatus status;
+    private ChainContributionStatus status;
     private String resultHash;
     private String resultSeal;
     private String enclaveChallenge;
     private int score;
     private int weight;
 
-    public Contribution(BigInteger status, byte[] resultHash, byte[] resultSeal, String enclaveChallenge, BigInteger score, BigInteger weight) {
+    public ChainContribution(BigInteger status, byte[] resultHash, byte[] resultSeal, String enclaveChallenge, BigInteger score, BigInteger weight) {
         this.setStatus(status);
         this.setResultHash(resultHash);
         this.setResultSeal(resultSeal);
@@ -29,9 +29,9 @@ public class Contribution {
         this.setWeight(weight);
     }
 
-    public static Contribution tuple2Contribution(Tuple6<BigInteger, byte[], byte[], String, BigInteger, BigInteger> contribution) {
+    public static ChainContribution tuple2Contribution(Tuple6<BigInteger, byte[], byte[], String, BigInteger, BigInteger> contribution) {
         if (contribution != null) {
-            return new Contribution(contribution.getValue1(),
+            return new ChainContribution(contribution.getValue1(),
                     contribution.getValue2(),
                     contribution.getValue3(),
                     contribution.getValue4(),
@@ -42,7 +42,7 @@ public class Contribution {
     }
 
     public void setStatus(BigInteger status) {
-        this.status = ContributionStatus.getValue(status);
+        this.status = ChainContributionStatus.getValue(status);
     }
 
     public void setResultHash(byte[] resultHash) {
@@ -61,7 +61,7 @@ public class Contribution {
         this.weight = weight.intValue();
     }
 
-    public void setStatus(ContributionStatus status) {
+    public void setStatus(ChainContributionStatus status) {
         this.status = status;
     }
 
