@@ -61,7 +61,7 @@ public class ChainTask {
     }
 
     private void setRevealDeadline(BigInteger revealDeadline) {
-        this.revealDeadline = revealDeadline.intValue();
+        this.revealDeadline = revealDeadline.longValue() * 1000L;
     }
 
     private void setRevealCounter(BigInteger revealCounter) {
