@@ -17,9 +17,9 @@ public class ChainTask {
     private ChainTaskStatus status;
     private String dealid;
     private int idx;
-    private int consensusDeadline;
+    private long consensusDeadline;
     private String consensusValue;
-    private int revealDeadline;
+    private long revealDeadline;
     private int revealCounter;
     private int winnerCounter;
     private List<String> contributors;
