@@ -4,7 +4,8 @@ import com.iexec.common.chain.ChainContributionStatus;
 
 public enum ReplicateStatus {
 
-    CREATED, RUNNING, COMPUTED, CONTRIBUTED, REVEALED, UPLOAD_RESULT_REQUEST_FAILED, UPLOADING_RESULT, RESULT_UPLOADED, WORKER_LOST, ERROR;
+    CREATED, RUNNING, COMPUTED, CONTRIBUTED, REVEALED, UPLOAD_RESULT_REQUEST_FAILED, UPLOADING_RESULT,
+    RESULT_UPLOADED, COMPLETED, WORKER_LOST, ERROR;
 
     public static boolean isBlockchainStatus(ReplicateStatus status) {
         return status.equals(ReplicateStatus.CONTRIBUTED)
