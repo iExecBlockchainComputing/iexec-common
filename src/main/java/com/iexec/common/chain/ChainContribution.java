@@ -2,7 +2,7 @@ package com.iexec.common.chain;
 
 import com.iexec.common.utils.BytesUtils;
 import lombok.*;
-import org.web3j.tuples.generated.Tuple6;
+import org.web3j.tuples.generated.Tuple4;
 
 import java.math.BigInteger;
 
@@ -17,26 +17,20 @@ public class ChainContribution {
     private String resultHash;
     private String resultSeal;
     private String enclaveChallenge;
-    private int score;
-    private int weight;
 
-    public ChainContribution(BigInteger status, byte[] resultHash, byte[] resultSeal, String enclaveChallenge, BigInteger score, BigInteger weight) {
+    public ChainContribution(BigInteger status, byte[] resultHash, byte[] resultSeal, String enclaveChallenge) {
         this.setStatus(status);
         this.setResultHash(resultHash);
         this.setResultSeal(resultSeal);
         this.setEnclaveChallenge(enclaveChallenge);
-        this.setScore(score);
-        this.setWeight(weight);
     }
 
-    public static ChainContribution tuple2Contribution(Tuple6<BigInteger, byte[], byte[], String, BigInteger, BigInteger> contribution) {
+    public static ChainContribution tuple2Contribution(Tuple4<BigInteger, byte[], byte[], String> contribution) {
         if (contribution != null) {
             return new ChainContribution(contribution.getValue1(),
                     contribution.getValue2(),
                     contribution.getValue3(),
-                    contribution.getValue4(),
-                    contribution.getValue5(),
-                    contribution.getValue6());
+                    contribution.getValue4());
         }
         return null;
     }
@@ -51,14 +45,6 @@ public class ChainContribution {
 
     public void setResultSeal(byte[] resultSeal) {
         this.resultSeal = BytesUtils.bytesToString(resultSeal);
-    }
-
-    public void setScore(BigInteger score) {
-        this.score = score.intValue();
-    }
-
-    public void setWeight(BigInteger weight) {
-        this.weight = weight.intValue();
     }
 
     public void setStatus(ChainContributionStatus status) {
@@ -77,11 +63,4 @@ public class ChainContribution {
         this.enclaveChallenge = enclaveChallenge;
     }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
 }

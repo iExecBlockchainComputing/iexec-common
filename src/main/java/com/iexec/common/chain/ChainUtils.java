@@ -1,21 +1,23 @@
 package com.iexec.common.chain;
 
+import com.iexec.common.contract.generated.App;
 import com.iexec.common.contract.generated.IexecClerkABILegacy;
 import com.iexec.common.contract.generated.IexecHubABILegacy;
-import com.iexec.common.contract.generated.Dapp;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 @Slf4j
 public class ChainUtils {
 
-    private ChainUtils(){
+    private ChainUtils() {
         throw new UnsupportedOperationException();
     }
 
@@ -39,7 +41,27 @@ public class ChainUtils {
         if (iexecHubAddress != null && !iexecHubAddress.isEmpty()) {
             try {
                 IexecHubABILegacy iexecHubABILegacy = IexecHubABILegacy.load(
-                        iexecHubAddress, web3j, credentials, new DefaultGasProvider());
+                        iexecHubAddress, web3j, credentials, new ContractGasProvider() {
+                            @Override
+                            public BigInteger getGasPrice(String s) {
+                                return BigInteger.valueOf(22000000000L);
+                            }
+
+                            @Override
+                            public BigInteger getGasPrice() {
+                                return BigInteger.valueOf(22000000000L);
+                            }
+
+                            @Override
+                            public BigInteger getGasLimit(String s) {
+                                return BigInteger.valueOf(8000000L);
+                            }
+
+                            @Override
+                            public BigInteger getGasLimit() {
+                                return BigInteger.valueOf(8000000L);
+                            }
+                        });
 
                 log.info("Loaded contract IexecHub [address:{}] ", iexecHubAddress);
                 return iexecHubABILegacy;
@@ -51,7 +73,7 @@ public class ChainUtils {
         }
     }
 
-    public static IexecClerkABILegacy loadClerkContract(Credentials credentials, Web3j web3j, String iexecHubAddress){
+    public static IexecClerkABILegacy loadClerkContract(Credentials credentials, Web3j web3j, String iexecHubAddress) {
         IexecHubABILegacy iexecHubABILegacy = loadHubContract(credentials, web3j, iexecHubAddress);
         ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load IexecClerk contract from Hub address " + iexecHubAddress);
         try {
@@ -68,16 +90,16 @@ public class ChainUtils {
         }
     }
 
-    public static Dapp loadDappContract(Credentials credentials, Web3j web3j, String dappAddress){
-        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load Dapp contract address " + dappAddress);
+    public static App loadDappContract(Credentials credentials, Web3j web3j, String appAddress) {
+        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load Dapp contract address " + appAddress);
         try {
-            if (dappAddress == null || dappAddress.isEmpty()) {
+            if (appAddress == null || appAddress.isEmpty()) {
                 throw exceptionInInitializerError;
             }
 
-            Dapp dapp = Dapp.load(dappAddress, web3j, credentials, new DefaultGasProvider());
-            log.info("Loaded contract dapp [address:{}] ", dappAddress);
-            return dapp;
+            App app = App.load(appAddress, web3j, credentials, new DefaultGasProvider());
+            log.info("Loaded contract app [address:{}] ", appAddress);
+            return app;
         } catch (Exception e) {
             throw exceptionInInitializerError;
         }
