@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 public enum ChainTaskStatus {
     UNSET,     // Work order not yet initialized (invalid address)
-    ACTIVE,    // Marketed → constributions are open
+    ACTIVE,    // Marketed to constributions are open
     REVEALING, // Starting consensus reveal
     COMPLETED, // Concensus achieved
     FAILLED;    // Failed consensus
