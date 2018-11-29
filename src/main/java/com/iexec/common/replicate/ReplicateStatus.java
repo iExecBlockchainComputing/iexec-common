@@ -1,5 +1,7 @@
 package com.iexec.common.replicate;
 
+import com.iexec.common.chain.ChainContributionStatus;
+
 public enum ReplicateStatus {
 
     CREATED,
@@ -23,4 +25,16 @@ public enum ReplicateStatus {
     COMPLETED,
     WORKER_LOST,
     ERROR;
+
+
+    public static ChainContributionStatus getChainStatus(ReplicateStatus replicateStatus) {
+        switch (replicateStatus){
+            case CONTRIBUTED:
+                return ChainContributionStatus.CONTRIBUTED;
+            case REVEALED:
+                return ChainContributionStatus.REVEALED;
+            default:
+                return null;
+        }
+    }
 }
