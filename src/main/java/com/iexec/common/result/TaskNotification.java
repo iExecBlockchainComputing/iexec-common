@@ -2,6 +2,8 @@ package com.iexec.common.result;
 
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -9,7 +11,7 @@ import lombok.*;
 public class TaskNotification {
 
     String chainTaskId;
-    String workerAddress;
+    List<String> workersAddress;
     TaskNotificationType taskNotificationType;
 
 }

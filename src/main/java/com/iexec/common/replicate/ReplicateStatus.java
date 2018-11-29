@@ -24,8 +24,8 @@ public enum ReplicateStatus {
     RESULT_UPLOAD_FAILED,
     COMPLETED,
     WORKER_LOST,
+    ABORT_CONSENSUS_REACHED,
     ERROR;
-
 
     public static ChainContributionStatus getChainStatus(ReplicateStatus replicateStatus) {
         switch (replicateStatus){
