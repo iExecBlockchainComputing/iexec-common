@@ -3,16 +3,20 @@ package com.iexec.common.chain;
 import com.iexec.common.contract.generated.App;
 import com.iexec.common.contract.generated.IexecClerkABILegacy;
 import com.iexec.common.contract.generated.IexecHubABILegacy;
+import com.iexec.common.utils.BytesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tuples.generated.Tuple6;
+import org.web3j.tuples.generated.Tuple9;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Optional;
 
 @Slf4j
 public class ChainUtils {
@@ -86,7 +90,8 @@ public class ChainUtils {
             log.info("Loaded contract IexecClerkLegacy [address:{}] ", addressClerk);
             return iexecClerkABILegacy;
         } catch (Exception e) {
-            throw exceptionInInitializerError;
+            log.error("Failed to load clerk");
+            return null;
         }
     }
 
@@ -101,7 +106,68 @@ public class ChainUtils {
             log.info("Loaded contract app [address:{}] ", appAddress);
             return app;
         } catch (Exception e) {
-            throw exceptionInInitializerError;
+            log.error("Failed get ChainApp [address:{}]", appAddress);
         }
+        return null;
+    }
+
+    public static Optional<ChainDeal> getChainDeal(IexecClerkABILegacy iexecClerk, String chainDealId) {
+        byte[] chainDealIdBytes = BytesUtils.stringToBytes(chainDealId);
+        try {
+            Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger> dealPt1 =
+                    iexecClerk.viewDealABILegacy_pt1(chainDealIdBytes).send();
+            Tuple6<BigInteger, BigInteger, String, String, String, String> dealPt2 =
+                    iexecClerk.viewDealABILegacy_pt2(chainDealIdBytes).send();
+            Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> config =
+                    iexecClerk.viewConfigABILegacy(chainDealIdBytes).send();
+
+            return Optional.of(ChainDeal.builder()
+                    .dappPointer(dealPt1.getValue1())
+                    .dappOwner(dealPt1.getValue2())
+                    .dappPrice(dealPt1.getValue3())
+                    .dataPointer(dealPt1.getValue4())
+                    .dataOwner(dealPt1.getValue5())
+                    .dataPrice(dealPt1.getValue6())
+                    .poolPointer(dealPt1.getValue7())
+                    .poolOwner(dealPt1.getValue8())
+                    .poolPrice(dealPt1.getValue9())
+                    .trust(dealPt2.getValue1())
+                    .tag(dealPt2.getValue2())
+                    .requester(dealPt2.getValue3())
+                    .beneficiary(dealPt2.getValue4())
+                    .callback(dealPt2.getValue5())
+                    .params(dealPt2.getValue6())
+                    .category(config.getValue1())
+                    .startTime(config.getValue2())
+                    .botFirst(config.getValue3())
+                    .botSize(config.getValue4())
+                    .workerStake(config.getValue5())
+                    .schedulerRewardRatio(config.getValue6())
+                    .build());
+        } catch (Exception e) {
+            log.error("Failed to get ChainDeal [chainDealId:{}]", chainDealId);
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<ChainTask> getChainTask(IexecHubABILegacy iexecHub, String chainTaskId) {
+        ChainTask chainTask = null;
+        try {
+            return Optional.of(ChainTask.tuple2ChainTask(iexecHub.viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send()));
+        } catch (Exception e) {
+            log.error("Failed to get ChainTask [chainTaskId:{}]", chainTaskId);
+        }
+        return Optional.empty();
+    }
+
+
+    public static Optional<ChainAccount> getChainAccount(IexecClerkABILegacy iexecClerk, String walletAddress) {
+        try {
+            return Optional.of(ChainAccount.tuple2Account(iexecClerk.viewAccountABILegacy(walletAddress).send()));
+        } catch (Exception e) {
+            log.info("Failed to get ChainAccount");
+
+        }
+        return Optional.empty();
     }
 }
