@@ -166,7 +166,16 @@ public class ChainUtils {
             return Optional.of(ChainAccount.tuple2Account(iexecClerk.viewAccountABILegacy(walletAddress).send()));
         } catch (Exception e) {
             log.info("Failed to get ChainAccount");
+        }
+        return Optional.empty();
+    }
 
+    public static Optional<ChainContribution> getChainContribution(IexecHubABILegacy iexecHub, String chainTaskId, String workerAddress) {
+        try {
+            return Optional.of(ChainContribution.tuple2Contribution(
+                    iexecHub.viewContributionABILegacy(BytesUtils.stringToBytes(chainTaskId), workerAddress).send()));
+        } catch (Exception e) {
+            log.error("Failed to get ChainContribution [chainTaskId:{}, workerAddress:{}]", chainTaskId, workerAddress);
         }
         return Optional.empty();
     }
