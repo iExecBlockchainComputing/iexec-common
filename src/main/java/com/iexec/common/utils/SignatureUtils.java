@@ -1,8 +1,8 @@
 package com.iexec.common.utils;
 
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Hash;
-import org.web3j.crypto.Sign;
+import org.web3j.crypto.*;
+
+import java.math.BigInteger;
 
 public class SignatureUtils {
 
@@ -34,4 +34,28 @@ public class SignatureUtils {
         return Sign.signMessage(getEthereumMessageHash(message), keyPair, false);
     }
     // !!!!!!!!!!! End block web3j 4.0-beta !!!!!!!!!!!
+
+    public static boolean doesSignatureMatchesAddress(byte[] signatureR,
+                                                      byte[] signatureS,
+                                                      String hashToCheck,
+                                                      String signerAddress){
+        // check that the public address of the signer can be found
+        for (int i = 0; i < 4; i++) {
+            BigInteger publicKey = Sign.recoverFromSignature((byte) i,
+                    new ECDSASignature(
+                            new BigInteger(1, signatureR),
+                            new BigInteger(1, signatureS)),
+                    BytesUtils.stringToBytes(hashToCheck));
+
+            if (publicKey != null) {
+                String addressRecovered = "0x" + Keys.getAddress(publicKey);
+
+                if (addressRecovered.equals(signerAddress)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
