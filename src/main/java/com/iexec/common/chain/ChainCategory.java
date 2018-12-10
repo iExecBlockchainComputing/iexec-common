@@ -11,10 +11,10 @@ import java.math.BigInteger;
 @Getter
 public class ChainCategory {
 
-    long id;
-    String name;
-    String description;
-    long maxTime;
+    private long id;
+    private String name;
+    private String description;
+    private long maxTime;
 
     public static ChainCategory tuple2ChainCategory(long id, String name, String description, BigInteger maxTime) {
         return ChainCategory.builder()
