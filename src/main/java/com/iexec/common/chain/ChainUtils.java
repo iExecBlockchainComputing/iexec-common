@@ -9,6 +9,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tuples.generated.Tuple9;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -102,9 +103,7 @@ public class ChainUtils {
                 throw exceptionInInitializerError;
             }
 
-            App app = App.load(appAddress, web3j, credentials, new DefaultGasProvider());
-            log.info("Loaded contract app [address:{}] ", appAddress);
-            return app;
+            return App.load(appAddress, web3j, credentials, new DefaultGasProvider());
         } catch (Exception e) {
             log.error("Failed get ChainApp [address:{}]", appAddress);
         }
@@ -176,6 +175,20 @@ public class ChainUtils {
                     iexecHub.viewContributionABILegacy(BytesUtils.stringToBytes(chainTaskId), workerAddress).send()));
         } catch (Exception e) {
             log.error("Failed to get ChainContribution [chainTaskId:{}, workerAddress:{}]", chainTaskId, workerAddress);
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<ChainCategory> getChainCategory(IexecHubABILegacy iexecHub, long id) {
+        try {
+            Tuple3<String, String, BigInteger> category = iexecHub.viewCategoryABILegacy(BigInteger.valueOf(id)).send();
+            return Optional.of(ChainCategory.tuple2ChainCategory(id,
+                    category.getValue1(),
+                    category.getValue2(),
+                    category.getValue3()
+            ));
+        } catch (Exception e) {
+            log.error("Failed to get ChainCategory [id:{}]", id);
         }
         return Optional.empty();
     }
