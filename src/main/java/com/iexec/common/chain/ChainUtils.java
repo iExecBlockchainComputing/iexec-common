@@ -1,5 +1,6 @@
 package com.iexec.common.chain;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.contract.generated.App;
 import com.iexec.common.contract.generated.IexecClerkABILegacy;
 import com.iexec.common.contract.generated.IexecHubABILegacy;
@@ -17,7 +18,13 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Optional;
+
+import static com.iexec.common.chain.ChainApp.stringParamsToChainAppParams;
+import static com.iexec.common.chain.ChainDeal.stringParamsToList;
 
 @Slf4j
 public class ChainUtils {
@@ -105,7 +112,7 @@ public class ChainUtils {
 
             return App.load(appAddress, web3j, credentials, new DefaultGasProvider());
         } catch (Exception e) {
-            log.error("Failed get ChainApp [address:{}]", appAddress);
+            log.error("Failed to load app [address:{}]", appAddress);
         }
         return null;
     }
@@ -135,7 +142,7 @@ public class ChainUtils {
                     .requester(dealPt2.getValue3())
                     .beneficiary(dealPt2.getValue4())
                     .callback(dealPt2.getValue5())
-                    .params(dealPt2.getValue6())
+                    .params(stringParamsToList(dealPt2.getValue6()))
                     .category(config.getValue1())
                     .startTime(config.getValue2())
                     .botFirst(config.getValue3())
@@ -192,4 +199,19 @@ public class ChainUtils {
         }
         return Optional.empty();
     }
+
+    public static Optional<ChainApp> getChainApp(App app) {
+        try {
+            return Optional.of(ChainApp.builder()
+                    .chainAppId(app.getContractAddress())
+                    .name(app.m_appName().send())
+                    .params(stringParamsToChainAppParams(app.m_appParams().send()))
+                    .hash(BytesUtils.bytesToString(app.m_appHash().send()))
+                    .build());
+        } catch (Exception e) {
+            log.error("Failed to get ChainApp [chainAppId:{}]", app.getContractAddress());
+        }
+        return Optional.empty();
+    }
+
 }

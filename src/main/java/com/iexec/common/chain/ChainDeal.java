@@ -1,8 +1,13 @@
 package com.iexec.common.chain;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,7 +33,7 @@ public class ChainDeal {
     String requester;
     String beneficiary;
     String callback;
-    String params;
+    List<String> params;
 
     // config
     BigInteger category;
@@ -37,5 +42,17 @@ public class ChainDeal {
     BigInteger botSize;
     BigInteger workerStake;
     BigInteger schedulerRewardRatio;
+
+    static List<String> stringParamsToList(String params){
+        List<String> listParams = null;
+        try {
+            LinkedHashMap tasksParamsMap = new ObjectMapper().readValue(params, LinkedHashMap.class);
+            listParams = new ArrayList<String>(tasksParamsMap.values());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return listParams;
+    }
+
 
 }

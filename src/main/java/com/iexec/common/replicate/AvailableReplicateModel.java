@@ -17,4 +17,5 @@ public class AvailableReplicateModel {
     private DappType dappType;
     private String dappName;
     private String cmd;
+    private long maxTime;
 }
