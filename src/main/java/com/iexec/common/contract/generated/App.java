@@ -1,4 +1,4 @@
-package com.iexec.common;
+package com.iexec.common.contract.generated;
 
 import java.math.BigInteger;
 import java.util.Arrays;
