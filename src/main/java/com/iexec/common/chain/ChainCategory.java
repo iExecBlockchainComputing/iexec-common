@@ -3,6 +3,7 @@ package com.iexec.common.chain;
 import lombok.*;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -14,14 +15,14 @@ public class ChainCategory {
     private long id;
     private String name;
     private String description;
-    private long maxTime;
+    private Date maxExecutionTime;
 
     public static ChainCategory tuple2ChainCategory(long id, String name, String description, BigInteger maxTime) {
         return ChainCategory.builder()
                 .id(id)
                 .name(name)
                 .description(description)
-                .maxTime(maxTime.longValue() * 1000)
+                .maxExecutionTime(new Date(maxTime.longValue() * 1000))
                 .build();
     }
 }
