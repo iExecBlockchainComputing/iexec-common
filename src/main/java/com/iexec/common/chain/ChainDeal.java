@@ -44,7 +44,7 @@ public class ChainDeal {
     BigInteger schedulerRewardRatio;
 
     static List<String> stringParamsToList(String params){
-        List<String> listParams = null;
+        List<String> listParams = new ArrayList<>();
         try {
             LinkedHashMap tasksParamsMap = new ObjectMapper().readValue(params, LinkedHashMap.class);
             listParams = new ArrayList<String>(tasksParamsMap.values());

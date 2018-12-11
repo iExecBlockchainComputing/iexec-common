@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,5 +19,5 @@ public class AvailableReplicateModel {
     private DappType dappType;
     private String dappName;
     private String cmd;
-    private long maxTime;
+    private Date maxExecutionTime;
 }
