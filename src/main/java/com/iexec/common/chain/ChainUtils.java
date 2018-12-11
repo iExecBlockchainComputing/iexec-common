@@ -1,6 +1,5 @@
 package com.iexec.common.chain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.contract.generated.App;
 import com.iexec.common.contract.generated.IexecClerkABILegacy;
 import com.iexec.common.contract.generated.IexecHubABILegacy;
@@ -18,9 +17,6 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Optional;
 
 import static com.iexec.common.chain.ChainApp.stringParamsToChainAppParams;
@@ -112,12 +108,15 @@ public class ChainUtils {
 
             return App.load(appAddress, web3j, credentials, new DefaultGasProvider());
         } catch (Exception e) {
-            log.error("Failed to load app [address:{}]", appAddress);
+            log.error("Failed to load chainApp [address:{}]", appAddress);
         }
         return null;
     }
 
-    public static Optional<ChainDeal> getChainDeal(IexecClerkABILegacy iexecClerk, String chainDealId) {
+    public static Optional<ChainDeal> getChainDeal(Credentials credentials, Web3j web3j, String iexecHubAddress, String chainDealId) {
+        IexecHubABILegacy iexecHub = loadHubContract(credentials, web3j, iexecHubAddress);
+        IexecClerkABILegacy iexecClerk = loadClerkContract(credentials, web3j, iexecHubAddress);
+
         byte[] chainDealIdBytes = BytesUtils.stringToBytes(chainDealId);
         try {
             Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger> dealPt1 =
@@ -127,8 +126,15 @@ public class ChainUtils {
             Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> config =
                     iexecClerk.viewConfigABILegacy(chainDealIdBytes).send();
 
+
+            String appAddress = dealPt1.getValue1();
+            BigInteger categoryId = config.getValue1();
+
+            ChainApp chainApp = getChainApp(loadDappContract(credentials, web3j, appAddress)).get();
+            ChainCategory chainCategory = getChainCategory(iexecHub, categoryId.longValue()).get();
+
             return Optional.of(ChainDeal.builder()
-                    .dappPointer(dealPt1.getValue1())
+                    .chainApp(chainApp)
                     .dappOwner(dealPt1.getValue2())
                     .dappPrice(dealPt1.getValue3())
                     .dataPointer(dealPt1.getValue4())
@@ -143,7 +149,7 @@ public class ChainUtils {
                     .beneficiary(dealPt2.getValue4())
                     .callback(dealPt2.getValue5())
                     .params(stringParamsToList(dealPt2.getValue6()))
-                    .category(config.getValue1())
+                    .chainCategory(chainCategory)
                     .startTime(config.getValue2())
                     .botFirst(config.getValue3())
                     .botSize(config.getValue4())

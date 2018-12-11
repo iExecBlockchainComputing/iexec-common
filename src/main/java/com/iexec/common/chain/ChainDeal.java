@@ -17,7 +17,7 @@ import java.util.List;
 public class ChainDeal {
 
     // deal_pt1
-    String dappPointer;
+    ChainApp chainApp;
     String dappOwner;
     BigInteger dappPrice;
     String dataPointer;
@@ -36,7 +36,7 @@ public class ChainDeal {
     List<String> params;
 
     // config
-    BigInteger category;
+    ChainCategory chainCategory;
     BigInteger startTime;
     BigInteger botFirst;
     BigInteger botSize;
