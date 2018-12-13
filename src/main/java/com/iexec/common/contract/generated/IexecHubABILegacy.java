@@ -27,7 +27,7 @@ import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tuples.generated.Tuple10;
+import org.web3j.tuples.generated.Tuple12;
 import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tuples.generated.Tuple4;
 import org.web3j.tx.Contract;
@@ -43,9 +43,9 @@ import rx.functions.Func1;
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
  *
- * <p>Generated with web3j version 3.6.0.
+ *  Poco-dev: commit d33251188ef289c3152e65c28b3259d96ee05f7b
  *
- * Poco-dev: commit fc1e39851c483698c5cf405d5f72e2134380cefb
+ * <p>Generated with web3j version 3.6.0.
  */
 public class IexecHubABILegacy extends Contract {
     private static final String BINARY = "0x";
@@ -588,26 +588,28 @@ public class IexecHubABILegacy extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<Tuple10<BigInteger, byte[], BigInteger, BigInteger, byte[], BigInteger, BigInteger, BigInteger, List<String>, byte[]>> viewTaskABILegacy(byte[] _taskid) {
+    public RemoteCall<Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]>> viewTaskABILegacy(byte[] _taskid) {
         final Function function = new Function(FUNC_VIEWTASKABILEGACY, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_taskid)), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<DynamicArray<Address>>() {}, new TypeReference<DynamicBytes>() {}));
-        return new RemoteCall<Tuple10<BigInteger, byte[], BigInteger, BigInteger, byte[], BigInteger, BigInteger, BigInteger, List<String>, byte[]>>(
-                new Callable<Tuple10<BigInteger, byte[], BigInteger, BigInteger, byte[], BigInteger, BigInteger, BigInteger, List<String>, byte[]>>() {
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<DynamicArray<Address>>() {}, new TypeReference<DynamicBytes>() {}));
+        return new RemoteCall<Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]>>(
+                new Callable<Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]>>() {
                     @Override
-                    public Tuple10<BigInteger, byte[], BigInteger, BigInteger, byte[], BigInteger, BigInteger, BigInteger, List<String>, byte[]> call() throws Exception {
+                    public Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
-                        return new Tuple10<BigInteger, byte[], BigInteger, BigInteger, byte[], BigInteger, BigInteger, BigInteger, List<String>, byte[]>(
+                        return new Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]>(
                                 (BigInteger) results.get(0).getValue(), 
                                 (byte[]) results.get(1).getValue(), 
                                 (BigInteger) results.get(2).getValue(), 
                                 (BigInteger) results.get(3).getValue(), 
-                                (byte[]) results.get(4).getValue(), 
+                                (BigInteger) results.get(4).getValue(), 
                                 (BigInteger) results.get(5).getValue(), 
                                 (BigInteger) results.get(6).getValue(), 
-                                (BigInteger) results.get(7).getValue(), 
-                                convertToNative((List<Address>) results.get(8).getValue()), 
-                                (byte[]) results.get(9).getValue());
+                                (byte[]) results.get(7).getValue(), 
+                                (BigInteger) results.get(8).getValue(), 
+                                (BigInteger) results.get(9).getValue(), 
+                                convertToNative((List<Address>) results.get(10).getValue()), 
+                                (byte[]) results.get(11).getValue());
                     }
                 });
     }

@@ -41,9 +41,9 @@ import rx.functions.Func1;
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
  *
- * <p>Generated with web3j version 3.6.0.
+ * Poco-dev: commit d33251188ef289c3152e65c28b3259d96ee05f7b
  *
- * Poco-dev: commit fc1e39851c483698c5cf405d5f72e2134380cefb
+ * <p>Generated with web3j version 3.6.0.
  */
 public class IexecClerkABILegacy extends Contract {
     private static final String BINARY = "0x";
