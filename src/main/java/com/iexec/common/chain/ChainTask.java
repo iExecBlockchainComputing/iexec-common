@@ -2,7 +2,7 @@ package com.iexec.common.chain;
 
 import com.iexec.common.utils.BytesUtils;
 import lombok.*;
-import org.web3j.tuples.generated.Tuple10;
+import org.web3j.tuples.generated.Tuple12;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -17,27 +17,60 @@ public class ChainTask {
     private ChainTaskStatus status;
     private String dealid;
     private int idx;
-    private long consensusDeadline;
-    private String consensusValue;
+    private long timeRef;
+    private long contributionDeadline;
     private long revealDeadline;
+    private long finalDeadline;
+    private String consensusValue;
     private int revealCounter;
     private int winnerCounter;
     private List<String> contributors;
     private String results;
 
 
-    public ChainTask(BigInteger status, byte[] dealid, BigInteger idx, BigInteger consensusDeadline, byte[] consensusValue, BigInteger revealDeadline, BigInteger revealCounter, BigInteger winnerCounter, List<String> contributors, byte[] results) {
+    public ChainTask(BigInteger status,
+                     byte[] dealid,
+                     BigInteger idx,
+                     BigInteger timeRef,
+                     BigInteger contributionDeadline,
+                     BigInteger revealDeadline,
+                     BigInteger finalDeadline,
+                     byte[] consensusValue,
+                     BigInteger revealCounter,
+                     BigInteger winnerCounter,
+                     List<String> contributors,
+                     byte[] results) {
         this.setStatus(status);
         this.setDealid(dealid);
         this.setIdx(idx);
-        this.setConsensusDeadline(consensusDeadline);
-        this.setConsensusValue(consensusValue);
+        this.setTimeRef(timeRef);
+        this.setContributionDeadline(contributionDeadline);
         this.setRevealDeadline(revealDeadline);
+        this.setFinalDeadline(finalDeadline);
+        this.setConsensusValue(consensusValue);
         this.setRevealCounter(revealCounter);
         this.setWinnerCounter(winnerCounter);
         this.setContributors(contributors);
         this.setResults(results);
 
+    }
+
+    public static ChainTask tuple2ChainTask(Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]> chainTask) {
+        if (chainTask != null) {
+            return new ChainTask(chainTask.getValue1(),
+                    chainTask.getValue2(),
+                    chainTask.getValue3(),
+                    chainTask.getValue4(),
+                    chainTask.getValue5(),
+                    chainTask.getValue6(),
+                    chainTask.getValue7(),
+                    chainTask.getValue8(),
+                    chainTask.getValue9(),
+                    chainTask.getValue10(),
+                    chainTask.getValue11(),
+                    chainTask.getValue12());
+        }
+        return null;
     }
 
     private void setStatus(BigInteger status) {
@@ -52,16 +85,24 @@ public class ChainTask {
         this.idx = idx.intValue();
     }
 
-    private void setConsensusDeadline(BigInteger consensusDeadline) {
-        this.consensusDeadline = consensusDeadline.longValue() * 1000L;
+    private void setTimeRef(BigInteger timeRef) {
+        this.contributionDeadline = timeRef.longValue() * 1000L;
     }
 
-    private void setConsensusValue(byte[] consensusValue) {
-        this.consensusValue = BytesUtils.bytesToString(consensusValue);
+    private void setContributionDeadline(BigInteger contributionDeadline) {
+        this.contributionDeadline = contributionDeadline.longValue() * 1000L;
     }
 
     private void setRevealDeadline(BigInteger revealDeadline) {
         this.revealDeadline = revealDeadline.longValue() * 1000L;
+    }
+
+    private void setFinalDeadline(BigInteger finalDeadline) {
+        this.finalDeadline = finalDeadline.longValue() * 1000L;
+    }
+
+    private void setConsensusValue(byte[] consensusValue) {
+        this.consensusValue = BytesUtils.bytesToString(consensusValue);
     }
 
     private void setRevealCounter(BigInteger revealCounter) {
@@ -78,22 +119,6 @@ public class ChainTask {
 
     private void setResults(byte[] results) {
         this.results = BytesUtils.bytesToString(results);
-    }
-
-    public static ChainTask tuple2ChainTask(Tuple10<BigInteger, byte[], BigInteger, BigInteger, byte[], BigInteger, BigInteger, BigInteger, List<String>, byte[]> chainTask) {
-        if (chainTask != null) {
-            return new ChainTask(chainTask.getValue1(),
-                    chainTask.getValue2(),
-                    chainTask.getValue3(),
-                    chainTask.getValue4(),
-                    chainTask.getValue5(),
-                    chainTask.getValue6(),
-                    chainTask.getValue7(),
-                    chainTask.getValue8(),
-                    chainTask.getValue9(),
-                    chainTask.getValue10());
-        }
-        return null;
     }
 
 
