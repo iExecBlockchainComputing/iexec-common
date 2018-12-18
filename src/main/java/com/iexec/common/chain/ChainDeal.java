@@ -43,7 +43,7 @@ public class ChainDeal {
     BigInteger workerStake;
     BigInteger schedulerRewardRatio;
 
-    static List<String> stringParamsToList(String params){
+    public static List<String> stringParamsToList(String params){
         List<String> listParams = new ArrayList<>();
         try {
             LinkedHashMap tasksParamsMap = new ObjectMapper().readValue(params, LinkedHashMap.class);
