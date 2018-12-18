@@ -136,6 +136,7 @@ public class ChainUtils {
             ChainCategory chainCategory = getChainCategory(iexecHub, categoryId.longValue()).get();
 
             return Optional.of(ChainDeal.builder()
+                    .chainDealId(chainDealId)
                     .chainApp(chainApp)
                     .dappOwner(dealPt1.getValue2())
                     .dappPrice(dealPt1.getValue3())

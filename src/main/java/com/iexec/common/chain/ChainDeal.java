@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 public class ChainDeal {
 
+    String chainDealId;
     // deal_pt1
     ChainApp chainApp;
     String dappOwner;
