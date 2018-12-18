@@ -5,7 +5,9 @@ import com.iexec.common.contract.generated.IexecClerkABILegacy;
 import com.iexec.common.contract.generated.IexecHubABILegacy;
 import com.iexec.common.utils.BytesUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.util.Arrays;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.Hash;
 import org.web3j.ens.EnsResolutionException;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
@@ -134,6 +136,7 @@ public class ChainUtils {
             ChainCategory chainCategory = getChainCategory(iexecHub, categoryId.longValue()).get();
 
             return Optional.of(ChainDeal.builder()
+                    .chainDealId(chainDealId)
                     .chainApp(chainApp)
                     .dappOwner(dealPt1.getValue2())
                     .dappPrice(dealPt1.getValue3())
@@ -218,6 +221,20 @@ public class ChainUtils {
             log.error("Failed to get ChainApp [chainAppId:{}]", app.getContractAddress());
         }
         return Optional.empty();
+    }
+
+    public static String generateChainTaskId(String dealId, BigInteger taskIndex) {
+        byte[] dealIdBytes32 = BytesUtils.stringToBytes(dealId);
+        if (dealIdBytes32.length != 32){
+            return null;
+        }
+        byte[] taskIndexBytes32 = Arrays.copyOf(taskIndex.toByteArray(), 32);
+        if (taskIndexBytes32.length != 32){
+            return null;
+        }
+        //concatenate bytes with same size only
+        byte[] concatenate = Arrays.concatenate(dealIdBytes32, taskIndexBytes32);
+        return Hash.sha3(BytesUtils.bytesToString(concatenate));
     }
 
 }
