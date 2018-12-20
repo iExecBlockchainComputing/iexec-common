@@ -10,19 +10,23 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
 import org.web3j.ens.EnsResolutionException;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tuples.generated.Tuple9;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
+import org.web3j.utils.Convert;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
 
 import static com.iexec.common.chain.ChainApp.stringParamsToChainAppParams;
 import static com.iexec.common.chain.ChainDeal.stringParamsToList;
+import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
 
 @Slf4j
 public class ChainUtils {
@@ -50,31 +54,8 @@ public class ChainUtils {
 
         if (iexecHubAddress != null && !iexecHubAddress.isEmpty()) {
             try {
-                IexecHubABILegacy iexecHubABILegacy = IexecHubABILegacy.load(
-                        iexecHubAddress, web3j, credentials, new ContractGasProvider() {
-                            @Override
-                            public BigInteger getGasPrice(String s) {
-                                return BigInteger.valueOf(22000000000L);
-                            }
-
-                            @Override
-                            public BigInteger getGasPrice() {
-                                return BigInteger.valueOf(22000000000L);
-                            }
-
-                            @Override
-                            public BigInteger getGasLimit(String s) {
-                                return BigInteger.valueOf(8000000L);
-                            }
-
-                            @Override
-                            public BigInteger getGasLimit() {
-                                return BigInteger.valueOf(8000000L);
-                            }
-                        });
-
-                log.info("Loaded contract IexecHub [address:{}] ", iexecHubAddress);
-                return iexecHubABILegacy;
+                return IexecHubABILegacy.load(
+                        iexecHubAddress, web3j, credentials, getContractGasProvider());
             } catch (EnsResolutionException e) {
                 throw exceptionInInitializerError;
             }
@@ -91,10 +72,7 @@ public class ChainUtils {
             if (addressClerk == null || addressClerk.isEmpty()) {
                 throw exceptionInInitializerError;
             }
-
-            IexecClerkABILegacy iexecClerkABILegacy = IexecClerkABILegacy.load(addressClerk, web3j, credentials, new DefaultGasProvider());
-            log.info("Loaded contract IexecClerkLegacy [address:{}] ", addressClerk);
-            return iexecClerkABILegacy;
+            return IexecClerkABILegacy.load(addressClerk, web3j, credentials, getContractGasProvider());
         } catch (Exception e) {
             log.error("Failed to load clerk");
             return null;
@@ -225,16 +203,100 @@ public class ChainUtils {
 
     public static String generateChainTaskId(String dealId, BigInteger taskIndex) {
         byte[] dealIdBytes32 = BytesUtils.stringToBytes(dealId);
-        if (dealIdBytes32.length != 32){
+        if (dealIdBytes32.length != 32) {
             return null;
         }
         byte[] taskIndexBytes32 = Arrays.copyOf(taskIndex.toByteArray(), 32);
-        if (taskIndexBytes32.length != 32){
+        if (taskIndexBytes32.length != 32) {
             return null;
         }
         //concatenate bytes with same size only
         byte[] concatenate = Arrays.concatenate(dealIdBytes32, taskIndexBytes32);
         return Hash.sha3(BytesUtils.bytesToString(concatenate));
+    }
+
+    public static Optional<BigInteger> getBalance(Web3j web3j, String address) {
+        try {
+            return Optional.of(web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send().getBalance());
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
+
+    public static ContractGasProvider getContractGasProvider() {
+        return new ContractGasProvider() {
+            private final long DEFAULT_GAS_LIMIT = 500000;
+            private final long DEFAULT_GAS_PRICE = 22000000000L;
+
+            @Override
+            public BigInteger getGasPrice(String s) {
+                return BigInteger.valueOf(DEFAULT_GAS_PRICE);
+            }
+
+            @Override
+            public BigInteger getGasPrice() {
+                return BigInteger.valueOf(DEFAULT_GAS_PRICE);
+            }
+
+            @Override
+            public BigInteger getGasLimit(String functionName) {
+                long gasLimit;
+                switch (functionName) {
+                    case FUNC_INITIALIZE:
+                        gasLimit = 300000;//seen 176340
+                        break;
+                    case FUNC_CONTRIBUTEABILEGACY:
+                        gasLimit = 500000;//seen 333541
+                        break;
+                    case FUNC_REVEAL:
+                        gasLimit = 100000;//seen 56333
+                        break;
+                    case FUNC_FINALIZE:
+                        gasLimit = 300000;//seen 175369
+                        break;
+                    case FUNC_REOPEN:
+                        gasLimit = 500000;//seen ?
+                        break;
+                    default:
+                        gasLimit = DEFAULT_GAS_LIMIT;
+                }
+                return BigInteger.valueOf(gasLimit);
+            }
+
+            @Override
+            public BigInteger getGasLimit() {
+                return BigInteger.valueOf(DEFAULT_GAS_LIMIT);
+            }
+        };
+    }
+
+    public static BigInteger getMaxTxCost() {
+        return getContractGasProvider().getGasLimit().multiply(getContractGasProvider().getGasPrice());
+    }
+
+    public static BigDecimal weiToEth(BigInteger weiAmount) {
+        return Convert.fromWei(weiAmount.toString(), Convert.Unit.ETHER);
+    }
+
+    public static boolean hasEnoughGas(Web3j web3j, String address) {
+        Optional<BigInteger> optionalBalance = getBalance(web3j, address);
+        if (!optionalBalance.isPresent()){
+            return false;
+        }
+
+        BigInteger weiBalance = optionalBalance.get();
+        BigInteger estimateTxNb = weiBalance.divide(getMaxTxCost());
+        BigDecimal balanceToShow = weiToEth(weiBalance);
+
+        if (estimateTxNb.compareTo(BigInteger.ONE) < 0) {
+            log.error("ETH balance is empty, please refill gas now [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);
+            return false;
+        } else if(estimateTxNb.compareTo(BigInteger.TEN) < 0){
+            log.warn("ETH balance very low, should refill gas now [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);
+        } else {
+            log.info("ETH balance is fine [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);
+        }
+        return true;
     }
 
 }
