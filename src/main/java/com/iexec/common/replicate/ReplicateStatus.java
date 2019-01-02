@@ -23,9 +23,11 @@ public enum ReplicateStatus {
     RESULT_UPLOADED,
     RESULT_UPLOAD_FAILED,
     COMPLETED,
+    CONTRIBUTION_TIMEOUT,
     REVEAL_TIMEOUT,
     WORKER_LOST,
     ABORT_CONSENSUS_REACHED,
+    ABORT_CONTRIBUTION_TIMEOUT,
     ERROR;
 
     public static ChainContributionStatus getChainStatus(ReplicateStatus replicateStatus) {
