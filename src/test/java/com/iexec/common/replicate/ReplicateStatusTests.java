@@ -37,4 +37,10 @@ public class ReplicateStatusTests {
         assertEquals(missingStatuses.size(), 0);
     }
 
+    @Test
+    public void shouldNotGetMissingStatusesIfFromOrToIsNotInSuccessList() {
+        List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTE_FAILED);
+        assertEquals(missingStatuses.size(), 0);
+    }
+
 }

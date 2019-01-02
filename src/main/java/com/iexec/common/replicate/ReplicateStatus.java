@@ -65,6 +65,10 @@ public enum ReplicateStatus {
         boolean shouldAddStatus = false;
         List<ReplicateStatus> missingStatuses = new ArrayList<>();
 
+        if (!getSuccessStatuses().contains(from) || !getSuccessStatuses().contains(to)){
+            return new ArrayList<>();
+        }
+
         if (getSuccessStatuses().indexOf(from) >= getSuccessStatuses().indexOf(to)){
             return new ArrayList<>();
         }
