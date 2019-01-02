@@ -2,6 +2,10 @@ package com.iexec.common.replicate;
 
 import com.iexec.common.chain.ChainContributionStatus;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public enum ReplicateStatus {
 
     CREATED,
@@ -31,7 +35,7 @@ public enum ReplicateStatus {
     ERROR;
 
     public static ChainContributionStatus getChainStatus(ReplicateStatus replicateStatus) {
-        switch (replicateStatus){
+        switch (replicateStatus) {
             case CONTRIBUTED:
                 return ChainContributionStatus.CONTRIBUTED;
             case REVEALED:
@@ -40,4 +44,44 @@ public enum ReplicateStatus {
                 return null;
         }
     }
+
+    public static List<ReplicateStatus> getSuccessStatuses() {
+        return Arrays.asList(
+                CREATED,
+                RUNNING,
+                APP_DOWNLOADING,
+                APP_DOWNLOADED,
+                COMPUTING,
+                COMPUTED,
+                CONTRIBUTING,
+                CONTRIBUTED,
+                REVEALING,
+                REVEALED,
+                COMPLETED
+        );
+    }
+
+    public static List<ReplicateStatus> getMissingStatuses(ReplicateStatus from, ReplicateStatus to) {
+        boolean shouldAddStatus = false;
+        List<ReplicateStatus> missingStatuses = new ArrayList<>();
+
+        if (getSuccessStatuses().indexOf(from) >= getSuccessStatuses().indexOf(to)){
+            return new ArrayList<>();
+        }
+
+        for (ReplicateStatus status: ReplicateStatus.getSuccessStatuses()){
+            if (shouldAddStatus){
+                missingStatuses.add(status);
+            }
+            if (status.equals(from)){
+                shouldAddStatus = true;
+            }
+            if (status.equals(to)){
+                shouldAddStatus = false;
+            }
+        }
+
+        return missingStatuses;
+    }
+
 }
