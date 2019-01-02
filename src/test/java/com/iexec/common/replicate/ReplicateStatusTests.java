@@ -10,10 +10,6 @@ import static org.junit.Assert.assertEquals;
 
 public class ReplicateStatusTests {
 
-    public static void main(String[] args) {
-        System.out.println(ReplicateStatus.getMissingStatuses(CREATED, COMPUTING));
-    }
-
     @Test
     public void shouldGetMissingStatuses() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTING);
