@@ -62,30 +62,16 @@ public enum ReplicateStatus {
     }
 
     public static List<ReplicateStatus> getMissingStatuses(ReplicateStatus from, ReplicateStatus to) {
-        boolean shouldAddStatus = false;
-        List<ReplicateStatus> missingStatuses = new ArrayList<>();
-
-        if (!getSuccessStatuses().contains(from) || !getSuccessStatuses().contains(to)){
+        List<ReplicateStatus> statuses = getSuccessStatuses();
+        if (!statuses.contains(from) || !statuses.contains(to)) {
             return new ArrayList<>();
         }
 
-        if (getSuccessStatuses().indexOf(from) >= getSuccessStatuses().indexOf(to)){
+        if (statuses.indexOf(from) >= statuses.indexOf(to)) {
             return new ArrayList<>();
         }
 
-        for (ReplicateStatus status: ReplicateStatus.getSuccessStatuses()){
-            if (shouldAddStatus){
-                missingStatuses.add(status);
-            }
-            if (status.equals(from)){
-                shouldAddStatus = true;
-            }
-            if (status.equals(to)){
-                shouldAddStatus = false;
-            }
-        }
-
-        return missingStatuses;
+        return statuses.subList(statuses.indexOf(from) + 1, statuses.indexOf(to) + 1);
     }
 
 }
