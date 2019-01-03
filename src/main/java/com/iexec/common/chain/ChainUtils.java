@@ -125,7 +125,7 @@ public class ChainUtils {
                     .poolOwner(dealPt1.getValue8())
                     .poolPrice(dealPt1.getValue9())
                     .trust(dealPt2.getValue1())
-                    .tag(dealPt2.getValue2())
+                    .tag(BytesUtils.bytesToString(dealPt2.getValue2().toByteArray())) //bigInteger.toByteArray().toHexString(); ex : 1 -> 0x1 : SGX TAG
                     .requester(dealPt2.getValue3())
                     .beneficiary(dealPt2.getValue4())
                     .callback(dealPt2.getValue5())

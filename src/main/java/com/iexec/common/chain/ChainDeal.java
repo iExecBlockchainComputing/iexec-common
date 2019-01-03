@@ -30,7 +30,7 @@ public class ChainDeal {
 
     // deal_pt2
     BigInteger trust;
-    BigInteger tag;
+    String tag;
     String requester;
     String beneficiary;
     String callback;
