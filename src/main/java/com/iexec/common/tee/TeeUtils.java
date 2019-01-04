@@ -9,8 +9,10 @@ public class TeeUtils {
         throw new UnsupportedOperationException();
     }
 
+
+    //TODO : xor instead of equals
     public static boolean isTrustedExecutionTag(String tag){
-        return tag != null && tag.equals("0x1");
+        return tag != null && tag.equals("0x01");
     }
 
 }
