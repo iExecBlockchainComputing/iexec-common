@@ -241,6 +241,7 @@ public class ChainUtils {
             @Override
             public BigInteger getGasLimit(String functionName) {
                 long gasLimit;
+                
                 switch (functionName) {
                     case FUNC_INITIALIZE:
                         gasLimit = 300000;//seen 176340
