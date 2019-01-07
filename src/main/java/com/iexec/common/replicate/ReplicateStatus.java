@@ -15,10 +15,12 @@ public enum ReplicateStatus {
     APP_DOWNLOAD_FAILED,
     COMPUTING,
     COMPUTED,
+    CANT_CONTRIBUTE,
     COMPUTE_FAILED,
     CONTRIBUTING,
     CONTRIBUTED,
     CONTRIBUTE_FAILED,
+    CANT_REVEAL,
     REVEALING,
     REVEALED,
     REVEAL_FAILED,
@@ -32,7 +34,8 @@ public enum ReplicateStatus {
     WORKER_LOST,
     ABORT_CONSENSUS_REACHED,
     ABORT_CONTRIBUTION_TIMEOUT,
-    ERROR;
+    ERROR,
+    OUT_OF_GAS;
 
     public static ChainContributionStatus getChainStatus(ReplicateStatus replicateStatus) {
         switch (replicateStatus) {
