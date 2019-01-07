@@ -15,6 +15,6 @@ public class PublicConfiguration {
     private String iexecHubAddress;
     private String workerPoolAddress;
     private String schedulerPublicAddress;
-    private String askForReplicatePeriod;
+    private long askForReplicatePeriod;
 }
 
