@@ -16,8 +16,9 @@ import java.util.Date;
 public class AvailableReplicateModel {
 
     private ContributionAuthorization contributionAuthorization;
-    private DappType dappType;
-    private String dappName;
+    private DappType appType;
+    private String appUri;
     private String cmd;
-    private Date maxExecutionTime;
+    private Date timeRef;
+    private boolean isTrustedExecution;
 }
