@@ -255,7 +255,7 @@ public class ChainUtils {
                         gasLimit = 3000000;//seen 175369 (242641 in reopen case)
                         break;
                     case FUNC_REOPEN:
-                        gasLimit = 100000;//seen 43721
+                        gasLimit = 500000;//seen 43721
                         break;
                     default:
                         gasLimit = DEFAULT_GAS_LIMIT;
