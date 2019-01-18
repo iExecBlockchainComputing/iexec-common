@@ -15,11 +15,11 @@ public enum ReplicateStatus {
     APP_DOWNLOAD_FAILED,
     COMPUTING,
     COMPUTED,
-    CANT_CONTRIBUTE,
     COMPUTE_FAILED,
+    CANT_CONTRIBUTE,
     CONTRIBUTING,
-    CONTRIBUTED,
     CONTRIBUTE_FAILED,
+    CONTRIBUTED,
     CANT_REVEAL,
     REVEALING,
     REVEALED,
@@ -29,11 +29,10 @@ public enum ReplicateStatus {
     RESULT_UPLOADED,
     RESULT_UPLOAD_FAILED,
     COMPLETED,
-    CONTRIBUTION_TIMEOUT,
     REVEAL_TIMEOUT,
     WORKER_LOST,
-    ABORT_CONSENSUS_REACHED,
-    ABORT_CONTRIBUTION_TIMEOUT,
+    ABORTED_ON_CONSENSUS_REACHED,
+    ABORTED_ON_CONTRIBUTION_TIMEOUT,
     ERROR,
     OUT_OF_GAS;
 
@@ -61,6 +60,22 @@ public enum ReplicateStatus {
                 REVEALING,
                 REVEALED,
                 COMPLETED
+        );
+    }
+
+    public static List<ReplicateStatus> getStatusesBeforeContributed() {
+        return Arrays.asList(
+                CREATED,
+                RUNNING,
+                APP_DOWNLOADING,
+                APP_DOWNLOADED,
+                APP_DOWNLOAD_FAILED,
+                COMPUTING,
+                COMPUTED,
+                COMPUTE_FAILED,
+                CANT_CONTRIBUTE,
+                CONTRIBUTING,
+                CONTRIBUTE_FAILED
         );
     }
 
