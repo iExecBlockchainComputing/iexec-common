@@ -77,4 +77,12 @@ public enum ReplicateStatus {
         return statuses.subList(statuses.indexOf(from) + 1, statuses.indexOf(to) + 1);
     }
 
+    public static List<ReplicateStatus> getSuccessStatusesBeforeComputed() {
+        return Arrays.asList(
+                CREATED,
+                RUNNING,
+                APP_DOWNLOADING,
+                APP_DOWNLOADED,
+                COMPUTING);
+    }
 }
