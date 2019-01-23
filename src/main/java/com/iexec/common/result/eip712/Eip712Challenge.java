@@ -20,6 +20,14 @@ public class Eip712Challenge {
     private Message message;
 
     public Eip712Challenge(String challenge, long chainId) {
+        this(challenge, chainId, DOMAIN_NAME, DOMAIN_VERSION, PRIMARY_TYPE);
+    }
+
+    public Eip712Challenge(String challenge, long chainId, String domainName) {
+        this(challenge, chainId, domainName, DOMAIN_VERSION, PRIMARY_TYPE);
+    }
+
+    public Eip712Challenge(String challenge, long chainId, String domainName, String domainVersion, String primaryType) {
         List<TypeParam> domainTypeParams = Arrays.asList(
                 new TypeParam("name", "string"),
                 new TypeParam("version", "string"),
@@ -33,10 +41,11 @@ public class Eip712Challenge {
         Types types = new Types(domainTypeParams, messageTypeParams);
 
         Domain domain = Domain.builder()
-                .name(DOMAIN_NAME)
-                .version(DOMAIN_VERSION)
+                .name(domainName)
+                .version(domainVersion)
                 .chainId(chainId)
                 .build();
+
         Message message = Message.builder()
                 .challenge(challenge)
                 .build();
@@ -44,7 +53,7 @@ public class Eip712Challenge {
         this.types = types;
         this.domain = domain;
         this.message = message;
-        this.primaryType = PRIMARY_TYPE;
+        this.primaryType = primaryType;
     }
 
 }
