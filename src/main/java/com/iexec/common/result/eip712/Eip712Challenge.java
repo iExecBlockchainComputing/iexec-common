@@ -2,12 +2,14 @@ package com.iexec.common.result.eip712;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Data
 @Getter
+@NoArgsConstructor
 public class Eip712Challenge {
 
     private static final String DOMAIN_NAME = "iExec Result Repository";
