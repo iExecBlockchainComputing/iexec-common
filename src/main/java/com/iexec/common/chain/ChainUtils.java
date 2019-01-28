@@ -300,6 +300,10 @@ public class ChainUtils {
         return true;
     }
 
+    public static ChainReceipt buildChainReceipt(Log chainResponseLog, String chainTaskId) {
+        return buildChainReceipt(chainResponseLog, chainTaskId, 0);
+    }
+
     public static ChainReceipt buildChainReceipt(Log chainResponseLog, String chainTaskId, long lastBlock) {
         if (chainResponseLog == null) {
             log.error("Transaction log received but was null [chainTaskId:{}]", chainTaskId);
