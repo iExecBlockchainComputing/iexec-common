@@ -17,6 +17,7 @@ public class ChainTask {
     private ChainTaskStatus status;
     private String dealid;
     private int idx;
+    private String chainTaskId;
     private long timeRef;
     private long contributionDeadline;
     private long revealDeadline;
@@ -121,5 +122,7 @@ public class ChainTask {
         this.results = BytesUtils.bytesToString(results);
     }
 
-
+    public String getChainTaskId() {
+        return ChainUtils.generateChainTaskId(dealid, BigInteger.valueOf(idx));
+    }
 }
