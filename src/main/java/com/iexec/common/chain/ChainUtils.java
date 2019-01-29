@@ -11,6 +11,7 @@ import org.web3j.crypto.Hash;
 import org.web3j.ens.EnsResolutionException;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tuples.generated.Tuple6;
@@ -297,6 +298,35 @@ public class ChainUtils {
             log.info("ETH balance is fine [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);
         }
         return true;
+    }
+
+    public static ChainReceipt buildChainReceipt(Log chainResponseLog, String chainTaskId) {
+        return buildChainReceipt(chainResponseLog, chainTaskId, 0);
+    }
+
+    public static ChainReceipt buildChainReceipt(Log chainResponseLog, String chainTaskId, long lastBlock) {
+        if (chainResponseLog == null) {
+            log.error("Transaction log received but was null [chainTaskId:{}]", chainTaskId);
+            return ChainReceipt.builder().build();
+        }
+
+        BigInteger block = chainResponseLog.getBlockNumber();
+        String txHash = chainResponseLog.getTransactionHash();
+
+        // it seems response.log.getBlockNumber() could be null (issue in https://github.com/web3j/web3j should be opened)
+        if (block == null && txHash == null) {
+            log.error("Transaction log received but blockNumber and txHash were both null inside "
+                    + "[chainTaskId:{}, action:{} receiptLog:{}, lastBlock:{}]", chainTaskId, chainResponseLog.toString(), lastBlock);
+
+            return ChainReceipt.builder().build();
+        }
+
+        long blockNumber = block != null ? block.longValue() : lastBlock;
+
+        return ChainReceipt.builder()
+                .blockNumber(blockNumber)
+                .txHash(txHash)
+                .build();
     }
 
 }
