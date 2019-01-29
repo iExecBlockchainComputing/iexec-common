@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
 
-import static com.iexec.common.chain.ChainApp.stringParamsToChainAppParams;
 import static com.iexec.common.chain.ChainDeal.stringParamsToList;
 import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
 
@@ -102,7 +101,7 @@ public class ChainUtils {
         try {
             Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger> dealPt1 =
                     iexecClerk.viewDealABILegacy_pt1(chainDealIdBytes).send();
-            Tuple6<BigInteger, BigInteger, String, String, String, String> dealPt2 =
+            Tuple6<BigInteger, byte[], String, String, String, String> dealPt2 =
                     iexecClerk.viewDealABILegacy_pt2(chainDealIdBytes).send();
             Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> config =
                     iexecClerk.viewConfigABILegacy(chainDealIdBytes).send();
@@ -126,7 +125,7 @@ public class ChainUtils {
                     .poolOwner(dealPt1.getValue8())
                     .poolPrice(dealPt1.getValue9())
                     .trust(dealPt2.getValue1())
-                    .tag(BytesUtils.bytesToString(dealPt2.getValue2().toByteArray())) //bigInteger.toByteArray().toHexString(); ex : 1 -> 0x1 : SGX TAG
+                    .tag(BytesUtils.bytesToString(dealPt2.getValue2())) //bigInteger.toByteArray().toHexString(); ex : 1 -> 0x1 : SGX TAG
                     .requester(dealPt2.getValue3())
                     .beneficiary(dealPt2.getValue4())
                     .callback(dealPt2.getValue5())
@@ -193,8 +192,9 @@ public class ChainUtils {
             return Optional.of(ChainApp.builder()
                     .chainAppId(app.getContractAddress())
                     .name(app.m_appName().send())
-                    .params(stringParamsToChainAppParams(app.m_appParams().send()))
-                    .hash(BytesUtils.bytesToString(app.m_appHash().send()))
+                    .type(app.m_appType().send())
+                    .uri(BytesUtils.bytesToString(app.m_appMultiaddr().send()))
+                    .checksum(BytesUtils.bytesToString(app.m_appChecksum().send()))
                     .build());
         } catch (Exception e) {
             log.error("Failed to get ChainApp [chainAppId:{}]", app.getContractAddress());
@@ -281,7 +281,7 @@ public class ChainUtils {
 
     public static boolean hasEnoughGas(Web3j web3j, String address) {
         Optional<BigInteger> optionalBalance = getBalance(web3j, address);
-        if (!optionalBalance.isPresent()){
+        if (!optionalBalance.isPresent()) {
             return false;
         }
 
@@ -292,7 +292,7 @@ public class ChainUtils {
         if (estimateTxNb.compareTo(BigInteger.ONE) < 0) {
             log.error("ETH balance is empty, please refill gas now [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);
             return false;
-        } else if(estimateTxNb.compareTo(BigInteger.TEN) < 0){
+        } else if (estimateTxNb.compareTo(BigInteger.TEN) < 0) {
             log.warn("ETH balance very low, should refill gas now [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);
         } else {
             log.info("ETH balance is fine [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);

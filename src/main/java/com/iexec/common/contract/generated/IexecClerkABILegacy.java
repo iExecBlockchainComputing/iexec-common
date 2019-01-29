@@ -40,9 +40,7 @@ import rx.functions.Func1;
  * <p>Please use the <a href="https://docs.web3j.io/command_line.html">web3j command line tools</a>,
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
- *
- * Poco-dev: commit d33251188ef289c3152e65c28b3259d96ee05f7b
- *
+ *  Poco-dev: commit 0aa794bd1040a5308142c87ad78e1d3f9a17a9cb
  * <p>Generated with web3j version 3.6.0.
  */
 public class IexecClerkABILegacy extends Contract {
@@ -65,8 +63,6 @@ public class IexecClerkABILegacy extends Contract {
     public static final String FUNC_VIEWREQUESTDEALS = "viewRequestDeals";
 
     public static final String FUNC_VIEWCONSUMED = "viewConsumed";
-
-    public static final String FUNC_CHECKRESTRICTION = "checkRestriction";
 
     public static final String FUNC_LOCKCONTRIBUTION = "lockContribution";
 
@@ -408,15 +404,6 @@ public class IexecClerkABILegacy extends Contract {
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteCall<Boolean> checkRestriction(String _restriction, String _candidate, byte[] _mask) {
-        final Function function = new Function(FUNC_CHECKRESTRICTION, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_restriction), 
-                new org.web3j.abi.datatypes.Address(_candidate), 
-                new org.web3j.abi.datatypes.generated.Bytes1(_mask)), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
-        return executeRemoteCallSingleValueReturn(function, Boolean.class);
-    }
-
     public RemoteCall<TransactionReceipt> lockContribution(byte[] _dealid, String _worker) {
         final Function function = new Function(
                 FUNC_LOCKCONTRIBUTION, 
@@ -502,18 +489,18 @@ public class IexecClerkABILegacy extends Contract {
                 });
     }
 
-    public RemoteCall<Tuple6<BigInteger, BigInteger, String, String, String, String>> viewDealABILegacy_pt2(byte[] _id) {
+    public RemoteCall<Tuple6<BigInteger, byte[], String, String, String, String>> viewDealABILegacy_pt2(byte[] _id) {
         final Function function = new Function(FUNC_VIEWDEALABILEGACY_PT2, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_id)), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Utf8String>() {}));
-        return new RemoteCall<Tuple6<BigInteger, BigInteger, String, String, String, String>>(
-                new Callable<Tuple6<BigInteger, BigInteger, String, String, String, String>>() {
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Utf8String>() {}));
+        return new RemoteCall<Tuple6<BigInteger, byte[], String, String, String, String>>(
+                new Callable<Tuple6<BigInteger, byte[], String, String, String, String>>() {
                     @Override
-                    public Tuple6<BigInteger, BigInteger, String, String, String, String> call() throws Exception {
+                    public Tuple6<BigInteger, byte[], String, String, String, String> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
-                        return new Tuple6<BigInteger, BigInteger, String, String, String, String>(
+                        return new Tuple6<BigInteger, byte[], String, String, String, String>(
                                 (BigInteger) results.get(0).getValue(), 
-                                (BigInteger) results.get(1).getValue(), 
+                                (byte[]) results.get(1).getValue(), 
                                 (String) results.get(2).getValue(), 
                                 (String) results.get(3).getValue(), 
                                 (String) results.get(4).getValue(), 

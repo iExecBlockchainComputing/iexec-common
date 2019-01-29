@@ -42,9 +42,7 @@ import rx.functions.Func1;
  * <p>Please use the <a href="https://docs.web3j.io/command_line.html">web3j command line tools</a>,
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
- *
- *  Poco-dev: commit d33251188ef289c3152e65c28b3259d96ee05f7b
- *
+ *  Poco-dev: commit 0aa794bd1040a5308142c87ad78e1d3f9a17a9cb
  * <p>Generated with web3j version 3.6.0.
  */
 public class IexecHubABILegacy extends Contract {
@@ -83,6 +81,8 @@ public class IexecHubABILegacy extends Contract {
     public static final String FUNC_INITIALIZEARRAY = "initializeArray";
 
     public static final String FUNC_CLAIMARRAY = "claimArray";
+
+    public static final String FUNC_INITIALIZEANDCLAIMARRAY = "initializeAndClaimArray";
 
     public static final String FUNC_VIEWTASKABILEGACY = "viewTaskABILegacy";
 
@@ -584,6 +584,17 @@ public class IexecHubABILegacy extends Contract {
                 FUNC_CLAIMARRAY, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Bytes32>(
                         org.web3j.abi.Utils.typeMap(_taskid, org.web3j.abi.datatypes.generated.Bytes32.class))), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteCall<TransactionReceipt> initializeAndClaimArray(List<byte[]> _dealid, List<BigInteger> _idx) {
+        final Function function = new Function(
+                FUNC_INITIALIZEANDCLAIMARRAY, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Bytes32>(
+                        org.web3j.abi.Utils.typeMap(_dealid, org.web3j.abi.datatypes.generated.Bytes32.class)), 
+                new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
+                        org.web3j.abi.Utils.typeMap(_idx, org.web3j.abi.datatypes.generated.Uint256.class))), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }

@@ -19,17 +19,8 @@ public class ChainApp {
 
     private String chainAppId;
     private String name;
-    private ChainAppParams params;
-    private String hash;
-
-    public static ChainAppParams stringParamsToChainAppParams(String params){
-        ChainAppParams dappParams = null;
-        try {
-            dappParams = new ObjectMapper().readValue(params, ChainAppParams.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return dappParams;
-    }
+    private String type;
+    private String uri;
+    private String checksum;
 
 }
