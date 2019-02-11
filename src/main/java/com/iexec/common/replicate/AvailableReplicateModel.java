@@ -19,6 +19,6 @@ public class AvailableReplicateModel {
     private DappType appType;
     private String appUri;
     private String cmd;
-    private Date timeRef;
+    private long maxExecutionTime;
     private boolean isTrustedExecution;
 }

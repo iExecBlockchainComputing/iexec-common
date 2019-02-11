@@ -15,14 +15,14 @@ public class ChainCategory {
     private long id;
     private String name;
     private String description;
-    private Date maxExecutionTime;
+    private long maxExecutionTime;
 
     public static ChainCategory tuple2ChainCategory(long id, String name, String description, BigInteger maxTime) {
         return ChainCategory.builder()
                 .id(id)
                 .name(name)
                 .description(description)
-                .maxExecutionTime(new Date(maxTime.longValue() * 1000))
+                .maxExecutionTime(maxTime.longValue() * 1000)
                 .build();
     }
 }
