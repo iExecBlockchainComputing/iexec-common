@@ -31,6 +31,8 @@ import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
 @Slf4j
 public class ChainUtils {
 
+    private final static long GAS_LIMIT_CAP = 500000;
+
     private ChainUtils() {
         throw new UnsupportedOperationException();
     }
@@ -49,13 +51,13 @@ public class ChainUtils {
         return web3j;
     }
 
-    public static IexecHubABILegacy loadHubContract(Credentials credentials, Web3j web3j, String iexecHubAddress) {
+    public static IexecHubABILegacy getHubContract(Credentials credentials, Web3j web3j, String iexecHubAddress, ContractGasProvider contractGasProvider) {
         ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load IexecHub contract from address " + iexecHubAddress);
 
         if (iexecHubAddress != null && !iexecHubAddress.isEmpty()) {
             try {
                 return IexecHubABILegacy.load(
-                        iexecHubAddress, web3j, credentials, getContractGasProvider());
+                        iexecHubAddress, web3j, credentials, contractGasProvider);
             } catch (EnsResolutionException e) {
                 throw exceptionInInitializerError;
             }
@@ -64,22 +66,22 @@ public class ChainUtils {
         }
     }
 
-    public static IexecClerkABILegacy loadClerkContract(Credentials credentials, Web3j web3j, String iexecHubAddress) {
-        IexecHubABILegacy iexecHubABILegacy = loadHubContract(credentials, web3j, iexecHubAddress);
+    public static IexecClerkABILegacy getClerkContract(Credentials credentials, Web3j web3j, String iexecHubAddress, ContractGasProvider contractGasProvider) {
+        IexecHubABILegacy iexecHubABILegacy = getHubContract(credentials, web3j, iexecHubAddress, contractGasProvider);
         ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load IexecClerk contract from Hub address " + iexecHubAddress);
         try {
             String addressClerk = iexecHubABILegacy.iexecclerk().send();
             if (addressClerk == null || addressClerk.isEmpty()) {
                 throw exceptionInInitializerError;
             }
-            return IexecClerkABILegacy.load(addressClerk, web3j, credentials, getContractGasProvider());
+            return IexecClerkABILegacy.load(addressClerk, web3j, credentials, contractGasProvider);
         } catch (Exception e) {
             log.error("Failed to load clerk [error:{}]", e.getMessage());
             return null;
         }
     }
 
-    public static App loadDappContract(Credentials credentials, Web3j web3j, String appAddress) {
+    public static App getAppContract(Credentials credentials, Web3j web3j, String appAddress) {
         ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load Dapp contract address " + appAddress);
         try {
             if (appAddress == null || appAddress.isEmpty()) {
@@ -94,8 +96,8 @@ public class ChainUtils {
     }
 
     public static Optional<ChainDeal> getChainDeal(Credentials credentials, Web3j web3j, String iexecHubAddress, String chainDealId) {
-        IexecHubABILegacy iexecHub = loadHubContract(credentials, web3j, iexecHubAddress);
-        IexecClerkABILegacy iexecClerk = loadClerkContract(credentials, web3j, iexecHubAddress);
+        IexecHubABILegacy iexecHub = getHubContract(credentials, web3j, iexecHubAddress, getReadingContractGasProvider());
+        IexecClerkABILegacy iexecClerk = getClerkContract(credentials, web3j, iexecHubAddress, getReadingContractGasProvider());
 
         byte[] chainDealIdBytes = BytesUtils.stringToBytes(chainDealId);
         try {
@@ -110,7 +112,7 @@ public class ChainUtils {
             String appAddress = dealPt1.getValue1();
             BigInteger categoryId = config.getValue1();
 
-            ChainApp chainApp = getChainApp(loadDappContract(credentials, web3j, appAddress)).get();
+            ChainApp chainApp = getChainApp(getAppContract(credentials, web3j, appAddress)).get();
             ChainCategory chainCategory = getChainCategory(iexecHub, categoryId.longValue()).get();
 
             return Optional.of(ChainDeal.builder()
@@ -224,19 +226,66 @@ public class ChainUtils {
         }
     }
 
-    public static ContractGasProvider getContractGasProvider() {
-        return new ContractGasProvider() {
-            private final long DEFAULT_GAS_LIMIT = 500000;
-            private final long DEFAULT_GAS_PRICE = 22000000000L;
+    public static Optional<BigInteger> getNetworkGasPrice(Web3j web3j) {
+        try {
+            BigInteger gasPrice = web3j.ethGasPrice().send().getGasPrice();
+            return Optional.of(gasPrice);
+        } catch (IOException e) {
+            log.error("getNetworkGasPrice failed");
+            return Optional.empty();
+        }
+    }
 
+    public static BigInteger getUserGasPrice(Web3j web3j, float gasPriceMultiplier, long gasPriceCap) {
+        Optional<BigInteger> networkGasPrice = ChainUtils.getNetworkGasPrice(web3j);
+        if (!networkGasPrice.isPresent()) {
+            return BigInteger.valueOf(gasPriceCap);
+        }
+        long wishedGasPrice = (long) (networkGasPrice.get().floatValue() * gasPriceMultiplier);
+
+        return BigInteger.valueOf(Math.min(wishedGasPrice, gasPriceCap));
+    }
+
+    /*
+     * This is just a dummy stub for contract reader:
+     * gas price & gas limit is not required when querying (read) an eth node
+     *
+     */
+    public static ContractGasProvider getReadingContractGasProvider() {
+        return new ContractGasProvider() {
             @Override
-            public BigInteger getGasPrice(String s) {
-                return BigInteger.valueOf(DEFAULT_GAS_PRICE);
+            public BigInteger getGasPrice(String contractFunc) {
+                return null;
             }
 
             @Override
             public BigInteger getGasPrice() {
-                return BigInteger.valueOf(DEFAULT_GAS_PRICE);
+                return null;
+            }
+
+            @Override
+            public BigInteger getGasLimit(String contractFunc) {
+                return null;
+            }
+
+            @Override
+            public BigInteger getGasLimit() {
+                return null;
+            }
+        };
+    }
+
+    public static ContractGasProvider getWritingContractGasProvider(Web3j web3j, float gasPriceMultiplier, long gasPriceCap) {
+        return new ContractGasProvider() {
+
+            @Override
+            public BigInteger getGasPrice(String s) {
+                return getUserGasPrice(web3j, gasPriceMultiplier, gasPriceCap);
+            }
+
+            @Override
+            public BigInteger getGasPrice() {
+                return getUserGasPrice(web3j, gasPriceMultiplier, gasPriceCap);
             }
 
             @Override
@@ -259,34 +308,34 @@ public class ChainUtils {
                         gasLimit = 500000;//seen 43721
                         break;
                     default:
-                        gasLimit = DEFAULT_GAS_LIMIT;
+                        gasLimit = GAS_LIMIT_CAP;
                 }
                 return BigInteger.valueOf(gasLimit);
             }
 
             @Override
             public BigInteger getGasLimit() {
-                return BigInteger.valueOf(DEFAULT_GAS_LIMIT);
+                return BigInteger.valueOf(GAS_LIMIT_CAP);
             }
         };
     }
 
-    public static BigInteger getMaxTxCost() {
-        return getContractGasProvider().getGasLimit().multiply(getContractGasProvider().getGasPrice());
+    public static BigInteger getMaxTxCost(long gasPriceCap) {
+        return BigInteger.valueOf(GAS_LIMIT_CAP * gasPriceCap);
     }
 
     public static BigDecimal weiToEth(BigInteger weiAmount) {
         return Convert.fromWei(weiAmount.toString(), Convert.Unit.ETHER);
     }
 
-    public static boolean hasEnoughGas(Web3j web3j, String address) {
+    public static boolean hasEnoughGas(Web3j web3j, String address, long gasPriceCap) {
         Optional<BigInteger> optionalBalance = getBalance(web3j, address);
         if (!optionalBalance.isPresent()) {
             return false;
         }
 
         BigInteger weiBalance = optionalBalance.get();
-        BigInteger estimateTxNb = weiBalance.divide(getMaxTxCost());
+        BigInteger estimateTxNb = weiBalance.divide(getMaxTxCost(gasPriceCap));
         BigDecimal balanceToShow = weiToEth(weiBalance);
 
         if (estimateTxNb.compareTo(BigInteger.ONE) < 0) {

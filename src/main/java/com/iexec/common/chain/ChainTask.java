@@ -18,7 +18,7 @@ public class ChainTask {
     private String dealid;
     private int idx;
     private String chainTaskId;
-    private long timeRef;
+    private long maxExecutionTime;
     private long contributionDeadline;
     private long revealDeadline;
     private long finalDeadline;
@@ -32,7 +32,7 @@ public class ChainTask {
     public ChainTask(BigInteger status,
                      byte[] dealid,
                      BigInteger idx,
-                     BigInteger timeRef,
+                     BigInteger maxExecutionTime,
                      BigInteger contributionDeadline,
                      BigInteger revealDeadline,
                      BigInteger finalDeadline,
@@ -44,7 +44,7 @@ public class ChainTask {
         this.setStatus(status);
         this.setDealid(dealid);
         this.setIdx(idx);
-        this.setTimeRef(timeRef);
+        this.setMaxExecutionTime(maxExecutionTime);
         this.setContributionDeadline(contributionDeadline);
         this.setRevealDeadline(revealDeadline);
         this.setFinalDeadline(finalDeadline);
@@ -86,8 +86,8 @@ public class ChainTask {
         this.idx = idx.intValue();
     }
 
-    private void setTimeRef(BigInteger timeRef) {
-        this.contributionDeadline = timeRef.longValue() * 1000L;
+    private void setMaxExecutionTime(BigInteger maxExecutionTime) {
+        this.maxExecutionTime = maxExecutionTime.longValue() * 1000L;
     }
 
     private void setContributionDeadline(BigInteger contributionDeadline) {

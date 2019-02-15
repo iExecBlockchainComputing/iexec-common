@@ -1,5 +1,6 @@
 package com.iexec.common.replicate;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import com.iexec.common.chain.ChainReceipt;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReplicateStatusChange {
 
     private Date date;

@@ -16,5 +16,6 @@ public class WorkerConfigurationModel {
     private String os;
     private String cpu;
     private int cpuNb;
+    private int memorySize;
 }
 
