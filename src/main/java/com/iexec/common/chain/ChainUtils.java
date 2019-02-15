@@ -243,7 +243,7 @@ public class ChainUtils {
         }
         long wishedGasPrice = (long) (networkGasPrice.get().floatValue() * gasPriceMultiplier);
 
-        if (wishedGasPrice < gasPriceCap) {
+        return BigInteger.valueOf(Math.min(wishedGasPrice, gasPriceCap))
             return BigInteger.valueOf(wishedGasPrice);
         }
         return BigInteger.valueOf(gasPriceCap);
