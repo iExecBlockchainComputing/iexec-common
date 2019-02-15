@@ -1,4 +1,4 @@
-package com.iexec.common.result;
+package com.iexec.common.notification;
 
 public enum TaskNotificationType {
 
@@ -6,5 +6,6 @@ public enum TaskNotificationType {
     PLEASE_REVEAL,
     PLEASE_ABORT_CONSENSUS_REACHED,
     PLEASE_ABORT_CONTRIBUTION_TIMEOUT,
+    RESULT_UPLOAD_TIMEOUT,
     COMPLETED
 }
