@@ -11,11 +11,19 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PublicConfiguration {
 
+    // blockchain
     private Integer chainId;
     private String blockchainURL;
     private String iexecHubAddress;
     private String workerPoolAddress;
     private String schedulerPublicAddress;
+
+    // repos URLs
+    private String resultRepositoryURL;
+
+    // address of the SMS
+    private String smsURL;
+
     private long askForReplicatePeriod;
 }
 
