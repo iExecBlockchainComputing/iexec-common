@@ -20,7 +20,9 @@ public class PublicConfiguration {
 
     // repos URLs
     private String resultRepositoryURL;
-    private String dataRepositoryURL;
+
+    // address of the SMS
+    private String smsURL;
 
     private long askForReplicatePeriod;
 }
