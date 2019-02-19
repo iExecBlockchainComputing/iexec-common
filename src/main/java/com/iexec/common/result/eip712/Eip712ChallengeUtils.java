@@ -1,10 +1,13 @@
 package com.iexec.common.result.eip712;
 
 import com.iexec.common.utils.HashUtils;
+import com.iexec.common.utils.SignatureUtils;
 import com.iexec.common.result.eip712.Domain;
 import com.iexec.common.result.eip712.Eip712Challenge;
 import com.iexec.common.result.eip712.Message;
 import com.iexec.common.result.eip712.Types;
+
+import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
@@ -14,6 +17,14 @@ public class Eip712ChallengeUtils {
 
     private Eip712ChallengeUtils() {
         throw new UnsupportedOperationException();
+    }
+
+    public static String buildAuthorizationToken(Eip712Challenge eip712Challenge, String walletAddress, ECKeyPair ecKeyPair) {
+        String challengeString = getEip712ChallengeString(eip712Challenge);
+        String signatureString = SignatureUtils.signAsString(challengeString, ecKeyPair);
+        String authoriaztionToken = String.join("_", challengeString, signatureString, walletAddress);
+
+        return authoriaztionToken;
     }
 
     public static String getEip712ChallengeString(Eip712Challenge eip712Challenge) {
