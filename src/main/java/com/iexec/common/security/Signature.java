@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Signature {
 
-    private String workerWallet;
+    private String walletAddress;
 
     private byte signV;
     private byte[] signR;

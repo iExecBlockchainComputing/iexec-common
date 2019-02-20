@@ -1,4 +1,4 @@
-package com.iexec.common.result;
+package com.iexec.common.notification;
 
 import lombok.*;
 

@@ -76,7 +76,7 @@ public class ChainUtils {
             }
             return IexecClerkABILegacy.load(addressClerk, web3j, credentials, contractGasProvider);
         } catch (Exception e) {
-            log.error("Failed to load clerk");
+            log.error("Failed to load clerk [error:{}]", e.getMessage());
             return null;
         }
     }
@@ -356,7 +356,7 @@ public class ChainUtils {
     public static ChainReceipt buildChainReceipt(Log chainResponseLog, String chainTaskId, long lastBlock) {
         if (chainResponseLog == null) {
             log.error("Transaction log received but was null [chainTaskId:{}]", chainTaskId);
-            return ChainReceipt.builder().build();
+            return null;
         }
 
         BigInteger block = chainResponseLog.getBlockNumber();
@@ -364,8 +364,8 @@ public class ChainUtils {
 
         // it seems response.log.getBlockNumber() could be null (issue in https://github.com/web3j/web3j should be opened)
         if (block == null && txHash == null) {
-            log.error("Transaction log received but blockNumber and txHash were both null inside "
-                    + "[chainTaskId:{}, action:{} receiptLog:{}, lastBlock:{}]", chainTaskId, chainResponseLog.toString(), lastBlock);
+            log.warn("Transaction log received but blockNumber and txHash were both null inside "
+                    + "[chainTaskId:{}, receiptLog:{}, lastBlock:{}]", chainTaskId, chainResponseLog.toString(), lastBlock);
 
             return ChainReceipt.builder().build();
         }
