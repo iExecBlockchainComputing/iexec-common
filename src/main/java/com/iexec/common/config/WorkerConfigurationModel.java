@@ -17,6 +17,6 @@ public class WorkerConfigurationModel {
     private String cpu;
     private int cpuNb;
     private int memorySize;
-    private boolean sgxEnabled;
+    private boolean teeEnabled;
 }
 
