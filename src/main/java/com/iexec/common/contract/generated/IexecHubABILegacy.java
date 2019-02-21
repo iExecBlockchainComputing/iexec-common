@@ -1,5 +1,6 @@
 package com.iexec.common.contract.generated;
 
+import io.reactivex.Flowable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,8 +34,6 @@ import org.web3j.tuples.generated.Tuple4;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
-import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * <p>Auto generated code.
@@ -42,8 +41,8 @@ import rx.functions.Func1;
  * <p>Please use the <a href="https://docs.web3j.io/command_line.html">web3j command line tools</a>,
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
- *  Poco-dev: commit 0aa794bd1040a5308142c87ad78e1d3f9a17a9cb
- * <p>Generated with web3j version 3.6.0.
+ * Poco-dev: commit 0aa794bd1040a5308142c87ad78e1d3f9a17a9cb
+ * <p>Generated with web3j version 4.1.1.
  */
 public class IexecHubABILegacy extends Contract {
     private static final String BINARY = "0x";
@@ -207,10 +206,10 @@ public class IexecHubABILegacy extends Contract {
         return responses;
     }
 
-    public Observable<TaskInitializeEventResponse> taskInitializeEventObservable(EthFilter filter) {
-        return web3j.ethLogObservable(filter).map(new Func1<Log, TaskInitializeEventResponse>() {
+    public Flowable<TaskInitializeEventResponse> taskInitializeEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, TaskInitializeEventResponse>() {
             @Override
-            public TaskInitializeEventResponse call(Log log) {
+            public TaskInitializeEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKINITIALIZE_EVENT, log);
                 TaskInitializeEventResponse typedResponse = new TaskInitializeEventResponse();
                 typedResponse.log = log;
@@ -221,10 +220,10 @@ public class IexecHubABILegacy extends Contract {
         });
     }
 
-    public Observable<TaskInitializeEventResponse> taskInitializeEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+    public Flowable<TaskInitializeEventResponse> taskInitializeEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(TASKINITIALIZE_EVENT));
-        return taskInitializeEventObservable(filter);
+        return taskInitializeEventFlowable(filter);
     }
 
     public List<TaskContributeEventResponse> getTaskContributeEvents(TransactionReceipt transactionReceipt) {
@@ -241,10 +240,10 @@ public class IexecHubABILegacy extends Contract {
         return responses;
     }
 
-    public Observable<TaskContributeEventResponse> taskContributeEventObservable(EthFilter filter) {
-        return web3j.ethLogObservable(filter).map(new Func1<Log, TaskContributeEventResponse>() {
+    public Flowable<TaskContributeEventResponse> taskContributeEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, TaskContributeEventResponse>() {
             @Override
-            public TaskContributeEventResponse call(Log log) {
+            public TaskContributeEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKCONTRIBUTE_EVENT, log);
                 TaskContributeEventResponse typedResponse = new TaskContributeEventResponse();
                 typedResponse.log = log;
@@ -256,10 +255,10 @@ public class IexecHubABILegacy extends Contract {
         });
     }
 
-    public Observable<TaskContributeEventResponse> taskContributeEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+    public Flowable<TaskContributeEventResponse> taskContributeEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(TASKCONTRIBUTE_EVENT));
-        return taskContributeEventObservable(filter);
+        return taskContributeEventFlowable(filter);
     }
 
     public List<TaskConsensusEventResponse> getTaskConsensusEvents(TransactionReceipt transactionReceipt) {
@@ -275,10 +274,10 @@ public class IexecHubABILegacy extends Contract {
         return responses;
     }
 
-    public Observable<TaskConsensusEventResponse> taskConsensusEventObservable(EthFilter filter) {
-        return web3j.ethLogObservable(filter).map(new Func1<Log, TaskConsensusEventResponse>() {
+    public Flowable<TaskConsensusEventResponse> taskConsensusEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, TaskConsensusEventResponse>() {
             @Override
-            public TaskConsensusEventResponse call(Log log) {
+            public TaskConsensusEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKCONSENSUS_EVENT, log);
                 TaskConsensusEventResponse typedResponse = new TaskConsensusEventResponse();
                 typedResponse.log = log;
@@ -289,10 +288,10 @@ public class IexecHubABILegacy extends Contract {
         });
     }
 
-    public Observable<TaskConsensusEventResponse> taskConsensusEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+    public Flowable<TaskConsensusEventResponse> taskConsensusEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(TASKCONSENSUS_EVENT));
-        return taskConsensusEventObservable(filter);
+        return taskConsensusEventFlowable(filter);
     }
 
     public List<TaskRevealEventResponse> getTaskRevealEvents(TransactionReceipt transactionReceipt) {
@@ -309,10 +308,10 @@ public class IexecHubABILegacy extends Contract {
         return responses;
     }
 
-    public Observable<TaskRevealEventResponse> taskRevealEventObservable(EthFilter filter) {
-        return web3j.ethLogObservable(filter).map(new Func1<Log, TaskRevealEventResponse>() {
+    public Flowable<TaskRevealEventResponse> taskRevealEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, TaskRevealEventResponse>() {
             @Override
-            public TaskRevealEventResponse call(Log log) {
+            public TaskRevealEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKREVEAL_EVENT, log);
                 TaskRevealEventResponse typedResponse = new TaskRevealEventResponse();
                 typedResponse.log = log;
@@ -324,10 +323,10 @@ public class IexecHubABILegacy extends Contract {
         });
     }
 
-    public Observable<TaskRevealEventResponse> taskRevealEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+    public Flowable<TaskRevealEventResponse> taskRevealEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(TASKREVEAL_EVENT));
-        return taskRevealEventObservable(filter);
+        return taskRevealEventFlowable(filter);
     }
 
     public List<TaskReopenEventResponse> getTaskReopenEvents(TransactionReceipt transactionReceipt) {
@@ -342,10 +341,10 @@ public class IexecHubABILegacy extends Contract {
         return responses;
     }
 
-    public Observable<TaskReopenEventResponse> taskReopenEventObservable(EthFilter filter) {
-        return web3j.ethLogObservable(filter).map(new Func1<Log, TaskReopenEventResponse>() {
+    public Flowable<TaskReopenEventResponse> taskReopenEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, TaskReopenEventResponse>() {
             @Override
-            public TaskReopenEventResponse call(Log log) {
+            public TaskReopenEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKREOPEN_EVENT, log);
                 TaskReopenEventResponse typedResponse = new TaskReopenEventResponse();
                 typedResponse.log = log;
@@ -355,10 +354,10 @@ public class IexecHubABILegacy extends Contract {
         });
     }
 
-    public Observable<TaskReopenEventResponse> taskReopenEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+    public Flowable<TaskReopenEventResponse> taskReopenEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(TASKREOPEN_EVENT));
-        return taskReopenEventObservable(filter);
+        return taskReopenEventFlowable(filter);
     }
 
     public List<TaskFinalizeEventResponse> getTaskFinalizeEvents(TransactionReceipt transactionReceipt) {
@@ -374,10 +373,10 @@ public class IexecHubABILegacy extends Contract {
         return responses;
     }
 
-    public Observable<TaskFinalizeEventResponse> taskFinalizeEventObservable(EthFilter filter) {
-        return web3j.ethLogObservable(filter).map(new Func1<Log, TaskFinalizeEventResponse>() {
+    public Flowable<TaskFinalizeEventResponse> taskFinalizeEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, TaskFinalizeEventResponse>() {
             @Override
-            public TaskFinalizeEventResponse call(Log log) {
+            public TaskFinalizeEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKFINALIZE_EVENT, log);
                 TaskFinalizeEventResponse typedResponse = new TaskFinalizeEventResponse();
                 typedResponse.log = log;
@@ -388,10 +387,10 @@ public class IexecHubABILegacy extends Contract {
         });
     }
 
-    public Observable<TaskFinalizeEventResponse> taskFinalizeEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+    public Flowable<TaskFinalizeEventResponse> taskFinalizeEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(TASKFINALIZE_EVENT));
-        return taskFinalizeEventObservable(filter);
+        return taskFinalizeEventFlowable(filter);
     }
 
     public List<TaskClaimedEventResponse> getTaskClaimedEvents(TransactionReceipt transactionReceipt) {
@@ -406,10 +405,10 @@ public class IexecHubABILegacy extends Contract {
         return responses;
     }
 
-    public Observable<TaskClaimedEventResponse> taskClaimedEventObservable(EthFilter filter) {
-        return web3j.ethLogObservable(filter).map(new Func1<Log, TaskClaimedEventResponse>() {
+    public Flowable<TaskClaimedEventResponse> taskClaimedEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, TaskClaimedEventResponse>() {
             @Override
-            public TaskClaimedEventResponse call(Log log) {
+            public TaskClaimedEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKCLAIMED_EVENT, log);
                 TaskClaimedEventResponse typedResponse = new TaskClaimedEventResponse();
                 typedResponse.log = log;
@@ -419,10 +418,10 @@ public class IexecHubABILegacy extends Contract {
         });
     }
 
-    public Observable<TaskClaimedEventResponse> taskClaimedEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+    public Flowable<TaskClaimedEventResponse> taskClaimedEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(TASKCLAIMED_EVENT));
-        return taskClaimedEventObservable(filter);
+        return taskClaimedEventFlowable(filter);
     }
 
     public List<AccurateContributionEventResponse> getAccurateContributionEvents(TransactionReceipt transactionReceipt) {
@@ -438,10 +437,10 @@ public class IexecHubABILegacy extends Contract {
         return responses;
     }
 
-    public Observable<AccurateContributionEventResponse> accurateContributionEventObservable(EthFilter filter) {
-        return web3j.ethLogObservable(filter).map(new Func1<Log, AccurateContributionEventResponse>() {
+    public Flowable<AccurateContributionEventResponse> accurateContributionEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, AccurateContributionEventResponse>() {
             @Override
-            public AccurateContributionEventResponse call(Log log) {
+            public AccurateContributionEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ACCURATECONTRIBUTION_EVENT, log);
                 AccurateContributionEventResponse typedResponse = new AccurateContributionEventResponse();
                 typedResponse.log = log;
@@ -452,10 +451,10 @@ public class IexecHubABILegacy extends Contract {
         });
     }
 
-    public Observable<AccurateContributionEventResponse> accurateContributionEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+    public Flowable<AccurateContributionEventResponse> accurateContributionEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(ACCURATECONTRIBUTION_EVENT));
-        return accurateContributionEventObservable(filter);
+        return accurateContributionEventFlowable(filter);
     }
 
     public List<FaultyContributionEventResponse> getFaultyContributionEvents(TransactionReceipt transactionReceipt) {
@@ -471,10 +470,10 @@ public class IexecHubABILegacy extends Contract {
         return responses;
     }
 
-    public Observable<FaultyContributionEventResponse> faultyContributionEventObservable(EthFilter filter) {
-        return web3j.ethLogObservable(filter).map(new Func1<Log, FaultyContributionEventResponse>() {
+    public Flowable<FaultyContributionEventResponse> faultyContributionEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, FaultyContributionEventResponse>() {
             @Override
-            public FaultyContributionEventResponse call(Log log) {
+            public FaultyContributionEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(FAULTYCONTRIBUTION_EVENT, log);
                 FaultyContributionEventResponse typedResponse = new FaultyContributionEventResponse();
                 typedResponse.log = log;
@@ -485,10 +484,10 @@ public class IexecHubABILegacy extends Contract {
         });
     }
 
-    public Observable<FaultyContributionEventResponse> faultyContributionEventObservable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+    public Flowable<FaultyContributionEventResponse> faultyContributionEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
         EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
         filter.addSingleTopic(EventEncoder.encode(FAULTYCONTRIBUTION_EVENT));
-        return faultyContributionEventObservable(filter);
+        return faultyContributionEventFlowable(filter);
     }
 
     public RemoteCall<TransactionReceipt> attachContracts(String _iexecclerkAddress, String _appregistryAddress, String _datasetregistryAddress, String _workerpoolregistryAddress) {
@@ -678,24 +677,6 @@ public class IexecHubABILegacy extends Contract {
                 });
     }
 
-    public static RemoteCall<IexecHubABILegacy> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return deployRemoteCall(IexecHubABILegacy.class, web3j, credentials, contractGasProvider, BINARY, "");
-    }
-
-    @Deprecated
-    public static RemoteCall<IexecHubABILegacy> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(IexecHubABILegacy.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
-    }
-
-    public static RemoteCall<IexecHubABILegacy> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return deployRemoteCall(IexecHubABILegacy.class, web3j, transactionManager, contractGasProvider, BINARY, "");
-    }
-
-    @Deprecated
-    public static RemoteCall<IexecHubABILegacy> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(IexecHubABILegacy.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
-    }
-
     @Deprecated
     public static IexecHubABILegacy load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         return new IexecHubABILegacy(contractAddress, web3j, credentials, gasPrice, gasLimit);
@@ -712,6 +693,24 @@ public class IexecHubABILegacy extends Contract {
 
     public static IexecHubABILegacy load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
         return new IexecHubABILegacy(contractAddress, web3j, transactionManager, contractGasProvider);
+    }
+
+    public static RemoteCall<IexecHubABILegacy> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+        return deployRemoteCall(IexecHubABILegacy.class, web3j, credentials, contractGasProvider, BINARY, "");
+    }
+
+    @Deprecated
+    public static RemoteCall<IexecHubABILegacy> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(IexecHubABILegacy.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
+    }
+
+    public static RemoteCall<IexecHubABILegacy> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+        return deployRemoteCall(IexecHubABILegacy.class, web3j, transactionManager, contractGasProvider, BINARY, "");
+    }
+
+    @Deprecated
+    public static RemoteCall<IexecHubABILegacy> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(IexecHubABILegacy.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
     }
 
     protected String getStaticDeployedAddress(String networkId) {
