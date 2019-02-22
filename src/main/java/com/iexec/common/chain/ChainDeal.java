@@ -21,6 +21,7 @@ public class ChainDeal {
     ChainApp chainApp;
     String dappOwner;
     BigInteger dappPrice;
+    ChainDataset chainDataset;
     String dataPointer;
     String dataOwner;
     BigInteger dataPrice;

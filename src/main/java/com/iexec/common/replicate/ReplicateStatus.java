@@ -13,6 +13,9 @@ public enum ReplicateStatus {
     APP_DOWNLOADING,
     APP_DOWNLOADED,
     APP_DOWNLOAD_FAILED,
+    DATA_DOWNLOADING,
+    DATA_DOWNLOADED,
+    DATA_DOWNLOAD_FAILED,
     COMPUTING,
     COMPUTED,
     COMPUTE_FAILED,
@@ -57,6 +60,8 @@ public enum ReplicateStatus {
                 RUNNING,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
+                DATA_DOWNLOADING,
+                DATA_DOWNLOADED,
                 COMPUTING,
                 COMPUTED,
                 CAN_CONTRIBUTE,
@@ -75,6 +80,9 @@ public enum ReplicateStatus {
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 APP_DOWNLOAD_FAILED,
+                DATA_DOWNLOADING,
+                DATA_DOWNLOADED,
+                DATA_DOWNLOAD_FAILED,
                 COMPUTING,
                 COMPUTED,
                 COMPUTE_FAILED,
@@ -107,6 +115,8 @@ public enum ReplicateStatus {
                 RUNNING,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
+                DATA_DOWNLOADING,
+                DATA_DOWNLOADED,
                 COMPUTING);
     }
 }
