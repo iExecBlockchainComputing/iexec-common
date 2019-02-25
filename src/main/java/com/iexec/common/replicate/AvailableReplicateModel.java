@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,4 +19,5 @@ public class AvailableReplicateModel {
     private String cmd;
     private long maxExecutionTime;
     private boolean isTrustedExecution;
+    private String datasetUri;
 }

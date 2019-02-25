@@ -1,6 +1,7 @@
 package com.iexec.common.chain;
 
 import com.iexec.common.contract.generated.App;
+import com.iexec.common.contract.generated.Dataset;
 import com.iexec.common.contract.generated.IexecClerkABILegacy;
 import com.iexec.common.contract.generated.IexecHubABILegacy;
 import com.iexec.common.utils.BytesUtils;
@@ -82,7 +83,7 @@ public class ChainUtils {
     }
 
     public static App getAppContract(Credentials credentials, Web3j web3j, String appAddress) {
-        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load Dapp contract address " + appAddress);
+        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load App contract address " + appAddress);
         try {
             if (appAddress == null || appAddress.isEmpty()) {
                 throw exceptionInInitializerError;
@@ -91,6 +92,20 @@ public class ChainUtils {
             return App.load(appAddress, web3j, credentials, new DefaultGasProvider());
         } catch (Exception e) {
             log.error("Failed to load chainApp [address:{}]", appAddress);
+        }
+        return null;
+    }
+
+    public static Dataset getDatasetContract(Credentials credentials, Web3j web3j, String datasetAddress) {
+        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load Dataset contract address " + datasetAddress);
+        try {
+            if (datasetAddress == null || datasetAddress.isEmpty()) {
+                throw exceptionInInitializerError;
+            }
+
+            return Dataset.load(datasetAddress, web3j, credentials, new DefaultGasProvider());
+        } catch (Exception e) {
+            log.error("Failed to load chainDataset [address:{}]", datasetAddress);
         }
         return null;
     }
@@ -110,29 +125,37 @@ public class ChainUtils {
 
 
             String appAddress = dealPt1.getValue1();
+            String datasetAddress = dealPt1.getValue4();
             BigInteger categoryId = config.getValue1();
 
-            ChainApp chainApp = getChainApp(getAppContract(credentials, web3j, appAddress)).get();
-            ChainCategory chainCategory = getChainCategory(iexecHub, categoryId.longValue()).get();
+            Optional<ChainApp> chainApp = getChainApp(getAppContract(credentials, web3j, appAddress));
+            if (!chainApp.isPresent()){
+                return Optional.empty();
+            }
+            Optional<ChainCategory> chainCategory = getChainCategory(iexecHub, categoryId.longValue());
+            if (!chainCategory.isPresent()){
+                return Optional.empty();
+            }
+            Optional<ChainDataset> chainDataset = getChainDataset(getDatasetContract(credentials, web3j, datasetAddress));
 
             return Optional.of(ChainDeal.builder()
                     .chainDealId(chainDealId)
-                    .chainApp(chainApp)
+                    .chainApp(chainApp.get())
                     .dappOwner(dealPt1.getValue2())
                     .dappPrice(dealPt1.getValue3())
-                    .dataPointer(dealPt1.getValue4())
+                    .chainDataset(chainDataset.orElse(null))
                     .dataOwner(dealPt1.getValue5())
                     .dataPrice(dealPt1.getValue6())
                     .poolPointer(dealPt1.getValue7())
                     .poolOwner(dealPt1.getValue8())
                     .poolPrice(dealPt1.getValue9())
                     .trust(dealPt2.getValue1())
-                    .tag(BytesUtils.bytesToString(dealPt2.getValue2())) //bigInteger.toByteArray().toHexString(); ex : 1 -> 0x1 : SGX TAG
+                    .tag(BytesUtils.bytesToString(dealPt2.getValue2()))
                     .requester(dealPt2.getValue3())
                     .beneficiary(dealPt2.getValue4())
                     .callback(dealPt2.getValue5())
                     .params(stringParamsToList(dealPt2.getValue6()))
-                    .chainCategory(chainCategory)
+                    .chainCategory(chainCategory.get())
                     .startTime(config.getValue2())
                     .botFirst(config.getValue3())
                     .botSize(config.getValue4())
@@ -200,6 +223,23 @@ public class ChainUtils {
                     .build());
         } catch (Exception e) {
             log.error("Failed to get ChainApp [chainAppId:{}]", app.getContractAddress());
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<ChainDataset> getChainDataset(Dataset dataset) {
+        if (!dataset.getContractAddress().equals(BytesUtils.EMPTY_ADDRESS)){
+            try {
+                return Optional.of(ChainDataset.builder()
+                        .chainDatasetId(dataset.getContractAddress())
+                        .owner(dataset.m_owner().send())
+                        .name(dataset.m_datasetName().send())
+                        .uri(BytesUtils.bytesToString(dataset.m_datasetMultiaddr().send()))
+                        .checksum(BytesUtils.bytesToString(dataset.m_datasetChecksum().send()))
+                        .build());
+            } catch (Exception e) {
+                log.info("Failed to get ChainDataset [chainDatasetId:{}]", dataset.getContractAddress());
+            }
         }
         return Optional.empty();
     }

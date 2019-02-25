@@ -12,5 +12,5 @@ npm i
 ~/Downloads/web3j-4.1.1/bin/web3j truffle generate ~/iexecdev/PoCo-dev/build/contracts/IexecClerkABILegacy.json -o ~/iexecdev/iexec-common/src/main/java/ -p com.iexec.common.contract.generated
 ~/Downloads/web3j-4.1.1/bin/web3j truffle generate ~/iexecdev/PoCo-dev/build/contracts/IexecHubABILegacy.json -o ~/iexecdev/iexec-common/src/main/java/ -p com.iexec.common.contract.generated
 ~/Downloads/web3j-4.1.1/bin/web3j truffle generate ~/iexecdev/PoCo-dev/build/contracts/App.json -o ~/iexecdev/iexec-common/src/main/java/ -p com.iexec.common.contract.generated
-
+~/Downloads/web3j-4.1.1/bin/web3j truffle generate ~/iexecdev/PoCo-dev/build/contracts/Dataset.json -o ~/iexecdev/iexec-common/src/main/java/ -p com.iexec.common.contract.generated
 ```
