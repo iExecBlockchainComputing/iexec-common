@@ -162,7 +162,6 @@ public abstract class IexecHubAbstractService {
     }
 
     public Optional<ChainTask> getChainTask(String chainTaskId) {
-        ChainTask chainTask = null;
         try {
             return Optional.of(ChainTask.tuple2ChainTask(getHubContract(new DefaultGasProvider()).viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send()));
         } catch (Exception e) {
@@ -205,22 +204,24 @@ public abstract class IexecHubAbstractService {
     }
 
     public Optional<ChainApp> getChainApp(App app) {
-        try {
-            return Optional.of(ChainApp.builder()
-                    .chainAppId(app.getContractAddress())
-                    .name(app.m_appName().send())
-                    .type(app.m_appType().send())
-                    .uri(BytesUtils.bytesToString(app.m_appMultiaddr().send()))
-                    .checksum(BytesUtils.bytesToString(app.m_appChecksum().send()))
-                    .build());
-        } catch (Exception e) {
-            log.error("Failed to get ChainApp [chainAppId:{}]", app.getContractAddress());
+        if (app != null && !app.getContractAddress().equals(BytesUtils.EMPTY_ADDRESS)) {
+            try {
+                return Optional.of(ChainApp.builder()
+                        .chainAppId(app.getContractAddress())
+                        .name(app.m_appName().send())
+                        .type(app.m_appType().send())
+                        .uri(BytesUtils.bytesToString(app.m_appMultiaddr().send()))
+                        .checksum(BytesUtils.bytesToString(app.m_appChecksum().send()))
+                        .build());
+            } catch (Exception e) {
+                log.error("Failed to get ChainApp [chainAppId:{}]", app.getContractAddress());
+            }
         }
         return Optional.empty();
     }
 
     public Optional<ChainDataset> getChainDataset(Dataset dataset) {
-        if (!dataset.getContractAddress().equals(BytesUtils.EMPTY_ADDRESS)) {
+        if (dataset != null && !dataset.getContractAddress().equals(BytesUtils.EMPTY_ADDRESS)) {
             try {
                 return Optional.of(ChainDataset.builder()
                         .chainDatasetId(dataset.getContractAddress())
