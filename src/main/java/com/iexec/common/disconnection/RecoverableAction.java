@@ -3,7 +3,7 @@ package com.iexec.common.disconnection;
 
 public enum RecoverableAction {
 
-    CONTRIBUTION,
+    CONTRIBUTE,
     REVEAL,
-    RESULT_UPLOAD;
+    UPLOAD_RESULT;
 }
