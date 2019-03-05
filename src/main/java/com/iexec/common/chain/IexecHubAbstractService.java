@@ -23,6 +23,7 @@ import static com.iexec.common.chain.ChainDeal.stringParamsToList;
 @Slf4j
 public abstract class IexecHubAbstractService {
 
+    public static final String PENDING_RECEIPT_STATUS = "pending";
     private final Credentials credentials;
     private final Web3j web3j;
     private final String iexecHubAddress;
@@ -36,8 +37,8 @@ public abstract class IexecHubAbstractService {
         this.iexecHubAddress = iexecHubAddress;
         web3j = web3jAbstractService.getWeb3j();
 
-        String hubAddress = getHubContract(new DefaultGasProvider()).getContractAddress();
-        String clerkAddress = getClerkContract(new DefaultGasProvider()).getContractAddress();
+        String hubAddress = getHubContract().getContractAddress();
+        String clerkAddress = getClerkContract().getContractAddress();
         log.info("Abstract IexecHubService initialized [hubAddress:{}, clerkAddress:{}]", hubAddress, clerkAddress);
     }
 
@@ -60,6 +61,13 @@ public abstract class IexecHubAbstractService {
         }
     }
 
+    /*
+     * This method should only be used for reading
+     */
+    public IexecHubABILegacy getHubContract() {
+        return getHubContract(new DefaultGasProvider());
+    }
+
     public IexecClerkABILegacy getClerkContract(ContractGasProvider contractGasProvider) {
         IexecHubABILegacy iexecHubABILegacy = getHubContract(contractGasProvider);
         ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load IexecClerk contract from Hub address " + iexecHubAddress);
@@ -73,6 +81,10 @@ public abstract class IexecHubAbstractService {
             log.error("Failed to load clerk [error:{}]", e.getMessage());
             return null;
         }
+    }
+
+    public IexecClerkABILegacy getClerkContract() {
+        return getClerkContract(new DefaultGasProvider());
     }
 
     public App getAppContract(String appAddress) {
@@ -163,7 +175,7 @@ public abstract class IexecHubAbstractService {
 
     public Optional<ChainTask> getChainTask(String chainTaskId) {
         try {
-            return Optional.of(ChainTask.tuple2ChainTask(getHubContract(new DefaultGasProvider()).viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send()));
+            return Optional.of(ChainTask.tuple2ChainTask(getHubContract().viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send()));
         } catch (Exception e) {
             log.error("Failed to get ChainTask [chainTaskId:{}]", chainTaskId);
         }
@@ -182,7 +194,7 @@ public abstract class IexecHubAbstractService {
     public Optional<ChainContribution> getChainContribution(String chainTaskId, String workerAddress) {
         try {
             return Optional.of(ChainContribution.tuple2Contribution(
-                    getHubContract(new DefaultGasProvider()).viewContributionABILegacy(BytesUtils.stringToBytes(chainTaskId), workerAddress).send()));
+                    getHubContract().viewContributionABILegacy(BytesUtils.stringToBytes(chainTaskId), workerAddress).send()));
         } catch (Exception e) {
             log.error("Failed to get ChainContribution [chainTaskId:{}, workerAddress:{}]", chainTaskId, workerAddress);
         }
@@ -191,7 +203,7 @@ public abstract class IexecHubAbstractService {
 
     public Optional<ChainCategory> getChainCategory(long id) {
         try {
-            Tuple3<String, String, BigInteger> category = getHubContract(new DefaultGasProvider()).viewCategoryABILegacy(BigInteger.valueOf(id)).send();
+            Tuple3<String, String, BigInteger> category = getHubContract().viewCategoryABILegacy(BigInteger.valueOf(id)).send();
             return Optional.of(ChainCategory.tuple2ChainCategory(id,
                     category.getValue1(),
                     category.getValue2(),
@@ -239,7 +251,7 @@ public abstract class IexecHubAbstractService {
 
     public long getMaxNbOfPeriodsForConsensus() {
         try {
-            return getHubContract(new DefaultGasProvider()).CONSENSUS_DURATION_RATIO().send().longValue();
+            return getHubContract().CONSENSUS_DURATION_RATIO().send().longValue();
         } catch (Exception e) {
             log.error("Failed to getMaxNbOfPeriodsForConsensus");
         }
