@@ -40,7 +40,7 @@ public abstract class Web3jAbstractService {
         Web3j web3j = Web3j.build(new HttpService(chainNodeAddress));
         ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to connect to ethereum node " + chainNodeAddress);
         try {
-            log.info("Connected to Ethereum node [node:{}]", web3j.web3ClientVersion().send().getWeb3ClientVersion());
+            log.info("Connected to Ethereum node [address:{}, version:{}]", chainNodeAddress, web3j.web3ClientVersion().send().getWeb3ClientVersion());
             if (web3j.web3ClientVersion().send().getWeb3ClientVersion() == null) {
                 throw exceptionInInitializerError;
             }
