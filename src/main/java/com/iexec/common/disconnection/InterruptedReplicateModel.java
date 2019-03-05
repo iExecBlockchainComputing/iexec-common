@@ -1,5 +1,6 @@
-package com.iexec.common.replicate;
+package com.iexec.common.disconnection;
 
+import com.iexec.common.chain.ContributionAuthorization;
 import com.iexec.common.disconnection.RecoverableAction;
 
 import lombok.AllArgsConstructor;
@@ -8,13 +9,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecoveredReplicateModel {
+public class InterruptedReplicateModel {
 
-    String chainTaskId;
+    ContributionAuthorization contributionAuthorization;
     RecoverableAction recoverableAction;
 }
