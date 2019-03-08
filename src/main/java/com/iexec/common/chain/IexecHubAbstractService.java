@@ -17,6 +17,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import static com.iexec.common.chain.ChainDeal.stringParamsToList;
 
@@ -260,6 +261,28 @@ public abstract class IexecHubAbstractService {
 
     public boolean hasEnoughGas(String address) {
         return web3jAbstractService.hasEnoughGas(address);
+    }
+
+
+    protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId, ChainStatus taskStatus,
+                                                            BiFunction<String, ChainStatus, Boolean> isStatusValidOnChainFunction) {
+        long maxWaitingTime = web3jAbstractService.getMaxWaitingTimeWhenPendingReceipt();
+
+        final long startTime = System.currentTimeMillis();
+        long duration = 0;
+        while (duration < maxWaitingTime) {
+            try {
+                if (isStatusValidOnChainFunction.apply(chainTaskId, taskStatus)) {
+                    return true;
+                }
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                log.error("Error in checking the latest block number");
+            }
+            duration = System.currentTimeMillis() - startTime;
+        }
+
+        return false;
     }
 
 }
