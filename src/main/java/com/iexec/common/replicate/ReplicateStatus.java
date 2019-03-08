@@ -31,6 +31,7 @@ public enum ReplicateStatus {
     REVEALING,
     REVEALED,
     REVEAL_FAILED,
+    RESULT_UPLOAD_REQUESTED,
     RESULT_UPLOAD_REQUEST_FAILED,
     RESULT_UPLOADING,
     RESULT_UPLOADED,
@@ -41,7 +42,8 @@ public enum ReplicateStatus {
     ABORTED_ON_CONSENSUS_REACHED,
     ABORTED_ON_CONTRIBUTION_TIMEOUT,
     ERROR,
-    OUT_OF_GAS;
+    OUT_OF_GAS,
+    RECOVERING;
 
     public static ChainContributionStatus getChainStatus(ReplicateStatus replicateStatus) {
         switch (replicateStatus) {
@@ -69,8 +71,8 @@ public enum ReplicateStatus {
                 CONTRIBUTED,
                 REVEALING,
                 REVEALED,
-                COMPLETED
-        );
+                COMPLETED,
+                RECOVERING);
     }
 
     public static List<ReplicateStatus> getStatusesBeforeContributed() {
@@ -92,8 +94,8 @@ public enum ReplicateStatus {
                 CANT_CONTRIBUTE_SINCE_AFTER_DEADLINE,
                 CANT_CONTRIBUTE_SINCE_CONTRIBUTION_ALREADY_SET,
                 CONTRIBUTING,
-                CONTRIBUTE_FAILED
-        );
+                CONTRIBUTE_FAILED,
+                RECOVERING);
     }
 
     public static List<ReplicateStatus> getMissingStatuses(ReplicateStatus from, ReplicateStatus to) {
@@ -117,6 +119,29 @@ public enum ReplicateStatus {
                 APP_DOWNLOADED,
                 DATA_DOWNLOADING,
                 DATA_DOWNLOADED,
-                COMPUTING);
+                COMPUTING,
+                RECOVERING);
+    }
+
+    public static boolean isRecoverableStatus(ReplicateStatus status) {
+        return Arrays.asList(
+                CREATED,
+                RUNNING,
+                APP_DOWNLOADING,
+                APP_DOWNLOADED,
+                DATA_DOWNLOADING,
+                DATA_DOWNLOADED,
+                COMPUTING,
+                COMPUTED,
+                CAN_CONTRIBUTE,
+                CONTRIBUTING,
+                CONTRIBUTED,
+                REVEALING,
+                REVEALED,
+                RESULT_UPLOAD_REQUESTED,
+                RESULT_UPLOADING,
+                RESULT_UPLOADED,
+                RECOVERING)
+            .contains(status);
     }
 }

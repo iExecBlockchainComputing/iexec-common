@@ -1,7 +1,7 @@
 package com.iexec.common.disconnection;
 
 import com.iexec.common.chain.ContributionAuthorization;
-import com.iexec.common.disconnection.RecoverableAction;
+import com.iexec.common.disconnection.RecoveryAction;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,5 +16,5 @@ import lombok.NoArgsConstructor;
 public class InterruptedReplicateModel {
 
     ContributionAuthorization contributionAuthorization;
-    RecoverableAction recoverableAction;
+    RecoveryAction recoveryAction;
 }
