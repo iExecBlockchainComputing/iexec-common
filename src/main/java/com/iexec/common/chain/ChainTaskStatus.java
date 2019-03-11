@@ -2,7 +2,7 @@ package com.iexec.common.chain;
 
 import java.math.BigInteger;
 
-public enum ChainTaskStatus {
+public enum ChainTaskStatus implements ChainStatus {
     UNSET,     // Work order not yet initialized (invalid address)
     ACTIVE,    // Marketed to constributions are open
     REVEALING, // Starting consensus reveal

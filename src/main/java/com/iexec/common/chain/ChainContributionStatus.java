@@ -2,7 +2,7 @@ package com.iexec.common.chain;
 
 import java.math.BigInteger;
 
-public enum ChainContributionStatus {
+public enum ChainContributionStatus implements ChainStatus {
     UNSET,
     CONTRIBUTED,
     REVEALED,

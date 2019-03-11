@@ -21,14 +21,13 @@ public class ReplicateStatusChange {
     private ChainReceipt chainReceipt;
 
     public ReplicateStatusChange(ReplicateStatus status, ReplicateStatusModifier modifier) {
-        this(status, modifier, null);
-    }
-
-    public ReplicateStatusChange(ReplicateStatus status, ReplicateStatusModifier modifier, ChainReceipt chainReceipt) {
         this.date = new Date();
         this.status = status;
         this.modifier = modifier;
-        this.chainReceipt = chainReceipt;
     }
 
+    public ReplicateStatusChange(ReplicateStatus status, ReplicateStatusModifier modifier, ChainReceipt chainReceipt) {
+        this(status, modifier);
+        this.chainReceipt = chainReceipt;
+    }
 }

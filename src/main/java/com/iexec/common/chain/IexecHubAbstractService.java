@@ -17,6 +17,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import static com.iexec.common.chain.ChainDeal.stringParamsToList;
 
@@ -113,6 +114,24 @@ public abstract class IexecHubAbstractService {
             log.error("Failed to load chainDataset [address:{}]", datasetAddress);
         }
         return null;
+    }
+
+    public Optional<String> getTaskBeneficiary(String chainTaskId, Integer chainId) {
+        Optional<ChainTask> chainTask = getChainTask(chainTaskId);
+        if (!chainTask.isPresent()) {
+            return Optional.empty();
+        }
+        Optional<ChainDeal> optionalChainDeal = getChainDeal(chainTask.get().getDealid());
+        return optionalChainDeal.map(chainDeal -> chainDeal.getBeneficiary().toLowerCase());
+    }
+
+    public boolean isPublicResult(String chainTaskId, Integer chainId) {
+        Optional<String> beneficiary = getTaskBeneficiary(chainTaskId, chainId);
+        if (!beneficiary.isPresent()) {
+            log.error("Failed to get beneficiary for isPublicResult() method [chainTaskId:{}]", chainTaskId);
+            return false;
+        }
+        return beneficiary.get().equals(BytesUtils.EMPTY_ADDRESS);
     }
 
     public Optional<ChainDeal> getChainDeal(String chainDealId) {
@@ -260,6 +279,28 @@ public abstract class IexecHubAbstractService {
 
     public boolean hasEnoughGas(String address) {
         return web3jAbstractService.hasEnoughGas(address);
+    }
+
+
+    protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId, ChainStatus taskStatus,
+                                                            BiFunction<String, ChainStatus, Boolean> isStatusValidOnChainFunction) {
+        long maxWaitingTime = web3jAbstractService.getMaxWaitingTimeWhenPendingReceipt();
+
+        final long startTime = System.currentTimeMillis();
+        long duration = 0;
+        while (duration < maxWaitingTime) {
+            try {
+                if (isStatusValidOnChainFunction.apply(chainTaskId, taskStatus)) {
+                    return true;
+                }
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                log.error("Error in checking the latest block number");
+            }
+            duration = System.currentTimeMillis() - startTime;
+        }
+
+        return false;
     }
 
 }
