@@ -125,6 +125,15 @@ public abstract class IexecHubAbstractService {
         return optionalChainDeal.map(chainDeal -> chainDeal.getBeneficiary().toLowerCase());
     }
 
+    public boolean isPublicResult(String chainTaskId, Integer chainId) {
+        Optional<String> beneficiary = getTaskBeneficiary(chainTaskId, chainId);
+        if (!beneficiary.isPresent()) {
+            log.error("Failed to get beneficiary for isPublicResult() method [chainTaskId:{}]", chainTaskId);
+            return false;
+        }
+        return beneficiary.get().equals(BytesUtils.EMPTY_ADDRESS);
+    }
+
     public Optional<ChainDeal> getChainDeal(String chainDealId) {
         IexecHubABILegacy iexecHub = getHubContract(new DefaultGasProvider());
         IexecClerkABILegacy iexecClerk = getClerkContract(new DefaultGasProvider());
