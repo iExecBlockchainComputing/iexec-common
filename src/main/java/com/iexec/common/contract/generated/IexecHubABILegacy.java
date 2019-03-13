@@ -41,7 +41,8 @@ import org.web3j.tx.gas.ContractGasProvider;
  * <p>Please use the <a href="https://docs.web3j.io/command_line.html">web3j command line tools</a>,
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
- * Poco-dev: commit 0aa794bd1040a5308142c87ad78e1d3f9a17a9cb
+ *
+ * Poco-dev: commit 4d6e8e89a29e0e6239d3a5774351fcba0ab62f17
  * <p>Generated with web3j version 4.1.1.
  */
 public class IexecHubABILegacy extends Contract {
@@ -69,6 +70,8 @@ public class IexecHubABILegacy extends Contract {
 
     public static final String FUNC_INITIALIZE = "initialize";
 
+    public static final String FUNC_CONTRIBUTE = "contribute";
+
     public static final String FUNC_REVEAL = "reveal";
 
     public static final String FUNC_REOPEN = "reopen";
@@ -86,8 +89,6 @@ public class IexecHubABILegacy extends Contract {
     public static final String FUNC_VIEWTASKABILEGACY = "viewTaskABILegacy";
 
     public static final String FUNC_VIEWCONTRIBUTIONABILEGACY = "viewContributionABILegacy";
-
-    public static final String FUNC_CONTRIBUTEABILEGACY = "contributeABILegacy";
 
     public static final String FUNC_VIEWCATEGORYABILEGACY = "viewCategoryABILegacy";
 
@@ -533,6 +534,19 @@ public class IexecHubABILegacy extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
+    public RemoteCall<TransactionReceipt> contribute(byte[] _taskid, byte[] _resultHash, byte[] _resultSeal, String _enclaveChallenge, byte[] _enclaveSign, byte[] _workerpoolSign) {
+        final Function function = new Function(
+                FUNC_CONTRIBUTE, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_taskid), 
+                new org.web3j.abi.datatypes.generated.Bytes32(_resultHash), 
+                new org.web3j.abi.datatypes.generated.Bytes32(_resultSeal), 
+                new org.web3j.abi.datatypes.Address(_enclaveChallenge), 
+                new org.web3j.abi.datatypes.DynamicBytes(_enclaveSign), 
+                new org.web3j.abi.datatypes.DynamicBytes(_workerpoolSign)), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
     public RemoteCall<TransactionReceipt> reveal(byte[] _taskid, byte[] _resultDigest) {
         final Function function = new Function(
                 FUNC_REVEAL, 
@@ -641,23 +655,6 @@ public class IexecHubABILegacy extends Contract {
                                 (String) results.get(3).getValue());
                     }
                 });
-    }
-
-    public RemoteCall<TransactionReceipt> contributeABILegacy(byte[] _taskid, byte[] _resultHash, byte[] _resultSeal, String _enclaveChallenge, BigInteger _enclaveSign_v, byte[] _enclaveSign_r, byte[] _enclaveSign_s, BigInteger _poolSign_v, byte[] _poolSign_r, byte[] _poolSign_s) {
-        final Function function = new Function(
-                FUNC_CONTRIBUTEABILEGACY, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_taskid), 
-                new org.web3j.abi.datatypes.generated.Bytes32(_resultHash), 
-                new org.web3j.abi.datatypes.generated.Bytes32(_resultSeal), 
-                new org.web3j.abi.datatypes.Address(_enclaveChallenge), 
-                new org.web3j.abi.datatypes.generated.Uint8(_enclaveSign_v), 
-                new org.web3j.abi.datatypes.generated.Bytes32(_enclaveSign_r), 
-                new org.web3j.abi.datatypes.generated.Bytes32(_enclaveSign_s), 
-                new org.web3j.abi.datatypes.generated.Uint8(_poolSign_v), 
-                new org.web3j.abi.datatypes.generated.Bytes32(_poolSign_r), 
-                new org.web3j.abi.datatypes.generated.Bytes32(_poolSign_s)), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<Tuple3<String, String, BigInteger>> viewCategoryABILegacy(BigInteger _catid) {
