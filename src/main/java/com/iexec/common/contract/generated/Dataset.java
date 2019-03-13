@@ -1,19 +1,30 @@
 package com.iexec.common.contract.generated;
 
+import io.reactivex.Flowable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import org.web3j.abi.EventEncoder;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.DynamicBytes;
+import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Bytes32;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.RemoteCall;
+import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.response.Log;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -24,19 +35,30 @@ import org.web3j.tx.gas.ContractGasProvider;
  * <p>Please use the <a href="https://docs.web3j.io/command_line.html">web3j command line tools</a>,
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
- * Poco-dev: commit 0aa794bd1040a5308142c87ad78e1d3f9a17a9cb
+ *
+ * Poco-dev: commit 4d6e8e89a29e0e6239d3a5774351fcba0ab62f17
  * <p>Generated with web3j version 4.1.1.
  */
 public class Dataset extends Contract {
-    private static final String BINARY = "0x608060405234801561001057600080fd5b506040516105de3803806105de8339810180604052610032919081019061018f565b60008054600160a060020a031916600160a060020a0386161790558251610060906001906020860190610081565b508151610074906002906020850190610081565b50600355506102b8915050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106100c257805160ff19168380011785556100ef565b828001600101855582156100ef579182015b828111156100ef5782518255916020019190600101906100d4565b506100fb9291506100ff565b5090565b61011991905b808211156100fb5760008155600101610105565b90565b60006101288251610277565b9392505050565b60006101288251610119565b6000601f8201831361014c57600080fd5b815161015f61015a82610244565b61021e565b9150808252602083016020830185838301111561017b57600080fd5b610186838284610288565b50505092915050565b600080600080608085870312156101a557600080fd5b60006101b1878761011c565b94505060208501516001604060020a038111156101cd57600080fd5b6101d98782880161013b565b93505060408501516001604060020a038111156101f557600080fd5b6102018782880161013b565b92505060606102128782880161012f565b91505092959194509250565b6040518181016001604060020a038111828210171561023c57600080fd5b604052919050565b60006001604060020a0382111561025a57600080fd5b506020601f91909101601f19160190565b600160a060020a031690565b60006102828261026b565b92915050565b60005b838110156102a357818101518382015260200161028b565b838111156102b2576000848401525b50505050565b610317806102c76000396000f3fe6080604052600436106100615763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630847c43181146100665780631ba99d7e14610091578063a61ca6c5146100b3578063deff41c1146100c8575b600080fd5b34801561007257600080fd5b5061007b6100ea565b6040516100889190610260565b60405180910390f35b34801561009d57600080fd5b506100a6610177565b6040516100889190610252565b3480156100bf57600080fd5b5061007b61017d565b3480156100d457600080fd5b506100dd6101d5565b604051610088919061023e565b60018054604080516020600284861615610100026000190190941693909304601f8101849004840282018401909252818152929183018282801561016f5780601f106101445761010080835404028352916020019161016f565b820191906000526020600020905b81548152906001019060200180831161015257829003601f168201915b505050505081565b60035481565b6002805460408051602060018416156101000260001901909316849004601f8101849004840282018401909252818152929183018282801561016f5780601f106101445761010080835404028352916020019161016f565b60005473ffffffffffffffffffffffffffffffffffffffff1681565b6101fa8161027c565b82525050565b6101fa81610287565b600061021482610278565b8084526102288160208601602086016102a3565b610231816102d3565b9093016020019392505050565b6020810161024c82846101f1565b92915050565b6020810161024c8284610200565b602080825281016102718184610209565b9392505050565b5190565b600061024c8261028a565b90565b73ffffffffffffffffffffffffffffffffffffffff1690565b60005b838110156102be5781810151838201526020016102a6565b838111156102cd576000848401525b50505050565b601f01601f19169056fea265627a7a72305820ed71d2d1a1c327d80ee6153341856985bb2941bce10c783943aa8e591529983e6c6578706572696d656e74616cf50037";
+    private static final String BINARY = "0x608060405234801561001057600080fd5b506040516106733803806106738339810180604052608081101561003357600080fd5b81516020830180519193928301929164010000000081111561005457600080fd5b8201602081018481111561006757600080fd5b815164010000000081118282018710171561008157600080fd5b5050929190602001805164010000000081111561009d57600080fd5b820160208101848111156100b057600080fd5b81516401000000008111828201871017156100ca57600080fd5b505060209091015160008054600160a060020a0319163317808255604051939550919350600160a060020a039190911691600080516020610653833981519152908290a361012084640100000000610154810204565b82516101339060019060208601906101b2565b5081516101479060029060208501906101b2565b506003555061024d915050565b600160a060020a038116151561016957600080fd5b60008054604051600160a060020a038085169392169160008051602061065383398151915291a360008054600160a060020a031916600160a060020a0392909216919091179055565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106101f357805160ff1916838001178555610220565b82800160010185558215610220579182015b82811115610220578251825591602001919060010190610205565b5061022c929150610230565b5090565b61024a91905b8082111561022c5760008155600101610236565b90565b6103f78061025c6000396000f3fe608060405234801561001057600080fd5b506004361061009a576000357c0100000000000000000000000000000000000000000000000000000000900480638da5cb5b116100785780638da5cb5b146101405780638f32d59b14610171578063a61ca6c51461018d578063f2fde38b146101955761009a565b80630847c4311461009f5780631ba99d7e1461011c578063715018a614610136575b600080fd5b6100a76101c8565b6040805160208082528351818301528351919283929083019185019080838360005b838110156100e15781810151838201526020016100c9565b50505050905090810190601f16801561010e5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b610124610255565b60408051918252519081900360200190f35b61013e61025b565b005b6101486102d2565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b6101796102ee565b604080519115158252519081900360200190f35b6100a761030c565b61013e600480360360208110156101ab57600080fd5b503573ffffffffffffffffffffffffffffffffffffffff16610364565b60018054604080516020600284861615610100026000190190941693909304601f8101849004840282018401909252818152929183018282801561024d5780601f106102225761010080835404028352916020019161024d565b820191906000526020600020905b81548152906001019060200180831161023057829003601f168201915b505050505081565b60035481565b6102636102ee565b151561026e57600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a36000805473ffffffffffffffffffffffffffffffffffffffff19169055565b60005473ffffffffffffffffffffffffffffffffffffffff1690565b60005473ffffffffffffffffffffffffffffffffffffffff16331490565b6002805460408051602060018416156101000260001901909316849004601f8101849004840282018401909252818152929183018282801561024d5780601f106102225761010080835404028352916020019161024d565b604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152600860248201527f64697361626c6564000000000000000000000000000000000000000000000000604482015290519081900360640190fdfea165627a7a72305820a217a396f0af4de0e22d94a49760017aaa9ee7df513549ff604126e568dedf5700298be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0";
 
     public static final String FUNC_M_DATASETNAME = "m_datasetName";
 
     public static final String FUNC_M_DATASETCHECKSUM = "m_datasetChecksum";
 
+    public static final String FUNC_RENOUNCEOWNERSHIP = "renounceOwnership";
+
+    public static final String FUNC_OWNER = "owner";
+
+    public static final String FUNC_ISOWNER = "isOwner";
+
     public static final String FUNC_M_DATASETMULTIADDR = "m_datasetMultiaddr";
 
-    public static final String FUNC_M_OWNER = "m_owner";
+    public static final String FUNC_TRANSFEROWNERSHIP = "transferOwnership";
+
+    public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred", 
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
+    ;
 
     protected static final HashMap<String, String> _addresses;
 
@@ -76,6 +98,28 @@ public class Dataset extends Contract {
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
+    public RemoteCall<TransactionReceipt> renounceOwnership() {
+        final Function function = new Function(
+                FUNC_RENOUNCEOWNERSHIP, 
+                Arrays.<Type>asList(), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteCall<String> owner() {
+        final Function function = new Function(FUNC_OWNER, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+        return executeRemoteCallSingleValueReturn(function, String.class);
+    }
+
+    public RemoteCall<Boolean> isOwner() {
+        final Function function = new Function(FUNC_ISOWNER, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+        return executeRemoteCallSingleValueReturn(function, Boolean.class);
+    }
+
     public RemoteCall<byte[]> m_datasetMultiaddr() {
         final Function function = new Function(FUNC_M_DATASETMULTIADDR, 
                 Arrays.<Type>asList(), 
@@ -83,11 +127,45 @@ public class Dataset extends Contract {
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
-    public RemoteCall<String> m_owner() {
-        final Function function = new Function(FUNC_M_OWNER, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
-        return executeRemoteCallSingleValueReturn(function, String.class);
+    public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
+        ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
+        for (Contract.EventValuesWithLog eventValues : valueList) {
+            OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
+            typedResponse.log = eventValues.getLog();
+            typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.newOwner = (String) eventValues.getIndexedValues().get(1).getValue();
+            responses.add(typedResponse);
+        }
+        return responses;
+    }
+
+    public Flowable<OwnershipTransferredEventResponse> ownershipTransferredEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, OwnershipTransferredEventResponse>() {
+            @Override
+            public OwnershipTransferredEventResponse apply(Log log) {
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
+                OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
+                typedResponse.log = log;
+                typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
+                typedResponse.newOwner = (String) eventValues.getIndexedValues().get(1).getValue();
+                return typedResponse;
+            }
+        });
+    }
+
+    public Flowable<OwnershipTransferredEventResponse> ownershipTransferredEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        filter.addSingleTopic(EventEncoder.encode(OWNERSHIPTRANSFERRED_EVENT));
+        return ownershipTransferredEventFlowable(filter);
+    }
+
+    public RemoteCall<TransactionReceipt> transferOwnership(String param0) {
+        final Function function = new Function(
+                FUNC_TRANSFEROWNERSHIP, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(param0)), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
     }
 
     @Deprecated
@@ -148,5 +226,13 @@ public class Dataset extends Contract {
 
     public static String getPreviouslyDeployedAddress(String networkId) {
         return _addresses.get(networkId);
+    }
+
+    public static class OwnershipTransferredEventResponse {
+        public Log log;
+
+        public String previousOwner;
+
+        public String newOwner;
     }
 }
