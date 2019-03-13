@@ -14,10 +14,11 @@ import org.web3j.crypto.Sign;
 @Builder
 public class Signature {
 
-    private String signature;
+    // this value is the hexadecimal string of the signature
+    private String value;
 
     public Signature(byte[] sign) {
-        this.signature = BytesUtils.bytesToString(sign);
+        this.value = BytesUtils.bytesToString(sign);
     }
 
     public Signature(byte[] r, byte[] s, byte v) {
@@ -29,14 +30,14 @@ public class Signature {
     }
 
     public byte[] getR(){
-        return Arrays.copyOfRange(BytesUtils.stringToBytes(signature), 0, 32);
+        return Arrays.copyOfRange(BytesUtils.stringToBytes(value), 0, 32);
     }
 
     public byte[] getS(){
-        return Arrays.copyOfRange(BytesUtils.stringToBytes(signature), 32, 64);
+        return Arrays.copyOfRange(BytesUtils.stringToBytes(value), 32, 64);
     }
 
     public byte getV(){
-        return BytesUtils.stringToBytes(signature)[64];
+        return BytesUtils.stringToBytes(value)[64];
     }
 }
