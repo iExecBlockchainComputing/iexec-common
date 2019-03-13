@@ -41,12 +41,7 @@ public class SignatureUtils {
         byte[] message = Hash.sha3(BytesUtils.stringToBytes(stringToSign));
         Sign.SignatureData sign = Sign.signMessage(message, ecKeyPair, false);
 
-        return Signature.builder()
-                .walletAddress(walletAddress)
-                .signR(sign.getR())
-                .signS(sign.getS())
-                .signV(sign.getV())
-                .build();
+        return new Signature(walletAddress, sign.getR(), sign.getS(), sign.getV());
     }
 
     public static String hashAndSignAsString(String stringToSign, ECKeyPair ecKeyPair) {
