@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bouncycastle.util.Arrays;
+import org.web3j.crypto.Sign;
 
 @Data
 @NoArgsConstructor
@@ -23,6 +24,10 @@ public class Signature {
 
     public Signature(String walletAddress, byte[] r, byte[] s, byte v) {
         this(walletAddress, Arrays.concatenate(r, s, new byte[]{v}));
+    }
+
+    public Signature(String walletAddress, Sign.SignatureData sign) {
+        this(walletAddress, sign.getR(), sign.getS(), sign.getV());
     }
 
     public byte[] getR(){
