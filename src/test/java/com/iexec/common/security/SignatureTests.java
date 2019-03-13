@@ -9,8 +9,8 @@ public class SignatureTests {
 
     @Test
     public void shouldBeValid() {
-        Signature sign = new Signature(dummyWallet, validSignature);
-        Signature sign2 = new Signature(dummyWallet, sign.getR(), sign.getS(), sign.getV());
+        Signature sign = new Signature(validSignature);
+        Signature sign2 = new Signature(sign.getR(), sign.getS(), sign.getV());
 
 
     }

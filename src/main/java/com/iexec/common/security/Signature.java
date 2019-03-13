@@ -14,20 +14,18 @@ import org.web3j.crypto.Sign;
 @Builder
 public class Signature {
 
-    private String walletAddress;
     private String signature;
 
-    public Signature(String walletAddress, byte[] sign) {
-        this.walletAddress = walletAddress;
+    public Signature(byte[] sign) {
         this.signature = BytesUtils.bytesToString(sign);
     }
 
-    public Signature(String walletAddress, byte[] r, byte[] s, byte v) {
-        this(walletAddress, Arrays.concatenate(r, s, new byte[]{v}));
+    public Signature(byte[] r, byte[] s, byte v) {
+        this(Arrays.concatenate(r, s, new byte[]{v}));
     }
 
-    public Signature(String walletAddress, Sign.SignatureData sign) {
-        this(walletAddress, sign.getR(), sign.getS(), sign.getV());
+    public Signature(Sign.SignatureData sign) {
+        this(sign.getR(), sign.getS(), sign.getV());
     }
 
     public byte[] getR(){
