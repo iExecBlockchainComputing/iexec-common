@@ -41,7 +41,7 @@ public enum ReplicateStatus {
     WORKER_LOST,
     ABORTED_ON_CONSENSUS_REACHED,
     ABORTED_ON_CONTRIBUTION_TIMEOUT,
-    ERROR,
+    FAILED,
     OUT_OF_GAS,
     RECOVERING;
 
