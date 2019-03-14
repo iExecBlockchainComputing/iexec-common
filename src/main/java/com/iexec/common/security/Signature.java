@@ -15,6 +15,7 @@ import org.web3j.crypto.Sign;
 public class Signature {
 
     // this value is the hexadecimal string of the signature
+    // it is the concatenation of the R, S and V values of the signature.
     private String value;
 
     public Signature(byte[] sign) {
