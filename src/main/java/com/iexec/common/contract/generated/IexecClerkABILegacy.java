@@ -39,7 +39,8 @@ import org.web3j.tx.gas.ContractGasProvider;
  * <p>Please use the <a href="https://docs.web3j.io/command_line.html">web3j command line tools</a>,
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
- * Poco-dev: commit 0aa794bd1040a5308142c87ad78e1d3f9a17a9cb
+ *
+ * Poco-dev: commit 4d6e8e89a29e0e6239d3a5774351fcba0ab62f17
  * <p>Generated with web3j version 4.1.1.
  */
 public class IexecClerkABILegacy extends Contract {
@@ -421,46 +422,51 @@ public class IexecClerkABILegacy extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> unlockAndRewardForContribution(byte[] _dealid, String _worker, BigInteger _amount) {
+    public RemoteCall<TransactionReceipt> unlockAndRewardForContribution(byte[] _dealid, String _worker, BigInteger _amount, byte[] _taskid) {
         final Function function = new Function(
                 FUNC_UNLOCKANDREWARDFORCONTRIBUTION, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
                 new org.web3j.abi.datatypes.Address(_worker), 
-                new org.web3j.abi.datatypes.generated.Uint256(_amount)), 
+                new org.web3j.abi.datatypes.generated.Uint256(_amount), 
+                new org.web3j.abi.datatypes.generated.Bytes32(_taskid)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> seizeContribution(byte[] _dealid, String _worker) {
+    public RemoteCall<TransactionReceipt> seizeContribution(byte[] _dealid, String _worker, byte[] _taskid) {
         final Function function = new Function(
                 FUNC_SEIZECONTRIBUTION, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
-                new org.web3j.abi.datatypes.Address(_worker)), 
+                new org.web3j.abi.datatypes.Address(_worker), 
+                new org.web3j.abi.datatypes.generated.Bytes32(_taskid)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> rewardForScheduling(byte[] _dealid, BigInteger _amount) {
+    public RemoteCall<TransactionReceipt> rewardForScheduling(byte[] _dealid, BigInteger _amount, byte[] _taskid) {
         final Function function = new Function(
                 FUNC_REWARDFORSCHEDULING, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
-                new org.web3j.abi.datatypes.generated.Uint256(_amount)), 
+                new org.web3j.abi.datatypes.generated.Uint256(_amount), 
+                new org.web3j.abi.datatypes.generated.Bytes32(_taskid)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> successWork(byte[] _dealid) {
+    public RemoteCall<TransactionReceipt> successWork(byte[] _dealid, byte[] _taskid) {
         final Function function = new Function(
                 FUNC_SUCCESSWORK, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid)), 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
+                new org.web3j.abi.datatypes.generated.Bytes32(_taskid)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> failedWork(byte[] _dealid) {
+    public RemoteCall<TransactionReceipt> failedWork(byte[] _dealid, byte[] _taskid) {
         final Function function = new Function(
                 FUNC_FAILEDWORK, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid)), 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
+                new org.web3j.abi.datatypes.generated.Bytes32(_taskid)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }

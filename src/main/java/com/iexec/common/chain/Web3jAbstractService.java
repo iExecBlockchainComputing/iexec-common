@@ -204,7 +204,7 @@ public abstract class Web3jAbstractService {
                     case FUNC_INITIALIZE:
                         gasLimit = 300000;//seen 176340
                         break;
-                    case FUNC_CONTRIBUTEABILEGACY:
+                    case FUNC_CONTRIBUTE:
                         gasLimit = 500000;//seen 333541
                         break;
                     case FUNC_REVEAL:

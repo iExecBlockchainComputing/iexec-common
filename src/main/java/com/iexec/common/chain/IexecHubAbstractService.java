@@ -256,7 +256,7 @@ public abstract class IexecHubAbstractService {
             try {
                 return Optional.of(ChainDataset.builder()
                         .chainDatasetId(dataset.getContractAddress())
-                        .owner(dataset.m_owner().send())
+                        .owner(dataset.owner().send())
                         .name(dataset.m_datasetName().send())
                         .uri(BytesUtils.bytesToString(dataset.m_datasetMultiaddr().send()))
                         .checksum(BytesUtils.bytesToString(dataset.m_datasetChecksum().send()))
