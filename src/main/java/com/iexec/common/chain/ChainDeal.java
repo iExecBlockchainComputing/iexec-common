@@ -2,6 +2,7 @@ package com.iexec.common.chain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
+@Slf4j
 public class ChainDeal {
 
     String chainDealId;
@@ -52,6 +54,7 @@ public class ChainDeal {
             LinkedHashMap tasksParamsMap = new ObjectMapper().readValue(params, LinkedHashMap.class);
             listParams = new ArrayList<String>(tasksParamsMap.values());
         } catch (IOException e) {
+            log.warn("Params string is not a JSON, considering the string is one full param");
             listParams = Collections.singletonList(params);//the requester want to execute one task with the whole string
         }
         return listParams;
