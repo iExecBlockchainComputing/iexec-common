@@ -6,6 +6,7 @@ import lombok.*;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -45,16 +46,15 @@ public class ChainDeal {
     BigInteger workerStake;
     BigInteger schedulerRewardRatio;
 
-    public static List<String> stringParamsToList(String params){
-        List<String> listParams = new ArrayList<>();
+    public static List<String> stringParamsToList(String params) {
+        List<String> listParams;
         try {
             LinkedHashMap tasksParamsMap = new ObjectMapper().readValue(params, LinkedHashMap.class);
             listParams = new ArrayList<String>(tasksParamsMap.values());
         } catch (IOException e) {
-            e.printStackTrace();
+            listParams = Collections.singletonList(params);//the requester want to execute one task with the whole string
         }
         return listParams;
     }
-
 
 }
