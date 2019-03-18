@@ -94,12 +94,17 @@ public abstract class Web3jAbstractService {
 
         // max waiting Time should be roughly the time of 10 blocks
         try {
-            long latestBlockNumber = getLatestBlockNumber();
-            BigInteger latestBlockTimestamp = getLatestBlock().getTimestamp();
-            BigInteger tenBlocksAgoTimestamp = getBlock(latestBlockNumber - 10).getTimestamp();
+            EthBlock.Block latestBlock = getLatestBlock();
 
-            maxWaitingTime = latestBlockTimestamp.longValue() - tenBlocksAgoTimestamp.longValue();
+            long latestBlockNumber = latestBlock.getNumber().longValue();
 
+            BigInteger latestBlockTimestamp = latestBlock.getTimestamp();
+            BigInteger tenBlocksAgoTimestamp = getBlock(latestBlockNumber -10).getTimestamp();
+
+            maxWaitingTime = (latestBlockTimestamp.longValue() - tenBlocksAgoTimestamp.longValue()) * 1000;
+
+            log.info(" [latestBlockTimestamp:{}, tenBlocksAgoTimestamp:{}, maxWaitingTime:{}]",
+                    latestBlockTimestamp, tenBlocksAgoTimestamp, maxWaitingTime);
         } catch (IOException e) {
             e.printStackTrace();
         }
