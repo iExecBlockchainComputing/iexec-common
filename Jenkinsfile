@@ -2,7 +2,7 @@ pipeline {
     
     //agent any
     agent {
-        label 'jenkins-agent'
+        label 'jenkins-agent-docker'
     }
 
     triggers {
@@ -14,7 +14,7 @@ pipeline {
         stage('Checkout') {
 
             steps{
-                checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/blue']]]
+                checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/jenkins']]]
             }
 
         }
@@ -30,7 +30,7 @@ pipeline {
         stage('Checkout Worker') {
 
             steps{
-                checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/blue']], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/iExecBlockchainComputing/iexec-worker.git']]]
+                checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/jenkins']], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/iExecBlockchainComputing/iexec-worker.git']]]
             }
 
         }
