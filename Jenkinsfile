@@ -43,13 +43,13 @@ pipeline {
         }
 
         
-        stage('Push on Docker Hub') {
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASSWORD']]) {
-                    sh './gradlew -PdockerHubUser=$USER -PdockerHubPassword=$PASSWORD pushImage'
-                }
-            }
-        }
+        //stage('Push on Docker Hub') {
+        //    steps {
+        //        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASSWORD']]) {
+        //            sh './gradlew -PdockerHubUser=$USER -PdockerHubPassword=$PASSWORD pushImage'
+        //        }
+        //    }
+        //}
 
         //stage('Trigger worker') {
         //    steps {
