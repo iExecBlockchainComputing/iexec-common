@@ -8,6 +8,7 @@ pipeline {
     //triggers { pollSCM('') //polling for changes, here once a minute }
 
     stages {
+    
 
         //stage('Checkout') { steps{ checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/jenkins']]] } }
 
