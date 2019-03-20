@@ -5,19 +5,11 @@ pipeline {
     //    label 'jenkins-agent-docker'
     //}
 
-    triggers {
-        pollSCM('') //polling for changes, here once a minute
-    }
+    //triggers { pollSCM('') //polling for changes, here once a minute }
 
     stages {
 
-        stage('Checkout') {
-
-            steps{
-                checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/jenkins']]]
-            }
-
-        }
+        //stage('Checkout') { steps{ checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/jenkins']]] } }
 
         stage('Build') {
             steps {
