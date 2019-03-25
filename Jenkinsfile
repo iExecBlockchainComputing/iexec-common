@@ -13,8 +13,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                script {
-                    sh './gradlew clean build' //run a gradle task
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexus', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD']]) {
+                    sh './gradlew -PnexusUser=$NEXUS_USER -PnexusPassword=$NEXUS_PASSWORD build uploadArchives'
                 }
             }
         }
