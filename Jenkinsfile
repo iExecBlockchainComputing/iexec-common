@@ -19,6 +19,12 @@ pipeline {
             }
         }
 
+        stage ("Trigger core") {
+            steps {
+                build job: 'iexec-core', propagate: true, wait: false
+            }
+        }
+
         //stage('Checkout Worker') {
         //    steps{
         //        checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: '*/jenkins']], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/iExecBlockchainComputing/iexec-worker.git']]]
