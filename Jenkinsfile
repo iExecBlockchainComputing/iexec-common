@@ -14,14 +14,14 @@ pipeline {
         stage('Build') {
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexus', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD']]) {
-                    sh './gradlew -PnexusUser=$NEXUS_USER -PnexusPassword=$NEXUS_PASSWORD build uploadArchives'
+                    sh './gradlew build uploadArchives -PnexusUser=$NEXUS_USER -PnexusPassword=$NEXUS_PASSWORD'
                 }
             }
         }
 
         stage ("Trigger core") {
             steps {
-                build job: 'iexec-core', propagate: true, wait: false
+                build job: 'iexec-core_jenkins', propagate: true, wait: false
             }
         }
 
