@@ -21,7 +21,7 @@ pipeline {
 
         stage ("Trigger core") {
             steps {
-                build job: 'iexec-core', propagate: true, wait: false
+                build job: 'iexec-core/jenkins', propagate: true, wait: false
             }
         }
 
