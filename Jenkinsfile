@@ -6,13 +6,13 @@ pipeline {
 
         stage('Test') {
             steps {
-                 sh './gradlew clean test -PnexusPassword -PnexusPassword'
+                 sh './gradlew clean test -PnexusUser -PnexusPassword'
             }
         }
 
         stage('Build') {
             steps {
-                sh './gradlew build -PnexusPassword -PnexusPassword'
+                sh './gradlew build -PnexusUser -PnexusPassword'
             }
         }
 
