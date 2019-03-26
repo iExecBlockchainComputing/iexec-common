@@ -68,7 +68,7 @@ def canUploadArchives = isMasterBranch
 uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
-        repository(url: "https://nexus.iex.ec/repository/hosted-maven/") {
+        repository(url: "https://nexus.iex.ec/repository/maven-snapshots/") {
             authentication(userName: nexusUser, password: nexusPassword)
         }
     }
