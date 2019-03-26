@@ -9,6 +9,8 @@ import com.iexec.common.security.Signature;
 
 public class SignatureUtils {
 
+    public static final Signature EMPTY_SIGNATURE =  new Signature();
+
     private SignatureUtils() {
         throw new UnsupportedOperationException();
     }
@@ -54,6 +56,15 @@ public class SignatureUtils {
         byte[] message = Numeric.hexStringToByteArray(stringToSign);
         Sign.SignatureData sign = Sign.signMessage(message, ecKeyPair, false);
         return createStringFromSignature(sign);
+    }
+
+    public static Signature emptySignature() {
+        return new Signature (
+            BytesUtils.stringToBytes(BytesUtils.EMPTY_HEXASTRING_64),
+            BytesUtils.stringToBytes(BytesUtils.EMPTY_HEXASTRING_64),
+            new Integer(0).byteValue()
+        );
+
     }
 
     private static String createStringFromSignature(Sign.SignatureData sign) {
