@@ -6,14 +6,14 @@ pipeline {
 
         stage('Test') {
             steps {
-                 sh './gradlew clean test -PnexusUser -PnexusPassword'
+                 sh './gradlew clean test'
                  junit 'build/test-results/**/*.xml'
             }
         }
 
         stage('Build') {
             steps {
-                sh './gradlew build -PnexusUser -PnexusPassword'
+                sh './gradlew build'
             }
         }
 
