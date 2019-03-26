@@ -27,12 +27,18 @@ pipeline {
         }
 
         stage ("Notify iexec-core") {
+            when {
+                branch 'master'
+            }
             steps {
                 build job: 'iexec-core/master', propagate: true, wait: false
             }
         }
 
         stage ("Notify iexec-worker") {
+            when {
+                branch 'master'
+            }
             steps {
                 build job: 'iexec-worker/master', propagate: true, wait: false
             }
