@@ -64,13 +64,24 @@ build.dependsOn(shadowJar)
 def gitBranch = 'git name-rev --name-only HEAD'.execute().text.trim()
 def isMasterBranch = gitBranch == "master"
 def canUploadArchives = isMasterBranch
+def isSnapshotVersion = project.version.contains("SNAPSHOT")
+
+project.ext.getNexusMaven = {
+    def nexusMavenBase = "https://nexus.iex.ec/repository"
+    if (isSnapshotVersion) {
+        return nexusMavenBase + "/maven-snapshots/"
+    } else {
+        return nexusMavenBase + "/maven-releases/"
+    }
+}
 
 uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
-        repository(url: "https://nexus.iex.ec/repository/maven-snapshots/") {
+        repository(url: getNexusMaven()) {
             authentication(userName: nexusUser, password: nexusPassword)
         }
     }
 }
+
 uploadArchives.enabled = canUploadArchives
