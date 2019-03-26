@@ -27,13 +27,13 @@ pipeline {
 
         stage ("Notify iexec-core") {
             steps {
-                build job: 'iexec-core/jenkins', propagate: true, wait: false
+                build job: 'iexec-core/master', propagate: true, wait: false
             }
         }
 
         stage ("Notify iexec-worker") {
             steps {
-                build job: 'iexec-worker/jenkins', propagate: true, wait: false
+                build job: 'iexec-worker/master', propagate: true, wait: false
             }
         }
 
