@@ -7,6 +7,7 @@ pipeline {
         stage('Test') {
             steps {
                  sh './gradlew clean test -PnexusUser -PnexusPassword'
+                 junit 'build/test-results/**/*.xml'
             }
         }
 
@@ -36,11 +37,5 @@ pipeline {
             }
         }
 
-    }
-
-    post {
-        always {
-            junit 'build/test-results/**/*.xml'
-        }
     }
 }
