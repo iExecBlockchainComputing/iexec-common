@@ -46,6 +46,13 @@ dependencies {
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
 }
 
+test {
+    reports {
+        junitXml.enabled = true
+        html.enabled = true
+    }
+}
+
 shadowJar { //required if we want to embed web3j dependency inside
     baseName = rootProject.name
     classifier = null
