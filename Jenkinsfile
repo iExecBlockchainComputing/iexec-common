@@ -6,14 +6,14 @@ pipeline {
 
         stage('Test') {
             steps {
-                 sh './gradlew clean test'
+                 sh './gradlew clean test --no-daemon'
                  junit 'build/test-results/**/*.xml'
             }
         }
 
         stage('Build') {
             steps {
-                sh './gradlew build'
+                sh './gradlew build --no-daemon'
             }
         }
 
@@ -23,7 +23,7 @@ pipeline {
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexus', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD']]) {
-                    sh './gradlew uploadArchives -PnexusUser=$NEXUS_USER -PnexusPassword=$NEXUS_PASSWORD'
+                    sh './gradlew uploadArchives -PnexusUser=$NEXUS_USER -PnexusPassword=$NEXUS_PASSWORD --no-daemon'
                 }
                 archiveArtifacts artifacts: 'build/libs/*.jar'
             }
