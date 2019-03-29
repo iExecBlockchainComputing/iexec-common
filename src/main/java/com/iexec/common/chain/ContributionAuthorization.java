@@ -12,11 +12,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ContributionAuthorization {
 
-    private String workerWallet;
     private String chainTaskId;
+    private String workerWallet;
     private String enclaveChallenge;
-
     private Signature signature;
-
-    private String smsIp;
+    private String smsURL;
 }
