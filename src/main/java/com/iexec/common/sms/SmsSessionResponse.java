@@ -10,10 +10,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
-public class SmsSessionResponse extends SmsResponseData {
+@EqualsAndHashCode(callSuper=true)
+public class SmsSessionResponse extends SmsResponse {
 
-    private String sessionId;
-    private String outputFspf;
-    private String beneficiaryKey;
+    private SmsSession data;
+
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class SmsSession {
+
+        private String sessionId;
+        private String outputFspf;
+        private String beneficiaryKey;    
+    }
 }

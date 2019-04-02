@@ -10,9 +10,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
-public class SmsEnclaveChallengeResponse extends SmsResponseData {
+@EqualsAndHashCode(callSuper=true)
+public class SmsEnclaveChallengeResponse extends SmsResponse {
 
-    private String address;
-    private String dealid;
+    private EnclaveChallenge data;
+
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class EnclaveChallenge {
+
+        private String address;
+        private String dealid;
+    }
 }
