@@ -47,11 +47,11 @@ public class ChainUtils {
 
         ChainReceipt.ChainReceiptBuilder builder = ChainReceipt.builder();
         // it seems response.log.getBlockNumber() could be null (issue in https://github.com/web3j/web3j should be opened)
-        if (txHash != null){
+        if (txHash != null) {
             builder.txHash(txHash);
         }
 
-        if (txBlockNumber != null){
+        if (txBlockNumber != null) {
             builder.blockNumber(txBlockNumber.longValue());
         } else {
             log.warn("Transaction log received but blockNumber is null inside (lastBlock will be used instead) "
