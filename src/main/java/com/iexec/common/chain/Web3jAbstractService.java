@@ -58,8 +58,13 @@ public abstract class Web3jAbstractService {
         return web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock();
     }
 
-    private long getLatestBlockNumber() throws IOException {
-        return getLatestBlock().getNumber().longValue();
+    public long getLatestBlockNumber() {
+        try {
+            return getLatestBlock().getNumber().longValue();
+        } catch (IOException e) {
+            log.error("GetLastBlock failed");
+        }
+        return 0;
     }
 
     private EthBlock.Block getBlock(long blockNumber) throws IOException {
@@ -83,7 +88,7 @@ public abstract class Web3jAbstractService {
                 }
                 currentBlockNumber = getLatestBlockNumber();
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
             log.error("Error in checking the latest block number [execption:{}]", e.getMessage());
         }
         return false;
