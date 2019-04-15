@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class SmsEnclaveChallengeResponse extends SmsResponse {
+public class SmsEnclaveChallengeResponse extends SmsAbstractResponse {
 
     private EnclaveChallenge data;
 

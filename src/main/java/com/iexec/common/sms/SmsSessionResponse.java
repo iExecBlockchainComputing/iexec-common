@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class SmsSessionResponse extends SmsResponse {
+public class SmsSessionResponse extends SmsAbstractResponse {
 
     private SmsSession data;
 
