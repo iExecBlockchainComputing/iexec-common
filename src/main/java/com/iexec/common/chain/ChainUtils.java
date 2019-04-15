@@ -36,33 +36,30 @@ public class ChainUtils {
         return Convert.fromWei(weiAmount.toString(), Convert.Unit.ETHER);
     }
 
-    public static ChainReceipt buildChainReceipt(Log chainResponseLog, String chainTaskId) {
-        return buildChainReceipt(chainResponseLog, chainTaskId, 0);
-    }
-
     public static ChainReceipt buildChainReceipt(Log chainResponseLog, String chainTaskId, long lastBlock) {
         if (chainResponseLog == null) {
             log.error("Transaction log received but was null [chainTaskId:{}]", chainTaskId);
             return null;
         }
 
-        BigInteger block = chainResponseLog.getBlockNumber();
+        BigInteger txBlockNumber = chainResponseLog.getBlockNumber();
         String txHash = chainResponseLog.getTransactionHash();
 
+        ChainReceipt.ChainReceiptBuilder builder = ChainReceipt.builder();
         // it seems response.log.getBlockNumber() could be null (issue in https://github.com/web3j/web3j should be opened)
-        if (block == null && txHash == null) {
-            log.warn("Transaction log received but blockNumber and txHash were both null inside "
-                    + "[chainTaskId:{}, receiptLog:{}, lastBlock:{}]", chainTaskId, chainResponseLog.toString(), lastBlock);
-
-            return ChainReceipt.builder().build();
+        if (txHash != null) {
+            builder.txHash(txHash);
         }
 
-        long blockNumber = block != null ? block.longValue() : lastBlock;
+        if (txBlockNumber != null) {
+            builder.blockNumber(txBlockNumber.longValue());
+        } else {
+            log.warn("Transaction log received but blockNumber is null inside (lastBlock will be used instead) "
+                    + "[chainTaskId:{}, receiptLog:{}, lastBlock:{}]", chainTaskId, chainResponseLog.toString(), lastBlock);
+            builder.blockNumber(lastBlock);
+        }
 
-        return ChainReceipt.builder()
-                .blockNumber(blockNumber)
-                .txHash(txHash)
-                .build();
+        return builder.build();
     }
 
 }

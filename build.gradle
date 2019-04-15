@@ -46,6 +46,13 @@ dependencies {
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
 }
 
+test {
+    reports {
+        junitXml.enabled = true
+        html.enabled = true
+    }
+}
+
 shadowJar { //required if we want to embed web3j dependency inside
     baseName = rootProject.name
     classifier = null
@@ -55,15 +62,26 @@ shadowJar { //required if we want to embed web3j dependency inside
 build.dependsOn(shadowJar)
 
 def gitBranch = 'git name-rev --name-only HEAD'.execute().text.trim()
-def isMasterBranch = gitBranch == "remotes/origin/master"
+def isMasterBranch = gitBranch == "master"
 def canUploadArchives = isMasterBranch
+def isSnapshotVersion = project.version.contains("SNAPSHOT")
+
+project.ext.getNexusMaven = {
+    def nexusMavenBase = "https://nexus.iex.ec/repository"
+    if (isSnapshotVersion) {
+        return nexusMavenBase + "/maven-snapshots/"
+    } else {
+        return nexusMavenBase + "/maven-releases/"
+    }
+}
 
 uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
-        repository(url: "packagecloud+https://packagecloud.io/iexec/common") {
-            authentication(password: packageCloudPassword)
+        repository(url: getNexusMaven()) {
+            authentication(userName: nexusUser, password: nexusPassword)
         }
     }
 }
+
 uploadArchives.enabled = canUploadArchives
