@@ -16,5 +16,4 @@ public class ContributionAuthorization {
     private String workerWallet;
     private String enclaveChallenge;
     private Signature signature;
-    private String smsURL;
 }
