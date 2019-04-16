@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 public class ReplicateDetails {
 
     String resultLink;
+    String chainCallbackData;
     ChainReceipt chainReceipt;
 }

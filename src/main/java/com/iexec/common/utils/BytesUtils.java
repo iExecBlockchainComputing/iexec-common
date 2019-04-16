@@ -24,4 +24,8 @@ public class BytesUtils {
         return new String(DatatypeConverter.parseHexBinary(Numeric.cleanHexPrefix(hexString)));
     }
 
+    public static boolean isHexaString(String hexaString) {
+        return Numeric.cleanHexPrefix(hexaString).matches("\\p{XDigit}+"); // \\p{XDigit} matches any hexadecimal character
+    }
+
 }
