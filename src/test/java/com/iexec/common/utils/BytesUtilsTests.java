@@ -4,8 +4,7 @@ import org.junit.Test;
 
 import static com.iexec.common.utils.BytesUtils.bytesToString;
 import static com.iexec.common.utils.BytesUtils.stringToBytes;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class BytesUtilsTests {
 
@@ -23,4 +22,29 @@ public class BytesUtilsTests {
         assertArrayEquals(stringToBytes(bytesToString(bytes)), bytes);
 
 	}
+
+    @Test
+    public void shoudBeHexaStringWithPrefix() {
+        assertTrue(BytesUtils.isHexaString("0xabc123"));
+    }
+
+    @Test
+    public void shoudBeHexaStringWithoutPrefix() {
+        assertTrue(BytesUtils.isHexaString("abc123"));
+    }
+
+    @Test
+    public void shoudNotBeHexaStringSinceNotHexa() {
+        assertFalse(BytesUtils.isHexaString("0xabc123defg"));
+    }
+
+    @Test
+    public void shoudNotBeHexaStringSinceEmptyWithPrefix() {
+        assertFalse(BytesUtils.isHexaString("0x"));
+    }
+
+    @Test
+    public void shoudNotBeHexaStringSinceEmpty() {
+        assertFalse(BytesUtils.isHexaString(""));
+    }
 }

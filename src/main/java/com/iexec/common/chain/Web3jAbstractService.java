@@ -104,7 +104,7 @@ public abstract class Web3jAbstractService {
             long latestBlockNumber = latestBlock.getNumber().longValue();
 
             BigInteger latestBlockTimestamp = latestBlock.getTimestamp();
-            BigInteger tenBlocksAgoTimestamp = getBlock(latestBlockNumber -10).getTimestamp();
+            BigInteger tenBlocksAgoTimestamp = getBlock(latestBlockNumber - 10).getTimestamp();
 
             maxWaitingTime = (latestBlockTimestamp.longValue() - tenBlocksAgoTimestamp.longValue()) * 1000;
 
