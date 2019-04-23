@@ -25,5 +25,6 @@ public class PublicConfiguration {
     private String smsURL;
 
     private long askForReplicatePeriod;
+    private String workerVersionRequired;
 }
 
