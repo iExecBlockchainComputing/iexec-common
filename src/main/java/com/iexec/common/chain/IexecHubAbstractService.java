@@ -134,6 +134,14 @@ public abstract class IexecHubAbstractService {
         return beneficiary.get().equals(BytesUtils.EMPTY_ADDRESS);
     }
 
+    public String getTaskResults(String chainTaskId, Integer chainId) {
+        Optional<ChainTask> chainTask = getChainTask(chainTaskId);
+        if (!chainTask.isPresent()) {
+            return "";
+        }
+        return chainTask.get().getResults();
+    }
+
     public Optional<ChainDeal> getChainDeal(String chainDealId) {
         IexecHubABILegacy iexecHub = getHubContract(new DefaultGasProvider());
         IexecClerkABILegacy iexecClerk = getClerkContract(new DefaultGasProvider());
