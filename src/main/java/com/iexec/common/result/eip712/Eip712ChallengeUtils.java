@@ -20,11 +20,14 @@ public class Eip712ChallengeUtils {
     }
 
     public static String buildAuthorizationToken(Eip712Challenge eip712Challenge, String walletAddress, ECKeyPair ecKeyPair) {
-        String challengeString = getEip712ChallengeString(eip712Challenge);
-        String signatureString = SignatureUtils.signAsString(challengeString, ecKeyPair);
-        String authoriaztionToken = String.join("_", challengeString, signatureString, walletAddress);
-
-        return authoriaztionToken;
+        try {
+            String challengeString = getEip712ChallengeString(eip712Challenge);
+            String signatureString = SignatureUtils.signAsString(challengeString, ecKeyPair);
+            return String.join("_", challengeString, signatureString, walletAddress);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static String getEip712ChallengeString(Eip712Challenge eip712Challenge) {

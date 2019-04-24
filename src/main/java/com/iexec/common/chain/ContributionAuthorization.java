@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.web3j.crypto.Sign;
 
 @Data
 @NoArgsConstructor
@@ -13,9 +12,8 @@ import org.web3j.crypto.Sign;
 @Builder
 public class ContributionAuthorization {
 
-    private String workerWallet;
     private String chainTaskId;
-    private String enclave;
-
+    private String workerWallet;
+    private String enclaveChallenge;
     private Signature signature;
 }
