@@ -59,6 +59,6 @@ public class BytesUtilsTests {
     @Test
     public void shouldNotBeAByte32Null() {
         assertFalse(isByte32(new byte[0]));
-        assertFalse(isByte32(new byte[12]));
+        assertFalse(isByte32(new byte[128]));
     }
 }
