@@ -28,4 +28,8 @@ public class BytesUtils {
         return Numeric.cleanHexPrefix(hexaString).matches("\\p{XDigit}+"); // \\p{XDigit} matches any hexadecimal character
     }
 
+    public static boolean isByte32(byte[] bytes){
+        return bytes != null && bytes.length == 32;
+    }
+
 }
