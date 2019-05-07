@@ -293,6 +293,8 @@ public abstract class IexecHubAbstractService {
     protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId, ChainStatus taskStatus,
                                                             BiFunction<String, ChainStatus, Boolean> isStatusValidOnChainFunction) {
         long maxWaitingTime = web3jAbstractService.getMaxWaitingTimeWhenPendingReceipt();
+        log.info("Waiting for on-chain status after pending receipt [chainTaskId:{}, status:{}, maxWaitingTime:{}]",
+                chainTaskId, taskStatus, maxWaitingTime);
 
         final long startTime = System.currentTimeMillis();
         long duration = 0;
@@ -308,6 +310,8 @@ public abstract class IexecHubAbstractService {
             duration = System.currentTimeMillis() - startTime;
         }
 
+        log.error("Timeout reached after waiting for on-chain status [chainTaskId:{}, maxWaitingTime:{}]",
+                chainTaskId, maxWaitingTime);
         return false;
     }
 
