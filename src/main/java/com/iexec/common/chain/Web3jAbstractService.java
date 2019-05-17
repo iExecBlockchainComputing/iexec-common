@@ -54,7 +54,7 @@ public abstract class Web3jAbstractService {
         return web3j;
     }
 
-    private EthBlock.Block getLatestBlock() throws IOException {
+    public EthBlock.Block getLatestBlock() throws IOException {
         return web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock();
     }
 
