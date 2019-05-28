@@ -4,7 +4,11 @@ import com.iexec.common.contract.generated.App;
 import com.iexec.common.contract.generated.Dataset;
 import com.iexec.common.contract.generated.IexecClerkABILegacy;
 import com.iexec.common.contract.generated.IexecHubABILegacy;
+import com.iexec.common.dapp.DappType;
+import com.iexec.common.task.TaskDescription;
+import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
+import com.iexec.common.utils.MultiAddressHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
@@ -313,6 +317,37 @@ public abstract class IexecHubAbstractService {
         log.error("Timeout reached after waiting for on-chain status [chainTaskId:{}, maxWaitingTime:{}]",
                 chainTaskId, maxWaitingTime);
         return false;
+    }
+
+    public Optional<TaskDescription> getTaskDescriptionFromChain(String chainTaskId) {
+
+        Optional<ChainTask> optionalChainTask = getChainTask(chainTaskId);
+        if (!optionalChainTask.isPresent()) {
+            log.info("Failed to retrieve AvailableReplicate, ChainTask error  [chainTaskId:{}]", chainTaskId);
+            return Optional.empty();
+        }
+
+        ChainTask chainTask = optionalChainTask.get();
+
+        Optional<ChainDeal> optionalChainDeal = getChainDeal(chainTask.getDealid());
+        if (!optionalChainDeal.isPresent()) {
+            log.info("Failed to retrieve AvailableReplicate, ChainDeal error  [chainTaskId:{}]", chainTaskId);
+            return Optional.empty();
+        }
+
+        ChainDeal chainDeal = optionalChainDeal.get();
+
+        String datasetURI = chainDeal.getChainDataset() != null ? MultiAddressHelper.convertToURI(chainDeal.getChainDataset().getUri()) : "";
+
+        return Optional.of(TaskDescription.builder()
+                .chainTaskId(chainTaskId)
+                .appType(DappType.DOCKER)
+                .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp().getUri()))
+                .cmd(chainDeal.getParams().get(chainTask.getIdx()))
+                .maxExecutionTime(chainDeal.getChainCategory().getMaxExecutionTime())
+                .isTrustedExecution(TeeUtils.isTrustedExecutionTag(chainDeal.getTag()))
+                .datasetUri(datasetURI)
+                .build());
     }
 
 }

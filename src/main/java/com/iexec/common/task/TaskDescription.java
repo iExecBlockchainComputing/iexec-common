@@ -1,6 +1,5 @@
-package com.iexec.common.replicate;
+package com.iexec.common.task;
 
-import com.iexec.common.chain.ContributionAuthorization;
 import com.iexec.common.dapp.DappType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AvailableReplicateModel {
+public class TaskDescription {
 
-    private ContributionAuthorization contributionAuthorization;
+    private String chainTaskId;
     private DappType appType;
     private String appUri;
     private String cmd;
