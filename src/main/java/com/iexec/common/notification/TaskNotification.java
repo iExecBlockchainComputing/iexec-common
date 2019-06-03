@@ -19,7 +19,5 @@ public class TaskNotification {
     // type of the notification
     TaskNotificationType taskNotificationType;
 
-    // block number from which this notification makes sense
-    // (it is not used for all notification types)
-    long blockNumber;
+    TaskNotificationExtra taskNotificationExtra;
 }
