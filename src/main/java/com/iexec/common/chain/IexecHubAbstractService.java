@@ -323,7 +323,7 @@ public abstract class IexecHubAbstractService {
 
         Optional<ChainTask> optionalChainTask = getChainTask(chainTaskId);
         if (!optionalChainTask.isPresent()) {
-            log.info("Failed to retrieve AvailableReplicate, ChainTask error  [chainTaskId:{}]", chainTaskId);
+            log.info("Failed to get TaskDescription, ChainTask error  [chainTaskId:{}]", chainTaskId);
             return Optional.empty();
         }
 
@@ -331,7 +331,7 @@ public abstract class IexecHubAbstractService {
 
         Optional<ChainDeal> optionalChainDeal = getChainDeal(chainTask.getDealid());
         if (!optionalChainDeal.isPresent()) {
-            log.info("Failed to retrieve AvailableReplicate, ChainDeal error  [chainTaskId:{}]", chainTaskId);
+            log.info("Failed to get TaskDescription, ChainDeal error  [chainTaskId:{}]", chainTaskId);
             return Optional.empty();
         }
 
