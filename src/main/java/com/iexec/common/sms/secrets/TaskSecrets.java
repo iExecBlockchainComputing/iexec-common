@@ -1,4 +1,4 @@
-package com.iexec.common.sms;
+package com.iexec.common.sms.secrets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

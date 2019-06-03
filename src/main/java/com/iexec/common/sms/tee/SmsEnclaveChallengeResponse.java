@@ -1,4 +1,6 @@
-package com.iexec.common.sms;
+package com.iexec.common.sms.tee;
+
+import com.iexec.common.sms.SmsAbstractResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,18 +13,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class SmsSessionResponse extends SmsAbstractResponse {
+public class SmsEnclaveChallengeResponse extends SmsAbstractResponse {
 
-    private SmsSession data;
+    private EnclaveChallenge data;
 
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public class SmsSession {
+    public class EnclaveChallenge {
 
-        private String sessionId;
-        private String outputFspf;
-        private String beneficiaryKey;    
+        private String address;
+        private String dealid;
     }
 }
