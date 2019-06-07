@@ -144,4 +144,48 @@ public enum ReplicateStatus {
                 RECOVERING)
             .contains(status);
     }
+
+    public static List<ReplicateStatus> getCompletableStatuses() {
+        return Arrays.asList(
+                CREATED,
+                RUNNING,
+                APP_DOWNLOADING,
+                APP_DOWNLOADED,
+                APP_DOWNLOAD_FAILED,
+                DATA_DOWNLOADING,
+                DATA_DOWNLOADED,
+                DATA_DOWNLOAD_FAILED,
+                COMPUTING,
+                COMPUTED,
+                COMPUTE_FAILED,
+                CAN_CONTRIBUTE,
+                CONTRIBUTING,
+                CONTRIBUTED,
+                REVEALING,
+                REVEALED,
+                RESULT_UPLOAD_REQUESTED,
+                RESULT_UPLOAD_REQUEST_FAILED,   //could complete later
+                RESULT_UPLOADING,
+                RESULT_UPLOADED,
+                RESULT_UPLOAD_FAILED            //could complete later
+        );
+    }
+
+    public static List<ReplicateStatus> getUncompletableStatuses() {
+        return Arrays.asList(
+                CANT_CONTRIBUTE_SINCE_STAKE_TOO_LOW,
+                CANT_CONTRIBUTE_SINCE_TASK_NOT_ACTIVE,
+                CANT_CONTRIBUTE_SINCE_AFTER_DEADLINE,
+                CANT_CONTRIBUTE_SINCE_CONTRIBUTION_ALREADY_SET,
+                CONTRIBUTE_FAILED,
+                CANT_REVEAL,
+                REVEAL_FAILED,
+                //RESULT_UPLOAD_REQUEST_FAILED, // still good if don't upload
+                //RESULT_UPLOAD_FAILED,         //still good if don't upload
+                ABORTED_ON_CONSENSUS_REACHED,
+                ABORTED_ON_CONTRIBUTION_TIMEOUT,
+                REVEAL_TIMEOUT,
+                OUT_OF_GAS
+        );
+    }
 }
