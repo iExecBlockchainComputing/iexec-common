@@ -188,4 +188,12 @@ public enum ReplicateStatus {
                 OUT_OF_GAS
         );
     }
+
+    public static List<ReplicateStatus> getCantContributeStatus() {
+        return Arrays.asList(
+                CANT_CONTRIBUTE_SINCE_STAKE_TOO_LOW,
+                CANT_CONTRIBUTE_SINCE_TASK_NOT_ACTIVE,
+                CANT_CONTRIBUTE_SINCE_AFTER_DEADLINE,
+                CANT_CONTRIBUTE_SINCE_CONTRIBUTION_ALREADY_SET);
+    }
 }
