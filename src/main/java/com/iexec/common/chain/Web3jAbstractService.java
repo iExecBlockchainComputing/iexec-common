@@ -1,5 +1,6 @@
 package com.iexec.common.chain;
 
+import com.iexec.common.utils.WaitUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.iexec.common.chain.ChainUtils.weiToEth;
 import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
@@ -38,16 +40,19 @@ public abstract class Web3jAbstractService {
 
     private Web3j getWeb3j(String chainNodeAddress) {
         Web3j web3j = Web3j.build(new HttpService(chainNodeAddress));
-        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to connect to ethereum node " + chainNodeAddress);
         try {
-            log.info("Connected to Ethereum node [address:{}, version:{}]", chainNodeAddress, web3j.web3ClientVersion().send().getWeb3ClientVersion());
-            if (web3j.web3ClientVersion().send().getWeb3ClientVersion() == null) {
-                throw exceptionInInitializerError;
+            if (web3j.web3ClientVersion().send().getWeb3ClientVersion() != null) {
+                log.info("Connected to Ethereum node [address:{}, version:{}]", chainNodeAddress, web3j.web3ClientVersion().send().getWeb3ClientVersion());
+                return web3j;
             }
-        } catch (IOException e) {
-            throw exceptionInInitializerError;
+        } catch (IOException ignored) {
         }
-        return web3j;
+        
+        int fewSeconds = 5;
+        WaitUtils.sleep(fewSeconds);
+        log.error("Failed to connect to ethereum node (will retry) [chainNodeAddress:{}, retryIn:{}]",
+                chainNodeAddress, fewSeconds);
+        return getWeb3j(chainNodeAddress);
     }
 
     public Web3j getWeb3j() {
