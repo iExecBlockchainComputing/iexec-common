@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tuples.generated.Tuple9;
@@ -20,6 +21,7 @@ import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -295,7 +297,7 @@ public abstract class IexecHubAbstractService {
 
 
     protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId, ChainStatus taskStatus,
-                                                            BiFunction<String, ChainStatus, Boolean> isStatusValidOnChainFunction) {
+                                                              BiFunction<String, ChainStatus, Boolean> isStatusValidOnChainFunction) {
         long maxWaitingTime = web3jAbstractService.getMaxWaitingTimeWhenPendingReceipt();
         log.info("Waiting for on-chain status after pending receipt [chainTaskId:{}, status:{}, maxWaitingTime:{}]",
                 chainTaskId, taskStatus, maxWaitingTime);
@@ -350,4 +352,20 @@ public abstract class IexecHubAbstractService {
                 .build());
     }
 
+    public long getConsensusReachedBlock(String chainTaskId, long fromBlock) {
+        IexecHubABILegacy hub = getHubContract();
+        DefaultBlockParameter startBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(fromBlock));
+        DefaultBlockParameter endBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(web3jAbstractService.getLatestBlockNumber()));
+
+        List<IexecHubABILegacy.TaskConsensusEventResponse> list = hub.taskConsensusEventFlowable(startBlock, endBlock).replay().toList().blockingGet();
+        for (IexecHubABILegacy.TaskConsensusEventResponse event : list) {
+            if (BytesUtils.bytesToString(event.taskid).equals(chainTaskId)) {
+                long consensusReachedBlock = event.log.getBlockNumber().longValue();
+                log.info("Consensus reached in block for task id [taskId:{}, blockNumber:{}]", chainTaskId, consensusReachedBlock);
+                return consensusReachedBlock;
+            }
+        }
+
+        return 0;
+    }
 }
