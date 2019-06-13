@@ -10,9 +10,12 @@ import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.MultiAddressHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.web3j.abi.EventEncoder;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tuples.generated.Tuple9;
@@ -24,6 +27,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import static com.iexec.common.chain.ChainDeal.stringParamsToList;
+import static com.iexec.common.contract.generated.IexecHubABILegacy.TASKCONSENSUS_EVENT;
 
 @Slf4j
 public abstract class IexecHubAbstractService {
@@ -295,7 +299,7 @@ public abstract class IexecHubAbstractService {
 
 
     protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId, ChainStatus taskStatus,
-                                                            BiFunction<String, ChainStatus, Boolean> isStatusValidOnChainFunction) {
+                                                              BiFunction<String, ChainStatus, Boolean> isStatusValidOnChainFunction) {
         long maxWaitingTime = web3jAbstractService.getMaxWaitingTimeWhenPendingReceipt();
         log.info("Waiting for on-chain status after pending receipt [chainTaskId:{}, status:{}, maxWaitingTime:{}]",
                 chainTaskId, taskStatus, maxWaitingTime);
@@ -350,4 +354,29 @@ public abstract class IexecHubAbstractService {
                 .build());
     }
 
+    public long getConsensusBlockNumber(String chainTaskId, long fromBlock) {
+        long latestBlock = web3jAbstractService.getLatestBlockNumber();
+        if (fromBlock > latestBlock) {
+            return 0;
+        }
+
+        IexecHubABILegacy hub = getHubContract();
+        DefaultBlockParameter startBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(fromBlock));
+        DefaultBlockParameter endBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(latestBlock));
+
+        // define the filter
+        EthFilter ethFilter = new EthFilter(
+                startBlock,
+                endBlock,
+                hub.getContractAddress()
+        );
+        ethFilter.addSingleTopic(EventEncoder.encode(TASKCONSENSUS_EVENT));
+
+        // filter only taskConsensus events for the chainTaskId (there should be only one)
+        // and retrieve the block number of the event
+        return hub.taskConsensusEventFlowable(ethFilter)
+                .filter(taskConsensusEventResponse -> chainTaskId.equals(BytesUtils.bytesToString(taskConsensusEventResponse.taskid)))
+                .map(taskConsensusEventResponse -> taskConsensusEventResponse.log.getBlockNumber().longValue())
+                .blockingFirst();
+    }
 }
