@@ -355,9 +355,14 @@ public abstract class IexecHubAbstractService {
     }
 
     public long getConsensusReachedBlock(String chainTaskId, long fromBlock) {
+        long latestBlock = web3jAbstractService.getLatestBlockNumber();
+        if (fromBlock > latestBlock) {
+            return 0;
+        }
+
         IexecHubABILegacy hub = getHubContract();
         DefaultBlockParameter startBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(fromBlock));
-        DefaultBlockParameter endBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(web3jAbstractService.getLatestBlockNumber()));
+        DefaultBlockParameter endBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(latestBlock));
 
         // define the filter
         EthFilter ethFilter = new EthFilter(
