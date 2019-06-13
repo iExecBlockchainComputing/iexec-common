@@ -18,12 +18,9 @@ public class SconeConfig {
     String sconeLasAddress;
     String sconeConfigId;
 
-    @Builder.Default
-    String sconeHeap = "1G";
-    @Builder.Default
-    int sconeLog = 7;
-    @Builder.Default
-    int sconeVersion = 1;
+    @Builder.Default String sconeHeap = "1G";
+    @Builder.Default int sconeLog = 7;
+    @Builder.Default int sconeVersion = 1;
 
     public SconeConfig(String sconeCasAddress, String sconeLasAddress, String sconeConfigId) {
         this.sconeCasAddress = sconeCasAddress;
