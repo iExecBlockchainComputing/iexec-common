@@ -354,7 +354,7 @@ public abstract class IexecHubAbstractService {
                 .build());
     }
 
-    public long getConsensusReachedBlock(String chainTaskId, long fromBlock) {
+    public long getConsensusBlockNumber(String chainTaskId, long fromBlock) {
         long latestBlock = web3jAbstractService.getLatestBlockNumber();
         if (fromBlock > latestBlock) {
             return 0;
