@@ -4,6 +4,7 @@ import org.web3j.crypto.*;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.security.SignatureException;
 
 import com.iexec.common.security.Signature;
 
@@ -37,6 +38,27 @@ public class SignatureUtils {
         }
 
         return false;
+    }
+
+    public static boolean isSignatureValid(String message, Signature sign, String signerAddress) {
+        return isSignatureValid(message.getBytes(), sign, signerAddress);
+    }
+
+    public static boolean isSignatureValid(byte[] message, Signature sign, String signerAddress) {
+        BigInteger publicKey = null;
+        Sign.SignatureData signatureData = new Sign.SignatureData(sign.getV(), sign.getR(), sign.getS());
+
+        try {
+            publicKey = Sign.signedPrefixedMessageToKey(message, signatureData);
+        } catch (SignatureException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        if (publicKey == null) return false;
+
+        String addressRecovered = "0x" + Keys.getAddress(publicKey);
+        return addressRecovered.equalsIgnoreCase(signerAddress);
     }
 
     public static Signature hashAndSign(String stringToSign, String walletAddress, ECKeyPair ecKeyPair) {
