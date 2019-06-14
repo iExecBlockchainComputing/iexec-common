@@ -15,4 +15,8 @@ public class ReplicateDetails {
     String resultLink;
     String chainCallbackData;
     ChainReceipt chainReceipt;
+
+    public ReplicateDetails(long blockNumber) {
+        this.chainReceipt = ChainReceipt.builder().blockNumber(blockNumber).build();
+    }
 }
