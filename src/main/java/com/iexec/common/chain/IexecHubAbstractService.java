@@ -298,7 +298,6 @@ public abstract class IexecHubAbstractService {
     }
 
     public int getWorkerWeight(String address) {
-        //warning lot of eth node calls here
         Optional<Integer> workerScore = getWorkerScore(address);
         if (!workerScore.isPresent()){
             return 0;
