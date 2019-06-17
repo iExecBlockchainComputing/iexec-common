@@ -81,6 +81,12 @@ public abstract class Web3jAbstractService {
     // blockNumber is different than 0 only for status the require a check on the blockchain, so the scheduler should
     // already have this block, otherwise it should wait for a maximum of 10 blocks.
     public boolean isBlockAvailable(long blockNumber) {
+        // if the blocknumer is already available then simply returns true
+        if (blockNumber <= getLatestBlockNumber()) {
+            return true;
+        }
+
+        // otherwise we wait for a maximum of 10 blocks to see if the block will be available
         try {
             long maxBlockNumber = blockNumber + 10;
             long currentBlockNumber = getLatestBlockNumber();
@@ -96,6 +102,7 @@ public abstract class Web3jAbstractService {
         } catch (InterruptedException e) {
             log.error("Error in checking the latest block number [execption:{}]", e.getMessage());
         }
+
         return false;
     }
 
@@ -243,6 +250,4 @@ public abstract class Web3jAbstractService {
             }
         };
     }
-
-
 }
