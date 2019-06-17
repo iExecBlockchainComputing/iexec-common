@@ -285,6 +285,32 @@ public abstract class IexecHubAbstractService {
         return Optional.empty();
     }
 
+    public Optional<Integer> getWorkerScore(String address) {
+        if (address != null && !address.isEmpty()) {
+            try {
+                BigInteger workerScore = getHubContract().viewScore(address).send();
+                return Optional.of(workerScore.intValue());
+            } catch (Exception e) {
+                log.error("Failed to getWorkerScore [address:{}]", address);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public int getWorkerWeight(String address) {
+        Optional<Integer> workerScore = getWorkerScore(address);
+        if (!workerScore.isPresent()){
+            return 0;
+        }
+        int weight = scoreToWeight(workerScore.get());
+        log.info("Get worker weight [address:{}, score:{}, weight:{}]", address, workerScore.get(), weight);
+        return weight;
+    }
+
+    private static int scoreToWeight(int workerScore) {
+        return Math.max(workerScore / 3, 3) - 1;
+    }
+
     public long getMaxNbOfPeriodsForConsensus() {
         try {
             return getHubContract().CONSENSUS_DURATION_RATIO().send().longValue();
