@@ -15,7 +15,13 @@ public class TaskNotificationExtra {
 
     ContributionAuthorization contributionAuthorization;
 
+    /**
+     * those are not used for all notification types
+     */
+
+    boolean isTeeTask;
+
     // block number from which this notification makes sense
-    // (it is not used for all notification types)
     long blockNumber;
+
 }
