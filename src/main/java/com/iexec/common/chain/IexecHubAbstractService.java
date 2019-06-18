@@ -285,6 +285,32 @@ public abstract class IexecHubAbstractService {
         return Optional.empty();
     }
 
+    public Optional<Integer> getWorkerScore(String address) {
+        if (address != null && !address.isEmpty()) {
+            try {
+                BigInteger workerScore = getHubContract().viewScore(address).send();
+                return Optional.of(workerScore.intValue());
+            } catch (Exception e) {
+                log.error("Failed to getWorkerScore [address:{}]", address);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public int getWorkerWeight(String address) {
+        Optional<Integer> workerScore = getWorkerScore(address);
+        if (!workerScore.isPresent()){
+            return 0;
+        }
+        int weight = scoreToWeight(workerScore.get());
+        log.info("Get worker weight [address:{}, score:{}, weight:{}]", address, workerScore.get(), weight);
+        return weight;
+    }
+
+    private static int scoreToWeight(int workerScore) {
+        return Math.max(workerScore / 3, 3) - 1;
+    }
+
     public long getMaxNbOfPeriodsForConsensus() {
         try {
             return getHubContract().CONSENSUS_DURATION_RATIO().send().longValue();
@@ -355,10 +381,10 @@ public abstract class IexecHubAbstractService {
                 .build());
     }
 
-    public long getContributionBlockNumber(String chainTaskId, String workerWallet, long fromBlock) {
+    public ChainReceipt getContributionBlock(String chainTaskId, String workerWallet, long fromBlock) {
         long latestBlock = web3jAbstractService.getLatestBlockNumber();
         if (fromBlock > latestBlock) {
-            return 0;
+            return ChainReceipt.builder().build();
         }
 
         IexecHubABILegacy hub = getHubContract();
@@ -371,14 +397,17 @@ public abstract class IexecHubAbstractService {
                         chainTaskId.equals(BytesUtils.bytesToString(eventResponse.taskid)) &&
                                 workerWallet.equals(eventResponse.worker)
                 )
-                .map(eventResponse -> eventResponse.log.getBlockNumber().longValue())
+                .map(eventResponse -> ChainReceipt.builder()
+                        .blockNumber(eventResponse.log.getBlockNumber().longValue())
+                        .txHash(eventResponse.log.getTransactionHash())
+                        .build())
                 .blockingFirst();
     }
 
-    public long getConsensusBlockNumber(String chainTaskId, long fromBlock) {
+    public ChainReceipt getConsensusBlock(String chainTaskId, long fromBlock) {
         long latestBlock = web3jAbstractService.getLatestBlockNumber();
         if (fromBlock > latestBlock) {
-            return 0;
+            return ChainReceipt.builder().build();
         }
         IexecHubABILegacy hub = getHubContract();
         EthFilter ethFilter = createConsensusEthFilter(fromBlock, latestBlock);
@@ -387,14 +416,17 @@ public abstract class IexecHubAbstractService {
         // and retrieve the block number of the event
         return hub.taskConsensusEventFlowable(ethFilter)
                 .filter(eventResponse -> chainTaskId.equals(BytesUtils.bytesToString(eventResponse.taskid)))
-                .map(eventResponse -> eventResponse.log.getBlockNumber().longValue())
+                .map(eventResponse -> ChainReceipt.builder()
+                        .blockNumber(eventResponse.log.getBlockNumber().longValue())
+                        .txHash(eventResponse.log.getTransactionHash())
+                        .build())
                 .blockingFirst();
     }
 
-    public long getRevealBlockNumber(String chainTaskId, String workerWallet, long fromBlock) {
+    public ChainReceipt getRevealBlock(String chainTaskId, String workerWallet, long fromBlock) {
         long latestBlock = web3jAbstractService.getLatestBlockNumber();
         if (fromBlock > latestBlock) {
-            return 0;
+            return ChainReceipt.builder().build();
         }
 
         IexecHubABILegacy hub = getHubContract();
@@ -407,7 +439,10 @@ public abstract class IexecHubAbstractService {
                         chainTaskId.equals(BytesUtils.bytesToString(eventResponse.taskid)) &&
                                 workerWallet.equals(eventResponse.worker)
                 )
-                .map(eventResponse -> eventResponse.log.getBlockNumber().longValue())
+                .map(eventResponse -> ChainReceipt.builder()
+                        .blockNumber(eventResponse.log.getBlockNumber().longValue())
+                        .txHash(eventResponse.log.getTransactionHash())
+                        .build())
                 .blockingFirst();
     }
 
