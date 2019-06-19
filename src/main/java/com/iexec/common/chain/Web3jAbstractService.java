@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static com.iexec.common.chain.ChainUtils.weiToEth;
 import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
