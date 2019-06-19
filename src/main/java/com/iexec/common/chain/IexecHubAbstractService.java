@@ -152,7 +152,6 @@ public abstract class IexecHubAbstractService {
     }
 
     public Optional<ChainDeal> getChainDeal(String chainDealId) {
-        IexecHubABILegacy iexecHub = getHubContract(new DefaultGasProvider());
         IexecClerkABILegacy iexecClerk = getClerkContract(new DefaultGasProvider());
 
         byte[] chainDealIdBytes = BytesUtils.stringToBytes(chainDealId);
@@ -376,9 +375,20 @@ public abstract class IexecHubAbstractService {
                 .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp().getUri()))
                 .cmd(chainDeal.getParams().get(chainTask.getIdx()))
                 .maxExecutionTime(chainDeal.getChainCategory().getMaxExecutionTime())
-                .isTrustedExecution(TeeUtils.isTeeTag(chainDeal.getTag()))
+                .isTeeTask(TeeUtils.isTeeTag(chainDeal.getTag()))
                 .datasetUri(datasetURI)
                 .build());
+    }
+
+    public boolean isTeeTask(String chainTaskId) {
+        Optional<TaskDescription> oTaskDescription = getTaskDescriptionFromChain(chainTaskId);
+
+        if (!oTaskDescription.isPresent()) {
+            log.error("Couldn't get task description from chain [chainTaskId:{}]", chainTaskId);
+            return false;
+        }
+
+        return oTaskDescription.get().isTeeTask();
     }
 
     public ChainReceipt getContributionBlock(String chainTaskId, String workerWallet, long fromBlock) {
