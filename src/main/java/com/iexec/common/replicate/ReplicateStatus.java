@@ -92,6 +92,9 @@ public enum ReplicateStatus {
                 COMPUTED,
                 COMPUTE_FAILED,
                 CAN_CONTRIBUTE,
+                CANT_CONTRIBUTE_SINCE_DETERMINISM_HASH_NOT_FOUND,
+                CANT_CONTRIBUTE_SINCE_TEE_EXECUTION_NOT_VERIFIED,
+                CANT_CONTRIBUTE_SINCE_CHAIN_UNREACHABLE,            
                 CANT_CONTRIBUTE_SINCE_STAKE_TOO_LOW,
                 CANT_CONTRIBUTE_SINCE_TASK_NOT_ACTIVE,
                 CANT_CONTRIBUTE_SINCE_AFTER_DEADLINE,
@@ -176,6 +179,9 @@ public enum ReplicateStatus {
 
     public static List<ReplicateStatus> getUncompletableStatuses() {
         return Arrays.asList(
+                CANT_CONTRIBUTE_SINCE_DETERMINISM_HASH_NOT_FOUND,
+                CANT_CONTRIBUTE_SINCE_TEE_EXECUTION_NOT_VERIFIED,
+                CANT_CONTRIBUTE_SINCE_CHAIN_UNREACHABLE,        
                 CANT_CONTRIBUTE_SINCE_STAKE_TOO_LOW,
                 CANT_CONTRIBUTE_SINCE_TASK_NOT_ACTIVE,
                 CANT_CONTRIBUTE_SINCE_AFTER_DEADLINE,
@@ -194,6 +200,9 @@ public enum ReplicateStatus {
 
     public static List<ReplicateStatus> getCantContributeStatus() {
         return Arrays.asList(
+                CANT_CONTRIBUTE_SINCE_DETERMINISM_HASH_NOT_FOUND,
+                CANT_CONTRIBUTE_SINCE_TEE_EXECUTION_NOT_VERIFIED,
+                CANT_CONTRIBUTE_SINCE_CHAIN_UNREACHABLE,        
                 CANT_CONTRIBUTE_SINCE_STAKE_TOO_LOW,
                 CANT_CONTRIBUTE_SINCE_TASK_NOT_ACTIVE,
                 CANT_CONTRIBUTE_SINCE_AFTER_DEADLINE,
