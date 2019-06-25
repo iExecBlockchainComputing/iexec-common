@@ -1,7 +1,6 @@
 package com.iexec.common.utils;
 
 import org.junit.Test;
-import org.web3j.crypto.Hash;
 
 import java.math.BigInteger;
 

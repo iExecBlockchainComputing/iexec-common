@@ -41,7 +41,7 @@ public class SignatureUtils {
     }
 
     public static boolean isSignatureValid(String message, Signature sign, String signerAddress) {
-        return isSignatureValid(message.getBytes(), sign, signerAddress);
+        return isSignatureValid(BytesUtils.stringToBytes(message), sign, signerAddress);
     }
 
     public static boolean isSignatureValid(byte[] message, Signature sign, String signerAddress) {
