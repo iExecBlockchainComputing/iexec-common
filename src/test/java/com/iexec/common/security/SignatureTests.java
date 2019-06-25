@@ -1,5 +1,7 @@
 package com.iexec.common.security;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 public class SignatureTests {
@@ -10,6 +12,8 @@ public class SignatureTests {
     public void shouldBeValid() {
         Signature sign = new Signature(validSignature);
         Signature sign2 = new Signature(sign.getR(), sign.getS(), sign.getV());
+
+        assertEquals(sign, sign2);
     }
 
 }
