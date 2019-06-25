@@ -40,10 +40,6 @@ public class SignatureUtils {
         return false;
     }
 
-    public static boolean isSignatureValid(String message, Signature sign, String signerAddress) {
-        return isSignatureValid(BytesUtils.stringToBytes(message), sign, signerAddress);
-    }
-
     public static boolean isSignatureValid(byte[] message, Signature sign, String signerAddress) {
         BigInteger publicKey = null;
         Sign.SignatureData signatureData = new Sign.SignatureData(sign.getV(), sign.getR(), sign.getS());
