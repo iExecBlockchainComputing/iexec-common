@@ -4,7 +4,11 @@ pipeline {
 
     stages {
 
-        stage('Test') {
+        # code quality is triggered only on master branch
+        stage('Test + Code quality') {
+            when {
+                branch 'master'
+            }
             steps {
                  withCredentials([
                  string(credentialsId: 'ADDRESS_SONAR', variable: 'address_sonar'),
@@ -14,6 +18,18 @@ pipeline {
                  junit 'build/test-results/**/*.xml'
             }
         }
+
+        stage('Test') {
+           when {
+               not {
+                   branch 'master'
+               }
+           }
+           steps {
+               sh './gradlew clean test --no-daemon'
+               junit 'build/test-results/**/*.xml'
+           }
+       }
 
         stage('Build') {
             steps {
