@@ -16,20 +16,6 @@ pipeline {
             }
         }
 
-        /**
-        stage('Test') {
-           when {
-               not {
-                   branch 'master'
-               }
-           }
-           steps {
-               sh './gradlew clean test --no-daemon'
-               junit 'build/test-results/**/*.xml'
-           }
-       }
-        */
-
         stage('Build') {
             steps {
                 sh './gradlew build --no-daemon'
