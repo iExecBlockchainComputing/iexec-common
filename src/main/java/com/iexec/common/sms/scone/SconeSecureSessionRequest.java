@@ -1,4 +1,4 @@
-package com.iexec.common.sms;
+package com.iexec.common.sms.scone;
 
 import com.iexec.common.security.Signature;
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SmsSessionRequest {
+public class SconeSecureSessionRequest {
 
     private String taskId;
     private String workerAddress;

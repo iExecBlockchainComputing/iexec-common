@@ -46,19 +46,38 @@ public class BytesUtilsTests {
     }
 
     @Test
-    public void shouldBeAByte32() {
-        assertTrue(isByte32(bytes));
-        assertTrue(isByte32(stringToBytes(hexaString)));
+    public void shouldBeABytes32() {
+        assertTrue(isBytes32(bytes));
+        assertTrue(isBytes32(stringToBytes(hexaString)));
     }
 
     @Test
     public void shouldNotBeAByte32() {
-        assertFalse(isByte32(stringToBytes("0xabc123defg")));
+        assertFalse(isBytes32(stringToBytes("0xabc123defg")));
     }
 
     @Test
     public void shouldNotBeAByte32Null() {
-        assertFalse(isByte32(new byte[0]));
-        assertFalse(isByte32(new byte[128]));
+        assertFalse(isBytes32(new byte[0]));
+        assertFalse(isBytes32(new byte[128]));
+    }
+
+    @Test
+    public void shouldReturnSameStringSinceAlreadyBytes32() {
+        byte[] bytes32 = stringToBytes32(hexaString);
+        assertEquals(bytes32.length, 32);
+        assertArrayEquals(bytes32, bytes);
+        assertEquals(bytesToString(bytes32), hexaString);
+    }
+
+    @Test
+    public void shouldPadStringToBeBytes32() {
+        String notBytes32String = "0xabc";
+        String bytes32String = "0xabc0000000000000000000000000000000000000000000000000000000000000";
+
+        byte[] returnedBytes = stringToBytes32(notBytes32String);
+
+        assertEquals(returnedBytes.length, 32);
+        assertEquals(bytesToString(returnedBytes), bytes32String);
     }
 }

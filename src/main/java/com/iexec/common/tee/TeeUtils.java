@@ -1,8 +1,7 @@
 package com.iexec.common.tee;
 
-import lombok.extern.slf4j.Slf4j;
+import com.iexec.common.utils.BytesUtils;
 
-@Slf4j
 public class TeeUtils {
 
     private static final String TEE_TAG = "0x0000000000000000000000000000000000000000000000000000000000000001";
@@ -12,8 +11,12 @@ public class TeeUtils {
     }
 
     //TODO : xor instead of equals
-    public static boolean isTrustedExecutionTag(String tag){
+    public static boolean isTeeTag(String tag){
         return tag != null && tag.equals(TEE_TAG);
+    }
+
+    public static boolean isTeeChallenge(String challenge){
+        return challenge != null && !challenge.equals(BytesUtils.EMPTY_ADDRESS);
     }
 
 }

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor    
-public class SmsSecretRequestBody {
+@AllArgsConstructor
+public class SmsRequestData {
 
     @JsonProperty("taskid") private String chainTaskId;
     @JsonProperty("worker") private String workerAddress;

@@ -1,5 +1,7 @@
 package com.iexec.common.sms;
 
+import com.iexec.common.sms.SmsAbstractResponse;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +24,6 @@ public class SmsEnclaveChallengeResponse extends SmsAbstractResponse {
     public class EnclaveChallenge {
 
         private String address;
-        private String dealid;
+        private String taskid;
     }
 }

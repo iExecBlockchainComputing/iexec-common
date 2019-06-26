@@ -6,8 +6,11 @@ import javax.xml.bind.DatatypeConverter;
 
 public class BytesUtils {
 
-    public final static String EMPTY_ADDRESS = BytesUtils.bytesToString(new byte[20]); //"0x0000000000000000000000000000000000000000"
-    public final static String EMPTY_HEXASTRING_64 = BytesUtils.bytesToString(new byte[32]); //"0x0000000000000000000000000000000000000000000000000000000000000000"
+    // "0x0000000000000000000000000000000000000000"
+    public final static String EMPTY_ADDRESS = BytesUtils.bytesToString(new byte[20]);
+
+    //"0x0000000000000000000000000000000000000000000000000000000000000000"
+    public final static String EMPTY_HEXASTRING_64 = BytesUtils.bytesToString(new byte[32]);
     private BytesUtils() {
         throw new UnsupportedOperationException();
     }
@@ -28,8 +31,23 @@ public class BytesUtils {
         return Numeric.cleanHexPrefix(hexaString).matches("\\p{XDigit}+"); // \\p{XDigit} matches any hexadecimal character
     }
 
-    public static boolean isByte32(byte[] bytes){
+    public static boolean isBytes32(byte[] bytes){
         return bytes != null && bytes.length == 32;
     }
 
+    // this adds zeros to the left of the hex string to make it bytes32
+    public static byte[] stringToBytes32(String hexString) {
+        byte[] stringBytes = stringToBytes(hexString);
+        if (isBytes32(stringBytes)) return stringBytes;
+
+        String cleanString = Numeric.cleanHexPrefix(hexString);
+        String padded = padRight(cleanString, 64 - cleanString.length());
+        return Numeric.hexStringToByteArray(padded);
+    }
+
+    public static String padRight(String s, int n) {
+        if (n <= 0) return s;
+        String zeros = new String(new char[n]).replace('\0', '0');
+        return s + zeros;
+    }
 }

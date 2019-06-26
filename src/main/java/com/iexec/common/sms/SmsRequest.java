@@ -1,17 +1,18 @@
 package com.iexec.common.sms;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=true)
-public class SmsSecretResponse extends SmsAbstractResponse {
+public class SmsRequest {
 
-    private SmsSecretResponseData data;
+    @JsonProperty("auth") private SmsRequestData smsSecretRequestData;
 }

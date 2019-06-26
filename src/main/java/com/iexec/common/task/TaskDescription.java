@@ -17,6 +17,6 @@ public class TaskDescription {
     private String appUri;
     private String cmd;
     private long maxExecutionTime;
-    private boolean isTrustedExecution;
+    private boolean isTeeTask;
     private String datasetUri;
 }
