@@ -5,7 +5,7 @@ pipeline {
     stages {
 
         // code quality is triggered only on master branch
-        stage('Test + Code quality') {
+        stage('Test + Code quality (master only)') {
             when {
                 branch 'master'
             }
