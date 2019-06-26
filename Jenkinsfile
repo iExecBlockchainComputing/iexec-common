@@ -6,7 +6,11 @@ pipeline {
 
         stage('Test') {
             steps {
-                 sh './gradlew clean test --no-daemon'
+                 withCredentials([
+                 string(credentialsId: 'ADDRESS_SONAR', variable: 'address_sonar'),
+                 string(credentialsId: 'SONAR_COMMON_TOKEN', variable: 'common_token')]){
+                    sh './gradlew clean test sonarqube -Dsonar.projectKey=iexec-common -Dsonar.host.url=$address_sonar -Dsonar.login=$common_token --no-daemon'
+                 }
                  junit 'build/test-results/**/*.xml'
             }
         }
