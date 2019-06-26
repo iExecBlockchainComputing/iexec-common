@@ -5,10 +5,7 @@ pipeline {
     stages {
 
         // code quality is triggered only on master branch
-        stage('Test + Code quality (master only)') {
-            when {
-                branch 'master'
-            }
+        stage('Test') {
             steps {
                  withCredentials([
                  string(credentialsId: 'ADDRESS_SONAR', variable: 'address_sonar'),
@@ -19,6 +16,7 @@ pipeline {
             }
         }
 
+        /**
         stage('Test') {
            when {
                not {
@@ -30,6 +28,7 @@ pipeline {
                junit 'build/test-results/**/*.xml'
            }
        }
+        */
 
         stage('Build') {
             steps {

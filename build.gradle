@@ -94,3 +94,5 @@ uploadArchives {
 }
 
 uploadArchives.enabled = canUploadArchives
+
+sonarqube.enabled = isMasterBranch
