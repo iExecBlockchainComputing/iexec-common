@@ -4,7 +4,6 @@ pipeline {
 
     stages {
 
-        // code quality is triggered only on master branch
         stage('Test') {
             steps {
                  withCredentials([
