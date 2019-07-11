@@ -19,7 +19,8 @@ apply plugin: 'maven'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.iexec.common'
-sourceCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 repositories {
     mavenCentral()
@@ -43,6 +44,16 @@ dependencies {
 
     // web3j dependency
     compile "org.web3j:core:$web3jVersion"
+    
+    // apache commons.lang3
+    compile "org.apache.commons:commons-lang3:3.9"
+
+    // multiaddresses (IPFS)
+    compile 'com.github.multiformats:java-multiaddr:1.3.1'
+
+    //jaxb required with Java 11
+    compile 'javax.xml.bind:jaxb-api:2.3.0'
+
 
     // lombok
     compileOnly "org.projectlombok:lombok:1.18.2"
@@ -50,9 +61,6 @@ dependencies {
 
     // package cloud
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
-
-    // multiaddresses (IPFS)
-    compile 'com.github.multiformats:java-multiaddr:1.3.1'
 }
 
 test {
