@@ -17,6 +17,7 @@ public class ReplicateStatusChange {
 
     private Date date;
     private ReplicateStatus status;
+    private ReplicateStatusCause statusCause;
     private ReplicateStatusModifier modifier;
     private ChainReceipt chainReceipt;
 
@@ -26,8 +27,10 @@ public class ReplicateStatusChange {
         this.modifier = modifier;
     }
 
-    public ReplicateStatusChange(ReplicateStatus status, ReplicateStatusModifier modifier, ChainReceipt chainReceipt) {
+    public ReplicateStatusChange(ReplicateStatus status, ReplicateStatusCause statusCause,
+                                 ReplicateStatusModifier modifier, ChainReceipt chainReceipt) {
         this(status, modifier);
+        this.statusCause = statusCause;
         this.chainReceipt = chainReceipt;
     }
 }
