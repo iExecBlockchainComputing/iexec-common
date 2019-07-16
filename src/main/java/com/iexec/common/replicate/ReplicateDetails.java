@@ -12,9 +12,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReplicateDetails {
 
-    String resultLink;
-    String chainCallbackData;
-    ChainReceipt chainReceipt;
+    private String resultLink;
+    private String chainCallbackData;
+    private ChainReceipt chainReceipt;
+    private ReplicateStatusCause replicateStatusCause;
+
 
     public ReplicateDetails(long blockNumber) {
         this.chainReceipt = ChainReceipt.builder().blockNumber(blockNumber).build();
