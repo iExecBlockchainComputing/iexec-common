@@ -7,9 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -38,7 +35,7 @@ public class ChainDeal {
     String requester;
     String beneficiary;
     String callback;
-    List<String> params;
+    DealParams params;
 
     // config
     ChainCategory chainCategory;
@@ -48,16 +45,19 @@ public class ChainDeal {
     BigInteger workerStake;
     BigInteger schedulerRewardRatio;
 
-    public static List<String> stringParamsToList(String params) {
-        List<String> listParams;
+    public static DealParams stringToDealParams(String params) {
         try {
-            LinkedHashMap tasksParamsMap = new ObjectMapper().readValue(params, LinkedHashMap.class);
-            listParams = new ArrayList<String>(tasksParamsMap.values());
+            DealParams dealParams = new ObjectMapper().readValue(params, DealParams.class);
+            if(dealParams.getIexecInputFiles() == null) {
+                dealParams.setIexecInputFiles(new ArrayList<>());
+            }
+            return dealParams;
         } catch (IOException e) {
-            log.warn("Params string is not a JSON, considering the string is one full param");
-            listParams = Collections.singletonList(params);//the requester want to execute one task with the whole string
+            //the requester want to execute one task with the whole string
+            return DealParams.builder()
+                    .iexecArgs(params)
+                    .iexecInputFiles(new ArrayList<>())
+                    .build();
         }
-        return listParams;
     }
-
 }

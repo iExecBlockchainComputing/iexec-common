@@ -27,7 +27,7 @@ import java.math.BigInteger;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import static com.iexec.common.chain.ChainDeal.stringParamsToList;
+import static com.iexec.common.chain.ChainDeal.stringToDealParams;
 import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
 
 @Slf4j
@@ -194,7 +194,7 @@ public abstract class IexecHubAbstractService {
                     .requester(dealPt2.getValue3())
                     .beneficiary(dealPt2.getValue4())
                     .callback(dealPt2.getValue5())
-                    .params(stringParamsToList(dealPt2.getValue6()))
+                    .params(stringToDealParams(dealPt2.getValue6()))
                     .chainCategory(chainCategory.get())
                     .startTime(config.getValue2())
                     .botFirst(config.getValue3())
@@ -373,7 +373,8 @@ public abstract class IexecHubAbstractService {
                 .chainTaskId(chainTaskId)
                 .appType(DappType.DOCKER)
                 .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp().getUri()))
-                .cmd(chainDeal.getParams().get(chainTask.getIdx()))
+                .cmd(chainDeal.getParams().getIexecArgs())
+                .inputFiles(chainDeal.getParams().getIexecInputFiles())
                 .maxExecutionTime(chainDeal.getChainCategory().getMaxExecutionTime())
                 .isTeeTask(TeeUtils.isTeeTag(chainDeal.getTag()))
                 .datasetUri(datasetURI)
