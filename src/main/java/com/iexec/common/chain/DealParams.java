@@ -1,6 +1,6 @@
 package com.iexec.common.chain;
 
-import io.reactivex.annotations.Nullable;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;
@@ -12,8 +12,10 @@ import java.util.List;
 @Getter
 public class DealParams {
 
-    // Note to dev: the naming of the variables here is important since it will be stored on-chain
-    // that is why the names are not java compliant (use of underscore and no upper case)
-    private String iexec_args;
-    private List<String> iexec_input_files;
+    // Note to dev: the naming of the variables in the json file is important since it will be stored on-chain
+    @JsonProperty("iexec_args")
+    private String iexecArgs;
+
+    @JsonProperty("iexec_input_files")
+    private List<String> iexecInputFiles;
 }

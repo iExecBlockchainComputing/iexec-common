@@ -7,9 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -51,16 +48,15 @@ public class ChainDeal {
     public static DealParams stringToDealParams(String params) {
         try {
             DealParams dealParams = new ObjectMapper().readValue(params, DealParams.class);
-            if(dealParams.getIexec_input_files() == null) {
-                dealParams.setIexec_input_files(new ArrayList<>());
+            if(dealParams.getIexecInputFiles() == null) {
+                dealParams.setIexecInputFiles(new ArrayList<>());
             }
             return dealParams;
         } catch (IOException e) {
-            log.warn("Params string is not a JSON, considering the string is one full param");
             //the requester want to execute one task with the whole string
             return DealParams.builder()
-                    .iexec_args(params)
-                    .iexec_input_files(new ArrayList<>())
+                    .iexecArgs(params)
+                    .iexecInputFiles(new ArrayList<>())
                     .build();
         }
     }
