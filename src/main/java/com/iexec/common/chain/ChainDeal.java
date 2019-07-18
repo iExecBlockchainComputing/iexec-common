@@ -38,7 +38,7 @@ public class ChainDeal {
     String requester;
     String beneficiary;
     String callback;
-    List<String> params;
+    DealParams params;
 
     // config
     ChainCategory chainCategory;
@@ -48,16 +48,20 @@ public class ChainDeal {
     BigInteger workerStake;
     BigInteger schedulerRewardRatio;
 
-    public static List<String> stringParamsToList(String params) {
-        List<String> listParams;
+    public static DealParams stringToDealParams(String params) {
         try {
-            LinkedHashMap tasksParamsMap = new ObjectMapper().readValue(params, LinkedHashMap.class);
-            listParams = new ArrayList<String>(tasksParamsMap.values());
+            DealParams dealParams = new ObjectMapper().readValue(params, DealParams.class);
+            if(dealParams.getIexec_input_files() == null) {
+                dealParams.setIexec_input_files(new ArrayList<>());
+            }
+            return dealParams;
         } catch (IOException e) {
             log.warn("Params string is not a JSON, considering the string is one full param");
-            listParams = Collections.singletonList(params);//the requester want to execute one task with the whole string
+            //the requester want to execute one task with the whole string
+            return DealParams.builder()
+                    .iexec_args(params)
+                    .iexec_input_files(new ArrayList<>())
+                    .build();
         }
-        return listParams;
     }
-
 }
