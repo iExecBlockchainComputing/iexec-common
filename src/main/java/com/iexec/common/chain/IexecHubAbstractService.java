@@ -378,6 +378,9 @@ public abstract class IexecHubAbstractService {
                 .maxExecutionTime(chainDeal.getChainCategory().getMaxExecutionTime())
                 .isTeeTask(TeeUtils.isTeeTag(chainDeal.getTag()))
                 .datasetUri(datasetURI)
+                .botSize(chainDeal.botSize.intValue())
+                .botFirstIndex(chainDeal.botFirst.intValue())
+                .botIndex(chainTask.getIdx())
                 .build());
     }
 

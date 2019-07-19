@@ -22,4 +22,8 @@ public class TaskDescription {
     private boolean isTeeTask;
     private String datasetUri;
     private List<String> inputFiles;
+    private int botIndex;
+    private int botSize;
+    private int botFirstIndex;
+
 }
