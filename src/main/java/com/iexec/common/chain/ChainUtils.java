@@ -6,6 +6,7 @@ import org.bouncycastle.util.Arrays;
 import org.web3j.crypto.Hash;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.utils.Convert;
+import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,7 +23,7 @@ public class ChainUtils {
         if (dealIdBytes32.length != 32) {
             return null;
         }
-        byte[] taskIndexBytes32 = Arrays.copyOf(taskIndex.toByteArray(), 32);
+        byte[] taskIndexBytes32 = Numeric.toBytesPadded(taskIndex, 32);
         if (taskIndexBytes32.length != 32) {
             return null;
         }
