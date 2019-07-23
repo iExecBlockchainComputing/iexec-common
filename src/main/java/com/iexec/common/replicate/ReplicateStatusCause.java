@@ -9,5 +9,6 @@ public enum ReplicateStatusCause {
     TASK_NOT_ACTIVE,
     AFTER_DEADLINE,
     CONTRIBUTION_ALREADY_SET,
-    
+    CONTRIBUTION_AUTHORIZATION_MISSING
+
 }

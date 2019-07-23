@@ -9,7 +9,9 @@ import java.util.List;
 public enum ReplicateStatus {
 
     CREATED,
-    RUNNING,
+    RUNNING,//TODO rename to STARTING
+    STARTED,
+    START_FAILED,
     APP_DOWNLOADING,
     APP_DOWNLOADED,
     APP_DOWNLOAD_FAILED,
@@ -33,7 +35,9 @@ public enum ReplicateStatus {
     RESULT_UPLOADING,
     RESULT_UPLOADED,
     RESULT_UPLOAD_FAILED,
+    COMPLETING,
     COMPLETED,
+    COMPLETE_FAILED,
     REVEAL_TIMEOUT,
     WORKER_LOST,
     ABORTED_ON_CONSENSUS_REACHED,
@@ -57,6 +61,7 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
+                STARTED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 DATA_DOWNLOADING,
@@ -68,6 +73,7 @@ public enum ReplicateStatus {
                 CONTRIBUTED,
                 REVEALING,
                 REVEALED,
+                COMPLETING,
                 COMPLETED,
                 RECOVERING);
     }
@@ -76,6 +82,8 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
+                STARTED,
+                START_FAILED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 APP_DOWNLOAD_FAILED,
@@ -109,6 +117,7 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
+                STARTED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 DATA_DOWNLOADING,
@@ -121,6 +130,7 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
+                STARTED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 DATA_DOWNLOADING,
@@ -143,6 +153,8 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
+                STARTED,
+                START_FAILED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 APP_DOWNLOAD_FAILED,
