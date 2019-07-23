@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,4 +21,9 @@ public class TaskDescription {
     private long maxExecutionTime;
     private boolean isTeeTask;
     private String datasetUri;
+    private List<String> inputFiles;
+    private int botIndex;
+    private int botSize;
+    private int botFirstIndex;
+
 }
