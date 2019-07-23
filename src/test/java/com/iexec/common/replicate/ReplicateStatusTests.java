@@ -15,13 +15,14 @@ public class ReplicateStatusTests {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTING);
         System.out.println(missingStatuses);
 
-        assertEquals(missingStatuses.size(), 6);
+        assertEquals(missingStatuses.size(), 7);
         assertEquals(missingStatuses.get(0), RUNNING);
-        assertEquals(missingStatuses.get(1), APP_DOWNLOADING);
-        assertEquals(missingStatuses.get(2), APP_DOWNLOADED);
-        assertEquals(missingStatuses.get(3), DATA_DOWNLOADING);
-        assertEquals(missingStatuses.get(4), DATA_DOWNLOADED);
-        assertEquals(missingStatuses.get(5), COMPUTING);
+        assertEquals(missingStatuses.get(1), STARTED);
+        assertEquals(missingStatuses.get(2), APP_DOWNLOADING);
+        assertEquals(missingStatuses.get(3), APP_DOWNLOADED);
+        assertEquals(missingStatuses.get(4), DATA_DOWNLOADING);
+        assertEquals(missingStatuses.get(5), DATA_DOWNLOADED);
+        assertEquals(missingStatuses.get(6), COMPUTING);
     }
 
     @Test
