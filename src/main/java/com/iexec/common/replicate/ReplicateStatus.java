@@ -35,7 +35,7 @@ public enum ReplicateStatus {
     RESULT_UPLOADING,
     RESULT_UPLOADED,
     RESULT_UPLOAD_FAILED,
-    COMPLETING, //TODO add to workflow
+    COMPLETING,
     COMPLETED,
     COMPLETE_FAILED,
     REVEAL_TIMEOUT,
@@ -61,6 +61,7 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
+                STARTED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 DATA_DOWNLOADING,
@@ -72,6 +73,7 @@ public enum ReplicateStatus {
                 CONTRIBUTED,
                 REVEALING,
                 REVEALED,
+                COMPLETING,
                 COMPLETED,
                 RECOVERING);
     }
@@ -80,6 +82,8 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
+                STARTED,
+                START_FAILED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 APP_DOWNLOAD_FAILED,
@@ -113,6 +117,7 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
+                STARTED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 DATA_DOWNLOADING,
@@ -125,6 +130,7 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
+                STARTED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 DATA_DOWNLOADING,
@@ -147,6 +153,8 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
+                STARTED,
+                START_FAILED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
                 APP_DOWNLOAD_FAILED,
