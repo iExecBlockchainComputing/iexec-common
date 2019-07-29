@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class WorkerConfigurationModel {
+public class WorkerModel {
 
     private String name;
     private String walletAddress;

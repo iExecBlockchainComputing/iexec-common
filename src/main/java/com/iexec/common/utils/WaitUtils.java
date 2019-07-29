@@ -11,9 +11,9 @@ public class WaitUtils {
 
     public static void sleep(int seconds) {
         try {
-            Thread.sleep(seconds * 1000);
+            Thread.sleep(seconds * 1000L);
         } catch (InterruptedException e) {
-            log.error("Failed to sleep [duration:{}]", seconds);
+            log.error("Failed to sleep [duration:{}, exception:{}]", seconds, e.getMessage());
         }
     }
 
