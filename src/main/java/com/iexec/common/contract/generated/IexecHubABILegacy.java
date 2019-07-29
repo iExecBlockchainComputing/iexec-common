@@ -42,8 +42,9 @@ import org.web3j.tx.gas.ContractGasProvider;
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
  *
- * Poco-dev: commit 4d6e8e89a29e0e6239d3a5774351fcba0ab62f17
- * <p>Generated with web3j version 4.1.1.
+ * <p>Generated with web3j version 4.3.0.
+ *
+ * The git commit sha for this version is dc6ef27883744930d5b1c145ca7240f4ece1f217 (git tag v3.0.35)
  */
 public class IexecHubABILegacy extends Contract {
     private static final String BINARY = "0x";
@@ -585,8 +586,10 @@ public class IexecHubABILegacy extends Contract {
         final Function function = new Function(
                 FUNC_INITIALIZEARRAY, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Bytes32>(
+                        org.web3j.abi.datatypes.generated.Bytes32.class,
                         org.web3j.abi.Utils.typeMap(_dealid, org.web3j.abi.datatypes.generated.Bytes32.class)), 
                 new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
+                        org.web3j.abi.datatypes.generated.Uint256.class,
                         org.web3j.abi.Utils.typeMap(_idx, org.web3j.abi.datatypes.generated.Uint256.class))), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
@@ -596,6 +599,7 @@ public class IexecHubABILegacy extends Contract {
         final Function function = new Function(
                 FUNC_CLAIMARRAY, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Bytes32>(
+                        org.web3j.abi.datatypes.generated.Bytes32.class,
                         org.web3j.abi.Utils.typeMap(_taskid, org.web3j.abi.datatypes.generated.Bytes32.class))), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
@@ -605,8 +609,10 @@ public class IexecHubABILegacy extends Contract {
         final Function function = new Function(
                 FUNC_INITIALIZEANDCLAIMARRAY, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Bytes32>(
+                        org.web3j.abi.datatypes.generated.Bytes32.class,
                         org.web3j.abi.Utils.typeMap(_dealid, org.web3j.abi.datatypes.generated.Bytes32.class)), 
                 new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
+                        org.web3j.abi.datatypes.generated.Uint256.class,
                         org.web3j.abi.Utils.typeMap(_idx, org.web3j.abi.datatypes.generated.Uint256.class))), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);

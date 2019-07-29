@@ -22,8 +22,8 @@ public class Signature {
         this.value = BytesUtils.bytesToString(sign);
     }
 
-    public Signature(byte[] r, byte[] s, byte v) {
-        this(Arrays.concatenate(r, s, new byte[]{v}));
+    public Signature(byte[] r, byte[] s, byte[] v) {
+        this(Arrays.concatenate(r, s, v));
     }
 
     public Signature(Sign.SignatureData sign) {
@@ -38,7 +38,7 @@ public class Signature {
         return Arrays.copyOfRange(BytesUtils.stringToBytes(value), 32, 64);
     }
 
-    public byte getV(){
-        return BytesUtils.stringToBytes(value)[64];
+    public byte[] getV(){
+        return new byte[]{BytesUtils.stringToBytes(value)[64]};
     }
 }
