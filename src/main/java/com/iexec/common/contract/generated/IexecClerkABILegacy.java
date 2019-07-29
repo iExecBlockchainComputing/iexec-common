@@ -40,8 +40,9 @@ import org.web3j.tx.gas.ContractGasProvider;
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
  *
- * Poco-dev: commit 4d6e8e89a29e0e6239d3a5774351fcba0ab62f17
- * <p>Generated with web3j version 4.1.1.
+ * <p>Generated with web3j version 4.3.0.
+ *
+ * The git commit sha for this version is dc6ef27883744930d5b1c145ca7240f4ece1f217 (git tag v3.0.35)
  */
 public class IexecClerkABILegacy extends Contract {
     private static final String BINARY = "0x";

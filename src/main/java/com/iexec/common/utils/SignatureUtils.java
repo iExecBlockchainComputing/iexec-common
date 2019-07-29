@@ -80,7 +80,7 @@ public class SignatureUtils {
         return new Signature (
             BytesUtils.stringToBytes(BytesUtils.EMPTY_HEXASTRING_64),
             BytesUtils.stringToBytes(BytesUtils.EMPTY_HEXASTRING_64),
-            new Integer(0).byteValue()
+            new byte[1]
         );
 
     }
@@ -88,7 +88,7 @@ public class SignatureUtils {
     private static String createStringFromSignature(Sign.SignatureData sign) {
         String r = Numeric.toHexString(sign.getR());
         String s = Numeric.toHexString(sign.getS());
-        String v = Integer.toHexString(sign.getV());
+        String v = Numeric.toHexString(sign.getV());
         return String.join("", r, Numeric.cleanHexPrefix(s), v);
     }
 
