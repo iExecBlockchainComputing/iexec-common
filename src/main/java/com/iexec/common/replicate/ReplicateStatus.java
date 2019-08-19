@@ -197,6 +197,20 @@ public enum ReplicateStatus {
         );
     }
 
+    public static List<ReplicateStatus> getFailedStatuses() {
+        return Arrays.asList(
+                START_FAILED,
+                APP_DOWNLOAD_FAILED,
+                DATA_DOWNLOAD_FAILED,
+                COMPUTE_FAILED,
+                CONTRIBUTE_FAILED,
+                REVEAL_FAILED,
+                RESULT_UPLOAD_REQUEST_FAILED,
+                RESULT_UPLOAD_FAILED,
+                COMPLETE_FAILED,
+                FAILED);
+    }
+
     public static List<ReplicateStatus> getCantContributeStatus() {
         return Arrays.asList(
                 CANT_CONTRIBUTE);
