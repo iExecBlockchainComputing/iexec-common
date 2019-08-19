@@ -126,7 +126,7 @@ public enum ReplicateStatus {
                 RECOVERING);
     }
 
-    public static boolean isRecoverableStatus(ReplicateStatus status) {
+    public static List<ReplicateStatus> getRecoverableStatuses() {
         return Arrays.asList(
                 CREATED,
                 RUNNING,
@@ -145,8 +145,12 @@ public enum ReplicateStatus {
                 RESULT_UPLOAD_REQUESTED,
                 RESULT_UPLOADING,
                 RESULT_UPLOADED,
-                RECOVERING)
-            .contains(status);
+                COMPLETING,
+                RECOVERING);
+    }
+
+    public static boolean isRecoverable(ReplicateStatus status) {
+        return getRecoverableStatuses().contains(status);
     }
 
     public static List<ReplicateStatus> getCompletableStatuses() {
