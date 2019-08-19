@@ -136,7 +136,6 @@ public enum ReplicateStatus {
                 DATA_DOWNLOADING,
                 DATA_DOWNLOADED,
                 COMPUTING,
-                COMPUTE_FAILED,
                 COMPUTED,
                 CAN_CONTRIBUTE,
                 CONTRIBUTING,
