@@ -9,7 +9,7 @@ import java.util.List;
 public enum ReplicateStatus {
 
     CREATED,
-    RUNNING,//TODO rename to STARTING
+    STARTING,
     STARTED,
     START_FAILED,
     APP_DOWNLOADING,
@@ -61,7 +61,7 @@ public enum ReplicateStatus {
     public static List<ReplicateStatus> getSuccessStatuses() {
         return Arrays.asList(
                 CREATED,
-                RUNNING,
+                STARTING,
                 STARTED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
@@ -82,7 +82,7 @@ public enum ReplicateStatus {
     public static List<ReplicateStatus> getStatusesBeforeContributed() {
         return Arrays.asList(
                 CREATED,
-                RUNNING,
+                STARTING,
                 STARTED,
                 START_FAILED,
                 APP_DOWNLOADING,
@@ -117,7 +117,7 @@ public enum ReplicateStatus {
     public static List<ReplicateStatus> getSuccessStatusesBeforeComputed() {
         return Arrays.asList(
                 CREATED,
-                RUNNING,
+                STARTING,
                 STARTED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
@@ -130,7 +130,7 @@ public enum ReplicateStatus {
     public static List<ReplicateStatus> getRecoverableStatuses() {
         return Arrays.asList(
                 CREATED,
-                RUNNING,
+                STARTING,
                 STARTED,
                 APP_DOWNLOADING,
                 APP_DOWNLOADED,
@@ -157,7 +157,7 @@ public enum ReplicateStatus {
     public static List<ReplicateStatus> getCompletableStatuses() {
         return Arrays.asList(
                 CREATED,
-                RUNNING,
+                STARTING,
                 STARTED,
                 START_FAILED,
                 APP_DOWNLOADING,
