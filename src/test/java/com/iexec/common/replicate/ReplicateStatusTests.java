@@ -16,7 +16,7 @@ public class ReplicateStatusTests {
         System.out.println(missingStatuses);
 
         assertEquals(missingStatuses.size(), 7);
-        assertEquals(missingStatuses.get(0), RUNNING);
+        assertEquals(missingStatuses.get(0), STARTING);
         assertEquals(missingStatuses.get(1), STARTED);
         assertEquals(missingStatuses.get(2), APP_DOWNLOADING);
         assertEquals(missingStatuses.get(3), APP_DOWNLOADED);
