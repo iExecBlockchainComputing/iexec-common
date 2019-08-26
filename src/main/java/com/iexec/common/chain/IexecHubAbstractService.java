@@ -1,9 +1,6 @@
 package com.iexec.common.chain;
 
-import com.iexec.common.contract.generated.App;
-import com.iexec.common.contract.generated.Dataset;
-import com.iexec.common.contract.generated.IexecClerkABILegacy;
-import com.iexec.common.contract.generated.IexecHubABILegacy;
+import com.iexec.common.contract.generated.*;
 import com.iexec.common.dapp.DappType;
 import com.iexec.common.task.TaskDescription;
 import com.iexec.common.tee.TeeUtils;
@@ -308,6 +305,33 @@ public abstract class IexecHubAbstractService {
 
     private static int scoreToWeight(int workerScore) {
         return Math.max(workerScore / 3, 3) - 1;
+    }
+
+    public Ownable getOwnableContract(String address) {
+        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load Ownable contract " + address);
+        try {
+            if (address == null || address.isEmpty()) {
+                throw exceptionInInitializerError;
+            }
+
+            return Ownable.load(address, web3j, credentials, new DefaultGasProvider());
+        } catch (Exception e) {
+            log.error("Failed to load Ownable [address:{}]", address);
+        }
+        return null;
+    }
+
+    public String getOwner(String address) {
+        Ownable ownableContract = getOwnableContract(address);
+
+        if (ownableContract != null){
+            try {
+                return ownableContract.owner().send();
+            } catch (Exception e) {
+                log.error("Failed to get owner [address:{}]", address);
+            }
+        }
+        return "";
     }
 
     public long getMaxNbOfPeriodsForConsensus() {
