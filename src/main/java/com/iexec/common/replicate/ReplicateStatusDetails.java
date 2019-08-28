@@ -7,18 +7,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ReplicateDetails {
+public class ReplicateStatusDetails {
 
+    private ChainReceipt chainReceipt;
     private String resultLink;
     private String chainCallbackData;
-    private ChainReceipt chainReceipt;
-    private ReplicateStatusCause replicateStatusCause;
+    private String errorMessage;
+    private ReplicateStatusCause cause;
 
-
-    public ReplicateDetails(long blockNumber) {
+    public ReplicateStatusDetails(long blockNumber) {
         this.chainReceipt = ChainReceipt.builder().blockNumber(blockNumber).build();
     }
 }
