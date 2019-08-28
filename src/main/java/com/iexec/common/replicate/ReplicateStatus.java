@@ -37,11 +37,19 @@ public enum ReplicateStatus {
     COMPLETE_FAILED,
     COMPLETED,
     FAILED,
-
     ABORTED,
-    WORKER_LOST,
-    RECOVERING;
 
+    RECOVERING,
+    WORKER_LOST;
+
+
+    public static boolean isSuccess(ReplicateStatus status) {
+        return getSuccessStatuses().contains(status);
+    }
+
+    public static boolean isFailure(ReplicateStatus status) {
+        return getFailureStatuses().contains(status);
+    }
 
     public static boolean isCompletable(ReplicateStatus status) {
         return getCompletableStatuses().contains(status);
@@ -56,7 +64,40 @@ public enum ReplicateStatus {
     }
 
     public static boolean isRecoverable(ReplicateStatus status) {
-        return getRecoverableStatuses().contains(status);
+        return true;
+    }
+
+    public static List<ReplicateStatus> getSuccessStatuses() {
+        return Arrays.asList(
+                CREATED,
+                STARTING,
+                STARTED,
+                APP_DOWNLOADING,
+                APP_DOWNLOADED,
+                DATA_DOWNLOADING,
+                DATA_DOWNLOADED,
+                COMPUTING,
+                COMPUTED,
+                CONTRIBUTING,
+                CONTRIBUTED,
+                REVEALING,
+                REVEALED,
+                COMPLETING,
+                COMPLETED);
+    }
+
+    public static List<ReplicateStatus> getFailureStatuses() {
+        return Arrays.asList(
+                START_FAILED,
+                APP_DOWNLOAD_FAILED,
+                DATA_DOWNLOAD_FAILED,
+                COMPUTE_FAILED,
+                CONTRIBUTE_FAILED,
+                REVEAL_FAILED,
+                RESULT_UPLOAD_REQUEST_FAILED,
+                RESULT_UPLOAD_FAILED,
+                COMPLETE_FAILED,
+                FAILED);
     }
 
     /*
@@ -107,46 +148,46 @@ public enum ReplicateStatus {
      * to ABORTED by the worker. 
      */
     public static List<ReplicateStatus> getAbortableStatuses() {
-        List<ReplicateStatus> nonFinal = new ArrayList<>(getNonFinalDefaultStatuses());
+        List<ReplicateStatus> nonFinal = new ArrayList<>(getNonFinalWorkflowStatuses());
         nonFinal.add(WORKER_LOST);
         return nonFinal;
     }
 
-    /*
-     * Statuses that can be recovered by the worker 
-     */
-    public static List<ReplicateStatus> getRecoverableStatuses() {
-        return Arrays.asList(
-                CREATED,
-                STARTING,
-                STARTED,
-                APP_DOWNLOADING,
-                APP_DOWNLOAD_FAILED,            // can contribute
-                APP_DOWNLOADED,
-                DATA_DOWNLOADING,
-                DATA_DOWNLOAD_FAILED,           // can contribute
-                DATA_DOWNLOADED,
-                COMPUTING,
-                COMPUTED,
-                CONTRIBUTING,
-                CONTRIBUTED,
-                REVEALING,
-                REVEALED,
-                RESULT_UPLOAD_REQUESTED,
-                RESULT_UPLOAD_REQUEST_FAILED,   // can complete later
-                RESULT_UPLOADING,
-                RESULT_UPLOAD_FAILED,           // can complete later
-                RESULT_UPLOADED,
-                COMPLETING,
-                RECOVERING);
-    }
+    // /*
+    //  * Statuses that can be recovered by the worker 
+    //  */
+    // public static List<ReplicateStatus> getRecoverableStatuses() {
+    //     return Arrays.asList(
+    //             CREATED,
+    //             STARTING,
+    //             STARTED,
+    //             APP_DOWNLOADING,
+    //             APP_DOWNLOAD_FAILED,            // can contribute
+    //             APP_DOWNLOADED,
+    //             DATA_DOWNLOADING,
+    //             DATA_DOWNLOAD_FAILED,           // can contribute
+    //             DATA_DOWNLOADED,
+    //             COMPUTING,
+    //             COMPUTED,
+    //             CONTRIBUTING,
+    //             CONTRIBUTED,
+    //             REVEALING,
+    //             REVEALED,
+    //             RESULT_UPLOAD_REQUESTED,
+    //             RESULT_UPLOAD_REQUEST_FAILED,   // can complete later
+    //             RESULT_UPLOADING,
+    //             RESULT_UPLOAD_FAILED,           // can complete later
+    //             RESULT_UPLOADED,
+    //             COMPLETING,
+    //             RECOVERING);
+    // }
 
     /*
      * Statuses of the default workflow.
      * CREATED -> COMPLETED/FAILED
      */
-    public static List<ReplicateStatus> getDefaultStatuses() {
-        List<ReplicateStatus> nonFinal = new ArrayList<>(getNonFinalDefaultStatuses());
+    public static List<ReplicateStatus> getWorkflowStatuses() {
+        List<ReplicateStatus> nonFinal = new ArrayList<>(getNonFinalWorkflowStatuses());
         nonFinal.add(COMPLETED);
         nonFinal.add(FAILED);
         return nonFinal;
@@ -156,7 +197,7 @@ public enum ReplicateStatus {
      * Non final statuses of the default workflow.
      * CREATED -> COMPLETING/COMPLETE_FAILED
      */
-    public static List<ReplicateStatus> getNonFinalDefaultStatuses() {
+    public static List<ReplicateStatus> getNonFinalWorkflowStatuses() {
         return Arrays.asList(
                 CREATED,
                 STARTING,
@@ -197,26 +238,6 @@ public enum ReplicateStatus {
         }
     }
 
-    public static List<ReplicateStatus> getSuccessStatuses() {
-        return Arrays.asList(
-                CREATED,
-                STARTING,
-                STARTED,
-                APP_DOWNLOADING,
-                APP_DOWNLOADED,
-                DATA_DOWNLOADING,
-                DATA_DOWNLOADED,
-                COMPUTING,
-                COMPUTED,
-                CONTRIBUTING,
-                CONTRIBUTED,
-                REVEALING,
-                REVEALED,
-                COMPLETING,
-                COMPLETED,
-                RECOVERING);
-    }
-
     public static List<ReplicateStatus> getStatusesBeforeContributed() {
         return Arrays.asList(
                 CREATED,
@@ -233,8 +254,7 @@ public enum ReplicateStatus {
                 COMPUTE_FAILED,
                 COMPUTED,
                 CONTRIBUTING,
-                CONTRIBUTE_FAILED,
-                RECOVERING);
+                CONTRIBUTE_FAILED);
     }
 
     public static List<ReplicateStatus> getMissingStatuses(ReplicateStatus from, ReplicateStatus to) {
@@ -259,8 +279,7 @@ public enum ReplicateStatus {
                 APP_DOWNLOADED,
                 DATA_DOWNLOADING,
                 DATA_DOWNLOADED,
-                COMPUTING,
-                RECOVERING);
+                COMPUTING);
     }
 
     public static List<ReplicateStatus> getUncompletableStatuses() {
@@ -270,19 +289,5 @@ public enum ReplicateStatus {
                 //RESULT_UPLOAD_REQUEST_FAILED, // still good if don't upload
                 //RESULT_UPLOAD_FAILED,         //still good if don't upload
         );
-    }
-
-    public static List<ReplicateStatus> getFailedStatuses() {
-        return Arrays.asList(
-                START_FAILED,
-                APP_DOWNLOAD_FAILED,
-                DATA_DOWNLOAD_FAILED,
-                COMPUTE_FAILED,
-                CONTRIBUTE_FAILED,
-                REVEAL_FAILED,
-                RESULT_UPLOAD_REQUEST_FAILED,
-                RESULT_UPLOAD_FAILED,
-                COMPLETE_FAILED,
-                FAILED);
     }
 }
