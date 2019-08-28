@@ -64,7 +64,7 @@ public enum ReplicateStatus {
     }
 
     public static boolean isRecoverable(ReplicateStatus status) {
-        return true;
+        return true;  // just temporary
     }
 
     public static List<ReplicateStatus> getSuccessStatuses() {
@@ -153,34 +153,34 @@ public enum ReplicateStatus {
         return nonFinal;
     }
 
-    // /*
-    //  * Statuses that can be recovered by the worker 
-    //  */
-    // public static List<ReplicateStatus> getRecoverableStatuses() {
-    //     return Arrays.asList(
-    //             CREATED,
-    //             STARTING,
-    //             STARTED,
-    //             APP_DOWNLOADING,
-    //             APP_DOWNLOAD_FAILED,            // can contribute
-    //             APP_DOWNLOADED,
-    //             DATA_DOWNLOADING,
-    //             DATA_DOWNLOAD_FAILED,           // can contribute
-    //             DATA_DOWNLOADED,
-    //             COMPUTING,
-    //             COMPUTED,
-    //             CONTRIBUTING,
-    //             CONTRIBUTED,
-    //             REVEALING,
-    //             REVEALED,
-    //             RESULT_UPLOAD_REQUESTED,
-    //             RESULT_UPLOAD_REQUEST_FAILED,   // can complete later
-    //             RESULT_UPLOADING,
-    //             RESULT_UPLOAD_FAILED,           // can complete later
-    //             RESULT_UPLOADED,
-    //             COMPLETING,
-    //             RECOVERING);
-    // }
+    /*
+     * Statuses that can be recovered by the worker 
+     */
+    public static List<ReplicateStatus> getRecoverableStatuses() {
+        return Arrays.asList(
+                CREATED,
+                STARTING,
+                STARTED,
+                APP_DOWNLOADING,
+                APP_DOWNLOAD_FAILED,            // can contribute
+                APP_DOWNLOADED,
+                DATA_DOWNLOADING,
+                DATA_DOWNLOAD_FAILED,           // can contribute
+                DATA_DOWNLOADED,
+                COMPUTING,
+                COMPUTED,
+                CONTRIBUTING,
+                CONTRIBUTED,
+                REVEALING,
+                REVEALED,
+                RESULT_UPLOAD_REQUESTED,
+                RESULT_UPLOAD_REQUEST_FAILED,   // can complete later
+                RESULT_UPLOADING,
+                RESULT_UPLOAD_FAILED,           // can complete later
+                RESULT_UPLOADED,
+                COMPLETING,
+                RECOVERING);
+    }
 
     /*
      * Statuses of the default workflow.
