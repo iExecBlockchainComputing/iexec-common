@@ -68,7 +68,7 @@ public enum ReplicateStatus {
     }
 
     public static List<ReplicateStatus> getSuccessStatuses() {
-        return Arrays.asList(
+        return new ArrayList<>(Arrays.asList(
                 CREATED,
                 STARTING,
                 STARTED,
@@ -83,7 +83,7 @@ public enum ReplicateStatus {
                 REVEALING,
                 REVEALED,
                 COMPLETING,
-                COMPLETED);
+                COMPLETED));
     }
 
     public static List<ReplicateStatus> getFailureStatuses() {
