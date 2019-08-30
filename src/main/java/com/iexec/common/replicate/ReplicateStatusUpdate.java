@@ -18,8 +18,8 @@ public class ReplicateStatusUpdate {
 
     private ReplicateStatus status;
     private ReplicateStatusModifier modifier;
-    private Date date;
-    private boolean isSuccess;
+    private Date date;                          // defined by the core
+    private boolean isSuccess;                  // inferred automatically from the status
     private ReplicateStatusDetails details;
 
     public ReplicateStatusUpdate(ReplicateStatus status,
