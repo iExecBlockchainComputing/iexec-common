@@ -25,16 +25,19 @@ public class ReplicateStatusUpdate {
     public ReplicateStatusUpdate(ReplicateStatus status,
                                  ReplicateStatusModifier modifier,
                                  ReplicateStatusDetails details) {
-        this(status, modifier);
+        this.status = status;
+        this.modifier = modifier;
         this.details = details;
+        this.isSuccess = ReplicateStatus.isSuccess(status);
+
+        if (modifier.equals(POOL_MANAGER)) {
+            this.date = new Date();
+        }
     }
 
     public ReplicateStatusUpdate(ReplicateStatus status,
                                  ReplicateStatusModifier modifier) {
-        this.status = status;
-        this.modifier = modifier;
-        this.date = new Date();
-        this.isSuccess = ReplicateStatus.isSuccess(status);
+       this(status, modifier, null);
     }
 
     public static ReplicateStatusUpdate workerRequest(ReplicateStatus status) {
