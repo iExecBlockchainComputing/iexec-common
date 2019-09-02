@@ -30,7 +30,7 @@ public class ReplicateStatusUpdate {
         this.details = details;
         this.isSuccess = ReplicateStatus.isSuccess(status);
 
-        if (modifier.equals(POOL_MANAGER)) {
+        if (modifier != null && modifier.equals(POOL_MANAGER)) {
             this.date = new Date();
         }
     }
