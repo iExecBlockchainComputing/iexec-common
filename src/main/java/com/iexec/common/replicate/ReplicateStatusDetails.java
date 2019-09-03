@@ -21,4 +21,8 @@ public class ReplicateStatusDetails {
     public ReplicateStatusDetails(long blockNumber) {
         this.chainReceipt = ChainReceipt.builder().blockNumber(blockNumber).build();
     }
+
+    public ReplicateStatusDetails(ReplicateStatusCause cause) {
+        this.cause = cause;
+    }
 }

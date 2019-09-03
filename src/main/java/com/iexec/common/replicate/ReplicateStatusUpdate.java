@@ -22,37 +22,30 @@ public class ReplicateStatusUpdate {
     private boolean isSuccess;                  // inferred automatically from the status
     private ReplicateStatusDetails details;
 
+    public ReplicateStatusUpdate(ReplicateStatus status) {
+        this(status, null, null);
+    }
+
+    public ReplicateStatusUpdate(ReplicateStatus status, ReplicateStatusCause cause) {
+        this(status, null, new ReplicateStatusDetails(cause));
+    }
+
+    public ReplicateStatusUpdate(ReplicateStatus status, ReplicateStatusModifier modifier) {
+       this(status, modifier, null);
+    }
+
     public ReplicateStatusUpdate(ReplicateStatus status,
                                  ReplicateStatusModifier modifier,
                                  ReplicateStatusDetails details) {
         this.status = status;
         this.modifier = modifier;
         this.details = details;
+
         this.isSuccess = ReplicateStatus.isSuccess(status);
 
-        if (modifier.equals(POOL_MANAGER)) {
-            this.date = new Date();
+        if (modifier != null && modifier.equals(POOL_MANAGER)) {
+           this.date = new Date();
         }
-    }
-
-    public ReplicateStatusUpdate(ReplicateStatus status,
-                                 ReplicateStatusModifier modifier) {
-       this(status, modifier, null);
-    }
-
-    public static ReplicateStatusUpdate workerRequest(ReplicateStatus status) {
-        return new ReplicateStatusUpdate(status, WORKER);
-    }
-
-    public static ReplicateStatusUpdate workerRequest(ReplicateStatus status,
-                                                      ReplicateStatusCause cause) {
-        ReplicateStatusDetails details = ReplicateStatusDetails.builder().cause(cause).build();
-        return new ReplicateStatusUpdate(status, WORKER, details);
-    }
-
-    public static ReplicateStatusUpdate workerRequest(ReplicateStatus status,
-                                                      ReplicateStatusDetails details) {
-        return new ReplicateStatusUpdate(status, WORKER, details);
     }
 
     public static ReplicateStatusUpdate poolManagerRequest(ReplicateStatus status) {
@@ -61,7 +54,7 @@ public class ReplicateStatusUpdate {
 
     public static ReplicateStatusUpdate poolManagerRequest(ReplicateStatus status,
                                                            ReplicateStatusCause cause) {
-        ReplicateStatusDetails details = ReplicateStatusDetails.builder().cause(cause).build();
+        ReplicateStatusDetails details = new ReplicateStatusDetails(cause);
         return new ReplicateStatusUpdate(status, WORKER, details);
     }
 
