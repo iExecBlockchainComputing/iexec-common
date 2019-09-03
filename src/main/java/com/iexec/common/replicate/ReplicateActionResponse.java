@@ -1,7 +1,6 @@
 package com.iexec.common.replicate;
 
 import com.iexec.common.chain.ChainReceipt;
-import com.iexec.common.replicate.ReplicateStatus;
 import com.iexec.common.replicate.ReplicateStatusCause;
 import com.iexec.common.replicate.ReplicateStatusDetails;
 
@@ -17,28 +16,36 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReplicateActionResponse {
 
-    private ReplicateStatus status;
+    private boolean isSuccess;
     private ReplicateStatusDetails details;
 
-    public ReplicateActionResponse(ReplicateStatus status) {
-        this.status = status;
+    public static ReplicateActionResponse success() {
+        return new ReplicateActionResponse(true, null);
     }
 
-    public ReplicateActionResponse(ReplicateStatus status, ReplicateStatusCause cause) {
-        this.status = status;
-        this.details = ReplicateStatusDetails.builder().cause(cause).build();
+    public static ReplicateActionResponse success(ChainReceipt chainReceipt) {
+        ReplicateStatusDetails details = ReplicateStatusDetails.builder()
+                .chainReceipt(chainReceipt)
+                .build();
+        return new ReplicateActionResponse(true, details);
     }
 
-    public ReplicateActionResponse(ReplicateStatus status, ChainReceipt chainReceipt) {
-        this.status = status;
-        this.details = ReplicateStatusDetails.builder().chainReceipt(chainReceipt).build();
-    }
-
-    public ReplicateActionResponse(ReplicateStatus status, String resultLink, String callbackData) {
-        this.status = status;
-        this.details = ReplicateStatusDetails.builder()
+    public static ReplicateActionResponse success(String resultLink, String callbackData) {
+        ReplicateStatusDetails details = ReplicateStatusDetails.builder()
                 .resultLink(resultLink)
                 .chainCallbackData(callbackData)
                 .build();
+        return new ReplicateActionResponse(true, details);
+    }
+
+    public static ReplicateActionResponse failure() {
+        return new ReplicateActionResponse(false, null);
+    }
+
+    public static ReplicateActionResponse failure(ReplicateStatusCause cause) {
+        ReplicateStatusDetails details = ReplicateStatusDetails.builder()
+                .cause(cause)
+                .build();
+        return new ReplicateActionResponse(false, details);
     }
 }
