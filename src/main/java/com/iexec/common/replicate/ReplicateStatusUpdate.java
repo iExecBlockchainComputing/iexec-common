@@ -2,6 +2,8 @@ package com.iexec.common.replicate;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +21,9 @@ public class ReplicateStatusUpdate {
     private ReplicateStatus status;
     private ReplicateStatusModifier modifier;
     private Date date;                          // defined by the core
-    private boolean isSuccess;                  // inferred automatically from the status
     private ReplicateStatusDetails details;
+    @JsonIgnore
+    private boolean isSuccess;                  // inferred automatically from the status
 
     public ReplicateStatusUpdate(ReplicateStatus status) {
         this(status, null, null);
