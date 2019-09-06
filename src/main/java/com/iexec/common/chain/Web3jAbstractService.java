@@ -143,7 +143,7 @@ public abstract class Web3jAbstractService {
         } else if (estimateTxNb.compareTo(BigInteger.TEN) < 0) {
             log.warn("ETH balance very low, should refill gas now [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);
         } else {
-            log.info("ETH balance is fine [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);
+            log.debug("ETH balance is fine [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);
         }
         return true;
     }
