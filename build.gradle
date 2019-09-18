@@ -54,6 +54,8 @@ dependencies {
     //jaxb required with Java 11
     compile 'javax.xml.bind:jaxb-api:2.3.0'
 
+    //args utils
+    compile 'org.apache.maven.shared:maven-shared-utils:3.2.1'
 
     // lombok
     compileOnly "org.projectlombok:lombok:1.18.2"
