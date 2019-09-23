@@ -401,6 +401,7 @@ public abstract class IexecHubAbstractService {
                 .inputFiles(chainDeal.getParams().getIexecInputFiles())
                 .maxExecutionTime(chainDeal.getChainCategory().getMaxExecutionTime())
                 .isTeeTask(TeeUtils.isTeeTag(chainDeal.getTag()))
+                .developerLoggerEnabled(chainDeal.getParams().isIexecDeveloperLoggerEnabled())
                 .datasetUri(datasetURI)
                 .botSize(chainDeal.botSize.intValue())
                 .botFirstIndex(chainDeal.botFirst.intValue())
