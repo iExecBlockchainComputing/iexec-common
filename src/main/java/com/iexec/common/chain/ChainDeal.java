@@ -57,6 +57,7 @@ public class ChainDeal {
             return DealParams.builder()
                     .iexecArgs(params)
                     .iexecInputFiles(new ArrayList<>())
+                    .iexecDeveloperLoggerEnabled(false)
                     .build();
         }
     }

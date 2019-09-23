@@ -18,4 +18,8 @@ public class DealParams {
 
     @JsonProperty("iexec_input_files")
     private List<String> iexecInputFiles;
+
+    @JsonProperty("iexec_developer_logger")
+    private boolean iexecDeveloperLoggerEnabled;
+
 }
