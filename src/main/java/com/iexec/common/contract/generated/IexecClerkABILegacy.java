@@ -23,7 +23,9 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.RemoteCall;
+import org.web3j.protocol.core.RemoteFunctionCall;
 import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.response.BaseEventResponse;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tuples.generated.Tuple2;
@@ -40,10 +42,11 @@ import org.web3j.tx.gas.ContractGasProvider;
  * or the org.web3j.codegen.SolidityFunctionWrapperGenerator in the 
  * <a href="https://github.com/web3j/web3j/tree/master/codegen">codegen module</a> to update.
  *
- * <p>Generated with web3j version 4.3.0.
- *
  * The git commit sha for this version is dc6ef27883744930d5b1c145ca7240f4ece1f217 (git tag v3.0.35)
+ *
+ * <p>Generated with web3j version 4.5.5.
  */
+@SuppressWarnings("rawtypes")
 public class IexecClerkABILegacy extends Contract {
     private static final String BINARY = "0x";
 
@@ -135,35 +138,35 @@ public class IexecClerkABILegacy extends Contract {
         super(BINARY, contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
-    public RemoteCall<byte[]> EIP712DOMAIN_SEPARATOR() {
+    public RemoteFunctionCall<byte[]> EIP712DOMAIN_SEPARATOR() {
         final Function function = new Function(FUNC_EIP712DOMAIN_SEPARATOR, 
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
-    public RemoteCall<Boolean> m_presigned(byte[] param0) {
+    public RemoteFunctionCall<Boolean> m_presigned(byte[] param0) {
         final Function function = new Function(FUNC_M_PRESIGNED, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(param0)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
-    public RemoteCall<BigInteger> KITTY_RATIO() {
+    public RemoteFunctionCall<BigInteger> KITTY_RATIO() {
         final Function function = new Function(FUNC_KITTY_RATIO, 
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteCall<BigInteger> POOL_STAKE_RATIO() {
+    public RemoteFunctionCall<BigInteger> POOL_STAKE_RATIO() {
         final Function function = new Function(FUNC_POOL_STAKE_RATIO, 
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteCall<byte[]> m_requestdeals(byte[] param0, BigInteger param1) {
+    public RemoteFunctionCall<byte[]> m_requestdeals(byte[] param0, BigInteger param1) {
         final Function function = new Function(FUNC_M_REQUESTDEALS, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(param0), 
                 new org.web3j.abi.datatypes.generated.Uint256(param1)), 
@@ -171,14 +174,14 @@ public class IexecClerkABILegacy extends Contract {
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
-    public RemoteCall<BigInteger> KITTY_MIN() {
+    public RemoteFunctionCall<BigInteger> KITTY_MIN() {
         final Function function = new Function(FUNC_KITTY_MIN, 
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteCall<BigInteger> m_consumed(byte[] param0) {
+    public RemoteFunctionCall<BigInteger> m_consumed(byte[] param0) {
         final Function function = new Function(FUNC_M_CONSUMED, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(param0)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
@@ -383,11 +386,11 @@ public class IexecClerkABILegacy extends Contract {
         return schedulerNoticeEventFlowable(filter);
     }
 
-    public RemoteCall<List> viewRequestDeals(byte[] _id) {
+    public RemoteFunctionCall<List> viewRequestDeals(byte[] _id) {
         final Function function = new Function(FUNC_VIEWREQUESTDEALS, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_id)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Bytes32>>() {}));
-        return new RemoteCall<List>(
+        return new RemoteFunctionCall<List>(function,
                 new Callable<List>() {
                     @Override
                     @SuppressWarnings("unchecked")
@@ -398,14 +401,14 @@ public class IexecClerkABILegacy extends Contract {
                 });
     }
 
-    public RemoteCall<BigInteger> viewConsumed(byte[] _id) {
+    public RemoteFunctionCall<BigInteger> viewConsumed(byte[] _id) {
         final Function function = new Function(FUNC_VIEWCONSUMED, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_id)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteCall<TransactionReceipt> lockContribution(byte[] _dealid, String _worker) {
+    public RemoteFunctionCall<TransactionReceipt> lockContribution(byte[] _dealid, String _worker) {
         final Function function = new Function(
                 FUNC_LOCKCONTRIBUTION, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
@@ -414,7 +417,7 @@ public class IexecClerkABILegacy extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> unlockContribution(byte[] _dealid, String _worker) {
+    public RemoteFunctionCall<TransactionReceipt> unlockContribution(byte[] _dealid, String _worker) {
         final Function function = new Function(
                 FUNC_UNLOCKCONTRIBUTION, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
@@ -423,7 +426,7 @@ public class IexecClerkABILegacy extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> unlockAndRewardForContribution(byte[] _dealid, String _worker, BigInteger _amount, byte[] _taskid) {
+    public RemoteFunctionCall<TransactionReceipt> unlockAndRewardForContribution(byte[] _dealid, String _worker, BigInteger _amount, byte[] _taskid) {
         final Function function = new Function(
                 FUNC_UNLOCKANDREWARDFORCONTRIBUTION, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
@@ -434,7 +437,7 @@ public class IexecClerkABILegacy extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> seizeContribution(byte[] _dealid, String _worker, byte[] _taskid) {
+    public RemoteFunctionCall<TransactionReceipt> seizeContribution(byte[] _dealid, String _worker, byte[] _taskid) {
         final Function function = new Function(
                 FUNC_SEIZECONTRIBUTION, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
@@ -444,7 +447,7 @@ public class IexecClerkABILegacy extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> rewardForScheduling(byte[] _dealid, BigInteger _amount, byte[] _taskid) {
+    public RemoteFunctionCall<TransactionReceipt> rewardForScheduling(byte[] _dealid, BigInteger _amount, byte[] _taskid) {
         final Function function = new Function(
                 FUNC_REWARDFORSCHEDULING, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
@@ -454,7 +457,7 @@ public class IexecClerkABILegacy extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> successWork(byte[] _dealid, byte[] _taskid) {
+    public RemoteFunctionCall<TransactionReceipt> successWork(byte[] _dealid, byte[] _taskid) {
         final Function function = new Function(
                 FUNC_SUCCESSWORK, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
@@ -463,7 +466,7 @@ public class IexecClerkABILegacy extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> failedWork(byte[] _dealid, byte[] _taskid) {
+    public RemoteFunctionCall<TransactionReceipt> failedWork(byte[] _dealid, byte[] _taskid) {
         final Function function = new Function(
                 FUNC_FAILEDWORK, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_dealid), 
@@ -472,11 +475,11 @@ public class IexecClerkABILegacy extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger>> viewDealABILegacy_pt1(byte[] _id) {
+    public RemoteFunctionCall<Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger>> viewDealABILegacy_pt1(byte[] _id) {
         final Function function = new Function(FUNC_VIEWDEALABILEGACY_PT1, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_id)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
-        return new RemoteCall<Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger>>(
+        return new RemoteFunctionCall<Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger>>(function,
                 new Callable<Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger>>() {
                     @Override
                     public Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger> call() throws Exception {
@@ -495,11 +498,11 @@ public class IexecClerkABILegacy extends Contract {
                 });
     }
 
-    public RemoteCall<Tuple6<BigInteger, byte[], String, String, String, String>> viewDealABILegacy_pt2(byte[] _id) {
+    public RemoteFunctionCall<Tuple6<BigInteger, byte[], String, String, String, String>> viewDealABILegacy_pt2(byte[] _id) {
         final Function function = new Function(FUNC_VIEWDEALABILEGACY_PT2, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_id)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Utf8String>() {}));
-        return new RemoteCall<Tuple6<BigInteger, byte[], String, String, String, String>>(
+        return new RemoteFunctionCall<Tuple6<BigInteger, byte[], String, String, String, String>>(function,
                 new Callable<Tuple6<BigInteger, byte[], String, String, String, String>>() {
                     @Override
                     public Tuple6<BigInteger, byte[], String, String, String, String> call() throws Exception {
@@ -515,11 +518,11 @@ public class IexecClerkABILegacy extends Contract {
                 });
     }
 
-    public RemoteCall<Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>> viewConfigABILegacy(byte[] _id) {
+    public RemoteFunctionCall<Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>> viewConfigABILegacy(byte[] _id) {
         final Function function = new Function(FUNC_VIEWCONFIGABILEGACY, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_id)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        return new RemoteCall<Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>>(
+        return new RemoteFunctionCall<Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>>(function,
                 new Callable<Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>>() {
                     @Override
                     public Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> call() throws Exception {
@@ -535,11 +538,11 @@ public class IexecClerkABILegacy extends Contract {
                 });
     }
 
-    public RemoteCall<Tuple2<BigInteger, BigInteger>> viewAccountABILegacy(String _user) {
+    public RemoteFunctionCall<Tuple2<BigInteger, BigInteger>> viewAccountABILegacy(String _user) {
         final Function function = new Function(FUNC_VIEWACCOUNTABILEGACY, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_user)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        return new RemoteCall<Tuple2<BigInteger, BigInteger>>(
+        return new RemoteFunctionCall<Tuple2<BigInteger, BigInteger>>(function,
                 new Callable<Tuple2<BigInteger, BigInteger>>() {
                     @Override
                     public Tuple2<BigInteger, BigInteger> call() throws Exception {
@@ -595,9 +598,7 @@ public class IexecClerkABILegacy extends Contract {
         return _addresses.get(networkId);
     }
 
-    public static class OrdersMatchedEventResponse {
-        public Log log;
-
+    public static class OrdersMatchedEventResponse extends BaseEventResponse {
         public byte[] dealid;
 
         public byte[] appHash;
@@ -611,33 +612,23 @@ public class IexecClerkABILegacy extends Contract {
         public BigInteger volume;
     }
 
-    public static class ClosedAppOrderEventResponse {
-        public Log log;
-
+    public static class ClosedAppOrderEventResponse extends BaseEventResponse {
         public byte[] appHash;
     }
 
-    public static class ClosedDatasetOrderEventResponse {
-        public Log log;
-
+    public static class ClosedDatasetOrderEventResponse extends BaseEventResponse {
         public byte[] datasetHash;
     }
 
-    public static class ClosedWorkerpoolOrderEventResponse {
-        public Log log;
-
+    public static class ClosedWorkerpoolOrderEventResponse extends BaseEventResponse {
         public byte[] workerpoolHash;
     }
 
-    public static class ClosedRequestOrderEventResponse {
-        public Log log;
-
+    public static class ClosedRequestOrderEventResponse extends BaseEventResponse {
         public byte[] requestHash;
     }
 
-    public static class SchedulerNoticeEventResponse {
-        public Log log;
-
+    public static class SchedulerNoticeEventResponse extends BaseEventResponse {
         public String workerpool;
 
         public byte[] dealid;
