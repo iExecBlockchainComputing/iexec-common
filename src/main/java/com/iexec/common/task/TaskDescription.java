@@ -20,6 +20,7 @@ public class TaskDescription {
     private String cmd;
     private long maxExecutionTime;
     private boolean isTeeTask;
+    private boolean developerLoggerEnabled;
     private String datasetUri;
     private List<String> inputFiles;
     private int botIndex;
