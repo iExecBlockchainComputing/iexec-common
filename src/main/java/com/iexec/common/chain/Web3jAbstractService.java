@@ -15,7 +15,7 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 import static com.iexec.common.chain.ChainUtils.weiToEth;
-import static com.iexec.common.contract.generated.mainnet.IexecHubABILegacy.*;
+import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
 
 @Slf4j
 public abstract class Web3jAbstractService {

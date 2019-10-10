@@ -1,4 +1,4 @@
-package com.iexec.common.contract.generated.mainnet;
+package com.iexec.common.contract.generated;
 
 import io.reactivex.Flowable;
 import java.math.BigInteger;
