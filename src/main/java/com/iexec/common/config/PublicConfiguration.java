@@ -17,6 +17,7 @@ public class PublicConfiguration {
     private String iexecHubAddress;
     private String workerPoolAddress;
     private String schedulerPublicAddress;
+    private boolean isSidechain;
 
     // repos URLs
     private String resultRepositoryURL;

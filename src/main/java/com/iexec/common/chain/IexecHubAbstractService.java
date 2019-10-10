@@ -1,6 +1,6 @@
 package com.iexec.common.chain;
 
-import com.iexec.common.contract.generated.*;
+import com.iexec.common.contract.generated.mainnet.*;
 import com.iexec.common.dapp.DappType;
 import com.iexec.common.task.TaskDescription;
 import com.iexec.common.tee.TeeUtils;
@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import static com.iexec.common.chain.ChainDeal.stringToDealParams;
-import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
+import static com.iexec.common.contract.generated.mainnet.IexecHubABILegacy.*;
 
 @Slf4j
 public abstract class IexecHubAbstractService {

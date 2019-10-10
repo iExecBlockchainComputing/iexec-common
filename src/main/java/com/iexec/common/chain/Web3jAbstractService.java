@@ -15,7 +15,7 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 import static com.iexec.common.chain.ChainUtils.weiToEth;
-import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
+import static com.iexec.common.contract.generated.mainnet.IexecHubABILegacy.*;
 
 @Slf4j
 public abstract class Web3jAbstractService {
@@ -24,13 +24,16 @@ public abstract class Web3jAbstractService {
     private final Web3j web3j;
     private final float gasPriceMultiplier;
     private final long gasPriceCap;
+    private final boolean isSidechain;
 
     public Web3jAbstractService(String chainNodeAddress,
                                 float gasPriceMultiplier,
-                                long gasPriceCap) {
+                                long gasPriceCap,
+                                boolean isSidechain) {
         this.web3j = getWeb3j(chainNodeAddress);
         this.gasPriceMultiplier = gasPriceMultiplier;
         this.gasPriceCap = gasPriceCap;
+        this.isSidechain = isSidechain;
     }
 
     public static BigInteger getMaxTxCost(long gasPriceCap) {
@@ -128,6 +131,12 @@ public abstract class Web3jAbstractService {
     }
 
     public boolean hasEnoughGas(String address) {
+        // if a sidechain is used, there is no need to check if the wallet has enough gas.
+        // if mainnet is used, the check should be done.
+        if (isSidechain) {
+            return true;
+        }
+
         Optional<BigInteger> optionalBalance = getBalance(address);
         if (!optionalBalance.isPresent()) {
             return false;
@@ -145,6 +154,7 @@ public abstract class Web3jAbstractService {
         } else {
             log.debug("ETH balance is fine [balance:{}, estimateTxNb:{}]", balanceToShow, estimateTxNb);
         }
+
         return true;
     }
 
