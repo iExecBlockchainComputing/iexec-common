@@ -102,7 +102,7 @@ public class SignatureUtils {
     }
 
     /*
-     * web3j signMessageHash(..) returns Sign.SignatureData
+     * web3j signMessageHash(..) returns Sign.SignatureData [built on EthereumMessageHash]
      * */
     public static Sign.SignatureData signMessageHashAndGetSignatureData(String messageHash, String privateKey) {
         ECKeyPair ecKeyPair = ECKeyPair.create(BytesUtils.stringToBytes32(privateKey));
@@ -110,7 +110,7 @@ public class SignatureUtils {
     }
 
     /*
-     * iExec signMessageHash(..) returns Signature
+     * iExec signMessageHash(..) returns Signature [built on EthereumMessageHash]
      * */
     public static Signature signMessageHashAndGetSignature(String messageHash, String privateKey) {
         Sign.SignatureData signatureData = signMessageHashAndGetSignatureData(messageHash, privateKey);
@@ -132,7 +132,7 @@ public class SignatureUtils {
     }
 
     /*
-     * iExec signedMessageHashToSignerAddress(..) accepts Signature
+     * iExec signedMessageHashToSignerAddress(..) accepts Signature [built on EthereumMessageHash]
      * */
     public static String signedMessageHashToSignerAddress(String messageHash, Signature signature){
         Sign.SignatureData signatureData = new Sign.SignatureData(signature.getV()[0], signature.getR(), signature.getS());
@@ -140,7 +140,7 @@ public class SignatureUtils {
     }
 
     /*
-     * iExec isExpectedSignerOnSignedMessageHash(..) accepts Signature
+     * iExec isExpectedSignerOnSignedMessageHash(..) accepts Signature [built on EthereumMessageHash]
      * */
     public static boolean isExpectedSignerOnSignedMessageHash(String messageHash, Signature signature, String expectedSigner){
         String signerAddress = signedMessageHashToSignerAddress(messageHash, signature);
