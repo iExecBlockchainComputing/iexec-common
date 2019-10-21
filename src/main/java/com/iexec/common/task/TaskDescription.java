@@ -15,6 +15,8 @@ import java.util.List;
 public class TaskDescription {
 
     private String chainTaskId;
+    private String requester;
+    private String beneficiary;
     private DappType appType;
     private String appUri;
     private String cmd;
@@ -23,6 +25,7 @@ public class TaskDescription {
     private boolean developerLoggerEnabled;
     private String datasetUri;
     private List<String> inputFiles;
+    private String resultStorageProvider;
     private int botIndex;
     private int botSize;
     private int botFirstIndex;
