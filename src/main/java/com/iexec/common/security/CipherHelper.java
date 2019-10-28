@@ -2,15 +2,13 @@ package com.iexec.common.security;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+
+import static com.iexec.common.utils.FileHelper.readFile;
 
 public class CipherHelper {
 
@@ -142,32 +140,53 @@ public class CipherHelper {
      * Read RSA keyPair from files
      * */
     public static KeyPair getRsaKeyPair(String publicKeyPath, String privateKeyPath) {
-        return new KeyPair(
-                getRsaPublicKey(publicKeyPath),
-                getRsaPrivateKey(privateKeyPath)
-        );
+        String plainTextRsaPub = readFile(publicKeyPath);
+        String plainTextRsaPriv = readFile(privateKeyPath);
+
+        if (!plainTextRsaPub.isEmpty() && !plainTextRsaPriv.isEmpty()) {
+            return new KeyPair(
+                    plainText2RsaPublicKey(plainTextRsaPub),
+                    plainText2RsaPrivateKey(plainTextRsaPriv)
+            );
+        }
+
+        return null;
     }
+
 
     /*
      * Read RSA publicKey from file
      * */
-    public static PublicKey getRsaPublicKey(String filename) {
+    /*
+    public static PublicKey getRsaPlainTextKey(String keyFilePath) {
         PublicKey publicKey = null;
         try {
-            byte[] keyBytes = Files.readAllBytes(new File(filename).toPath());
+            byte[] keyBytes = Files.readAllBytes(new File(keyFilePath).toPath());
+            publicKey = plainText2RsaPublicKey(keyBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return publicKey;
+    }*/
 
-            String base64Key = new String(keyBytes);
-            base64Key = base64Key
+    /*
+     * Read RSA publicKey from fileBytes
+     * */
+    public static PublicKey plainText2RsaPublicKey(String plainTextRsaPub) {
+        PublicKey publicKey = null;
+        try {
+            //String base64Key = new String(publicKeyBytes);
+            plainTextRsaPub = plainTextRsaPub
                     .replace("\n", "")
                     .replace("-----BEGIN PUBLIC KEY-----", "")
                     .replace("-----END PUBLIC KEY-----", "");
-            byte[] decodedKey = Base64.getDecoder().decode(base64Key.getBytes());
+            byte[] decodedKey = Base64.getDecoder().decode(plainTextRsaPub.getBytes());
 
             X509EncodedKeySpec spec = new X509EncodedKeySpec(decodedKey);
             KeyFactory kf = KeyFactory.getInstance("RSA");
 
             publicKey = kf.generatePublic(spec);
-        } catch (IOException | InvalidKeySpecException | NoSuchAlgorithmException e) {
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return publicKey;
@@ -176,24 +195,21 @@ public class CipherHelper {
     /*
      * Read RSA privateKey from file
      * */
-    public static PrivateKey getRsaPrivateKey(String filename) {
+    public static PrivateKey plainText2RsaPrivateKey(String plainTextRsaPriv) {
         PrivateKey privateKey = null;
         try {
-            byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
-
-            String base64Key = new String(keyBytes);
-            base64Key = base64Key
+            plainTextRsaPriv = plainTextRsaPriv
                     .replace("\n", "")
                     .replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "");
-            byte[] decodedKey = Base64.getDecoder().decode(base64Key.getBytes());
+            byte[] decodedKey = Base64.getDecoder().decode(plainTextRsaPriv.getBytes());
 
             PKCS8EncodedKeySpec spec =
                     new PKCS8EncodedKeySpec(decodedKey);
             KeyFactory kf = KeyFactory.getInstance("RSA");
 
             privateKey = kf.generatePrivate(spec);
-        } catch (IOException | InvalidKeySpecException | NoSuchAlgorithmException e) {
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return privateKey;
