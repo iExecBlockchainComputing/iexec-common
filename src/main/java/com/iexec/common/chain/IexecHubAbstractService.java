@@ -405,6 +405,7 @@ public abstract class IexecHubAbstractService {
                 .isTeeTask(TeeUtils.isTeeTag(chainDeal.getTag()))
                 .developerLoggerEnabled(chainDeal.getParams().isIexecDeveloperLoggerEnabled())
                 .resultStorageProvider(chainDeal.getParams().getIexecResultStorageProvider())
+                .resultEncryption(chainDeal.getParams().getIexecResultEncryption())
                 .datasetUri(datasetURI)
                 .botSize(chainDeal.botSize.intValue())
                 .botFirstIndex(chainDeal.botFirst.intValue())

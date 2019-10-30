@@ -22,12 +22,13 @@ public class TaskDescription {
     private String cmd;
     private long maxExecutionTime;
     private boolean isTeeTask;
+    private int botIndex;
+    private int botSize;
+    private int botFirstIndex;
     private boolean developerLoggerEnabled;
     private String datasetUri;
     private List<String> inputFiles;
     private String resultStorageProvider;
-    private int botIndex;
-    private int botSize;
-    private int botFirstIndex;
+    private String resultEncryption;
 
 }
