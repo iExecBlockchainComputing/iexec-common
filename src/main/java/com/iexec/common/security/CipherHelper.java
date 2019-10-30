@@ -152,23 +152,7 @@ public class CipherHelper {
 
         return null;
     }
-
-
-    /*
-     * Read RSA publicKey from file
-     * */
-    /*
-    public static PublicKey getRsaPlainTextKey(String keyFilePath) {
-        PublicKey publicKey = null;
-        try {
-            byte[] keyBytes = Files.readAllBytes(new File(keyFilePath).toPath());
-            publicKey = plainText2RsaPublicKey(keyBytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return publicKey;
-    }*/
-
+    
     /*
      * Read RSA publicKey from fileBytes
      * */
