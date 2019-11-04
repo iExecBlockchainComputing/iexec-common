@@ -63,6 +63,9 @@ dependencies {
 
     // package cloud
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
+
+    // assertj
+    testCompile("org.assertj:assertj-core:3.11.1")
 }
 
 test {

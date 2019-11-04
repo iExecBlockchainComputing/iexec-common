@@ -1,5 +1,6 @@
 package com.iexec.common.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iexec.common.utils.BytesUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,14 +31,17 @@ public class Signature {
         this(sign.getR(), sign.getS(), sign.getV());
     }
 
+    @JsonIgnore
     public byte[] getR(){
         return Arrays.copyOfRange(BytesUtils.stringToBytes(value), 0, 32);
     }
 
+    @JsonIgnore
     public byte[] getS(){
         return Arrays.copyOfRange(BytesUtils.stringToBytes(value), 32, 64);
     }
 
+    @JsonIgnore
     public byte[] getV(){
         return new byte[]{BytesUtils.stringToBytes(value)[64]};
     }

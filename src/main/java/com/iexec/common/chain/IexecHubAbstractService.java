@@ -395,6 +395,8 @@ public abstract class IexecHubAbstractService {
 
         return Optional.of(TaskDescription.builder()
                 .chainTaskId(chainTaskId)
+                .requester(chainDeal.getRequester())
+                .beneficiary(chainDeal.getBeneficiary())
                 .appType(DappType.DOCKER)
                 .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp().getUri()))
                 .cmd(chainDeal.getParams().getIexecArgs())
@@ -402,6 +404,8 @@ public abstract class IexecHubAbstractService {
                 .maxExecutionTime(chainDeal.getChainCategory().getMaxExecutionTime())
                 .isTeeTask(TeeUtils.isTeeTag(chainDeal.getTag()))
                 .developerLoggerEnabled(chainDeal.getParams().isIexecDeveloperLoggerEnabled())
+                .resultStorageProvider(chainDeal.getParams().getIexecResultStorageProvider())
+                .resultEncryption(chainDeal.getParams().getIexecResultEncryption())
                 .datasetUri(datasetURI)
                 .botSize(chainDeal.botSize.intValue())
                 .botFirstIndex(chainDeal.botFirst.intValue())
