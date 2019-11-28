@@ -18,5 +18,6 @@ public class WorkerModel {
     private int cpuNb;
     private int memorySize;
     private boolean teeEnabled;
+    private boolean gpuEnabled;
 }
 
