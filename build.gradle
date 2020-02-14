@@ -66,6 +66,9 @@ dependencies {
 
     // assertj
     testCompile("org.assertj:assertj-core:3.11.1")
+
+    // zip
+    compile 'net.lingala.zip4j:zip4j:2.3.1'
 }
 
 test {

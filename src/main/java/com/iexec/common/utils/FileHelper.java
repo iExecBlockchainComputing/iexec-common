@@ -1,6 +1,8 @@
 package com.iexec.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.web3j.crypto.Hash;
 
@@ -40,7 +42,7 @@ public class FileHelper {
     public static byte[] readFileBytes(String filePath) {
         String content = readFile(filePath);
 
-        if (!content.isEmpty()){
+        if (!content.isEmpty()) {
             return content.getBytes();
         }
         return null;
@@ -165,6 +167,27 @@ public class FileHelper {
             log.error("Failed to zip folder [path:{}]", zipFilePath);
         }
         return null;
+    }
+
+    // TODO: Use same lib for zipping
+    public static boolean unZipFile(String zipFilePath, String destDirPath) {
+        if (zipFilePath == null || zipFilePath.isEmpty() || !new File(zipFilePath).exists()) {
+            log.error("Failed to unZipFile (missing zipFile) [zipFilePath:{}, destDirPath:{}]", zipFilePath, destDirPath);
+            return false;
+        }
+
+        if (destDirPath == null || destDirPath.isEmpty()) {
+            log.error("Failed to unZipFile (missing destDirPath) [zipFilePath:{}, destDirPath:{}]", zipFilePath, destDirPath);
+            return false;
+        }
+
+        try {
+            new ZipFile(zipFilePath).extractAll(destDirPath);
+            return true;
+        } catch (ZipException e) {
+            log.error("Failed to unZipFile (can't extract) [zipFilePath:{}, destDirPath:{}]" + zipFilePath + destDirPath);
+        }
+        return false;
     }
 
     public static boolean replaceFile(String toBeReplaced, String replacer) {
