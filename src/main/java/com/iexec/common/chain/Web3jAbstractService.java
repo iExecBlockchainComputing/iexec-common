@@ -51,13 +51,13 @@ public abstract class Web3jAbstractService {
                     log.info("Connected to Ethereum node [address:{}, version:{}]", chainNodeAddress, web3j.web3ClientVersion().send().getWeb3ClientVersion());
                     return web3j;
                 }
-            } catch (IOException ignored) {
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
             int fewSeconds = 5;
-            WaitUtils.sleep(fewSeconds);
             log.error("Failed to connect to ethereum node (will retry) [chainNodeAddress:{}, retryIn:{}]",
                     chainNodeAddress, fewSeconds);
+            WaitUtils.sleep(fewSeconds);
             return getWeb3j(shouldCheckConnection);
         }
         return web3j;
