@@ -25,6 +25,7 @@ public abstract class Web3jAbstractService {
     private final float gasPriceMultiplier;
     private final long gasPriceCap;
     private final boolean isSidechain;
+    private Web3j web3j;
 
     public Web3jAbstractService(String chainNodeAddress,
                                 float gasPriceMultiplier,
@@ -43,7 +44,7 @@ public abstract class Web3jAbstractService {
     }
 
     public Web3j getWeb3j(boolean shouldCheckConnection) {
-        Web3j web3j = Web3j.build(new HttpService(chainNodeAddress));
+        web3j = Web3j.build(new HttpService(chainNodeAddress));
         if (shouldCheckConnection){
             try {
                 if (web3j.web3ClientVersion().send().getWeb3ClientVersion() != null) {

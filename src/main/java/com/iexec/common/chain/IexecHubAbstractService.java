@@ -11,7 +11,6 @@ import org.web3j.abi.EventEncoder;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.tuples.generated.Tuple3;
@@ -45,6 +44,10 @@ public abstract class IexecHubAbstractService {
         String hubAddress = getHubContract().getContractAddress();
         String clerkAddress = getClerkContract().getContractAddress();
         log.info("Abstract IexecHubService initialized [hubAddress:{}, clerkAddress:{}]", hubAddress, clerkAddress);
+    }
+
+    private static int scoreToWeight(int workerScore) {
+        return Math.max(workerScore / 3, 3) - 1;
     }
 
     /*
@@ -293,16 +296,12 @@ public abstract class IexecHubAbstractService {
 
     public int getWorkerWeight(String address) {
         Optional<Integer> workerScore = getWorkerScore(address);
-        if (!workerScore.isPresent()){
+        if (!workerScore.isPresent()) {
             return 0;
         }
         int weight = scoreToWeight(workerScore.get());
         log.info("Get worker weight [address:{}, score:{}, weight:{}]", address, workerScore.get(), weight);
         return weight;
-    }
-
-    private static int scoreToWeight(int workerScore) {
-        return Math.max(workerScore / 3, 3) - 1;
     }
 
     public Ownable getOwnableContract(String address) {
@@ -322,7 +321,7 @@ public abstract class IexecHubAbstractService {
     public String getOwner(String address) {
         Ownable ownableContract = getOwnableContract(address);
 
-        if (ownableContract != null){
+        if (ownableContract != null) {
             try {
                 return ownableContract.owner().send();
             } catch (Exception e) {
@@ -346,17 +345,17 @@ public abstract class IexecHubAbstractService {
     }
 
 
-    protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId, ChainStatus taskStatus,
+    protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId, ChainStatus onchainStatus,
                                                               BiFunction<String, ChainStatus, Boolean> isStatusValidOnChainFunction) {
         long maxWaitingTime = web3jAbstractService.getMaxWaitingTimeWhenPendingReceipt();
         log.info("Waiting for on-chain status after pending receipt [chainTaskId:{}, status:{}, maxWaitingTime:{}]",
-                chainTaskId, taskStatus, maxWaitingTime);
+                chainTaskId, onchainStatus, maxWaitingTime);
 
         final long startTime = System.currentTimeMillis();
         long duration = 0;
         while (duration < maxWaitingTime) {
             try {
-                if (isStatusValidOnChainFunction.apply(chainTaskId, taskStatus)) {
+                if (isStatusValidOnChainFunction.apply(chainTaskId, onchainStatus)) {
                     return true;
                 }
                 Thread.sleep(500);
