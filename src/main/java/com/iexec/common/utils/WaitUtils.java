@@ -17,4 +17,12 @@ public class WaitUtils {
         }
     }
 
+    public static void sleepMs(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            log.error("Failed to sleepMs [duration:{}, exception:{}]", ms, e.getMessage());
+        }
+    }
+
 }
