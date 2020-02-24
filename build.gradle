@@ -85,7 +85,8 @@ build.dependsOn(shadowJar)
 
 def gitBranch = 'git name-rev --name-only HEAD'.execute().text.trim()
 def isMasterBranch = gitBranch == "master"
-def canUploadArchives = isMasterBranch
+def isDevelopBranch = gitBranch == "develop"
+def canUploadArchives = isMasterBranch || isDevelopBranch
 def isSnapshotVersion = project.version.contains("SNAPSHOT")
 
 project.ext.getNexusMaven = {
