@@ -11,7 +11,6 @@ import org.web3j.abi.EventEncoder;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.tuples.generated.Tuple3;
@@ -32,7 +31,6 @@ public abstract class IexecHubAbstractService {
 
     public static final String PENDING_RECEIPT_STATUS = "pending";
     private final Credentials credentials;
-    private final Web3j web3j;
     private final String iexecHubAddress;
     private final Web3jAbstractService web3jAbstractService;
 
@@ -42,11 +40,14 @@ public abstract class IexecHubAbstractService {
         this.credentials = credentials;
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
-        web3j = web3jAbstractService.getWeb3j();
 
         String hubAddress = getHubContract().getContractAddress();
         String clerkAddress = getClerkContract().getContractAddress();
         log.info("Abstract IexecHubService initialized [hubAddress:{}, clerkAddress:{}]", hubAddress, clerkAddress);
+    }
+
+    private static int scoreToWeight(int workerScore) {
+        return Math.max(workerScore / 3, 3) - 1;
     }
 
     /*
@@ -59,7 +60,7 @@ public abstract class IexecHubAbstractService {
         if (iexecHubAddress != null && !iexecHubAddress.isEmpty()) {
             try {
                 return IexecHubABILegacy.load(
-                        iexecHubAddress, web3j, credentials, contractGasProvider);
+                        iexecHubAddress, web3jAbstractService.getWeb3j(), credentials, contractGasProvider);
             } catch (EnsResolutionException e) {
                 throw exceptionInInitializerError;
             }
@@ -83,7 +84,7 @@ public abstract class IexecHubAbstractService {
             if (addressClerk == null || addressClerk.isEmpty()) {
                 throw exceptionInInitializerError;
             }
-            return IexecClerkABILegacy.load(addressClerk, web3j, credentials, contractGasProvider);
+            return IexecClerkABILegacy.load(addressClerk, web3jAbstractService.getWeb3j(), credentials, contractGasProvider);
         } catch (Exception e) {
             log.error("Failed to load clerk [error:{}]", e.getMessage());
             return null;
@@ -101,7 +102,7 @@ public abstract class IexecHubAbstractService {
                 throw exceptionInInitializerError;
             }
 
-            return App.load(appAddress, web3j, credentials, new DefaultGasProvider());
+            return App.load(appAddress, web3jAbstractService.getWeb3j(), credentials, new DefaultGasProvider());
         } catch (Exception e) {
             log.error("Failed to load chainApp [address:{}]", appAddress);
         }
@@ -115,7 +116,7 @@ public abstract class IexecHubAbstractService {
                 throw exceptionInInitializerError;
             }
 
-            return Dataset.load(datasetAddress, web3j, credentials, new DefaultGasProvider());
+            return Dataset.load(datasetAddress, web3jAbstractService.getWeb3j(), credentials, new DefaultGasProvider());
         } catch (Exception e) {
             log.error("Failed to load chainDataset [address:{}]", datasetAddress);
         }
@@ -295,16 +296,12 @@ public abstract class IexecHubAbstractService {
 
     public int getWorkerWeight(String address) {
         Optional<Integer> workerScore = getWorkerScore(address);
-        if (!workerScore.isPresent()){
+        if (!workerScore.isPresent()) {
             return 0;
         }
         int weight = scoreToWeight(workerScore.get());
         log.info("Get worker weight [address:{}, score:{}, weight:{}]", address, workerScore.get(), weight);
         return weight;
-    }
-
-    private static int scoreToWeight(int workerScore) {
-        return Math.max(workerScore / 3, 3) - 1;
     }
 
     public Ownable getOwnableContract(String address) {
@@ -314,7 +311,7 @@ public abstract class IexecHubAbstractService {
                 throw exceptionInInitializerError;
             }
 
-            return Ownable.load(address, web3j, credentials, new DefaultGasProvider());
+            return Ownable.load(address, web3jAbstractService.getWeb3j(), credentials, new DefaultGasProvider());
         } catch (Exception e) {
             log.error("Failed to load Ownable [address:{}]", address);
         }
@@ -324,7 +321,7 @@ public abstract class IexecHubAbstractService {
     public String getOwner(String address) {
         Ownable ownableContract = getOwnableContract(address);
 
-        if (ownableContract != null){
+        if (ownableContract != null) {
             try {
                 return ownableContract.owner().send();
             } catch (Exception e) {
@@ -348,17 +345,17 @@ public abstract class IexecHubAbstractService {
     }
 
 
-    protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId, ChainStatus taskStatus,
+    protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId, ChainStatus onchainStatus,
                                                               BiFunction<String, ChainStatus, Boolean> isStatusValidOnChainFunction) {
         long maxWaitingTime = web3jAbstractService.getMaxWaitingTimeWhenPendingReceipt();
         log.info("Waiting for on-chain status after pending receipt [chainTaskId:{}, status:{}, maxWaitingTime:{}]",
-                chainTaskId, taskStatus, maxWaitingTime);
+                chainTaskId, onchainStatus, maxWaitingTime);
 
         final long startTime = System.currentTimeMillis();
         long duration = 0;
         while (duration < maxWaitingTime) {
             try {
-                if (isStatusValidOnChainFunction.apply(chainTaskId, taskStatus)) {
+                if (isStatusValidOnChainFunction.apply(chainTaskId, onchainStatus)) {
                     return true;
                 }
                 Thread.sleep(500);
