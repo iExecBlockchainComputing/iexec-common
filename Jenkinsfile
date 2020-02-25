@@ -23,7 +23,10 @@ pipeline {
 
         stage('Upload Archive') {
             when {
-                branch 'master'
+                anyOf{
+                    branch 'master'
+                    branch 'develop'
+                }
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexus', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD']]) {
@@ -35,19 +38,25 @@ pipeline {
 
         stage ("Notify iexec-core") {
             when {
-                branch 'master'
+                anyOf{
+                    branch 'master'
+                    branch 'develop'
+                }
             }
             steps {
-                build job: 'iexec-core/master', propagate: true, wait: false
+                build job: 'iexec-core/'+ env.BRANCH_NAME, propagate: true, wait: false
             }
         }
 
         stage ("Notify iexec-worker") {
             when {
-                branch 'master'
+                anyOf{
+                    branch 'master'
+                    branch 'develop'
+                }
             }
             steps {
-                build job: 'iexec-worker/master', propagate: true, wait: false
+                build job: 'iexec-worker/'+ env.BRANCH_NAME, propagate: true, wait: false
             }
         }
 

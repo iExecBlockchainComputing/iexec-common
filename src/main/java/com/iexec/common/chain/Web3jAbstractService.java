@@ -7,12 +7,14 @@ import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static com.iexec.common.chain.ChainUtils.weiToEth;
 import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
@@ -21,48 +23,54 @@ import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
 public abstract class Web3jAbstractService {
 
     private final static long GAS_LIMIT_CAP = 500000;
-    private final Web3j web3j;
     private final float gasPriceMultiplier;
     private final long gasPriceCap;
     private final boolean isSidechain;
+    private String chainNodeAddress;
+    private Web3j web3j;
 
     public Web3jAbstractService(String chainNodeAddress,
                                 float gasPriceMultiplier,
                                 long gasPriceCap,
                                 boolean isSidechain) {
-        this.web3j = getWeb3j(chainNodeAddress);
+        this.chainNodeAddress = chainNodeAddress;
         this.gasPriceMultiplier = gasPriceMultiplier;
         this.gasPriceCap = gasPriceCap;
         this.isSidechain = isSidechain;
+
+        this.getWeb3j(true); //let's check eth node connection at boot
     }
 
     public static BigInteger getMaxTxCost(long gasPriceCap) {
         return BigInteger.valueOf(GAS_LIMIT_CAP * gasPriceCap);
     }
 
-    private Web3j getWeb3j(String chainNodeAddress) {
-        Web3j web3j = Web3j.build(new HttpService(chainNodeAddress));
-        try {
-            if (web3j.web3ClientVersion().send().getWeb3ClientVersion() != null) {
-                log.info("Connected to Ethereum node [address:{}, version:{}]", chainNodeAddress, web3j.web3ClientVersion().send().getWeb3ClientVersion());
-                return web3j;
+    public Web3j getWeb3j(boolean shouldCheckConnection) {
+        web3j = Web3j.build(new HttpService(chainNodeAddress));
+        if (shouldCheckConnection) {
+            try {
+                if (web3j.web3ClientVersion().send().getWeb3ClientVersion() != null) {
+                    log.info("Connected to Ethereum node [address:{}, version:{}]", chainNodeAddress, web3j.web3ClientVersion().send().getWeb3ClientVersion());
+                    return web3j;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException ignored) {
+            int fewSeconds = 5;
+            log.error("Failed to connect to ethereum node (will retry) [chainNodeAddress:{}, retryIn:{}]",
+                    chainNodeAddress, fewSeconds);
+            WaitUtils.sleep(fewSeconds);
+            return getWeb3j(shouldCheckConnection);
         }
-        
-        int fewSeconds = 5;
-        WaitUtils.sleep(fewSeconds);
-        log.error("Failed to connect to ethereum node (will retry) [chainNodeAddress:{}, retryIn:{}]",
-                chainNodeAddress, fewSeconds);
-        return getWeb3j(chainNodeAddress);
-    }
-
-    public Web3j getWeb3j() {
         return web3j;
     }
 
+    public Web3j getWeb3j() {
+        return getWeb3j(false);
+    }
+
     public EthBlock.Block getLatestBlock() throws IOException {
-        return web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock();
+        return getWeb3j().ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock();
     }
 
     public long getLatestBlockNumber() {
@@ -75,7 +83,7 @@ public abstract class Web3jAbstractService {
     }
 
     private EthBlock.Block getBlock(long blockNumber) throws IOException {
-        return web3j.ethGetBlockByNumber(DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber)),
+        return getWeb3j().ethGetBlockByNumber(DefaultBlockParameter.valueOf(BigInteger.valueOf(blockNumber)),
                 false).send().getBlock();
     }
 
@@ -130,6 +138,26 @@ public abstract class Web3jAbstractService {
         return maxWaitingTime;
     }
 
+    public long getAverageTimePerBlock() {//in ms
+        long defaultTime = TransactionManager.DEFAULT_POLLING_FREQUENCY; // 15sec
+        int NB_OF_BLOCKS = 10;
+
+        try {
+            EthBlock.Block latestBlock = getLatestBlock();
+
+            long latestBlockNumber = latestBlock.getNumber().longValue();
+
+            BigInteger latestBlockTimestamp = latestBlock.getTimestamp();
+            BigInteger tenBlocksAgoTimestamp = getBlock(latestBlockNumber - NB_OF_BLOCKS).getTimestamp();
+
+            defaultTime = ((latestBlockTimestamp.longValue() - tenBlocksAgoTimestamp.longValue()) / NB_OF_BLOCKS) * 1000L;
+        } catch (IOException e) {
+            log.error("Failed to getAverageTimePerBlock");
+            e.printStackTrace();
+        }
+        return defaultTime;
+    }
+
     public boolean hasEnoughGas(String address) {
         // if a sidechain is used, there is no need to check if the wallet has enough gas.
         // if mainnet is used, the check should be done.
@@ -160,7 +188,7 @@ public abstract class Web3jAbstractService {
 
     public Optional<BigInteger> getBalance(String address) {
         try {
-            return Optional.of(web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send().getBalance());
+            return Optional.of(getWeb3j().ethGetBalance(address, DefaultBlockParameterName.LATEST).send().getBalance());
         } catch (IOException e) {
             return Optional.empty();
         }
@@ -168,7 +196,7 @@ public abstract class Web3jAbstractService {
 
     public Optional<BigInteger> getNetworkGasPrice() {
         try {
-            BigInteger gasPrice = web3j.ethGasPrice().send().getGasPrice();
+            BigInteger gasPrice = getWeb3j().ethGasPrice().send().getGasPrice();
             return Optional.of(gasPrice);
         } catch (IOException e) {
             log.error("getNetworkGasPrice failed");
@@ -258,5 +286,42 @@ public abstract class Web3jAbstractService {
                 return BigInteger.valueOf(GAS_LIMIT_CAP);
             }
         };
+    }
+
+    /*
+     * Below method:
+     *
+     * - checks any function `boolean myMethod(String s1, String s2, ...)`
+     * - waits a certain amount of time between checks (waits a certain number of blocks)
+     * - stops checking after a certain number of tries
+     *
+     * */
+    //TODO: Add a cache for getAverageTimePerBlock();
+    public boolean repeatCheck(int nbBlocksToWaitPerTry, int maxTry, String logTag, Function<String[], Boolean> function, String... functionArgs) {
+        if (maxTry < 1) {
+            maxTry = 1;
+        }
+
+        if (nbBlocksToWaitPerTry < 1) {
+            nbBlocksToWaitPerTry = 1;
+        }
+
+        long timePerBlock = this.getAverageTimePerBlock();
+        long msToWait = nbBlocksToWaitPerTry * timePerBlock;
+
+        int i = 0;
+        while (i < maxTry) {
+            if (function.apply(functionArgs)) {
+                log.info("Verified check [try:{}, function:{}, args:{}, maxTry:{}, msToWait:{}, msPerBlock:{}]",
+                        i + 1, logTag, functionArgs, maxTry, msToWait, timePerBlock);
+                return true;
+            }
+            i++;
+            WaitUtils.sleepMs(msToWait);
+        }
+
+        log.error("Still wrong check [function:{}, args:{}, maxTry:{}, msToWait:{}, msPerBlock:{}]",
+                logTag, functionArgs, maxTry, msToWait, timePerBlock);
+        return false;
     }
 }
