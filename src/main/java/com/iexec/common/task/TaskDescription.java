@@ -29,6 +29,7 @@ public class TaskDescription {
     private String datasetUri;
     private List<String> inputFiles;
     private String resultStorageProvider;
+    private String resultStorageProxy;
     private String resultEncryption;
 
 }
