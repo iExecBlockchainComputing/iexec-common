@@ -40,8 +40,6 @@ ext {
 }
 
 dependencies {
-    testCompile "junit:junit:$junitVersion"
-
     // web3j dependency
     compile "org.web3j:core:$web3jVersion"
     
@@ -61,14 +59,17 @@ dependencies {
     compileOnly "org.projectlombok:lombok:1.18.2"
     annotationProcessor "org.projectlombok:lombok:1.18.2"
 
+    // zip
+    compile 'net.lingala.zip4j:zip4j:2.3.1'
+
+    // 1. Use Guava in your implementation only:
+    implementation("com.google.guava:guava:28.2-jre")
+
     // package cloud
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
 
-    // assertj
+    testCompile "junit:junit:$junitVersion"
     testCompile("org.assertj:assertj-core:3.11.1")
-
-    // zip
-    compile 'net.lingala.zip4j:zip4j:2.3.1'
 }
 
 test {
