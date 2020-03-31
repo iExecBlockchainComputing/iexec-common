@@ -82,7 +82,7 @@ test {
 
 shadowJar { //required if we want to embed web3j dependency inside
     baseName = rootProject.name
-    classifier = null
+    from sourceSets.main.allSource
     version = version
 }
 
