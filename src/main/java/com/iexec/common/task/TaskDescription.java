@@ -28,8 +28,8 @@ public class TaskDescription {
     private boolean developerLoggerEnabled;
     private String datasetUri;
     private List<String> inputFiles;
+    private boolean isResultEncryption;
     private String resultStorageProvider;
     private String resultStorageProxy;
-    private String resultEncryption;
 
 }

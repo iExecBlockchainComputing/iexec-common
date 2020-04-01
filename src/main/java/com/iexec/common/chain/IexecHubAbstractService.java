@@ -403,7 +403,7 @@ public abstract class IexecHubAbstractService {
                 .developerLoggerEnabled(chainDeal.getParams().isIexecDeveloperLoggerEnabled())
                 .resultStorageProvider(chainDeal.getParams().getIexecResultStorageProvider())
                 .resultStorageProxy(chainDeal.getParams().getIexecResultStorageProxy())
-                .resultEncryption(chainDeal.getParams().getIexecResultEncryption())
+                .isResultEncryption(chainDeal.getParams().isIexecResultEncryption())
                 .datasetUri(datasetURI)
                 .botSize(chainDeal.botSize.intValue())
                 .botFirstIndex(chainDeal.botFirst.intValue())

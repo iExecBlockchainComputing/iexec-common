@@ -22,13 +22,14 @@ public class DealParams {
     @JsonProperty("iexec_developer_logger")
     private boolean iexecDeveloperLoggerEnabled;
 
+    @JsonProperty("iexec_result_encryption")
+    private boolean iexecResultEncryption;
+
     @JsonProperty("iexec_result_storage_provider")
     private String iexecResultStorageProvider;
 
     @JsonProperty("iexec_result_storage_proxy")
     private String iexecResultStorageProxy;
 
-    @JsonProperty("iexec_result_encryption")
-    private String iexecResultEncryption;
 
 }
