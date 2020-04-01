@@ -404,6 +404,8 @@ public abstract class IexecHubAbstractService {
                 .resultStorageProvider(chainDeal.getParams().getIexecResultStorageProvider())
                 .resultStorageProxy(chainDeal.getParams().getIexecResultStorageProxy())
                 .isResultEncryption(chainDeal.getParams().isIexecResultEncryption())
+                .teePostComputeImage(chainDeal.getParams().getIexecTeePostComputeImage())
+                .teePostComputeFingerprint(chainDeal.getParams().getIexecTeePostComputeFingerprint())
                 .datasetUri(datasetURI)
                 .botSize(chainDeal.botSize.intValue())
                 .botFirstIndex(chainDeal.botFirst.intValue())

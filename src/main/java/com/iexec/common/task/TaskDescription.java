@@ -1,5 +1,6 @@
 package com.iexec.common.task;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.iexec.common.dapp.DappType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,5 +32,7 @@ public class TaskDescription {
     private boolean isResultEncryption;
     private String resultStorageProvider;
     private String resultStorageProxy;
+    private String teePostComputeImage;
+    private String teePostComputeFingerprint;
 
 }

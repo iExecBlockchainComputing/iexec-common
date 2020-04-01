@@ -31,5 +31,13 @@ public class DealParams {
     @JsonProperty("iexec_result_storage_proxy")
     private String iexecResultStorageProxy;
 
+    //Should be set by SDK
+    @JsonProperty("iexec_tee_post_compute_image")
+    private String iexecTeePostComputeImage;
+
+    //Should be set by SDK
+    @JsonProperty("iexec_tee_post_compute_fingerprint")
+    private String iexecTeePostComputeFingerprint;
+
 
 }
