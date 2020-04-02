@@ -1,6 +1,7 @@
 package com.iexec.common.tee;
 
 import com.iexec.common.utils.BytesUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 public class TeeUtils {
 
@@ -17,6 +18,18 @@ public class TeeUtils {
 
     public static boolean isTeeChallenge(String challenge){
         return challenge != null && !challenge.equals(BytesUtils.EMPTY_ADDRESS);
+    }
+
+    /*
+     * CAS does not accept boolean in yml (Failed to generateSecureSession)
+     * We need to convert boolean into String
+     * */
+    public static String booleanToYesNo(boolean isTrue) {
+        return BooleanUtils.toStringYesNo(isTrue);
+    }
+
+    public static boolean booleanFromYesNo(String isYes) {
+        return isYes!= null && isYes.equals("yes");
     }
 
 }
