@@ -257,6 +257,7 @@ public abstract class IexecHubAbstractService {
                         .type(app.m_appType().send())
                         .uri(BytesUtils.bytesToString(app.m_appMultiaddr().send()))
                         .checksum(BytesUtils.bytesToString(app.m_appChecksum().send()))
+                        .fingerprint(BytesUtils.hexStringToAscii(BytesUtils.bytesToString(app.m_appMREnclave().send())))
                         .build());
             } catch (Exception e) {
                 log.error("Failed to get ChainApp [chainAppId:{}]", app.getContractAddress());
