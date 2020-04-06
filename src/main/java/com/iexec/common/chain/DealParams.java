@@ -12,6 +12,9 @@ import java.util.List;
 @Getter
 public class DealParams {
 
+    public static final String IPFS_RESULT_STORAGE_PROVIDER = "ipfs";
+    public static final String DROPBOX_RESULT_STORAGE_PROVIDER = "dropbox";
+
     // Note to dev: the naming of the variables in the json file is important since it will be stored on-chain
     @JsonProperty("iexec_args")
     private String iexecArgs;
