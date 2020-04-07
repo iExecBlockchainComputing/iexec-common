@@ -1,12 +1,27 @@
 package com.iexec.common.chain;
 
-import com.iexec.common.contract.generated.*;
+import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
+import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
+import static com.iexec.common.chain.ChainDeal.stringToDealParams;
+import static com.iexec.common.contract.generated.IexecHubABILegacy.TASKCONSENSUS_EVENT;
+import static com.iexec.common.contract.generated.IexecHubABILegacy.TASKCONTRIBUTE_EVENT;
+import static com.iexec.common.contract.generated.IexecHubABILegacy.TASKREVEAL_EVENT;
+
+import java.math.BigInteger;
+import java.util.Optional;
+import java.util.function.BiFunction;
+
+import com.iexec.common.contract.generated.App;
+import com.iexec.common.contract.generated.Dataset;
+import com.iexec.common.contract.generated.IexecClerkABILegacy;
+import com.iexec.common.contract.generated.IexecHubABILegacy;
+import com.iexec.common.contract.generated.Ownable;
 import com.iexec.common.dapp.DappType;
 import com.iexec.common.task.TaskDescription;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.MultiAddressHelper;
-import lombok.extern.slf4j.Slf4j;
+
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.crypto.Credentials;
@@ -19,12 +34,8 @@ import org.web3j.tuples.generated.Tuple9;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 
-import java.math.BigInteger;
-import java.util.Optional;
-import java.util.function.BiFunction;
+import lombok.extern.slf4j.Slf4j;
 
-import static com.iexec.common.chain.ChainDeal.stringToDealParams;
-import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
 
 @Slf4j
 public abstract class IexecHubAbstractService {
@@ -33,13 +44,25 @@ public abstract class IexecHubAbstractService {
     private final Credentials credentials;
     private final String iexecHubAddress;
     private final Web3jAbstractService web3jAbstractService;
+    private int nbBlocksToWaitPerRetry;
+    private int maxRetries;
 
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress) {
+        this(credentials, web3jAbstractService, iexecHubAddress, 6, 3);
+    }
+
+    public IexecHubAbstractService(Credentials credentials,
+                                   Web3jAbstractService web3jAbstractService,
+                                   String iexecHubAddress,
+                                   int nbBlocksToWaitPerRetry,
+                                   int maxRetries) {
         this.credentials = credentials;
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
+        this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
+        this.maxRetries = maxRetries;
 
         String hubAddress = getHubContract().getContractAddress();
         String clerkAddress = getClerkContract().getContractAddress();
@@ -516,5 +539,43 @@ public abstract class IexecHubAbstractService {
         ethFilter.addSingleTopic(EventEncoder.encode(event));
 
         return ethFilter;
+    }
+
+    public boolean repeatIsContributedTrue(String chainTaskId, String walletAddress) {
+        return web3jAbstractService.repeatCheck(nbBlocksToWaitPerRetry, maxRetries, "isContributedTrue",
+                this::isContributedTrue, chainTaskId, walletAddress);
+    }
+
+    public boolean repeatIsRevealedTrue(String chainTaskId, String walletAddress) {
+        return web3jAbstractService.repeatCheck(nbBlocksToWaitPerRetry, maxRetries, "isRevealedTrue",
+                this::isRevealedTrue, chainTaskId, walletAddress);
+    }
+
+    private boolean isContributedTrue(String... args) {
+        return this.isStatusTrueOnChain(args[0], args[1], CONTRIBUTED);
+    }
+
+    private boolean isRevealedTrue(String... args) {
+        return this.isStatusTrueOnChain(args[0], args[1], REVEALED);
+    }
+
+    public boolean isStatusTrueOnChain(String chainTaskId, String walletAddress, ChainContributionStatus wishedStatus) {
+        Optional<ChainContribution> optional = getChainContribution(chainTaskId, walletAddress);
+        if (!optional.isPresent()) {
+            return false;
+        }
+
+        ChainContribution chainContribution = optional.get();
+        ChainContributionStatus chainStatus = chainContribution.getStatus();
+        switch (wishedStatus) {
+            case CONTRIBUTED:
+                // has at least contributed
+                return chainStatus.equals(CONTRIBUTED) || chainStatus.equals(REVEALED);
+            case REVEALED:
+                // has at least revealed
+                return chainStatus.equals(REVEALED);
+            default:
+                return false;
+        }
     }
 }
