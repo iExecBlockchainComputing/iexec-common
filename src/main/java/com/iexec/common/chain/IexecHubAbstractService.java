@@ -41,18 +41,28 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class IexecHubAbstractService {
 
     public static final String PENDING_RECEIPT_STATUS = "pending";
-    private final static int NB_BLOCKS_TO_WAIT_PER_TRY = 6;
-    private final static int MAX_TRY = 3;
     private final Credentials credentials;
     private final String iexecHubAddress;
     private final Web3jAbstractService web3jAbstractService;
+    private int nbBlocksToWaitPerRetry;
+    private int maxRetries;
 
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress) {
+        this(credentials, web3jAbstractService, iexecHubAddress, 6, 3);
+    }
+
+    public IexecHubAbstractService(Credentials credentials,
+                                   Web3jAbstractService web3jAbstractService,
+                                   String iexecHubAddress,
+                                   int nbBlocksToWaitPerRetry,
+                                   int maxRetries) {
         this.credentials = credentials;
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
+        this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
+        this.maxRetries = maxRetries;
 
         String hubAddress = getHubContract().getContractAddress();
         String clerkAddress = getClerkContract().getContractAddress();
@@ -532,12 +542,12 @@ public abstract class IexecHubAbstractService {
     }
 
     public boolean repeatIsContributedTrue(String chainTaskId, String walletAddress) {
-        return web3jAbstractService.repeatCheck(NB_BLOCKS_TO_WAIT_PER_TRY, MAX_TRY, "isContributedTrue",
+        return web3jAbstractService.repeatCheck(nbBlocksToWaitPerRetry, maxRetries, "isContributedTrue",
                 this::isContributedTrue, chainTaskId, walletAddress);
     }
 
     public boolean repeatIsRevealedTrue(String chainTaskId, String walletAddress) {
-        return web3jAbstractService.repeatCheck(NB_BLOCKS_TO_WAIT_PER_TRY, MAX_TRY, "isRevealedTrue",
+        return web3jAbstractService.repeatCheck(nbBlocksToWaitPerRetry, maxRetries, "isRevealedTrue",
                 this::isRevealedTrue, chainTaskId, walletAddress);
     }
 
