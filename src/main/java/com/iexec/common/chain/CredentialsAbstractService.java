@@ -5,11 +5,15 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import com.iexec.common.security.Signature;
+import com.iexec.common.utils.SignatureUtils;
+
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.utils.Numeric;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,5 +45,13 @@ public abstract class CredentialsAbstractService {
 
     public Credentials getCredentials() {
         return credentials;
+    }
+
+    /* 
+    * Signs messages with Ethereum prefix
+    */
+    public Signature hashAndSignMessage(String message) {
+        String hexPrivateKey = Numeric.toHexStringWithPrefix(credentials.getEcKeyPair().getPrivateKey());
+        return SignatureUtils.signMessageHashAndGetSignature(message, hexPrivateKey);
     }
 }
