@@ -47,6 +47,9 @@ public abstract class CredentialsAbstractService {
         return credentials;
     }
 
+    /* 
+    * Signs messages with Ethereum prefix
+    */
     public Signature hashAndSignMessage(String message) {
         String hexPrivateKey = Numeric.toHexStringWithPrefix(credentials.getEcKeyPair().getPrivateKey());
         return SignatureUtils.signMessageHashAndGetSignature(message, hexPrivateKey);
