@@ -239,7 +239,7 @@ public class FileHelper {
         if (zipPath == null || !FilenameUtils.getExtension(zipPath).equals("zip")){
             return "";
         }
-        return FilenameUtils.removeExtension("zip");
+        return FilenameUtils.removeExtension(zipPath);
     }
 
     public static boolean replaceFile(String toBeReplaced, String replacer) {
