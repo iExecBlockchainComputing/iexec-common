@@ -52,7 +52,7 @@ public class CipherHelperTests {
     public void shouldEncryptAndDecryptWithRsaKeysFile() {
         byte[] originalData = getRandomByteArray(128);
 
-        String keyDirPath = "./src/test/resources";
+        String keyDirPath = "./src/test/resources/security";
 
         KeyPair rsaKeys = getRsaKeyPair(
                 keyDirPath + "/test_rsa_key.pub",
