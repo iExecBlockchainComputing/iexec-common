@@ -16,7 +16,7 @@ public class EncryptionHelper {
 
     public static final String AES_KEY_RSA_FILENAME = "aes-key.rsa";
     public static final String ENCRYPTION_PREFIX = "encrypted-";
-    public static final String DECRYPTION_PREFIX = "clear-";
+    public static final String DECRYPTION_PREFIX = "plain-";
 
     /*
      *
