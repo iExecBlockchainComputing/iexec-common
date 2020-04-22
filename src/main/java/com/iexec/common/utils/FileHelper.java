@@ -48,6 +48,21 @@ public class FileHelper {
         return null;
     }
 
+    /*
+     * TODO
+     * 1 - Rename FileHelper.readFile --> FileHelper.readStringFile
+     * 2 - Remove FileHelper.readFileBytes ?
+     * */
+    public static byte[] readAllBytes(String filePath) {
+        try {
+            return Files.readAllBytes(Paths.get(filePath));
+        } catch (IOException e) {
+            log.error("Failed to readAllBytes [filePath:{}]", filePath);
+        }
+
+        return null;
+    }
+
     public static boolean writeFile(String filePath, byte[] data) {
         try {
             Files.write(Paths.get(filePath), data);
