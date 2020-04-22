@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.web3j.crypto.Hash;
 
 import java.io.File;
@@ -203,6 +204,42 @@ public class FileHelper {
             log.error("Failed to unZipFile (can't extract) [zipFilePath:{}, destDirPath:{}]" + zipFilePath + destDirPath);
         }
         return false;
+    }
+
+    /*
+    * Will extract into a directory next to zip
+    *
+    * before
+    * └── some-content.zip
+    *
+    * after
+    * ├── some-content.zip
+    * └── some-content/
+    *     ├── file1
+    *     └── file2
+    *
+    * returns extractDirPath
+    * */
+    public static String unZipFile(String zipPath){
+        String extractDirPath = removeZipExtension(zipPath);
+        if (extractDirPath.isEmpty()){
+            log.error("unzip failed (removeZipExtension) [zipPath:{}]", zipPath);
+            return "";
+        }
+
+        boolean isExtracted = FileHelper.unZipFile(zipPath, extractDirPath);
+        if (!isExtracted){
+            log.error("unzip failed (unZipFile) [zipPath:{}]", zipPath);
+            return "";
+        }
+        return extractDirPath;
+    }
+
+    public static String removeZipExtension(String zipPath) {
+        if (zipPath == null || !FilenameUtils.getExtension(zipPath).equals("zip")){
+            return "";
+        }
+        return FilenameUtils.removeExtension("zip");
     }
 
     public static boolean replaceFile(String toBeReplaced, String replacer) {
