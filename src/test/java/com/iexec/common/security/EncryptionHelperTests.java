@@ -25,7 +25,7 @@ public class EncryptionHelperTests {
 
     private void removeOldFiles() {
         FileHelper.deleteFolder(DOT_SLASH + "encrypted-result-0xabc");
-        FileHelper.deleteFile(DOT_SLASH + "clear-result-0xabc.zip");
+        FileHelper.deleteFile(DOT_SLASH + "plain-result-0xabc.zip");
     }
 
     @Test
