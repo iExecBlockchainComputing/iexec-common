@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static com.iexec.common.chain.ChainUtils.weiToEth;
-import static com.iexec.common.contract.generated.IexecHubABILegacy.*;
+import static com.iexec.common.contract.generated.IexecInterfaceTokenABILegacy.*;
 
 @Slf4j
 public abstract class Web3jAbstractService {
