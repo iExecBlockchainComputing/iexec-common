@@ -3,7 +3,7 @@ package com.iexec.common.chain;
 import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
 import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
 import static com.iexec.common.chain.ChainDeal.stringToDealParams;
-import static com.iexec.common.contract.generated.IexecInterfaceTokenABILegacy.*;
+import static com.iexec.common.contract.generated.IexecHubContract.*;
 
 import java.math.BigInteger;
 import java.util.Optional;
@@ -63,8 +63,8 @@ public abstract class IexecHubAbstractService {
         this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
         this.maxRetries = maxRetries;
 
-        String hubAddress = getIexecHubWithToken().getContractAddress();
-        log.info("Abstract IexecHubService initialized [hubAddress:{}]", hubAddress);
+        String hubAddress = getHubContract().getContractAddress();
+        log.info("Abstract IexecHubService initialized (iexec proxy address) [hubAddress:{}]", hubAddress);
     }
 
     private static int scoreToWeight(int workerScore) {
@@ -72,15 +72,15 @@ public abstract class IexecHubAbstractService {
     }
 
     /*
-     * We wan't a fresh new instance of IexecHubABILegacy on each call in order to get
+     * We wan't a fresh new instance of IexecHubContract on each call in order to get
      * the last ContractGasProvider which depends on the gas price of the network
      */
-    public IexecInterfaceTokenABILegacy getIexecHubWithToken(ContractGasProvider contractGasProvider) {
+    public IexecHubContract getHubContract(ContractGasProvider contractGasProvider) {
         ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load IexecHub contract from address " + iexecHubAddress);
 
         if (iexecHubAddress != null && !iexecHubAddress.isEmpty()) {
             try {
-                return IexecInterfaceTokenABILegacy.load(
+                return IexecHubContract.load(
                         iexecHubAddress, web3jAbstractService.getWeb3j(), credentials, contractGasProvider);
             } catch (EnsResolutionException e) {
                 throw exceptionInInitializerError;
@@ -93,8 +93,8 @@ public abstract class IexecHubAbstractService {
     /*
      * This method should only be used for reading
      */
-    public IexecInterfaceTokenABILegacy getIexecHubWithToken() {
-        return getIexecHubWithToken(new DefaultGasProvider());
+    public IexecHubContract getHubContract() {
+        return getHubContract(new DefaultGasProvider());
     }
 
     public App getAppContract(String appAddress) {
@@ -152,7 +152,7 @@ public abstract class IexecHubAbstractService {
     }
 
     public Optional<ChainDeal> getChainDeal(String chainDealId) {
-        IexecInterfaceTokenABILegacy iexecHub = getIexecHubWithToken(new DefaultGasProvider());
+        IexecHubContract iexecHub = getHubContract(new DefaultGasProvider());
 
         byte[] chainDealIdBytes = BytesUtils.stringToBytes(chainDealId);
         try {
@@ -210,7 +210,7 @@ public abstract class IexecHubAbstractService {
 
     public Optional<ChainTask> getChainTask(String chainTaskId) {
         try {
-            return Optional.of(ChainTask.tuple2ChainTask(getIexecHubWithToken().viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send()));
+            return Optional.of(ChainTask.tuple2ChainTask(getHubContract().viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send()));
         } catch (Exception e) {
             log.error("Failed to get ChainTask [chainTaskId:{}]", chainTaskId);
         }
@@ -219,7 +219,7 @@ public abstract class IexecHubAbstractService {
 
     public Optional<ChainAccount> getChainAccount(String walletAddress) {
         try {
-            return Optional.of(ChainAccount.tuple2Account(getIexecHubWithToken(new DefaultGasProvider()).viewAccountABILegacy(walletAddress).send()));
+            return Optional.of(ChainAccount.tuple2Account(getHubContract(new DefaultGasProvider()).viewAccountABILegacy(walletAddress).send()));
         } catch (Exception e) {
             log.info("Failed to get ChainAccount");
         }
@@ -229,7 +229,7 @@ public abstract class IexecHubAbstractService {
     public Optional<ChainContribution> getChainContribution(String chainTaskId, String workerAddress) {
         try {
             return Optional.of(ChainContribution.tuple2Contribution(
-                    getIexecHubWithToken().viewContributionABILegacy(BytesUtils.stringToBytes(chainTaskId), workerAddress).send()));
+                    getHubContract().viewContributionABILegacy(BytesUtils.stringToBytes(chainTaskId), workerAddress).send()));
         } catch (Exception e) {
             log.error("Failed to get ChainContribution [chainTaskId:{}, workerAddress:{}]", chainTaskId, workerAddress);
         }
@@ -238,7 +238,7 @@ public abstract class IexecHubAbstractService {
 
     public Optional<ChainCategory> getChainCategory(long id) {
         try {
-            Tuple3<String, String, BigInteger> category = getIexecHubWithToken().viewCategoryABILegacy(BigInteger.valueOf(id)).send();
+            Tuple3<String, String, BigInteger> category = getHubContract().viewCategoryABILegacy(BigInteger.valueOf(id)).send();
             return Optional.of(ChainCategory.tuple2ChainCategory(id,
                     category.getValue1(),
                     category.getValue2(),
@@ -288,7 +288,7 @@ public abstract class IexecHubAbstractService {
     public Optional<Integer> getWorkerScore(String address) {
         if (address != null && !address.isEmpty()) {
             try {
-                BigInteger workerScore = getIexecHubWithToken().viewScore(address).send();
+                BigInteger workerScore = getHubContract().viewScore(address).send();
                 return Optional.of(workerScore.intValue());
             } catch (Exception e) {
                 log.error("Failed to getWorkerScore [address:{}]", address);
@@ -336,7 +336,7 @@ public abstract class IexecHubAbstractService {
 
     public long getMaxNbOfPeriodsForConsensus() {
         try {
-            return getIexecHubWithToken().contribution_deadline_ratio().send().longValue();
+            return getHubContract().contribution_deadline_ratio().send().longValue();
         } catch (Exception e) {
             log.error("Failed to getMaxNbOfPeriodsForConsensus");
         }
@@ -433,7 +433,7 @@ public abstract class IexecHubAbstractService {
             return ChainReceipt.builder().build();
         }
 
-        IexecInterfaceTokenABILegacy iexecHub = getIexecHubWithToken();
+        IexecHubContract iexecHub = getHubContract();
         EthFilter ethFilter = createContributeEthFilter(fromBlock, latestBlock);
 
         // filter only taskContribute events for the chainTaskId and the worker's wallet
@@ -455,7 +455,7 @@ public abstract class IexecHubAbstractService {
         if (fromBlock > latestBlock) {
             return ChainReceipt.builder().build();
         }
-        IexecInterfaceTokenABILegacy iexecHub = getIexecHubWithToken();
+        IexecHubContract iexecHub = getHubContract();
         EthFilter ethFilter = createConsensusEthFilter(fromBlock, latestBlock);
 
         // filter only taskConsensus events for the chainTaskId (there should be only one)
@@ -475,7 +475,7 @@ public abstract class IexecHubAbstractService {
             return ChainReceipt.builder().build();
         }
 
-        IexecInterfaceTokenABILegacy iexecHub = getIexecHubWithToken();
+        IexecHubContract iexecHub = getHubContract();
         EthFilter ethFilter = createRevealEthFilter(fromBlock, latestBlock);
 
         // filter only taskReveal events for the chainTaskId and the worker's wallet
@@ -505,7 +505,7 @@ public abstract class IexecHubAbstractService {
     }
 
     private EthFilter createEthFilter(long fromBlock, long toBlock, Event event) {
-        IexecInterfaceTokenABILegacy iexecHub = getIexecHubWithToken();
+        IexecHubContract iexecHub = getHubContract();
         DefaultBlockParameter startBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(fromBlock));
         DefaultBlockParameter endBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(toBlock));
 

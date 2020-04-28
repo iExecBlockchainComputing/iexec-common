@@ -50,7 +50,13 @@ import org.web3j.tx.gas.ContractGasProvider;
  * <p>Generated with web3j version 4.5.16.
  */
 @SuppressWarnings("rawtypes")
-public class IexecInterfaceTokenABILegacy extends Contract {
+/*
+*
+* IexecInterfaceTokenABILegacy renamed to IexecHubContract
+*
+*
+* */
+public class IexecHubContract extends Contract {
     public static final String BINARY = "0x";
 
     public static final String FUNC_ALLOWANCE = "allowance";
@@ -306,20 +312,20 @@ public class IexecInterfaceTokenABILegacy extends Contract {
     }
 
     @Deprecated
-    protected IexecInterfaceTokenABILegacy(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+    protected IexecHubContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    protected IexecInterfaceTokenABILegacy(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+    protected IexecHubContract(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
         super(BINARY, contractAddress, web3j, credentials, contractGasProvider);
     }
 
     @Deprecated
-    protected IexecInterfaceTokenABILegacy(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+    protected IexecHubContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
-    protected IexecInterfaceTokenABILegacy(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+    protected IexecHubContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
         super(BINARY, contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
@@ -1883,39 +1889,39 @@ public class IexecInterfaceTokenABILegacy extends Contract {
     }
 
     @Deprecated
-    public static IexecInterfaceTokenABILegacy load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return new IexecInterfaceTokenABILegacy(contractAddress, web3j, credentials, gasPrice, gasLimit);
+    public static IexecHubContract load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return new IexecHubContract(contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
     @Deprecated
-    public static IexecInterfaceTokenABILegacy load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return new IexecInterfaceTokenABILegacy(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
+    public static IexecHubContract load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return new IexecHubContract(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
-    public static IexecInterfaceTokenABILegacy load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return new IexecInterfaceTokenABILegacy(contractAddress, web3j, credentials, contractGasProvider);
+    public static IexecHubContract load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+        return new IexecHubContract(contractAddress, web3j, credentials, contractGasProvider);
     }
 
-    public static IexecInterfaceTokenABILegacy load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return new IexecInterfaceTokenABILegacy(contractAddress, web3j, transactionManager, contractGasProvider);
+    public static IexecHubContract load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+        return new IexecHubContract(contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
-    public static RemoteCall<IexecInterfaceTokenABILegacy> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return deployRemoteCall(IexecInterfaceTokenABILegacy.class, web3j, credentials, contractGasProvider, BINARY, "");
-    }
-
-    @Deprecated
-    public static RemoteCall<IexecInterfaceTokenABILegacy> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(IexecInterfaceTokenABILegacy.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
-    }
-
-    public static RemoteCall<IexecInterfaceTokenABILegacy> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return deployRemoteCall(IexecInterfaceTokenABILegacy.class, web3j, transactionManager, contractGasProvider, BINARY, "");
+    public static RemoteCall<IexecHubContract> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+        return deployRemoteCall(IexecHubContract.class, web3j, credentials, contractGasProvider, BINARY, "");
     }
 
     @Deprecated
-    public static RemoteCall<IexecInterfaceTokenABILegacy> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(IexecInterfaceTokenABILegacy.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
+    public static RemoteCall<IexecHubContract> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(IexecHubContract.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
+    }
+
+    public static RemoteCall<IexecHubContract> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+        return deployRemoteCall(IexecHubContract.class, web3j, transactionManager, contractGasProvider, BINARY, "");
+    }
+
+    @Deprecated
+    public static RemoteCall<IexecHubContract> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(IexecHubContract.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
     }
 
     protected String getStaticDeployedAddress(String networkId) {
