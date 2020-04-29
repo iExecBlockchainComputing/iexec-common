@@ -5,7 +5,7 @@ import org.apache.commons.lang3.BooleanUtils;
 
 public class TeeUtils {
 
-    private static final String TEE_TAG = "0x0000000000000000000000000000000000000000000000000000000000000001";
+    public static final String TEE_TAG = "0x0000000000000000000000000000000000000000000000000000000000000001";
 
     private TeeUtils() {
         throw new UnsupportedOperationException();

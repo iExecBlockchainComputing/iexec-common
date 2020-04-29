@@ -5,6 +5,7 @@ import com.iexec.common.chain.ChainTask;
 import com.iexec.common.chain.ChainTaskStatus;
 import com.iexec.common.chain.ContributionAuthorization;
 import com.iexec.common.security.Signature;
+import com.iexec.common.tee.TeeUtils;
 
 public class TestUtils {
 
@@ -25,14 +26,14 @@ public class TestUtils {
     public static final String TASK_ID = "0x1111111111111111111111111111111111111111111111111111111111111111";
     public static final String DEAL_ID = "0x2222222222222222222222222222222222222222222222222222222222222222";
     
-    public static final String NULL_ADDRESS         = "0x0000000000000000000000000000000000000000";
+    public static final String NULL_ADDRESS         = BytesUtils.EMPTY_ADDRESS;
     public static final String APP_ADDRESS          = "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     public static final String REQUESTER_ADDRESS    = "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
     public static final String DATASET_ADDRESS      = "0xdddddddddddddddddddddddddddddddddddddddd";
     public static final String ENCLAVE_ADDRESS      = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
 
     public static final String NON_TEE_TAG =    "0x0000000000000000000000000000000000000000000000000000000000000000";
-    public static final String TEE_TAG =        "0x0000000000000000000000000000000000000000000000000000000000000001";
+    public static final String TEE_TAG =        TeeUtils.TEE_TAG;
 
     private TestUtils() {
         throw new UnsupportedOperationException();
