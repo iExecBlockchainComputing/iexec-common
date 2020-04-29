@@ -1,4 +1,4 @@
-package com.iexec.common.sms.secrets;
+package com.iexec.common.sms.secret;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
