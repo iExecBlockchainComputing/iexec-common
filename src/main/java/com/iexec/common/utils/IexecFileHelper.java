@@ -10,7 +10,7 @@ import java.io.IOException;
 @Slf4j
 public class IexecFileHelper {
 
-    private static final String COMPUTED_JSON = "computed.json";
+    public static final String COMPUTED_JSON = "computed.json";
 
     private IexecFileHelper() {
         throw new UnsupportedOperationException();
