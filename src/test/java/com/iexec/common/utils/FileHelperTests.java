@@ -2,6 +2,7 @@ package com.iexec.common.utils;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +16,7 @@ import java.nio.file.Paths;
 
 import static com.iexec.common.utils.FileHelper.downloadFileInDirectory;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class FileHelperTests {
 
@@ -186,6 +188,24 @@ public class FileHelperTests {
         String fileUri = "http://dummy-uri";
         boolean isFileDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
         assertThat(isFileDownloaded).isFalse();
+    }
+
+    @Test
+    public void shouldRemoveZipExtension() {
+        String fileName = FileHelper.removeZipExtension("/some/where/file.zip");
+        assertEquals("/some/where/file", fileName);
+    }
+
+    @Test
+    public void shouldNotRemoveZipExtensionSinceNoExtension() {
+        String fileName = FileHelper.removeZipExtension("/some/where/file");
+        assertEquals(fileName, "");
+    }
+
+    @Test
+    public void shouldNotRemoveZipExtensionSinceWrongExtension() {
+        String fileName = FileHelper.removeZipExtension("/some/where/file.bla");
+        assertEquals(fileName, "");
     }
 
 }

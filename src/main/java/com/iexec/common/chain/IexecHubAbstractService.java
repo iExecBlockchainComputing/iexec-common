@@ -407,6 +407,7 @@ public abstract class IexecHubAbstractService {
                 .resultStorageProvider(chainDeal.getParams().getIexecResultStorageProvider())
                 .resultStorageProxy(chainDeal.getParams().getIexecResultStorageProxy())
                 .isResultEncryption(chainDeal.getParams().isIexecResultEncryption())
+                .isCallbackRequested(chainDeal.getCallback() != null && !chainDeal.getCallback().equals(BytesUtils.EMPTY_ADDRESS))
                 .teePostComputeImage(chainDeal.getParams().getIexecTeePostComputeImage())
                 .teePostComputeFingerprint(chainDeal.getParams().getIexecTeePostComputeFingerprint())
                 .datasetUri(datasetURI)
