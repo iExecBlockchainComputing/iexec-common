@@ -16,6 +16,8 @@ public enum ReplicateStatusCause {
     CONSENSUS_BLOCK_MISSING,
 
     // computation
+    PRE_COMPUTE_FAILED,
+    POST_COMPUTE_FAILED,
     TEE_NOT_SUPPORTED,
     APP_NOT_FOUND_LOCALLY,
     DETERMINISM_HASH_NOT_FOUND,
