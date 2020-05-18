@@ -55,7 +55,6 @@ public class HashUtils {
             java.util.Arrays.sort(files); // /!\ files MUST be sorted to ensure final concatenateAndHash(..) is always the same (order matters)
             for (File file : files) {
                 hashes.add(getFileSha256(file.getAbsolutePath()));
-                System.out.println(getFileSha256(file.getAbsolutePath()) + " - " + file.getAbsolutePath());
             }
             return HashUtils.concatenateAndHash(hashes.toArray(new String[0]));
         }
