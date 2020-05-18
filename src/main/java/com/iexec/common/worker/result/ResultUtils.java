@@ -66,13 +66,13 @@ public class ResultUtils {
             return "";
         }
 
-        if (computedFile.getDeterministicOutput().isEmpty()) {
-            log.error("Failed to computeWeb2ResultDigest (deterministicOutput empty)[chainTaskId:{}]",
+        if (computedFile.getDeterministicOutputPath().isEmpty()) {
+            log.error("Failed to computeWeb2ResultDigest (deterministicOutputPath empty)[chainTaskId:{}]",
                     computedFile.getTaskId());
             return "";
         }
 
-        String hostDeterministicOutputPath = hostBindingDir + computedFile.getDeterministicOutput();
+        String hostDeterministicOutputPath = hostBindingDir + computedFile.getDeterministicOutputPath();
         File deterministicOutputFile = new File(hostDeterministicOutputPath); //could be a directory
 
         if (!deterministicOutputFile.exists()) {

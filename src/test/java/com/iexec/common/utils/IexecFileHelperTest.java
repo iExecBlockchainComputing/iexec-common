@@ -13,7 +13,7 @@ public class IexecFileHelperTest {
         String computedFileDirPath = "src/test/resources/result/valid/";
 
         ComputedFile computedFile = IexecFileHelper.readComputedFile(CHAIN_TASK_ID, computedFileDirPath);
-        Assert.assertEquals("/iexec_out/computing-trace.txt", computedFile.getDeterministicOutput());
+        Assert.assertEquals("/iexec_out/computing-trace.txt", computedFile.getDeterministicOutputPath());
     }
 
     @Test
@@ -21,7 +21,7 @@ public class IexecFileHelperTest {
         String computedFileDirPath = "src/test/resources/result/valid";
 
         ComputedFile computedFile = IexecFileHelper.readComputedFile(CHAIN_TASK_ID, computedFileDirPath);
-        Assert.assertEquals("/iexec_out/computing-trace.txt", computedFile.getDeterministicOutput());
+        Assert.assertEquals("/iexec_out/computing-trace.txt", computedFile.getDeterministicOutputPath());
     }
 
     @Test
