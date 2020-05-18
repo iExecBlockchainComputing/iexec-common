@@ -1,19 +1,18 @@
 package com.iexec.common.worker.result;
 
-import com.iexec.common.utils.BytesUtils;
+import com.iexec.common.result.ComputedFile;
+import com.iexec.common.utils.HashUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.web3j.crypto.Hash;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
 
 @Slf4j
 public class ResultUtils {
 
     /*
-    * Following env vars are required by iexec-sms and tee-worker-post-compute
-    * */
+     * Following env vars are required by iexec-sms and tee-worker-post-compute
+     * */
     // result
     public static final String RESULT_TASK_ID = "RESULT_TASK_ID";
     //result encryption
@@ -32,26 +31,65 @@ public class ResultUtils {
         throw new UnsupportedOperationException();
     }
 
-    public static String getCallbackDataFromPath(String callbackFilePathName) {
-        String hexaString = "";
-        try {
-            Path callbackFilePath = Paths.get(callbackFilePathName);
-
-            if (callbackFilePath.toFile().exists()) {
-                byte[] callbackFileBytes = Files.readAllBytes(callbackFilePath);
-                hexaString = new String(callbackFileBytes);
-                boolean isHexaString = BytesUtils.isHexaString(hexaString);
-                if (isHexaString) {
-                    return hexaString;
-                } else {
-                    log.error("Callback is not an hex string [callbackFilePathName:{}, hexaString:{}, isHexaString:{}]", callbackFilePathName, hexaString, isHexaString);
-                    return "";
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static String computeWeb3ResultDigest(ComputedFile computedFile) {
+        if (computedFile == null) {
+            return "";
         }
 
-        return hexaString;
+        if (computedFile.getCallbackData() != null && computedFile.getCallbackData().isEmpty()) {
+            log.error("Failed to computeWeb3ResultDigest (callbackData empty)[chainTaskId:{}]",
+                    computedFile.getTaskId());
+            return "";
+        }
+
+        return Hash.sha3(computedFile.getCallbackData());
     }
+
+    /*
+     * Common usage : iexec-worker-tee-post-compute
+     * */
+    public static String computeWeb2ResultDigest(ComputedFile computedFile) {
+        return computeWeb2ResultDigest(computedFile, "");
+    }
+
+    /*
+     * A deterministicOutputRootDir is required when mounting volumes from container to host
+     *
+     * DeterministicOutput path:
+     * From Container -              /iexec_out/deterministic-trace.txt
+     * From Host - /tmp/worker1/[...]/iexec_out/deterministic-trace.txt
+     *
+     * Common usage : iexec-worker
+     * */
+    public static String computeWeb2ResultDigest(ComputedFile computedFile, String hostBindingDir) {
+        if (computedFile == null) {
+            return "";
+        }
+
+        if (computedFile.getDeterministicOutputPath().isEmpty()) {
+            log.error("Failed to computeWeb2ResultDigest (deterministicOutputPath empty)[chainTaskId:{}]",
+                    computedFile.getTaskId());
+            return "";
+        }
+
+        String hostDeterministicOutputPath = hostBindingDir + computedFile.getDeterministicOutputPath();
+        File deterministicOutputFile = new File(hostDeterministicOutputPath); //could be a directory
+
+        if (!deterministicOutputFile.exists()) {
+            log.error("Failed to computeWeb2ResultDigest (hostDeterministicOutputPath missing) [chainTaskId:{}]",
+                    computedFile.getTaskId());
+            return "";
+        }
+
+        return HashUtils.getFileTreeSha256(hostDeterministicOutputPath);
+    }
+
+    public static String computeResultHash(String chainTaskId, String resultDigest) {
+        return HashUtils.concatenateAndHash(chainTaskId, resultDigest);
+    }
+
+    public static String computeResultSeal(String walletAddress, String chainTaskId, String resultDigest) {
+        return HashUtils.concatenateAndHash(walletAddress, chainTaskId, resultDigest);
+    }
+
 }

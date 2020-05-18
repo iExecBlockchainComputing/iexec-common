@@ -14,12 +14,17 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import static com.iexec.common.utils.BytesUtils.bytesToString;
 
 @Slf4j
 public class FileHelper {
 
+    //TODO move to IexecFileHelper.java
     public static final String SLASH_IEXEC_OUT = File.separator + "iexec_out";
     public static final String SLASH_IEXEC_IN = File.separator + "iexec_in";
     public static final String SLASH_OUTPUT = File.separator + "output";
