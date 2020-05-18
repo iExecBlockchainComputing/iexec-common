@@ -23,7 +23,7 @@ public class ResultUtilsTests {
     public void shouldComputeWeb2ResultDigest() {
         ComputedFile computedFile = ComputedFile.builder()
                 .taskId(CHAIN_TASK_ID)
-                .deterministicOutput("/iexec_out")
+                .deterministicOutputPath("/iexec_out")
                 .build();
 
         String deterministHash = ResultUtils.computeWeb2ResultDigest(computedFile,

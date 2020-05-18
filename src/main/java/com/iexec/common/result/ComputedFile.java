@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ComputedFile {
 
-    @JsonProperty("deterministic-output")
-    private String deterministicOutput;
+    @JsonProperty("deterministic-output-path")
+    private String deterministicOutputPath;
 
     @JsonProperty("callback-data")
     private String callbackData;
