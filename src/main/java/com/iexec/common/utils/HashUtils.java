@@ -1,12 +1,13 @@
 package com.iexec.common.utils;
 
-import org.bouncycastle.util.Arrays;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.iexec.common.utils.BytesUtils.bytesToString;
@@ -22,7 +23,7 @@ public class HashUtils {
         // convert
         byte[] res = new byte[0];
         for (String str : hexaString) {
-            res = Arrays.concatenate(res, BytesUtils.stringToBytes(str));
+            res = org.bouncycastle.util.Arrays.concatenate(res, BytesUtils.stringToBytes(str));
         }
 
         // Hash the result and convert to String
@@ -48,11 +49,13 @@ public class HashUtils {
         }
 
         //fileTree is a tree, with multiple files
-        if (fileTree.listFiles() != null){
+        File[] files = fileTree.listFiles();
+        if (files != null){
             List<String> hashes = new ArrayList<>();
-            for (File file : fileTree.listFiles()) {
+            java.util.Arrays.sort(files); // /!\ files MUST be sorted to ensure final concatenateAndHash(..) is always the same (order matters)
+            for (File file : files) {
                 hashes.add(getFileSha256(file.getAbsolutePath()));
-                System.out.println(getFileSha256(file.getAbsolutePath()));
+                System.out.println(getFileSha256(file.getAbsolutePath()) + " - " + file.getAbsolutePath());
             }
             return HashUtils.concatenateAndHash(hashes.toArray(new String[0]));
         }
