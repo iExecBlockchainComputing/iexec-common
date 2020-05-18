@@ -14,12 +14,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static com.iexec.common.utils.BytesUtils.bytesToString;
 
 @Slf4j
 public class FileHelper {
@@ -31,7 +27,6 @@ public class FileHelper {
     public static final String SLASH_OUTPUT = File.separator + "output";
     public static final String SLASH_INPUT = File.separator + "input";
     public static final String SLASH_RESULT = File.separator + "result";
-    // public static final String SLASH_SCONE = File.separator + "scone";
 
     private FileHelper() {
         throw new UnsupportedOperationException();
@@ -269,10 +264,22 @@ public class FileHelper {
         return isMoved;
     }
 
+    public static boolean copyFolder(String sourcePath, String destinationPath) {
+        File sourceDir = new File(sourcePath);
+        File destinationDir = new File(destinationPath);
+        try {
+            FileUtils.copyDirectory(sourceDir, destinationDir);
+            return true;
+        } catch (IOException e) {
+            log.error("Error copying folder [error:{}]", e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static String getFilenameFromUri(String uri) {
         return Paths.get(uri).getFileName().toString();
     }
-
 
     public static String printDirectoryTree(File folder) {
         if (!folder.isDirectory()) {
