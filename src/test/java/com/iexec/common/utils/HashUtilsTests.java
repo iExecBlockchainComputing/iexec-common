@@ -68,7 +68,6 @@ public class HashUtilsTests {
         String filePath = "src/test/resources/utils/file-helper/file-hash/output/iexec_out/result1.txt";
 
         String sha256 = HashUtils.getFileTreeSha256(filePath);
-        System.out.println(sha256);
         Assert.assertEquals("0xd885f429a59e0816822fc0927be6a6af20ade2c79db49df6c6022f79cb27ac16", sha256);
         Assert.assertEquals(sha256, HashUtils.getFileTreeSha256(filePath));
     }

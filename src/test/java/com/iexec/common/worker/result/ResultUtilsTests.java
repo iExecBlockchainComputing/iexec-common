@@ -28,7 +28,6 @@ public class ResultUtilsTests {
 
         String deterministHash = ResultUtils.computeWeb2ResultDigest(computedFile,
                 "src/test/resources/utils/file-helper/file-hash/output");
-
         Assert.assertEquals("0xcc77508549295dd5de5876a2f4f00d4c3c27a547c6403450e43ab4de191bf1bc", deterministHash);
     }
 
