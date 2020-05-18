@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ContributionAuthorization {
+public class WorkerpoolAuthorization {
 
     private String chainTaskId;
     private String workerWallet;
