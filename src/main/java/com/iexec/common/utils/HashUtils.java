@@ -52,6 +52,7 @@ public class HashUtils {
             List<String> hashes = new ArrayList<>();
             for (File file : fileTree.listFiles()) {
                 hashes.add(getFileSha256(file.getAbsolutePath()));
+                System.out.println(getFileSha256(file.getAbsolutePath()));
             }
             return HashUtils.concatenateAndHash(hashes.toArray(new String[0]));
         }
