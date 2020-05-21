@@ -14,12 +14,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import static com.iexec.common.utils.BytesUtils.bytesToString;
 
 @Slf4j
 public class FileHelper {
@@ -29,7 +25,6 @@ public class FileHelper {
     public static final String SLASH_IEXEC_IN = File.separator + "iexec_in";
     public static final String SLASH_OUTPUT = File.separator + "output";
     public static final String SLASH_INPUT = File.separator + "input";
-    public static final String SLASH_SCONE = File.separator + "scone";
 
     private FileHelper() {
         throw new UnsupportedOperationException();
@@ -167,7 +162,13 @@ public class FileHelper {
     }
 
     public static File zipFolder(String folderPath) {
-        String zipFilePath = folderPath + ".zip";
+        String parentFolder = Paths.get(folderPath).getParent().toString();
+        return zipFolder(folderPath, parentFolder);
+    }
+
+    public static File zipFolder(String folderPath, String saveIn) {
+        String folderName = Paths.get(folderPath).getFileName().toString();
+        String zipFilePath = Path.of(saveIn, folderName + ".zip").toAbsolutePath().toString();
         Path sourceFolderPath = Paths.get(folderPath);
 
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(new File(zipFilePath)))) {
@@ -267,10 +268,33 @@ public class FileHelper {
         return isMoved;
     }
 
+    public static boolean copyFolder(String source, String target) {
+        try {
+            FileUtils.copyDirectory(new File(source), new File(target));
+            return true;
+        } catch (IOException e) {
+            log.error("Error copying folder [source:{}, target:{}, error:{}]",
+                    source, target, e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean copyFile(String source, String target) {
+        try {
+            Files.copy(Path.of(source), Path.of(target));
+            return true;
+        } catch (IOException e) {
+            log.error("Error copying file [source:{}, target:{}, error:{}]",
+                    source, target, e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static String getFilenameFromUri(String uri) {
         return Paths.get(uri).getFileName().toString();
     }
-
 
     public static String printDirectoryTree(File folder) {
         if (!folder.isDirectory()) {

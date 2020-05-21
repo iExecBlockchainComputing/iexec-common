@@ -1,11 +1,13 @@
 package com.iexec.common.worker.result;
 
 import com.iexec.common.result.ComputedFile;
+import com.iexec.common.utils.FileHelper;
 import com.iexec.common.utils.HashUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Hash;
 
 import java.io.File;
+import java.nio.file.Path;
 
 @Slf4j
 public class ResultUtils {
@@ -92,4 +94,18 @@ public class ResultUtils {
         return HashUtils.concatenateAndHash(walletAddress, chainTaskId, resultDigest);
     }
 
+    public static String zipIexecOut(String iexecOutPath) {
+        String saveIn = Path.of(iexecOutPath).getParent().toAbsolutePath().toString();
+        return zipIexecOut(iexecOutPath, saveIn);
+    }
+
+    public static String zipIexecOut(String iexecOutPath, String saveIn) {
+        File zipFile = FileHelper.zipFolder(iexecOutPath, saveIn);
+        if (zipFile == null) {
+            log.error("Could not zip iexec_out [iexecOutPath:{}]", iexecOutPath);
+            return "";
+        }
+        log.info("Created iexec_out zip [zipPath:{}]", zipFile.getAbsolutePath());
+        return zipFile.getAbsolutePath();
+    }
 }
