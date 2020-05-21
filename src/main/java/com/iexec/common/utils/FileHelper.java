@@ -23,7 +23,6 @@ public class FileHelper {
     //TODO move to IexecFileHelper.java
     public static final String SLASH_IEXEC_OUT = File.separator + "iexec_out";
     public static final String SLASH_IEXEC_IN = File.separator + "iexec_in";
-    public static final String SLASH_IEXEC_RESULT = File.separator + "iexec_result";
     public static final String SLASH_OUTPUT = File.separator + "output";
     public static final String SLASH_INPUT = File.separator + "input";
 
