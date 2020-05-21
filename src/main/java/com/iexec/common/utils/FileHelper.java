@@ -26,7 +26,6 @@ public class FileHelper {
     public static final String SLASH_IEXEC_RESULT = File.separator + "iexec_result";
     public static final String SLASH_OUTPUT = File.separator + "output";
     public static final String SLASH_INPUT = File.separator + "input";
-    public static final String SLASH_RESULT = File.separator + "result";
 
     private FileHelper() {
         throw new UnsupportedOperationException();
@@ -164,7 +163,13 @@ public class FileHelper {
     }
 
     public static File zipFolder(String folderPath) {
-        String zipFilePath = folderPath + ".zip";
+        String parentFolder = Paths.get(folderPath).getParent().toString();
+        return zipFolder(folderPath, parentFolder);
+    }
+
+    public static File zipFolder(String folderPath, String saveIn) {
+        String folderName = Paths.get(folderPath).getFileName().toString();
+        String zipFilePath = Path.of(saveIn, folderName + ".zip").toAbsolutePath().toString();
         Path sourceFolderPath = Paths.get(folderPath);
 
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(new File(zipFilePath)))) {
@@ -264,14 +269,25 @@ public class FileHelper {
         return isMoved;
     }
 
-    public static boolean copyFolder(String sourcePath, String destinationPath) {
-        File sourceDir = new File(sourcePath);
-        File destinationDir = new File(destinationPath);
+    public static boolean copyFolder(String source, String target) {
         try {
-            FileUtils.copyDirectory(sourceDir, destinationDir);
+            FileUtils.copyDirectory(new File(source), new File(target));
             return true;
         } catch (IOException e) {
-            log.error("Error copying folder [error:{}]", e.getMessage());
+            log.error("Error copying folder [source:{}, target:{}, error:{}]",
+                    source, target, e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean copyFile(String source, String target) {
+        try {
+            Files.copy(Path.of(source), Path.of(target));
+            return true;
+        } catch (IOException e) {
+            log.error("Error copying file [source:{}, target:{}, error:{}]",
+                    source, target, e.getMessage());
             e.printStackTrace();
             return false;
         }
