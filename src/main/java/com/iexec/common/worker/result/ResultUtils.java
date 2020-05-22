@@ -64,7 +64,7 @@ public class ResultUtils {
      * Common usage : iexec-worker
      * */
     public static String computeWeb2ResultDigest(ComputedFile computedFile, String hostBindingDir) {
-        if (computedFile == null) {
+        if (computedFile == null || computedFile.getDeterministicOutputPath() == null) {
             return "";
         }
 
