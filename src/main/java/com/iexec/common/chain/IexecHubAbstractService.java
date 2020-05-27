@@ -6,6 +6,8 @@ import static com.iexec.common.chain.ChainDeal.stringToDealParams;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -45,6 +47,7 @@ public abstract class IexecHubAbstractService {
     private final Web3jAbstractService web3jAbstractService;
     private int nbBlocksToWaitPerRetry;
     private int maxRetries;
+    private Map<String, TaskDescription> taskDescriptions = new HashMap<>();
 
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
@@ -371,6 +374,24 @@ public abstract class IexecHubAbstractService {
         log.error("Timeout reached after waiting for on-chain status [chainTaskId:{}, maxWaitingTime:{}]",
                 chainTaskId, maxWaitingTime);
         return false;
+    }
+
+    /*
+     * Behaves as a cache to avoid always calling blockchain to retrieve task description
+     *
+     */
+    public TaskDescription getTaskDescription(String chainTaskId) {
+        if (taskDescriptions.get(chainTaskId) == null) {
+            Optional<TaskDescription> taskDescriptionFromChain = this.getTaskDescriptionFromChain(chainTaskId);
+            taskDescriptionFromChain.ifPresent((taskDescription)->{
+                if (taskDescription.getChainTaskId() != null) {
+                    taskDescriptions.putIfAbsent(taskDescription.getChainTaskId(), taskDescription);
+                } else {
+                    log.error("Cant putTaskDescription [taskDescription:{}]", taskDescription);
+                }
+            });
+        }
+        return taskDescriptions.get(chainTaskId);
     }
 
     public Optional<TaskDescription> getTaskDescriptionFromChain(String chainTaskId) {

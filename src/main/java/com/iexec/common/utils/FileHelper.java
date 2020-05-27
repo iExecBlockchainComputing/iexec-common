@@ -75,7 +75,7 @@ public class FileHelper {
     }
 
     public static File createFileWithContent(String filePath, String data) {
-        return createFileWithContent(filePath, data.getBytes());
+        return data != null ? createFileWithContent(filePath, data.getBytes()) : null;
     }
 
     public static File createFileWithContent(String filePath, byte[] data) {
