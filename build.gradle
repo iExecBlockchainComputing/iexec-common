@@ -36,7 +36,7 @@ configurations {
 
 ext {
     junitVersion = '4.12'
-    web3jVersion = '4.5.5'
+    web3jVersion = '4.6.0'
 }
 
 dependencies {
