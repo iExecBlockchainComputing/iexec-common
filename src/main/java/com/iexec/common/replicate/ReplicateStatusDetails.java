@@ -17,6 +17,7 @@ public class ReplicateStatusDetails {
     private String chainCallbackData;
     private String errorMessage;
     private ReplicateStatusCause cause;
+    private String stdout;
 
     public ReplicateStatusDetails(long blockNumber) {
         this.chainReceipt = ChainReceipt.builder().blockNumber(blockNumber).build();
