@@ -21,6 +21,15 @@ public class ReplicateStatusDetails {
     private ReplicateStatusCause cause;
     private String stdout;
 
+    public ReplicateStatusDetails(ReplicateStatusDetails details) {
+        chainReceipt = details.getChainReceipt();
+        resultLink = details.getResultLink();
+        chainCallbackData = details.getChainCallbackData();
+        errorMessage = details.getErrorMessage();
+        cause = details.getCause();
+        stdout = details.getStdout();
+    }
+
     public ReplicateStatusDetails(long blockNumber) {
         this.chainReceipt = ChainReceipt.builder().blockNumber(blockNumber).build();
     }
