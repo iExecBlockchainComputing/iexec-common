@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 /*
 * Contracts (located at *.contract.generated) which are used in this service are generated from:
 * - https://github.com/iExecBlockchainComputing/PoCo-dev
-* - @ commit 95ac0a89361baa312b5536d6ada68f0f381422f1 (HEAD, tag: v5.0.0, tag: lv5.0.0)
+* - @ commit c989a8d03410c0cc6c67f7b6a56ef891fc3f964c (HEAD, tag: v5.1.0, origin/v5, origin/HEAD, v5)
 * */
 @Slf4j
 public abstract class IexecHubAbstractService {

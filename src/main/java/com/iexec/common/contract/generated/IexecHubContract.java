@@ -50,12 +50,6 @@ import org.web3j.tx.gas.ContractGasProvider;
  * <p>Generated with web3j version 4.5.16.
  */
 @SuppressWarnings("rawtypes")
-/*
-*
-* IexecInterfaceTokenABILegacy renamed to IexecHubContract
-*
-*
-* */
 public class IexecHubContract extends Contract {
     public static final String BINARY = "0x";
 
@@ -1318,15 +1312,16 @@ public class IexecHubContract extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> contributeAndFinalize(byte[] param0, byte[] param1, byte[] param2, String param3, byte[] param4, byte[] param5) {
+    public RemoteFunctionCall<TransactionReceipt> contributeAndFinalize(byte[] param0, byte[] param1, byte[] param2, byte[] param3, String param4, byte[] param5, byte[] param6) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_CONTRIBUTEANDFINALIZE, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(param0), 
                 new org.web3j.abi.datatypes.generated.Bytes32(param1), 
                 new org.web3j.abi.datatypes.DynamicBytes(param2), 
-                new org.web3j.abi.datatypes.Address(param3), 
-                new org.web3j.abi.datatypes.DynamicBytes(param4), 
-                new org.web3j.abi.datatypes.DynamicBytes(param5)), 
+                new org.web3j.abi.datatypes.DynamicBytes(param3), 
+                new org.web3j.abi.datatypes.Address(param4), 
+                new org.web3j.abi.datatypes.DynamicBytes(param5), 
+                new org.web3j.abi.datatypes.DynamicBytes(param6)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1422,11 +1417,12 @@ public class IexecHubContract extends Contract {
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteFunctionCall<TransactionReceipt> finalize(byte[] param0, byte[] param1) {
+    public RemoteFunctionCall<TransactionReceipt> finalize(byte[] param0, byte[] param1, byte[] param2) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_FINALIZE, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(param0), 
-                new org.web3j.abi.datatypes.DynamicBytes(param1)), 
+                new org.web3j.abi.datatypes.DynamicBytes(param1), 
+                new org.web3j.abi.datatypes.DynamicBytes(param2)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
