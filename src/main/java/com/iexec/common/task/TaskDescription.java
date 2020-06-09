@@ -1,6 +1,5 @@
 package com.iexec.common.task;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.iexec.common.dapp.DappType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
