@@ -418,6 +418,7 @@ public abstract class IexecHubAbstractService {
                 .chainTaskId(chainTaskId)
                 .requester(chainDeal.getRequester())
                 .beneficiary(chainDeal.getBeneficiary())
+                .callback(chainDeal.getCallback())
                 .appType(DappType.DOCKER)
                 .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp().getUri()))
                 .cmd(chainDeal.getParams().getIexecArgs())
