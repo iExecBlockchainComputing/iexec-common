@@ -45,7 +45,6 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:1.18.2"
 
     // web3j dependency
-    //TODO eventually update
     compile "org.web3j:core:$web3jVersion"
     
     // apache commons.lang3

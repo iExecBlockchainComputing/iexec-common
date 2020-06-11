@@ -17,6 +17,7 @@ public class TaskDescription {
     private String chainTaskId;
     private String requester;
     private String beneficiary;
+    private String callback;
     private DappType appType;
     private String appUri;
     private String cmd;
