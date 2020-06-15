@@ -38,9 +38,9 @@ public class ReplicateStatusDetails {
         this.cause = cause;
     }
 
-    public ReplicateStatusDetails cropStdout() {
+    public ReplicateStatusDetails tailStdout() {
         if (stdout != null && stdout.length() > MAX_STDOUT_LENGTH) {
-            stdout = stdout.substring(0, MAX_STDOUT_LENGTH);
+            stdout = stdout.substring(stdout.length() - MAX_STDOUT_LENGTH, stdout.length());
         }
         return this;
     }
