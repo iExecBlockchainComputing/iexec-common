@@ -23,7 +23,7 @@ public class TestUtils {
     public static final String WORKER_PUBLIC = "0x76941b6e95be43ebfad0e81d7e2fae6268aa5f57e26cf3112adee8791d08775645"
             + "a0c0879d7621ecc4f8c8b41b370ea0ffadd82693ffc429127fd6acd090f1ab";
 
-    public static final String TASK_ID = "0deterministic-outputdeterministic-outputx1111111111111111111111111111111111111111111111111111111111111111";
+    public static final String CHAIN_TASK_ID = "0x1111111111111111111111111111111111111111111111111111111111111111";
     public static final String DEAL_ID = "0x2222222222222222222222222222222222222222222222222222222222222222";
     
     public static final String NULL_ADDRESS         = BytesUtils.EMPTY_ADDRESS;
@@ -51,10 +51,10 @@ public class TestUtils {
 
     // contribution authorization
     public static WorkerpoolAuthorization getTeeWorkerpoolAuth() {
-        String hash = HashUtils.concatenateAndHash(WORKER_ADDRESS, TASK_ID, ENCLAVE_ADDRESS);
+        String hash = HashUtils.concatenateAndHash(WORKER_ADDRESS, CHAIN_TASK_ID, ENCLAVE_ADDRESS);
         Signature signature = SignatureUtils.signMessageHashAndGetSignature(hash, POOL_PRIVATE);
         return WorkerpoolAuthorization.builder()
-                .chainTaskId(TASK_ID)
+                .chainTaskId(CHAIN_TASK_ID)
                 .workerWallet(WORKER_ADDRESS)
                 .enclaveChallenge(ENCLAVE_ADDRESS)
                 .signature(signature)
