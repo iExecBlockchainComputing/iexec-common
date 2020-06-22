@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import static com.iexec.common.replicate.ReplicateStatusModifier.*;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -49,6 +48,15 @@ public class ReplicateStatusUpdate {
         if (modifier != null && modifier.equals(POOL_MANAGER)) {
            this.date = new Date();
         }
+    }
+
+    public ReplicateStatusDetails getDetailsWithoutStdout() {
+        if (details == null || details.getStdout() == null) {
+            return details;
+        }
+        ReplicateStatusDetails detailsWithoutStdout = new ReplicateStatusDetails(details);
+        detailsWithoutStdout.setStdout(null);
+        return detailsWithoutStdout;
     }
 
     public static ReplicateStatusUpdate poolManagerRequest(ReplicateStatus status) {
