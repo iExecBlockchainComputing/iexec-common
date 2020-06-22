@@ -56,14 +56,9 @@ public class ReplicateStatusUpdate {
         if (details == null || details.getStdout() == null) {
             return details;
         }
-        try {
-            ReplicateStatusDetails detailsWithoutStdout = (ReplicateStatusDetails) clone();
-            detailsWithoutStdout.setStdout(null);
-            return detailsWithoutStdout;
-        } catch (CloneNotSupportedException e) {
-            log.error("Cannot get details without stdout [exception:{}]", e.getMessage());
-            return details;
-        }
+        ReplicateStatusDetails detailsWithoutStdout = new ReplicateStatusDetails(details);
+        detailsWithoutStdout.setStdout(null);
+        return detailsWithoutStdout;
     }
 
     public static ReplicateStatusUpdate poolManagerRequest(ReplicateStatus status) {
