@@ -8,11 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import static com.iexec.common.replicate.ReplicateStatusModifier.*;
 
-@Slf4j
 @Data
 @Builder
 @NoArgsConstructor
