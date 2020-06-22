@@ -8,10 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import static com.iexec.common.replicate.ReplicateStatusModifier.*;
 
-
+@Slf4j
 @Data
 @Builder
 @NoArgsConstructor
@@ -48,6 +49,20 @@ public class ReplicateStatusUpdate {
 
         if (modifier != null && modifier.equals(POOL_MANAGER)) {
            this.date = new Date();
+        }
+    }
+
+    public ReplicateStatusDetails getDetailsWithoutStdout() {
+        if (details == null || details.getStdout() == null) {
+            return details;
+        }
+        try {
+            ReplicateStatusDetails detailsWithoutStdout = (ReplicateStatusDetails) clone();
+            detailsWithoutStdout.setStdout(null);
+            return detailsWithoutStdout;
+        } catch (CloneNotSupportedException e) {
+            log.error("Cannot get details without stdout [exception:{}]", e.getMessage());
+            return details;
         }
     }
 
