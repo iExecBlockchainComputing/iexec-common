@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReplicateStatusDetails {
 
-    public static final int MAX_STDOUT_LENGTH = 10000;
+    public static final int MAX_STDOUT_LENGTH = 100000;
 
     private ChainReceipt chainReceipt;
     private String resultLink;
