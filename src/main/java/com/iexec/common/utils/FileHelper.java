@@ -177,7 +177,9 @@ public class FileHelper {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     log.debug("Adding file to zip [file:{}, zip:{}]", file.toAbsolutePath().toString(), zipFilePath);
                     zos.putNextEntry(new ZipEntry(sourceFolderPath.relativize(file).toString()));
-                    Files.copy(file, zos);
+                    if (!Files.isSymbolicLink(file)) {
+                        Files.copy(file, zos);
+                    }
                     zos.closeEntry();
                     return FileVisitResult.CONTINUE;
                 }
