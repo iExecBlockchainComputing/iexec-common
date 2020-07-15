@@ -36,11 +36,13 @@ configurations {
 
 ext {
     junitVersion = '4.12'
-    web3jVersion = '4.5.5'
+    web3jVersion = '4.6.0'
 }
 
 dependencies {
-    testCompile "junit:junit:$junitVersion"
+    // lombok
+    compileOnly "org.projectlombok:lombok:1.18.2"
+    annotationProcessor "org.projectlombok:lombok:1.18.2"
 
     // web3j dependency
     compile "org.web3j:core:$web3jVersion"
@@ -57,15 +59,18 @@ dependencies {
     //args utils
     compile 'org.apache.maven.shared:maven-shared-utils:3.2.1'
 
-    // lombok
-    compileOnly "org.projectlombok:lombok:1.18.2"
-    annotationProcessor "org.projectlombok:lombok:1.18.2"
+    // zip
+    compile 'net.lingala.zip4j:zip4j:2.3.1'
+
+    // google core libs
+    implementation "com.google.guava:guava:28.2-jre"
+
+    // test
+    testCompile "junit:junit:$junitVersion"
+    testCompile("org.assertj:assertj-core:3.11.1")
 
     // package cloud
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
-
-    // assertj
-    testCompile("org.assertj:assertj-core:3.11.1")
 }
 
 test {
@@ -77,7 +82,7 @@ test {
 
 shadowJar { //required if we want to embed web3j dependency inside
     baseName = rootProject.name
-    classifier = null
+    from sourceSets.main.allSource
     version = version
 }
 

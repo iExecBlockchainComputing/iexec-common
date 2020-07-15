@@ -15,5 +15,7 @@ public class ChainApp {
     private String type;
     private String uri;
     private String checksum;
+    private String fingerprint;
+
 
 }

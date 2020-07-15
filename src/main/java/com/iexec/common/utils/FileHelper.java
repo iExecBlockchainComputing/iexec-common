@@ -1,7 +1,10 @@
 package com.iexec.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.web3j.crypto.Hash;
 
 import java.io.File;
@@ -17,11 +20,11 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class FileHelper {
 
+    //TODO move to IexecFileHelper.java
     public static final String SLASH_IEXEC_OUT = File.separator + "iexec_out";
     public static final String SLASH_IEXEC_IN = File.separator + "iexec_in";
     public static final String SLASH_OUTPUT = File.separator + "output";
     public static final String SLASH_INPUT = File.separator + "input";
-    public static final String SLASH_SCONE = File.separator + "scone";
 
     private FileHelper() {
         throw new UnsupportedOperationException();
@@ -40,9 +43,24 @@ public class FileHelper {
     public static byte[] readFileBytes(String filePath) {
         String content = readFile(filePath);
 
-        if (!content.isEmpty()){
+        if (!content.isEmpty()) {
             return content.getBytes();
         }
+        return null;
+    }
+
+    /*
+     * TODO
+     * 1 - Rename FileHelper.readFile --> FileHelper.readStringFile
+     * 2 - Remove FileHelper.readFileBytes ?
+     * */
+    public static byte[] readAllBytes(String filePath) {
+        try {
+            return Files.readAllBytes(Paths.get(filePath));
+        } catch (IOException e) {
+            log.error("Failed to readAllBytes [filePath:{}]", filePath);
+        }
+
         return null;
     }
 
@@ -57,7 +75,7 @@ public class FileHelper {
     }
 
     public static File createFileWithContent(String filePath, String data) {
-        return createFileWithContent(filePath, data.getBytes());
+        return data != null ? createFileWithContent(filePath, data.getBytes()) : null;
     }
 
     public static File createFileWithContent(String filePath, byte[] data) {
@@ -144,7 +162,13 @@ public class FileHelper {
     }
 
     public static File zipFolder(String folderPath) {
-        String zipFilePath = folderPath + ".zip";
+        String parentFolder = Paths.get(folderPath).getParent().toString();
+        return zipFolder(folderPath, parentFolder);
+    }
+
+    public static File zipFolder(String folderPath, String saveIn) {
+        String folderName = Paths.get(folderPath).getFileName().toString();
+        String zipFilePath = Path.of(saveIn, folderName + ".zip").toAbsolutePath().toString();
         Path sourceFolderPath = Paths.get(folderPath);
 
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(new File(zipFilePath)))) {
@@ -153,7 +177,9 @@ public class FileHelper {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     log.debug("Adding file to zip [file:{}, zip:{}]", file.toAbsolutePath().toString(), zipFilePath);
                     zos.putNextEntry(new ZipEntry(sourceFolderPath.relativize(file).toString()));
-                    Files.copy(file, zos);
+                    if (!Files.isSymbolicLink(file)) {
+                        Files.copy(file, zos);
+                    }
                     zos.closeEntry();
                     return FileVisitResult.CONTINUE;
                 }
@@ -165,6 +191,63 @@ public class FileHelper {
             log.error("Failed to zip folder [path:{}]", zipFilePath);
         }
         return null;
+    }
+
+    // TODO: Use same lib for zipping
+    public static boolean unZipFile(String zipFilePath, String destDirPath) {
+        if (zipFilePath == null || zipFilePath.isEmpty() || !new File(zipFilePath).exists()) {
+            log.error("Failed to unZipFile (missing zipFile) [zipFilePath:{}, destDirPath:{}]", zipFilePath, destDirPath);
+            return false;
+        }
+
+        if (destDirPath == null || destDirPath.isEmpty()) {
+            log.error("Failed to unZipFile (missing destDirPath) [zipFilePath:{}, destDirPath:{}]", zipFilePath, destDirPath);
+            return false;
+        }
+
+        try {
+            new ZipFile(zipFilePath).extractAll(destDirPath);
+            return true;
+        } catch (ZipException e) {
+            log.error("Failed to unZipFile (can't extract) [zipFilePath:{}, destDirPath:{}]" + zipFilePath + destDirPath);
+        }
+        return false;
+    }
+
+    /*
+    * Will extract into a directory next to zip
+    *
+    * before
+    * └── some-content.zip
+    *
+    * after
+    * ├── some-content.zip
+    * └── some-content/
+    *     ├── file1
+    *     └── file2
+    *
+    * returns extractDirPath
+    * */
+    public static String unZipFile(String zipPath){
+        String extractDirPath = removeZipExtension(zipPath);
+        if (extractDirPath.isEmpty()){
+            log.error("unzip failed (removeZipExtension) [zipPath:{}]", zipPath);
+            return "";
+        }
+
+        boolean isExtracted = FileHelper.unZipFile(zipPath, extractDirPath);
+        if (!isExtracted){
+            log.error("unzip failed (unZipFile) [zipPath:{}]", zipPath);
+            return "";
+        }
+        return extractDirPath;
+    }
+
+    public static String removeZipExtension(String zipPath) {
+        if (zipPath == null || !FilenameUtils.getExtension(zipPath).equals("zip")){
+            return "";
+        }
+        return FilenameUtils.removeExtension(zipPath);
     }
 
     public static boolean replaceFile(String toBeReplaced, String replacer) {
@@ -187,10 +270,33 @@ public class FileHelper {
         return isMoved;
     }
 
+    public static boolean copyFolder(String source, String target) {
+        try {
+            FileUtils.copyDirectory(new File(source), new File(target));
+            return true;
+        } catch (IOException e) {
+            log.error("Error copying folder [source:{}, target:{}, error:{}]",
+                    source, target, e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean copyFile(String source, String target) {
+        try {
+            Files.copy(Path.of(source), Path.of(target));
+            return true;
+        } catch (IOException e) {
+            log.error("Error copying file [source:{}, target:{}, error:{}]",
+                    source, target, e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static String getFilenameFromUri(String uri) {
         return Paths.get(uri).getFileName().toString();
     }
-
 
     public static String printDirectoryTree(File folder) {
         if (!folder.isDirectory()) {

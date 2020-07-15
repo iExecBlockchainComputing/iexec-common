@@ -13,7 +13,6 @@ public class ReplicateStatusTests {
     @Test
     public void shouldGetMissingStatuses() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTING);
-        System.out.println(missingStatuses);
 
         assertEquals(missingStatuses.size(), 7);
         assertEquals(missingStatuses.get(0), STARTING);

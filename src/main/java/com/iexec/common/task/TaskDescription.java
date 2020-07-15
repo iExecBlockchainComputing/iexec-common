@@ -17,6 +17,7 @@ public class TaskDescription {
     private String chainTaskId;
     private String requester;
     private String beneficiary;
+    private String callback;
     private DappType appType;
     private String appUri;
     private String cmd;
@@ -28,7 +29,11 @@ public class TaskDescription {
     private boolean developerLoggerEnabled;
     private String datasetUri;
     private List<String> inputFiles;
+    private boolean isCallbackRequested;
+    private boolean isResultEncryption;
     private String resultStorageProvider;
-    private String resultEncryption;
+    private String resultStorageProxy;
+    private String teePostComputeImage;
+    private String teePostComputeFingerprint;
 
 }
