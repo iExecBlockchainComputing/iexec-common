@@ -34,12 +34,13 @@ public class ChainUtils {
         throw new UnsupportedOperationException();
     }
 
-    public static String generateChainTaskId(String dealId, BigInteger taskIndex) {
+    public static String generateChainTaskId(String dealId, int taskIndex) {
         byte[] dealIdBytes32 = BytesUtils.stringToBytes(dealId);
         if (dealIdBytes32.length != 32) {
             return null;
         }
-        byte[] taskIndexBytes32 = Numeric.toBytesPadded(taskIndex, 32);
+        BigInteger taskIndexBigInt = BigInteger.valueOf(taskIndex);
+        byte[] taskIndexBytes32 = Numeric.toBytesPadded(taskIndexBigInt, 32);
         if (taskIndexBytes32.length != 32) {
             return null;
         }
