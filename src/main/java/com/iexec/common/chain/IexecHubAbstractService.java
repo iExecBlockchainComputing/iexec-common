@@ -61,6 +61,7 @@ public abstract class IexecHubAbstractService {
     private final Credentials credentials;
     private final String iexecHubAddress;
     private final Web3jAbstractService web3jAbstractService;
+    private long maxNbOfPeriodsForConsensus;
     private int nbBlocksToWaitPerRetry;
     private int maxRetries;
     private Map<String, TaskDescription> taskDescriptions = new HashMap<>();
@@ -84,6 +85,14 @@ public abstract class IexecHubAbstractService {
 
         String hubAddress = getHubContract().getContractAddress();
         log.info("Abstract IexecHubService initialized (iexec proxy address) [hubAddress:{}]", hubAddress);
+
+        try {
+            this.maxNbOfPeriodsForConsensus = getHubContract()
+                    .contribution_deadline_ratio().send().longValue();
+        } catch (Exception e) {
+            log.error("Failed to get maxNbOfPeriodsForConsensus from the chain");
+            System.exit(1);
+        }
     }
 
     private static int scoreToWeight(int workerScore) {
@@ -354,12 +363,7 @@ public abstract class IexecHubAbstractService {
     }
 
     public long getMaxNbOfPeriodsForConsensus() {
-        try {
-            return getHubContract().contribution_deadline_ratio().send().longValue();
-        } catch (Exception e) {
-            log.error("Failed to getMaxNbOfPeriodsForConsensus");
-        }
-        return 0;
+        return maxNbOfPeriodsForConsensus;
     }
 
     public boolean hasEnoughGas(String address) {
