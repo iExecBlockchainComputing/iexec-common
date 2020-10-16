@@ -355,8 +355,14 @@ public abstract class IexecHubAbstractService {
         return "";
     }
 
+    /**
+     * get the value of MaxNbOfPeriodsForConsensus
+     * written onchain.
+     * @return the value found onchain or -1 if
+     * we could not read it.
+     */
     public long getMaxNbOfPeriodsForConsensus() {
-        if (maxNbOfPeriodsForConsensus == 0) {
+        if (maxNbOfPeriodsForConsensus == -1) {
             setMaxNbOfPeriodsForConsensus();
         }
         return maxNbOfPeriodsForConsensus;
@@ -368,7 +374,7 @@ public abstract class IexecHubAbstractService {
                     .contribution_deadline_ratio().send().longValue();
         } catch (Exception e) {
             log.error("Failed to get maxNbOfPeriodsForConsensus from the chain");
-            this.maxNbOfPeriodsForConsensus = 0;
+            this.maxNbOfPeriodsForConsensus = -1;
         }
     }
 
