@@ -139,6 +139,6 @@ public class ChainTask {
     }
 
     public String getChainTaskId() {
-        return ChainUtils.generateChainTaskId(dealid, BigInteger.valueOf(idx));
+        return ChainUtils.generateChainTaskId(dealid, idx);
     }
 }
