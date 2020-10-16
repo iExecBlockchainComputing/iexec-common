@@ -85,14 +85,7 @@ public abstract class IexecHubAbstractService {
 
         String hubAddress = getHubContract().getContractAddress();
         log.info("Abstract IexecHubService initialized (iexec proxy address) [hubAddress:{}]", hubAddress);
-
-        try {
-            this.maxNbOfPeriodsForConsensus = getHubContract()
-                    .contribution_deadline_ratio().send().longValue();
-        } catch (Exception e) {
-            log.error("Failed to get maxNbOfPeriodsForConsensus from the chain");
-            System.exit(1);
-        }
+        setMaxNbOfPeriodsForConsensus();
     }
 
     private static int scoreToWeight(int workerScore) {
@@ -363,7 +356,20 @@ public abstract class IexecHubAbstractService {
     }
 
     public long getMaxNbOfPeriodsForConsensus() {
+        if (maxNbOfPeriodsForConsensus == 0) {
+            setMaxNbOfPeriodsForConsensus();
+        }
         return maxNbOfPeriodsForConsensus;
+    }
+
+    private void setMaxNbOfPeriodsForConsensus() {
+        try {
+            this.maxNbOfPeriodsForConsensus = getHubContract()
+                    .contribution_deadline_ratio().send().longValue();
+        } catch (Exception e) {
+            log.error("Failed to get maxNbOfPeriodsForConsensus from the chain");
+            this.maxNbOfPeriodsForConsensus = 0;
+        }
     }
 
     public boolean hasEnoughGas(String address) {
