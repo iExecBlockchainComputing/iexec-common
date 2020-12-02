@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static com.iexec.common.chain.ChainUtils.weiToEth;
+import static com.iexec.common.contract.generated.DatasetRegistry.FUNC_CREATEDATASET;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
 
 @Slf4j
@@ -290,6 +291,9 @@ public abstract class Web3jAbstractService {
                         break;
                     case FUNC_REOPEN:
                         gasLimit = 500000;//seen 43721
+                        break;
+                    case FUNC_CREATEDATASET:
+                        gasLimit = 600000;//seen 531690
                         break;
                     default:
                         gasLimit = GAS_LIMIT_CAP;
