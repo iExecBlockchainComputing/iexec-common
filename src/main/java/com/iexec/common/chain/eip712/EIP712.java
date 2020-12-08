@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package com.iexec.common.result.eip712;
+package com.iexec.common.chain.eip712;
 
-import lombok.*;
+import java.util.HashMap;
+import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-public class Domain {
+public interface EIP712<T> {
 
-    private String name;
-    private String version;
-    private long chainId;
+    HashMap<String, List<TypeParam>> getTypes();
 
+    EIP712Domain getDomain();
+
+    String getPrimaryType();
+
+    T getMessage();
+
+    String getMessageHash();
+
+    List<TypeParam> getMessageTypeParams();
 }

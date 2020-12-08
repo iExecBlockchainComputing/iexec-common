@@ -18,6 +18,7 @@ package com.iexec.common.result.eip712;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.iexec.common.chain.eip712.TypeParam;
 import lombok.*;
 
 import java.util.List;

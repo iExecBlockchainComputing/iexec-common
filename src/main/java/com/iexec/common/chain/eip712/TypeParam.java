@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iexec.common.result.eip712;
+package com.iexec.common.chain.eip712;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
