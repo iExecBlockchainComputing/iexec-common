@@ -16,6 +16,7 @@
 
 package com.iexec.common.chain.eip712;
 
+import com.iexec.common.utils.BytesUtils;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
@@ -48,25 +49,37 @@ public class EIP712Utils {
         return "";
     }
 
-    private static String encodeUTF8String(String string) {
+    static String encodeUTF8String(String string) {
         return Numeric.toHexString(Hash.sha3(string.getBytes()));
     }
 
-    private static String encodeHexString(String hexString) {
-        //TODO check is byte32
+    static String encodeHexString(String hexString) {
+        if (!BytesUtils.isHexaString(hexString)) {
+            return "";
+        }
+
+        if (BytesUtils.stringToBytes(hexString).length > 32){
+            return "";
+        }
+
         return Numeric.toHexString(Numeric.toBytesPadded(Numeric.toBigInt(hexString), 32));
     }
 
-    private static String encodeLong(Long longValue) {
+    static String encodeLong(Long longValue) {
         return Numeric.toHexString(Numeric.toBytesPadded(BigInteger.valueOf(longValue), 32));
     }
 
-    private static String encodeBigInteger(BigInteger bigInteger) {
+    static String encodeBigInteger(BigInteger bigInteger) {
         return Numeric.toHexString(Numeric.toBytesPadded(bigInteger, 32));
     }
 
-    private static String encodeByteArray(byte[] byteArray) {
-        //TODO check is byte32
+    static String encodeByteArray(byte[] byteArray) {
+
+        if (!BytesUtils.isBytes32(byteArray)) {
+            return "";
+        }
+
+
         return Numeric.toHexString(byteArray);
     }
 
