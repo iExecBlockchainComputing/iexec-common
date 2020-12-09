@@ -14,34 +14,15 @@
  * limitations under the License.
  */
 
-package com.iexec.common.chain.eip712;
+package com.iexec.common.chain.order;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.List;
+public interface SignedOrder {
 
-public interface EIP712<T> {
+    @JsonProperty("sign")
+    String getSignature();
 
-    @JsonProperty("types")
-    HashMap<String, List<TypeParam>> getTypes();
+    void setSignature(String signature);
 
-    @JsonProperty("domain")
-    EIP712Domain getDomain();
-
-    @JsonProperty("primaryType")
-    String getPrimaryType();
-
-    @JsonProperty("message")
-    T getMessage();
-
-    @JsonIgnore
-    String getMessageHash();
-
-    @JsonIgnore
-    List<TypeParam> getMessageTypeParams();
-
-    @JsonIgnore
-    String getHash();
 }

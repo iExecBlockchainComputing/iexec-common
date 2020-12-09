@@ -18,16 +18,14 @@ package com.iexec.common.chain.eip712;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iexec.common.utils.HashUtils;
-import lombok.*;
+import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Data
-@Builder
-@NoArgsConstructor
 @Getter
-@Setter
 public class EIP712Domain {
 
     public static final String primaryType = "EIP712Domain";
@@ -36,6 +34,12 @@ public class EIP712Domain {
     private String version;
     private long chainId;
     private String verifyingContract;
+    @JsonIgnore
+    private List<TypeParam> types;
+
+    public EIP712Domain() {
+        this("", "", 0L, "");
+    }
 
     public EIP712Domain(long chainId, String verifyingContract) {
         this("iExecODB", "5.0.0", chainId, verifyingContract);
@@ -46,24 +50,43 @@ public class EIP712Domain {
         this.version = version;
         this.chainId = chainId;
         this.verifyingContract = verifyingContract;
+
+        this.initTypes();
     }
 
-    @JsonIgnore
-    private final List<TypeParam> types = Arrays.asList(
-            new TypeParam("name", "string"),
-            new TypeParam("version", "string"),
-            new TypeParam("chainId", "uint256"),
-            new TypeParam("verifyingContract", "address")
-    );
+    private void initTypes() {
+        this.types = new ArrayList<>();
+        this.types.addAll(Arrays.asList(
+                new TypeParam("name", "string"),
+                new TypeParam("version", "string"),
+                new TypeParam("chainId", "uint256")
+        ));
 
+        if (StringUtils.isNotEmpty(this.verifyingContract)) {
+            this.types.add(
+                    new TypeParam("verifyingContract", "address"));
+        }
+    }
+
+    /**
+     * @return EIP712Domain(string name, string version, uint256 chainId, ..)
+     */
+    @JsonIgnore
     public String getDomainSeparator() {
-        String domainType = EIP712Domain.primaryType + "(" + EIP712Utils.typeParamsToString(types) + ")";//EIP712Domain(string name,string version,uint256 chainId, ..)
+        String domainType = EIP712Domain.primaryType + "(" + EIP712Utils.typeParamsToString(types) + ")";
+
+        if (StringUtils.isNotEmpty(this.verifyingContract)) {
+            return HashUtils.concatenateAndHash(EIP712Utils.encodeData(domainType),
+                    EIP712Utils.encodeData(name),
+                    EIP712Utils.encodeData(version),
+                    EIP712Utils.encodeData(chainId),
+                    EIP712Utils.encodeData(verifyingContract));
+        }
 
         return HashUtils.concatenateAndHash(EIP712Utils.encodeData(domainType),
                 EIP712Utils.encodeData(name),
                 EIP712Utils.encodeData(version),
-                EIP712Utils.encodeData(chainId),
-                EIP712Utils.encodeData(verifyingContract));
+                EIP712Utils.encodeData(chainId));
     }
 
 }

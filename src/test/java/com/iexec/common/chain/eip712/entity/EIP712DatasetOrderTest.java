@@ -16,8 +16,8 @@
 
 package com.iexec.common.chain.eip712.entity;
 
+import com.iexec.common.chain.order.DatasetOrder;
 import com.iexec.common.chain.eip712.EIP712Domain;
-import com.iexec.common.contract.generated.IexecLibOrders_v5;
 import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.SignatureUtils;
 import org.assertj.core.api.Assertions;
@@ -45,21 +45,21 @@ public class EIP712DatasetOrderTest {
      */
     @Test
     public void hashDatasetOrderEIP712() {
-        EIP712DatasetOrder datasetOrderEIP712 = new EIP712DatasetOrder(
+        EIP712DatasetOrder eip712DatasetOrder = new EIP712DatasetOrder(
                 DOMAIN,
-                new IexecLibOrders_v5.DatasetOrder(
+                new DatasetOrder(
                         DATASET_ADDRESS,
                         BigInteger.valueOf(0),
                         BigInteger.valueOf(1000000),
-                        BytesUtils.stringToBytes("0x0000000000000000000000000000000000000000000000000000000000000001"),
+                        "0x0000000000000000000000000000000000000000000000000000000000000001",
                         BytesUtils.EMPTY_ADDRESS,
                         BytesUtils.EMPTY_ADDRESS,
                         BytesUtils.EMPTY_ADDRESS,
-                        BytesUtils.stringToBytes("0xc49d07f99c47096900653b6ade4ccde4c52f773a5ad68f1da0a47c993cad4595")
+                        "0xc49d07f99c47096900653b6ade4ccde4c52f773a5ad68f1da0a47c993cad4595"
                 ));
 
 
-        String signatureString = SignatureUtils.signAsString(datasetOrderEIP712.getHash(), getWallet());
+        String signatureString = SignatureUtils.signAsString(eip712DatasetOrder.getHash(), getWallet());
         System.out.println(signatureString);
         Assertions.assertThat(signatureString).isEqualTo("0x955db5242901dfec80d1cf20dce54a8c60274db55fb572ead03f32a2475e18b60e308e1a3bc599d774549283ec737bcedca8420bdae9e4784e3f62e8f4ff085f1c");
     }

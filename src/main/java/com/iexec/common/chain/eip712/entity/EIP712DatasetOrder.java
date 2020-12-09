@@ -19,7 +19,7 @@ package com.iexec.common.chain.eip712.entity;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.chain.eip712.TypeParam;
-import com.iexec.common.contract.generated.IexecLibOrders_v5;
+import com.iexec.common.chain.order.DatasetOrder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,9 +28,9 @@ import java.util.List;
 
 @Slf4j
 @Getter
-public class EIP712DatasetOrder extends EIP712Entity<IexecLibOrders_v5.DatasetOrder> {
+public class EIP712DatasetOrder extends EIP712Entity<DatasetOrder> {
 
-    public EIP712DatasetOrder(EIP712Domain domain, IexecLibOrders_v5.DatasetOrder datasetOrder) {
+    public EIP712DatasetOrder(EIP712Domain domain, DatasetOrder datasetOrder) {
         super(domain, datasetOrder);
     }
 
@@ -55,17 +55,15 @@ public class EIP712DatasetOrder extends EIP712Entity<IexecLibOrders_v5.DatasetOr
     @Override
     public String getMessageHash() {
         return super.hashMessageValues(
-                getMessage().dataset,
-                getMessage().datasetprice,
-                getMessage().volume,
-                getMessage().tag,
-                getMessage().apprestrict,
-                getMessage().workerpoolrestrict,
-                getMessage().requesterrestrict,
-                getMessage().salt
+                getMessage().getAddress(),
+                getMessage().getPrice(),
+                getMessage().getVolume(),
+                getMessage().getTag(),
+                getMessage().getAppRestrict(),
+                getMessage().getWorkerpoolRestrict(),
+                getMessage().getRequesterRestrict(),
+                getMessage().getSalt()
         );
     }
 
 }
-
-

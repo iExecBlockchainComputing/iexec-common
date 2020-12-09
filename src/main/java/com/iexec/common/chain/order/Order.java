@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package com.iexec.common.chain.eip712;
+package com.iexec.common.chain.order;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.List;
+import java.math.BigInteger;
 
-public interface EIP712<T> {
+public interface Order {
 
-    @JsonProperty("types")
-    HashMap<String, List<TypeParam>> getTypes();
+    String getAddress();
 
-    @JsonProperty("domain")
-    EIP712Domain getDomain();
+    void setAddress(String address);
 
-    @JsonProperty("primaryType")
-    String getPrimaryType();
+    BigInteger getPrice();
 
-    @JsonProperty("message")
-    T getMessage();
+    void setPrice(BigInteger price);
 
-    @JsonIgnore
-    String getMessageHash();
+    BigInteger getVolume();
 
-    @JsonIgnore
-    List<TypeParam> getMessageTypeParams();
+    void setVolume(BigInteger volume);
 
-    @JsonIgnore
-    String getHash();
+    @JsonProperty("tag")
+    String getTag();
+
+    void setTag(String tag);
+
+    @JsonProperty("salt")
+    String getSalt();
+
+    void setSalt(String salt);
 }
+

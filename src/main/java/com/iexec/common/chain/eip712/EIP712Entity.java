@@ -27,19 +27,22 @@ import java.util.List;
 @Slf4j
 public abstract class EIP712Entity<T> implements EIP712<T> {
 
+    private final HashMap<String, List<TypeParam>> types;
     private final EIP712Domain domain;
     private final T message;
 
     protected EIP712Entity(EIP712Domain domain, T message) {
         this.domain = domain;
         this.message = message;
+
+        HashMap<String, List<TypeParam>> types = new HashMap<>();
+        types.put(EIP712Domain.primaryType, domain.getTypes());
+        types.put(getPrimaryType(), getMessageTypeParams());
+        this.types = types;
     }
 
     @Override
     public HashMap<String, List<TypeParam>> getTypes() {
-        HashMap<String, List<TypeParam>> types = new HashMap<>();
-        types.put(EIP712Domain.primaryType, domain.getTypes());
-        types.put(getPrimaryType(), getMessageTypeParams());
         return types;
     }
 
@@ -53,13 +56,7 @@ public abstract class EIP712Entity<T> implements EIP712<T> {
         return message;
     }
 
-    public String hashMessageValues(Object... values) {
-        String type = getPrimaryType() + "(" + EIP712Utils.typeParamsToString(getMessageTypeParams()) + ")";//MyEntity(address param1, string param2, ..)
-        String typeHash = EIP712Utils.encodeData(type);
-        String[] encodedValues = Arrays.stream(values).map(EIP712Utils::encodeData).toArray(String[]::new);
-        return HashUtils.concatenateAndHash(ObjectArrays.concat(typeHash, encodedValues));
-    }
-
+    @Override
     public String getHash() {
         return HashUtils.concatenateAndHash(
                 "0x1901",
@@ -67,6 +64,12 @@ public abstract class EIP712Entity<T> implements EIP712<T> {
                 getMessageHash());
     }
 
+    public String hashMessageValues(Object... values) {
+        String type = getPrimaryType() + "(" + EIP712Utils.typeParamsToString(getMessageTypeParams()) + ")";
+        //MyEntity(address param1, string param2, ..)
+        String typeHash = EIP712Utils.encodeData(type);
+        String[] encodedValues = Arrays.stream(values).map(EIP712Utils::encodeData).toArray(String[]::new);
+        return HashUtils.concatenateAndHash(ObjectArrays.concat(typeHash, encodedValues));
+    }
+
 }
-
-
