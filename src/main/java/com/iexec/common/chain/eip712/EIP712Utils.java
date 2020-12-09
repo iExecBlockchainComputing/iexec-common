@@ -57,11 +57,9 @@ public class EIP712Utils {
         if (!BytesUtils.isHexaString(hexString)) {
             return "";
         }
-
-        if (BytesUtils.stringToBytes(hexString).length > 32){
+        if (BytesUtils.stringToBytes(hexString).length > 32) {
             return "";
         }
-
         return Numeric.toHexString(Numeric.toBytesPadded(Numeric.toBigInt(hexString), 32));
     }
 
@@ -74,12 +72,9 @@ public class EIP712Utils {
     }
 
     static String encodeByteArray(byte[] byteArray) {
-
         if (!BytesUtils.isBytes32(byteArray)) {
             return "";
         }
-
-
         return Numeric.toHexString(byteArray);
     }
 

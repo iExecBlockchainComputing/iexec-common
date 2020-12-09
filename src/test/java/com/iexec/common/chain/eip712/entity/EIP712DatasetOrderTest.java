@@ -16,8 +16,8 @@
 
 package com.iexec.common.chain.eip712.entity;
 
-import com.iexec.common.chain.order.DatasetOrder;
 import com.iexec.common.chain.eip712.EIP712Domain;
+import com.iexec.common.chain.order.DatasetOrder;
 import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.SignatureUtils;
 import org.assertj.core.api.Assertions;
@@ -58,10 +58,10 @@ public class EIP712DatasetOrderTest {
                         "0xc49d07f99c47096900653b6ade4ccde4c52f773a5ad68f1da0a47c993cad4595"
                 ));
 
-
-        String signatureString = SignatureUtils.signAsString(eip712DatasetOrder.getHash(), getWallet());
-        System.out.println(signatureString);
-        Assertions.assertThat(signatureString).isEqualTo("0x955db5242901dfec80d1cf20dce54a8c60274db55fb572ead03f32a2475e18b60e308e1a3bc599d774549283ec737bcedca8420bdae9e4784e3f62e8f4ff085f1c");
+        String signatureString =
+                SignatureUtils.signAsString(eip712DatasetOrder.getHash(), getWallet());
+        Assertions.assertThat(signatureString)
+                .isEqualTo("0x955db5242901dfec80d1cf20dce54a8c60274db55fb572ead03f32a2475e18b60e308e1a3bc599d774549283ec737bcedca8420bdae9e4784e3f62e8f4ff085f1c");
     }
 
     private ECKeyPair getWallet() {

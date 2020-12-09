@@ -44,9 +44,8 @@ public class UnsignedDatasetOrderTest {
                         BytesUtils.EMPTY_HEXASTRING_64),
                 signature);
 
-        String signedDatasetOrderAsString = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(signedDatasetOrder);
-
-        System.out.println(signedDatasetOrderAsString);
+        String signedDatasetOrderAsString =
+                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(signedDatasetOrder);
 
         Assertions.assertThat(signedDatasetOrderAsString).isEqualTo("{\n" +
                 "  \"dataset\" : \"0x0000000000000000000000000000000000000000\",\n" +
@@ -71,14 +70,23 @@ public class UnsignedDatasetOrderTest {
                 BytesUtils.stringToBytes(BytesUtils.EMPTY_HEXASTRING_64),
                 BytesUtils.stringToBytes(BytesUtils.EMPTY_HEXASTRING_64));
 
-        Assertions.assertThat(signedDatasetOrder.getAddress()).isEqualTo(generatedDatasetOrder.dataset);
-        Assertions.assertThat(signedDatasetOrder.getPrice()).isEqualTo(generatedDatasetOrder.datasetprice);
-        Assertions.assertThat(signedDatasetOrder.getVolume()).isEqualTo(generatedDatasetOrder.volume);
-        Assertions.assertThat(signedDatasetOrder.getTag()).isEqualTo(BytesUtils.bytesToString(generatedDatasetOrder.tag));
-        Assertions.assertThat(signedDatasetOrder.getAppRestrict()).isEqualTo(generatedDatasetOrder.apprestrict);
-        Assertions.assertThat(signedDatasetOrder.getWorkerpoolRestrict()).isEqualTo(generatedDatasetOrder.workerpoolrestrict);
-        Assertions.assertThat(signedDatasetOrder.getRequesterRestrict()).isEqualTo(generatedDatasetOrder.requesterrestrict);
-        Assertions.assertThat(signedDatasetOrder.getSalt()).isEqualTo(BytesUtils.bytesToString(generatedDatasetOrder.salt));
-        Assertions.assertThat(signedDatasetOrder.getSignature()).isEqualTo(BytesUtils.bytesToString(generatedDatasetOrder.sign));
+        Assertions.assertThat(signedDatasetOrder.getAddress())
+                .isEqualTo(generatedDatasetOrder.dataset);
+        Assertions.assertThat(signedDatasetOrder.getPrice())
+                .isEqualTo(generatedDatasetOrder.datasetprice);
+        Assertions.assertThat(signedDatasetOrder.getVolume())
+                .isEqualTo(generatedDatasetOrder.volume);
+        Assertions.assertThat(signedDatasetOrder.getTag())
+                .isEqualTo(BytesUtils.bytesToString(generatedDatasetOrder.tag));
+        Assertions.assertThat(signedDatasetOrder.getAppRestrict())
+                .isEqualTo(generatedDatasetOrder.apprestrict);
+        Assertions.assertThat(signedDatasetOrder.getWorkerpoolRestrict())
+                .isEqualTo(generatedDatasetOrder.workerpoolrestrict);
+        Assertions.assertThat(signedDatasetOrder.getRequesterRestrict())
+                .isEqualTo(generatedDatasetOrder.requesterrestrict);
+        Assertions.assertThat(signedDatasetOrder.getSalt())
+                .isEqualTo(BytesUtils.bytesToString(generatedDatasetOrder.salt));
+        Assertions.assertThat(signedDatasetOrder.getSignature())
+                .isEqualTo(BytesUtils.bytesToString(generatedDatasetOrder.sign));
     }
 }
