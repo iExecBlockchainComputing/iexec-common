@@ -293,7 +293,7 @@ public abstract class Web3jAbstractService {
                         gasLimit = 500000;//seen 43721
                         break;
                     case FUNC_CREATEDATASET:
-                        gasLimit = 600000;//seen 531690
+                        gasLimit = 700000;//seen 608878
                         break;
                     default:
                         gasLimit = GAS_LIMIT_CAP;
