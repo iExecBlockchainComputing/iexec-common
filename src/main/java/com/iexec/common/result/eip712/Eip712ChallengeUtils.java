@@ -16,13 +16,9 @@
 
 package com.iexec.common.result.eip712;
 
+import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.utils.HashUtils;
 import com.iexec.common.utils.SignatureUtils;
-import com.iexec.common.result.eip712.Domain;
-import com.iexec.common.result.eip712.Eip712Challenge;
-import com.iexec.common.result.eip712.Message;
-import com.iexec.common.result.eip712.Types;
-
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
@@ -61,7 +57,7 @@ public class Eip712ChallengeUtils {
     }
 
     static String getDomainSeparator(Eip712Challenge eip712Challenge) {
-        Domain domain = eip712Challenge.getDomain();
+        EIP712Domain domain = eip712Challenge.getDomain();
 
         String domainTypesParams = Types.typeParamsToString(eip712Challenge.getTypes().getDomainTypeParams());
         String domainType = "EIP712Domain(" + domainTypesParams + ")";//EIP712Domain(string name,string version,uint256 chainId)

@@ -107,7 +107,7 @@ public class SignatureUtils {
         String r = Numeric.toHexString(sign.getR());
         String s = Numeric.toHexString(sign.getS());
         String v = Numeric.toHexString(sign.getV());
-        return String.join("", r, Numeric.cleanHexPrefix(s), v);
+        return String.join("", r, Numeric.cleanHexPrefix(s), Numeric.cleanHexPrefix(v));
     }
 
     /*

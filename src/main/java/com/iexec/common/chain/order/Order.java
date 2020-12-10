@@ -14,20 +14,34 @@
  * limitations under the License.
  */
 
-package com.iexec.common.result.eip712;
+package com.iexec.common.chain.order;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-public class Domain {
+import java.math.BigInteger;
 
-    private String name;
-    private String version;
-    private long chainId;
+public interface Order {
 
+    String getAddress();
+
+    void setAddress(String address);
+
+    BigInteger getPrice();
+
+    void setPrice(BigInteger price);
+
+    BigInteger getVolume();
+
+    void setVolume(BigInteger volume);
+
+    @JsonProperty("tag")
+    String getTag();
+
+    void setTag(String tag);
+
+    @JsonProperty("salt")
+    String getSalt();
+
+    void setSalt(String salt);
 }
+
