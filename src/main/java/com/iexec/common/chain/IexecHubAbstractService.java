@@ -25,7 +25,6 @@ import com.iexec.common.utils.MultiAddressHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.abi.EventEncoder;
-import org.web3j.abi.datatypes.Bytes;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
@@ -179,6 +178,10 @@ public abstract class IexecHubAbstractService {
      * @return dataset address (e.g.: 0x95ba540ca3c2dfd52a7e487a03e1358dfe9441ce)
      */
     public String createDataset(String name, String multiAddress, String checksum) {
+        return createDataset(name, multiAddress, checksum, web3jAbstractService.getWritingContractGasProvider());
+    }
+
+    public String createDataset(String name, String multiAddress, String checksum, ContractGasProvider contractGasProvider) {
         String owner = credentials.getAddress();
         final String paramsPrinter = " [owner:{}, name:{}, multiAddress:{}, checksum:{}]";
 
@@ -190,7 +193,7 @@ public abstract class IexecHubAbstractService {
         }
 
         DatasetRegistry datasetRegistry =
-                getDatasetRegistryContract(web3jAbstractService.getWritingContractGasProvider());
+                getDatasetRegistryContract(contractGasProvider);
         if (datasetRegistry == null) {
             log.error("Failed to get datasetRegistry" + paramsPrinter,
                     owner, name, multiAddress, checksum);
