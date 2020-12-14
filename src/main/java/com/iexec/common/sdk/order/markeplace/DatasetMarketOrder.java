@@ -29,6 +29,6 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
-public class MPDatasetOrder extends MPOrder<DatasetOrder> {
+public class DatasetMarketOrder extends MarketOrder<DatasetOrder> {
 
 }

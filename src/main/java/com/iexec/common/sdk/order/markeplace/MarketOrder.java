@@ -31,7 +31,7 @@ import java.util.Date;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class MPOrder<T> {
+public abstract class MarketOrder<T> {
 
     int chainId;
     String orderHash;

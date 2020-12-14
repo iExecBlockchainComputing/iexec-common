@@ -16,26 +16,26 @@
 
 package com.iexec.common.sdk.marketplace;
 
-import com.iexec.common.sdk.order.markeplace.MPAppOrder;
-import com.iexec.common.sdk.order.markeplace.MPDatasetOrder;
-import com.iexec.common.sdk.order.markeplace.MPWorkerpoolOrder;
+import com.iexec.common.sdk.order.markeplace.AppMarketOrder;
+import com.iexec.common.sdk.order.markeplace.DatasetMarketOrder;
+import com.iexec.common.sdk.order.markeplace.WorkerpoolMarketOrder;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface Marketplace {
 
-    public List<MPWorkerpoolOrder> getWorkerpoolOrders();
+    public List<WorkerpoolMarketOrder> getWorkerpoolOrders();
 
-    public Optional<MPWorkerpoolOrder> getOneWorkerpoolOrder(String workerpoolAddress);
+    public Optional<WorkerpoolMarketOrder> getOneWorkerpoolOrder(String workerpoolAddress);
 
-    public List<MPWorkerpoolOrder> getWorkerpoolOrders(String workerpoolAddress);
+    public List<WorkerpoolMarketOrder> getWorkerpoolOrders(String workerpoolAddress);
 
-    public Optional<MPAppOrder> getOneAppOrder(String appAddress);
+    public Optional<AppMarketOrder> getOneAppOrder(String appAddress);
 
-    public List<MPAppOrder> getAppOrders(String appAddress);
+    public List<AppMarketOrder> getAppOrders(String appAddress);
 
-    public Optional<MPDatasetOrder> getOneDatasetOrder(String datasetAddress);
+    public Optional<DatasetMarketOrder> getOneDatasetOrder(String datasetAddress);
 
-    public List<MPDatasetOrder> getDatasetOrders(String datasetAddress);
+    public List<DatasetMarketOrder> getDatasetOrders(String datasetAddress);
 }

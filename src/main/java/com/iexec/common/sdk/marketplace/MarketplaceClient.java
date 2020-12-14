@@ -21,9 +21,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.sdk.order.OrderType;
-import com.iexec.common.sdk.order.markeplace.MPAppOrder;
-import com.iexec.common.sdk.order.markeplace.MPDatasetOrder;
-import com.iexec.common.sdk.order.markeplace.MPWorkerpoolOrder;
+import com.iexec.common.sdk.order.markeplace.AppMarketOrder;
+import com.iexec.common.sdk.order.markeplace.DatasetMarketOrder;
+import com.iexec.common.sdk.order.markeplace.WorkerpoolMarketOrder;
 import feign.Feign;
 import feign.FeignException;
 import feign.jackson.JacksonEncoder;
@@ -59,19 +59,19 @@ public class MarketplaceClient implements Marketplace {
     }
 
     @Override
-    public List<MPWorkerpoolOrder> getWorkerpoolOrders() {
+    public List<WorkerpoolMarketOrder> getWorkerpoolOrders() {
         return getOrders(OrderType.WORKERPOOL);
     }
 
     @Override
-    public Optional<MPWorkerpoolOrder> getOneWorkerpoolOrder(String workerpoolAddress) {
+    public Optional<WorkerpoolMarketOrder> getOneWorkerpoolOrder(String workerpoolAddress) {
         return getWorkerpoolOrders(workerpoolAddress)
                 .stream()
                 .findFirst();        
     }
 
     @Override
-    public List<MPWorkerpoolOrder> getWorkerpoolOrders(String workerpoolAddress) {
+    public List<WorkerpoolMarketOrder> getWorkerpoolOrders(String workerpoolAddress) {
         MPQueryParams queryParams = MPQueryParams.builder()
                 .workerpool(workerpoolAddress)
                 .build();
@@ -79,14 +79,14 @@ public class MarketplaceClient implements Marketplace {
     }
 
     @Override
-    public Optional<MPAppOrder> getOneAppOrder(String appAddress) {
+    public Optional<AppMarketOrder> getOneAppOrder(String appAddress) {
         return getAppOrders(appAddress)
                 .stream()
                 .findFirst();        
     }
 
     @Override
-    public List<MPAppOrder> getAppOrders(String appAddress) {
+    public List<AppMarketOrder> getAppOrders(String appAddress) {
         MPQueryParams queryParams = MPQueryParams.builder()
                 .app(appAddress)
                 .build();
@@ -94,14 +94,14 @@ public class MarketplaceClient implements Marketplace {
     }
 
     @Override
-    public Optional<MPDatasetOrder> getOneDatasetOrder(String datasetAddress) {
+    public Optional<DatasetMarketOrder> getOneDatasetOrder(String datasetAddress) {
         return getDatasetOrders(datasetAddress)
                 .stream()
                 .findFirst();        
     }
 
     @Override
-    public List<MPDatasetOrder> getDatasetOrders(String datasetAddress) {
+    public List<DatasetMarketOrder> getDatasetOrders(String datasetAddress) {
         MPQueryParams queryParams = MPQueryParams.builder()
                 .dataset(datasetAddress)
                 .build();
@@ -148,13 +148,13 @@ public class MarketplaceClient implements Marketplace {
     ) throws JsonMappingException, JsonProcessingException {
         switch (type) {
             case WORKERPOOL:
-                return parse(jsonPayload, new TypeReference<Orderbook<MPWorkerpoolOrder>>(){});
+                return parse(jsonPayload, new TypeReference<Orderbook<WorkerpoolMarketOrder>>(){});
             case APP:
-                return parse(jsonPayload, new TypeReference<Orderbook<MPAppOrder>>(){});
+                return parse(jsonPayload, new TypeReference<Orderbook<AppMarketOrder>>(){});
             case DATASET:
-                return parse(jsonPayload, new TypeReference<Orderbook<MPDatasetOrder>>(){});
+                return parse(jsonPayload, new TypeReference<Orderbook<DatasetMarketOrder>>(){});
             case REQUEST:
-                return parse(jsonPayload, new TypeReference<Orderbook<MPDatasetOrder>>(){});
+                return parse(jsonPayload, new TypeReference<Orderbook<DatasetMarketOrder>>(){});
             default:
                 throw new RuntimeException("Unknown order type");
         }

@@ -16,12 +16,12 @@
 
 package com.iexec.common.sdk.order.markeplace;
 
-import com.iexec.common.sdk.order.payload.RequestOrder;
+import com.iexec.common.sdk.order.payload.AppOrder;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Marketplace (published) dataset order.
+ * Marketplace (published) app order.
  */
 
 @Data
@@ -29,6 +29,6 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
-public class MPRequestOrder extends MPOrder<RequestOrder> {
+public class AppMarketOrder extends MarketOrder<AppOrder>{
 
 }
