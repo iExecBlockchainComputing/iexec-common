@@ -86,6 +86,19 @@ public class MarketplaceClient implements Marketplace {
     }
 
     @Override
+    public Optional<AppMarketOrder> getOneRequesterRestrictedAppOrder(
+        String appAddress,
+        String requesterAddress
+    ) {
+        MPQueryParams queryParams = MPQueryParams.builder()
+                .app(appAddress)
+                .requester(requesterAddress)
+                .build();
+        List<AppMarketOrder> orders = getOrders(OrderType.APP, queryParams);
+        return orders.stream().findFirst();
+    }
+
+    @Override
     public List<AppMarketOrder> getAppOrders(String appAddress) {
         MPQueryParams queryParams = MPQueryParams.builder()
                 .app(appAddress)
@@ -98,6 +111,19 @@ public class MarketplaceClient implements Marketplace {
         return getDatasetOrders(datasetAddress)
                 .stream()
                 .findFirst();        
+    }
+
+    @Override
+    public Optional<DatasetMarketOrder> getOneRequesterRestrictedDatasetOrder(
+        String datasetAddress,
+        String requesterAddress
+    ) {
+        MPQueryParams queryParams = MPQueryParams.builder()
+                .dataset(datasetAddress)
+                .requester(requesterAddress)
+                .build();
+        List<DatasetMarketOrder> orders = getOrders(OrderType.DATASET, queryParams);
+        return orders.stream().findFirst();
     }
 
     @Override
