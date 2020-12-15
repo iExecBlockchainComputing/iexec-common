@@ -50,7 +50,7 @@ public class EIP712Utils {
     }
 
     static String encodeUTF8String(String string) {
-        return Numeric.toHexString(Hash.sha3(string.getBytes()));
+        return Hash.sha3String(string);
     }
 
     static String encodeHexString(String hexString) {

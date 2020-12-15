@@ -40,15 +40,15 @@ public class RequestOrder extends Order {
     private BigInteger datasetmaxprice;
     private String workerpool;
     private BigInteger workerpoolmaxprice;
+    private String requester;
     private BigInteger category;
     private BigInteger trust;
     private String beneficiary;
     private String callback;
     private String params;
-    private String requester;
 
     @Builder
-    public RequestOrder(String app, BigInteger appmaxprice, String dataset, BigInteger datasetmaxprice, String workerpool, BigInteger workerpoolmaxprice, BigInteger volume, BigInteger category, BigInteger trust, String tag, String beneficiary, String callback, String params, String requester, String salt, String sign) {
+    public RequestOrder(String app, BigInteger appmaxprice, String dataset, BigInteger datasetmaxprice, String workerpool, BigInteger workerpoolmaxprice, String requester, BigInteger volume, String tag, BigInteger category, BigInteger trust, String beneficiary, String callback, String params, String salt, String sign) {
         super(volume, tag, salt, sign);
         setApp(app);
         this.appmaxprice = appmaxprice;
@@ -56,12 +56,12 @@ public class RequestOrder extends Order {
         this.datasetmaxprice = datasetmaxprice;
         setWorkerpool(workerpool);
         this.workerpoolmaxprice = workerpoolmaxprice;
+        setRequester(requester);
         this.category = category;
         this.trust = trust;
         setBeneficiary(beneficiary);
         setCallback(callback);
         this.params = params;
-        setRequester(requester);
     }
 
     public static String toStringParams(DealParams params) {

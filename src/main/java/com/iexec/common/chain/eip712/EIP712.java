@@ -18,11 +18,12 @@ package com.iexec.common.chain.eip712;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.web3j.crypto.ECKeyPair;
 
 import java.util.HashMap;
 import java.util.List;
 
-public interface EIP712<T> {
+public interface EIP712<M> {
 
     @JsonProperty("types")
     HashMap<String, List<TypeParam>> getTypes();
@@ -34,7 +35,7 @@ public interface EIP712<T> {
     String getPrimaryType();
 
     @JsonProperty("message")
-    T getMessage();
+    M getMessage();
 
     @JsonIgnore
     String getMessageHash();
@@ -44,4 +45,7 @@ public interface EIP712<T> {
 
     @JsonIgnore
     String getHash();
+
+    String signMessage(ECKeyPair ecKeyPair);
+
 }
