@@ -16,43 +16,55 @@
 
 package com.iexec.common.sdk.order;
 
-import com.iexec.common.sdk.cli.IexecCli;
-import com.iexec.common.sdk.cli.input.UnsignedRequestOrderCliInput;
-import com.iexec.common.sdk.cli.output.SignRequestOrderCliOutput;
+import com.iexec.common.chain.eip712.EIP712Domain;
+import com.iexec.common.chain.eip712.entity.EIP712DatasetOrder;
+import com.iexec.common.chain.eip712.entity.EIP712RequestOrder;
+import com.iexec.common.sdk.order.payload.DatasetOrder;
 import com.iexec.common.sdk.order.payload.RequestOrder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.web3j.crypto.ECKeyPair;
 
 @Slf4j
 public class OrderSigner {
 
-    private final IexecCli iexecCli;
+    private final EIP712Domain eip712Domain;
+    private final ECKeyPair ecKeyPair;
 
     public OrderSigner(
-        int chainId,
-        String walletPassword
+            int chainId,
+            String verifyingContract,
+            ECKeyPair ecKeyPair
     ) {
-        this.iexecCli = new IexecCli(chainId, walletPassword);
+        this.ecKeyPair = ecKeyPair;
+        eip712Domain = new EIP712Domain(chainId, verifyingContract);
+    }
+
+    public DatasetOrder signDatasetOrder(DatasetOrder datasetOrder) {
+        if (datasetOrder == null) {
+            return null;
+        }
+        String signature = new EIP712DatasetOrder(eip712Domain, datasetOrder)
+                .signMessage(ecKeyPair);
+        if (StringUtils.isEmpty(signature)) {
+            log.error("Empty signature [datasetOrder:{}]", datasetOrder.toString());
+            return null;
+        }
+        datasetOrder.setSign(signature);
+        return datasetOrder;
     }
 
     public RequestOrder signRequestOrder(RequestOrder requestOrder) {
         if (requestOrder == null) {
-            throw new IllegalArgumentException("Request order should not be null");
-        }
-        iexecCli.copyInputToHomeDir(new UnsignedRequestOrderCliInput(requestOrder), "iexec.json");
-        RequestOrder signedRequestOrder = iexecCli.run("iexec order sign --request --skip-request-check",
-                SignRequestOrderCliOutput.class);
-        //not checking params since iexec-cli update it
-        if (!requestOrder.equalsExcludedSaltSignAndParams(signedRequestOrder)){
-            log.error("Failed to signRequestOrder (orders should be equals)[beneficiary:{}]",
-                    requestOrder.getBeneficiary());
             return null;
         }
-        if (signedRequestOrder == null || signedRequestOrder.getSalt() == null || signedRequestOrder.getSalt().isEmpty()
-                || signedRequestOrder.getSign() == null || signedRequestOrder.getSign().isEmpty()) {
-            log.error("Failed to signRequestOrder [beneficiary:{}]",
-                    requestOrder.getBeneficiary());
+        String signature = new EIP712RequestOrder(eip712Domain, requestOrder)
+                .signMessage(ecKeyPair);
+        if (StringUtils.isEmpty(signature)) {
+            log.error("Empty signature [requestOrder:{}]", requestOrder.toString());
             return null;
         }
-        return signedRequestOrder;
+        requestOrder.setSign(signature);
+        return requestOrder;
     }
 }

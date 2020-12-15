@@ -19,7 +19,7 @@ package com.iexec.common.chain.eip712.entity;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.chain.eip712.TypeParam;
-import com.iexec.common.chain.order.DatasetOrder;
+import com.iexec.common.sdk.order.payload.DatasetOrder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,13 +55,13 @@ public class EIP712DatasetOrder extends EIP712Entity<DatasetOrder> {
     @Override
     public String getMessageHash() {
         return super.hashMessageValues(
-                getMessage().getAddress(),
-                getMessage().getPrice(),
+                getMessage().getDataset(),
+                getMessage().getDatasetprice(),
                 getMessage().getVolume(),
                 getMessage().getTag(),
-                getMessage().getAppRestrict(),
-                getMessage().getWorkerpoolRestrict(),
-                getMessage().getRequesterRestrict(),
+                getMessage().getApprestrict(),
+                getMessage().getWorkerpoolrestrict(),
+                getMessage().getRequesterrestrict(),
                 getMessage().getSalt()
         );
     }

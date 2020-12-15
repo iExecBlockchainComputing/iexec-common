@@ -17,10 +17,9 @@
 package com.iexec.common.chain.eip712.entity;
 
 import com.iexec.common.chain.eip712.EIP712Domain;
-import com.iexec.common.chain.order.RequestOrder;
+import com.iexec.common.sdk.order.payload.RequestOrder;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
-import com.iexec.common.utils.SignatureUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.web3j.crypto.CipherException;
@@ -44,7 +43,7 @@ public class EIP712RequestOrderTest {
      * Note: Don't forget to update salt
      */
     @Test
-    public void hashRequestOrderEIP712() {
+    public void signRequestOrderEIP712() {
         RequestOrder requestOrder = RequestOrder.builder()
                 .app("0x6709CAe77CDa2cbA8Cb90A4F5a4eFfb5c8Fe8367")
                 .appmaxprice(BigInteger.ZERO)
@@ -52,7 +51,7 @@ public class EIP712RequestOrderTest {
                 .datasetmaxprice(BigInteger.ZERO)
                 .workerpool("0x506fA5EaCa52B5d2F133452a45FFA68aD1CfB3C5")
                 .workerpoolmaxprice(BigInteger.ZERO)
-                .address("0x1ec09e1782a43a770d54e813379c730e0b29ad4b")
+                .requester("0x1ec09e1782a43a770d54e813379c730e0b29ad4b")
                 .volume(BigInteger.ONE)
                 .tag(TeeUtils.TEE_TAG)
                 .category(BigInteger.ZERO)
@@ -67,8 +66,7 @@ public class EIP712RequestOrderTest {
                 DOMAIN,
                 requestOrder);
 
-        String signatureString =
-                SignatureUtils.signAsString(eip712RequestOrder.getHash(), getWallet());
+        String signatureString = eip712RequestOrder.signMessage(getWallet());
         Assertions.assertThat(signatureString)
                 .isEqualTo("0xe4085c70e1d543daf0433d9b7a15f10679befb65dc33c3eeb284dee1ba409f724ce8223a262c8eeb2d3f4f3cc44c2c5d06192ab1d74b3554904425f6f5f8c4cc1c");
     }

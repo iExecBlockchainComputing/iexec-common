@@ -18,20 +18,22 @@ package com.iexec.common.chain.eip712;
 
 import com.google.common.collect.ObjectArrays;
 import com.iexec.common.utils.HashUtils;
+import com.iexec.common.utils.SignatureUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.web3j.crypto.ECKeyPair;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
-public abstract class EIP712Entity<T> implements EIP712<T> {
+public abstract class EIP712Entity<M> implements EIP712<M> {
 
     private final HashMap<String, List<TypeParam>> types;
     private final EIP712Domain domain;
-    private final T message;
+    private final M message;
 
-    protected EIP712Entity(EIP712Domain domain, T message) {
+    protected EIP712Entity(EIP712Domain domain, M message) {
         this.domain = domain;
         this.message = message;
 
@@ -52,7 +54,7 @@ public abstract class EIP712Entity<T> implements EIP712<T> {
     }
 
     @Override
-    public T getMessage() {
+    public M getMessage() {
         return message;
     }
 
@@ -70,6 +72,10 @@ public abstract class EIP712Entity<T> implements EIP712<T> {
         String typeHash = EIP712Utils.encodeData(type);
         String[] encodedValues = Arrays.stream(values).map(EIP712Utils::encodeData).toArray(String[]::new);
         return HashUtils.concatenateAndHash(ObjectArrays.concat(typeHash, encodedValues));
+    }
+
+    public String signMessage(ECKeyPair ecKeyPair) {
+        return SignatureUtils.signAsString(this.getHash(), ecKeyPair);
     }
 
 }

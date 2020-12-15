@@ -17,7 +17,7 @@
 package com.iexec.common.chain.eip712.entity;
 
 import com.iexec.common.chain.eip712.EIP712Domain;
-import com.iexec.common.chain.order.DatasetOrder;
+import com.iexec.common.sdk.order.payload.DatasetOrder;
 import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.SignatureUtils;
 import org.assertj.core.api.Assertions;
@@ -44,22 +44,22 @@ public class EIP712DatasetOrderTest {
      * Note: Don't forget to update salt
      */
     @Test
-    public void hashDatasetOrderEIP712() {
+    public void signDatasetOrderEIP712() {
         EIP712DatasetOrder eip712DatasetOrder = new EIP712DatasetOrder(
                 DOMAIN,
-                new DatasetOrder(
-                        DATASET_ADDRESS,
-                        BigInteger.valueOf(0),
-                        BigInteger.valueOf(1000000),
-                        "0x0000000000000000000000000000000000000000000000000000000000000001",
-                        BytesUtils.EMPTY_ADDRESS,
-                        BytesUtils.EMPTY_ADDRESS,
-                        BytesUtils.EMPTY_ADDRESS,
-                        "0xc49d07f99c47096900653b6ade4ccde4c52f773a5ad68f1da0a47c993cad4595"
-                ));
+                DatasetOrder.builder()
+                        .dataset(DATASET_ADDRESS)
+                        .price(BigInteger.valueOf(0))
+                        .volume(BigInteger.valueOf(1000000))
+                        .tag("0x0000000000000000000000000000000000000000000000000000000000000001")
+                        .apprestrict(BytesUtils.EMPTY_ADDRESS)
+                        .workerpoolrestrict(BytesUtils.EMPTY_ADDRESS)
+                        .requesterrestrict(BytesUtils.EMPTY_ADDRESS)
+                        .salt("0xc49d07f99c47096900653b6ade4ccde4c52f773a5ad68f1da0a47c993cad4595")
+                        .build()
+        );
 
-        String signatureString =
-                SignatureUtils.signAsString(eip712DatasetOrder.getHash(), getWallet());
+        String signatureString = eip712DatasetOrder.signMessage(getWallet());
         Assertions.assertThat(signatureString)
                 .isEqualTo("0x955db5242901dfec80d1cf20dce54a8c60274db55fb572ead03f32a2475e18b60e308e1a3bc599d774549283ec737bcedca8420bdae9e4784e3f62e8f4ff085f1c");
     }
