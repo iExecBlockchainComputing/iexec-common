@@ -33,9 +33,13 @@ public interface Marketplace {
 
     public Optional<AppMarketOrder> getOneAppOrder(String appAddress);
 
+    public Optional<AppMarketOrder> getOneRequesterRestrictedAppOrder(String appAddress, String requesterAddress);
+
     public List<AppMarketOrder> getAppOrders(String appAddress);
 
     public Optional<DatasetMarketOrder> getOneDatasetOrder(String datasetAddress);
+
+    public Optional<DatasetMarketOrder> getOneRequesterRestrictedDatasetOrder(String datasetAddress, String requesterAddress);
 
     public List<DatasetMarketOrder> getDatasetOrders(String datasetAddress);
 }

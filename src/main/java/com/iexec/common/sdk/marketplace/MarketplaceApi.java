@@ -31,9 +31,10 @@ interface MarketplaceApi {
      * when constructing the request. Can be empty but not null.
      * @return json string of orderbook
      */
-    @RequestLine("GET /{type}orders?chainId={chainId}")
+    @RequestLine("GET /{orderType}orders?chainId={chainId}")
     String getOrders(
-            @Param("type") OrderType orderType,
+            @Param("orderType") OrderType orderType,
+            // can contain requester=0xrequester or other
             @QueryMap MPQueryParams queryParameters
     );
 }
