@@ -36,7 +36,7 @@ configurations {
 
 ext {
     junitVersion = '4.12'
-    web3jVersion = '4.6.0'
+    web3jVersion = '4.7.0'
 }
 
 dependencies {
@@ -65,6 +65,23 @@ dependencies {
     // google core libs
     implementation "com.google.guava:guava:28.2-jre"
 
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'io.github.openfeign:feign-okhttp:11.0'
+    implementation 'io.github.openfeign:feign-jackson:11.0'
+    implementation 'io.github.openfeign:feign-slf4j:11.0'
+
+    // docker
+    implementation 'com.github.docker-java:docker-java:3.2.5'
+    implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.5'
+
+    // test
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation 'org.mockito:mockito-core:3.6.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
+    testImplementation 'org.assertj:assertj-core:3.18.1'
+
+
     // test
     testCompile "junit:junit:$junitVersion"
     testCompile("org.assertj:assertj-core:3.11.1")
@@ -78,6 +95,11 @@ test {
         junitXml.enabled = true
         html.enabled = true
     }
+}
+
+jar {
+    // include source code in the jar
+    from sourceSets.main.allSource
 }
 
 shadowJar { //required if we want to embed web3j dependency inside

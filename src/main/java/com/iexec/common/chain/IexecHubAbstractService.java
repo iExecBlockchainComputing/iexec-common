@@ -1,15 +1,20 @@
+/*
+ * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.iexec.common.chain;
-
-import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
-import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
-import static com.iexec.common.chain.ChainDeal.stringToDealParams;
-import static com.iexec.common.contract.generated.IexecHubContract.*;
-
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiFunction;
 
 import com.iexec.common.contract.generated.*;
 import com.iexec.common.dapp.DappType;
@@ -17,27 +22,42 @@ import com.iexec.common.task.TaskDescription;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.MultiAddressHelper;
-
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
 import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.RemoteCall;
+import org.web3j.protocol.core.RemoteFunctionCall;
 import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tuples.generated.Tuple9;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
+import org.web3j.utils.Numeric;
 
-import lombok.extern.slf4j.Slf4j;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+
+import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
+import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
+import static com.iexec.common.chain.ChainDeal.stringToDealParams;
+import static com.iexec.common.contract.generated.IexecHubContract.*;
 
 
 /*
-* Contracts (located at *.contract.generated) which are used in this service are generated from:
-* - https://github.com/iExecBlockchainComputing/PoCo-dev
-* - @ commit c989a8d03410c0cc6c67f7b6a56ef891fc3f964c (HEAD, tag: v5.1.0, origin/v5, origin/HEAD, v5)
-* */
+ * Contracts (located at *.contract.generated) which are used in this service are generated from:
+ * - https://github.com/iExecBlockchainComputing/PoCo-dev
+ * - @ commit c989a8d03410c0cc6c67f7b6a56ef891fc3f964c (HEAD, tag: v5.1.0, origin/v5, origin/HEAD, v5)
+ * */
 @Slf4j
 public abstract class IexecHubAbstractService {
 
@@ -45,6 +65,7 @@ public abstract class IexecHubAbstractService {
     private final Credentials credentials;
     private final String iexecHubAddress;
     private final Web3jAbstractService web3jAbstractService;
+    private long maxNbOfPeriodsForConsensus;
     private int nbBlocksToWaitPerRetry;
     private int maxRetries;
     private Map<String, TaskDescription> taskDescriptions = new HashMap<>();
@@ -68,6 +89,7 @@ public abstract class IexecHubAbstractService {
 
         String hubAddress = getHubContract().getContractAddress();
         log.info("Abstract IexecHubService initialized (iexec proxy address) [hubAddress:{}]", hubAddress);
+        setMaxNbOfPeriodsForConsensus();
     }
 
     private static int scoreToWeight(int workerScore) {
@@ -126,6 +148,124 @@ public abstract class IexecHubAbstractService {
             log.error("Failed to load chainDataset [address:{}]", datasetAddress);
         }
         return null;
+    }
+
+    public DatasetRegistry getDatasetRegistryContract(ContractGasProvider contractGasProvider) {
+        String datasetRegistryAddress = "";
+        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load DatasetRegistry contract");
+        try {
+            datasetRegistryAddress = getHubContract().datasetregistry().send();
+            if (datasetRegistryAddress == null || datasetRegistryAddress.isEmpty()) {
+                throw exceptionInInitializerError;
+            }
+            return DatasetRegistry.load(datasetRegistryAddress, web3jAbstractService.getWeb3j(), credentials, contractGasProvider);
+        } catch (Exception e) {
+            log.error("Failed to load DatasetRegistry contract [address:{}]", datasetRegistryAddress);
+        }
+        return null;
+    }
+
+    /**
+     * This method allows to create a new dataset on iExec
+     * <p>
+     * Note: Dataset is an ERC721. We use the Transfer event sent in the
+     * ERC721 mint method to retrieve dataset address
+     * tokenId is the generic form of datasetAddress
+     *
+     * @param name
+     * @param multiAddress
+     * @param checksum
+     * @return dataset address (e.g.: 0x95ba540ca3c2dfd52a7e487a03e1358dfe9441ce)
+     */
+    public String createDataset(String name, String multiAddress, String checksum) {
+        String owner = credentials.getAddress();
+        final String paramsPrinter = " [owner:{}, name:{}, multiAddress:{}, checksum:{}]";
+
+        if (StringUtils.isEmpty(owner) || StringUtils.isEmpty(name)
+                || StringUtils.isEmpty(multiAddress) || StringUtils.isEmpty(checksum)) {
+            log.error("Non empty inputs are required" + paramsPrinter,
+                    owner, name, multiAddress, checksum);
+            return "";
+        }
+
+        DatasetRegistry datasetRegistry =
+                getDatasetRegistryContract(web3jAbstractService.getWritingContractGasProvider());
+        if (datasetRegistry == null) {
+            log.error("Failed to get datasetRegistry" + paramsPrinter,
+                    owner, name, multiAddress, checksum);
+            return "";
+        }
+
+        RemoteCall<TransactionReceipt> createDatasetCall = datasetRegistry
+                .createDataset(
+                        owner,
+                        name,
+                        multiAddress.getBytes(StandardCharsets.UTF_8),
+                        BytesUtils.stringToBytes32(checksum));
+
+        TransactionReceipt createDatasetReceipt;
+        try {
+            createDatasetReceipt = createDatasetCall.send();
+        } catch (Exception e) {
+            log.error("Failed to send createDataset transaction" + paramsPrinter,
+                    owner, name, multiAddress, checksum, e);
+            return "";
+        }
+
+        if (!createDatasetReceipt.isStatusOK()) {
+            log.error("Bad response status for createDataset transaction" + paramsPrinter,
+                    owner, name, multiAddress, checksum);
+            return "";
+        }
+
+        return datasetRegistry.getTransferEvents(createDatasetReceipt)
+                .stream()
+                .findFirst()
+                .map(event -> event.tokenId) // dataset is an ERC721
+                .map(Numeric::toHexStringWithPrefix)
+                .orElse("");
+    }
+
+    /**
+     * This method to predict dataset address without deploying it
+     *
+     * @param owner
+     * @param name
+     * @param multiAddress
+     * @param checksum
+     * @return dataset address
+     */
+    public String predictDataset(String owner, String name, String multiAddress, String checksum) {
+        final String paramsPrinter = " [owner:{}, name:{}, multiAddress:{}, checksum:{}]";
+
+        if (StringUtils.isEmpty(owner) || StringUtils.isEmpty(name)
+                || StringUtils.isEmpty(multiAddress) || StringUtils.isEmpty(checksum)) {
+            log.error("Non empty inputs are required" + paramsPrinter,
+                    owner, name, multiAddress, checksum);
+            return "";
+        }
+
+        DatasetRegistry datasetRegistry =
+                getDatasetRegistryContract(web3jAbstractService.getReadingContractGasProvider());
+        if (datasetRegistry == null) {
+            log.error("Failed to get datasetRegistry" + paramsPrinter,
+                    owner, name, multiAddress, checksum);
+            return null;
+        }
+
+        RemoteFunctionCall<String> call = datasetRegistry
+                .predictDataset(owner,
+                        name,
+                        multiAddress.getBytes(StandardCharsets.UTF_8),
+                        BytesUtils.stringToBytes32(checksum));
+        String address = "";
+        try {
+            address = call.send();
+        } catch (Exception e) {
+            log.error("Failed to get predictDataset" + paramsPrinter,
+                    owner, name, multiAddress, checksum, e);
+        }
+        return address;
     }
 
     public Optional<String> getTaskBeneficiary(String chainTaskId, Integer chainId) {
@@ -337,13 +477,28 @@ public abstract class IexecHubAbstractService {
         return "";
     }
 
+    /**
+     * get the value of MaxNbOfPeriodsForConsensus
+     * written onchain.
+     *
+     * @return the value found onchain or -1 if
+     * we could not read it.
+     */
     public long getMaxNbOfPeriodsForConsensus() {
-        try {
-            return getHubContract().contribution_deadline_ratio().send().longValue();
-        } catch (Exception e) {
-            log.error("Failed to getMaxNbOfPeriodsForConsensus");
+        if (maxNbOfPeriodsForConsensus == -1) {
+            setMaxNbOfPeriodsForConsensus();
         }
-        return 0;
+        return maxNbOfPeriodsForConsensus;
+    }
+
+    private void setMaxNbOfPeriodsForConsensus() {
+        try {
+            this.maxNbOfPeriodsForConsensus = getHubContract()
+                    .contribution_deadline_ratio().send().longValue();
+        } catch (Exception e) {
+            log.error("Failed to get maxNbOfPeriodsForConsensus from the chain");
+            this.maxNbOfPeriodsForConsensus = -1;
+        }
     }
 
     public boolean hasEnoughGas(String address) {
@@ -383,7 +538,7 @@ public abstract class IexecHubAbstractService {
     public TaskDescription getTaskDescription(String chainTaskId) {
         if (taskDescriptions.get(chainTaskId) == null) {
             Optional<TaskDescription> taskDescriptionFromChain = this.getTaskDescriptionFromChain(chainTaskId);
-            taskDescriptionFromChain.ifPresent((taskDescription)->{
+            taskDescriptionFromChain.ifPresent((taskDescription) -> {
                 if (taskDescription.getChainTaskId() != null) {
                     taskDescriptions.putIfAbsent(taskDescription.getChainTaskId(), taskDescription);
                 } else {
