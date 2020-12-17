@@ -16,7 +16,9 @@
 
 package com.iexec.common.sdk.order.payload;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
 
