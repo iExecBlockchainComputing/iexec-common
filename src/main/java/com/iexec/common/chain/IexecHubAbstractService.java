@@ -24,7 +24,10 @@ import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.MultiAddressHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.awaitility.Awaitility;
+import org.awaitility.core.ConditionTimeoutException;
 import org.web3j.abi.EventEncoder;
+import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolutionException;
@@ -38,13 +41,14 @@ import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tuples.generated.Tuple9;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
-import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
 import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
@@ -175,9 +179,12 @@ public abstract class IexecHubAbstractService {
      * @param name
      * @param multiAddress
      * @param checksum
+     * @param secondsTimeout
+     * @param secondsPollingInterval
      * @return dataset address (e.g.: 0x95ba540ca3c2dfd52a7e487a03e1358dfe9441ce)
      */
-    public String createDataset(String name, String multiAddress, String checksum) {
+    public String createDataset(String name, String multiAddress, String checksum,
+                                int secondsTimeout, int secondsPollingInterval) {
         String owner = credentials.getAddress();
         final String paramsPrinter = " [owner:{}, name:{}, multiAddress:{}, checksum:{}]";
 
@@ -218,12 +225,50 @@ public abstract class IexecHubAbstractService {
             return "";
         }
 
-        return datasetRegistry.getTransferEvents(createDatasetReceipt)
+        String datasetAddress = datasetRegistry.getTransferEvents(createDatasetReceipt)
                 .stream()
                 .findFirst()
                 .map(event -> event.tokenId) // dataset is an ERC721
-                .map(Numeric::toHexStringWithPrefix)
+                .map(Address::new)
+                .map(Address::toString)
                 .orElse("");
+
+        if (StringUtils.isEmpty(datasetAddress)) {
+            log.error("Failed to extract dataset address" + paramsPrinter,
+                    owner, name, multiAddress, checksum);
+            return "";
+        }
+
+        //tx hash can be null, manually verifying contract is deployed
+        Callable<Optional<ChainDataset>> isDeployedDataset = () -> {
+            log.info("Waiting for contract deployment" + paramsPrinter,
+                    owner, name, multiAddress, checksum);
+            return getChainDataset(getDatasetContract(datasetAddress));
+        };
+
+        try {
+            Awaitility.await()
+                    .atMost(secondsTimeout, TimeUnit.SECONDS)
+                    .pollInterval(secondsPollingInterval, TimeUnit.SECONDS)
+                    .until(isDeployedDataset, Optional::isPresent);
+        } catch (ConditionTimeoutException e) {
+            log.error("Reached timeout when waiting for contract deployment"
+                    + paramsPrinter, owner, name, multiAddress, checksum, e);
+            return "";
+        }
+        return datasetAddress;
+    }
+
+    /**
+     * Default method for creating dataset
+     *
+     * @param name
+     * @param multiAddress
+     * @param checksum
+     * @return
+     */
+    public String createDataset(String name, String multiAddress, String checksum) {
+        return createDataset(name, multiAddress, checksum, 10 * 60, 5);
     }
 
     /**
