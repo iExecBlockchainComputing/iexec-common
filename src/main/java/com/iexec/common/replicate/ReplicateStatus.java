@@ -209,6 +209,12 @@ public enum ReplicateStatus {
         return nonFinal;
     }
 
+    public static List<ReplicateStatus> getFinalStatuses() {
+        return Arrays.asList(
+                COMPLETED,
+                FAILED);
+    }
+
     /*
      * Non final statuses of the default workflow.
      * CREATED -> COMPLETING/COMPLETE_FAILED
