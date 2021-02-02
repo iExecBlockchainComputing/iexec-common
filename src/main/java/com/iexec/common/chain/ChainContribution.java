@@ -43,10 +43,10 @@ public class ChainContribution {
 
     public static ChainContribution tuple2Contribution(Tuple4<BigInteger, byte[], byte[], String> contribution) {
         if (contribution != null) {
-            return new ChainContribution(contribution.getValue1(),
-                    contribution.getValue2(),
-                    contribution.getValue3(),
-                    contribution.getValue4());
+            return new ChainContribution(contribution.component1(),
+                    contribution.component2(),
+                    contribution.component3(),
+                    contribution.component4());
         }
         return null;
     }

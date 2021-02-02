@@ -40,7 +40,7 @@ public class ChainAccount {
 
     public static ChainAccount tuple2Account(Tuple2<BigInteger, BigInteger> account) {
         if (account != null) {
-            return new ChainAccount(account.getValue1(), account.getValue2());
+            return new ChainAccount(account.component1(), account.component2());
         }
         return null;
     }

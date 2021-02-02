@@ -74,18 +74,18 @@ public class ChainTask {
 
     public static ChainTask tuple2ChainTask(Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]> chainTask) {
         if (chainTask != null) {
-            return new ChainTask(chainTask.getValue1(),
-                    chainTask.getValue2(),
-                    chainTask.getValue3(),
-                    chainTask.getValue4(),
-                    chainTask.getValue5(),
-                    chainTask.getValue6(),
-                    chainTask.getValue7(),
-                    chainTask.getValue8(),
-                    chainTask.getValue9(),
-                    chainTask.getValue10(),
-                    chainTask.getValue11(),
-                    chainTask.getValue12());
+            return new ChainTask(chainTask.component1(),
+                    chainTask.component2(),
+                    chainTask.component3(),
+                    chainTask.component4(),
+                    chainTask.component5(),
+                    chainTask.component6(),
+                    chainTask.component7(),
+                    chainTask.component8(),
+                    chainTask.component9(),
+                    chainTask.component10(),
+                    chainTask.component11(),
+                    chainTask.component12());
         }
         return null;
     }
