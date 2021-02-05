@@ -35,19 +35,20 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
-public class Docker {
+public class DockerClientInstance {
 
     static final String INTERNAL_DOCKER_NETWORK = "iexec-dataset-api-net";
 
     private DockerClient client;
 
-    public Docker() {
+    DockerClientInstance() {
         this.client = createClient("", "");
     }
 
-    public Docker(String username, String password) {
+    DockerClientInstance(String username, String password) {
         this.client = createClient(username, password);
     }
 
@@ -65,7 +66,7 @@ public class Docker {
             log.info("Docker volume already present [name:{}]", volumeName);
             return true;
         }
-        try (CreateVolumeCmd createVolumeCmd = client.createVolumeCmd()) {
+        try (CreateVolumeCmd createVolumeCmd = this.client.createVolumeCmd()) {
             String name = createVolumeCmd
                     .withName(volumeName)
                     .exec()
@@ -82,22 +83,45 @@ public class Docker {
     }
 
     public boolean isVolumePresent(String volumeName) {
+        return getVolume(volumeName).isPresent();
+        // if (StringUtils.isBlank(volumeName)) {
+        //     return false;
+        // }
+        // try (ListVolumesCmd listVolumesCmd = this.client.listVolumesCmd()) {
+        //     return listVolumesCmd
+        //             .withDanglingFilter(true)
+        //             .withFilter("name", Collections.singletonList(volumeName))
+        //             .exec()
+        //             .getVolumes()
+        //             .stream()
+        //             .map(InspectVolumeResponse::getName)
+        //             .anyMatch(name -> name.equals(volumeName));
+        // } catch (Exception e) {
+        //     log.error("Error checking docker volume [name:{}]", volumeName, e);
+        //     return false;
+        // }
+    }
+
+    public Optional<InspectVolumeResponse> getVolume(String volumeName) {
         if (StringUtils.isBlank(volumeName)) {
-            return false;
+            return Optional.empty();
         }
-        try (ListVolumesCmd listVolumesCmd = client.listVolumesCmd()) {
-            ListVolumesResponse response = listVolumesCmd
+        log.info("Looking for: '{}'", volumeName);
+        try (ListVolumesCmd listVolumesCmd = this.client.listVolumesCmd()) {
+            List<InspectVolumeResponse> volumes = listVolumesCmd
                     .withDanglingFilter(true)
                     .withFilter("name", Collections.singletonList(volumeName))
-                    .exec();
-            log.info("{}", response);
-            return response.getVolumes()
-                    .stream()
-                    .map(InspectVolumeResponse::getName)
-                    .anyMatch(name -> name.equals(volumeName));
+                    .exec()
+                    .getVolumes();
+            log.info("Volumes: {}", volumes);
+            List<InspectVolumeResponse> filtered = volumes.stream()
+                    .filter(volume -> volumeName.equals(volume.getName()))
+                    .collect(Collectors.toList());
+            log.info("Volumes filtered: {}", filtered);
+            return filtered.stream().findFirst();
         } catch (Exception e) {
-            log.error("Error checking docker volume [name:{}]", volumeName, e);
-            return false;
+            log.error("Error getting docker volume [name:{}]", volumeName, e);
+            return Optional.empty();
         }
     }
 
@@ -105,7 +129,7 @@ public class Docker {
         if (StringUtils.isBlank(volumeName)) {
             return false;
         }
-        try (RemoveVolumeCmd removeVolumeCmd = client.removeVolumeCmd(volumeName)) {
+        try (RemoveVolumeCmd removeVolumeCmd = this.client.removeVolumeCmd(volumeName)) {
             removeVolumeCmd.exec();
             log.info("Removed docker volume [name:{}]", volumeName);
             return true;
@@ -129,7 +153,7 @@ public class Docker {
             log.info("Docker network already present [name:{}]", networkName);
             return getNetworkId(networkName);
         }
-        try (CreateNetworkCmd networkCmd = client.createNetworkCmd()) {
+        try (CreateNetworkCmd networkCmd = this.client.createNetworkCmd()) {
             String id = networkCmd
                     .withName(networkName)
                     .withDriver("bridge")
@@ -150,7 +174,7 @@ public class Docker {
         if (StringUtils.isBlank(networkName)) {
             return "";
         }
-        try (ListNetworksCmd listNetworksCmd = client.listNetworksCmd()) {
+        try (ListNetworksCmd listNetworksCmd = this.client.listNetworksCmd()) {
             return listNetworksCmd
                     .withNameFilter(networkName)
                     .exec()
@@ -175,7 +199,7 @@ public class Docker {
             return false;
         }
         try (RemoveNetworkCmd removeNetworkCmd =
-                     client.removeNetworkCmd(networkName)) {
+                     this.client.removeNetworkCmd(networkName)) {
             removeNetworkCmd.exec();
             log.info("Removed docker network [name:{}]", networkName);
             return true;
@@ -199,9 +223,8 @@ public class Docker {
                 || !StringUtils.isBlank(repoAndTag.tag)) {
             return false;
         }
-        DockerClient dockerClient = client;
         try (PullImageCmd pullImageCmd =
-                     dockerClient.pullImageCmd(repoAndTag.repos)) {
+                    this.client.pullImageCmd(repoAndTag.repos)) {
             pullImageCmd
                     .withTag(repoAndTag.tag)
                     .exec(new PullImageResultCallback() {
@@ -220,7 +243,7 @@ public class Docker {
         }
         String sanitizedImageName = sanitizeImageName(imageName);
 
-        try (ListImagesCmd listImagesCmd = client.listImagesCmd()) {
+        try (ListImagesCmd listImagesCmd = this.client.listImagesCmd()) {
             return listImagesCmd
                     .withDanglingFilter(false)
                     .withImageNameFilter(sanitizedImageName)
@@ -272,7 +295,7 @@ public class Docker {
             return false;
         }
         try (RemoveImageCmd removeImageCmd =
-                     client.removeImageCmd(imageId)) {
+                     this.client.removeImageCmd(imageId)) {
             removeImageCmd.exec();
             return true;
         } catch (Exception e) {
@@ -381,7 +404,7 @@ public class Docker {
             return "";
         }
         try (InspectContainerCmd inspectContainerCmd =
-                     client.inspectContainerCmd(containerId)) {
+                     this.client.inspectContainerCmd(containerId)) {
             String name = inspectContainerCmd.exec().getName();
             // docker-java returns '/<container_id>' instead of '<container_id>'
             return name != null ? name.replace("/", "") : "";
@@ -395,7 +418,7 @@ public class Docker {
         if (StringUtils.isBlank(containerName)) {
             return "";
         }
-        try (ListContainersCmd listContainersCmd = client.listContainersCmd()) {
+        try (ListContainersCmd listContainersCmd = this.client.listContainersCmd()) {
             return listContainersCmd
                     .withShowAll(true)
                     .withNameFilter(Collections.singleton(containerName))
@@ -415,7 +438,7 @@ public class Docker {
             return "";
         }
         try (InspectContainerCmd inspectContainerCmd =
-                     client.inspectContainerCmd(containerId)) {
+                     this.client.inspectContainerCmd(containerId)) {
             return inspectContainerCmd.exec()
                     .getState()
                     .getStatus();
@@ -431,7 +454,7 @@ public class Docker {
             return false;
         }
         try (StartContainerCmd startContainerCmd =
-                     client.startContainerCmd(containerId)) {
+                     this.client.startContainerCmd(containerId)) {
             startContainerCmd.exec();
             return true;
         } catch (Exception e) {
@@ -476,7 +499,7 @@ public class Docker {
         ByteArrayOutputStream stderr = new ByteArrayOutputStream();
 
         try (LogContainerCmd logContainerCmd =
-                     client.logContainerCmd(containerId)) {
+                     this.client.logContainerCmd(containerId)) {
             logContainerCmd
                     .withStdOut(true)
                     .withStdErr(true)
@@ -502,7 +525,7 @@ public class Docker {
             return true;
         }
         try (StopContainerCmd stopContainerCmd =
-                     client.stopContainerCmd(containerId)) {
+                     this.client.stopContainerCmd(containerId)) {
             stopContainerCmd.exec();
             return true;
         } catch (Exception e) {
@@ -517,7 +540,7 @@ public class Docker {
             return false;
         }
         try (RemoveContainerCmd removeContainerCmd =
-                     client.removeContainerCmd(containerId)) {
+                     this.client.removeContainerCmd(containerId)) {
             removeContainerCmd.exec();
             return true;
         } catch (Exception e) {
@@ -532,7 +555,7 @@ public class Docker {
             return Optional.empty();
         }
         // create 'docker exec' command
-        ExecCreateCmdResponse execCreateCmdResponse = client.execCreateCmd(containerId)
+        ExecCreateCmdResponse execCreateCmdResponse = this.client.execCreateCmd(containerId)
                 .withAttachStderr(true)
                 .withAttachStdout(true)
                 .withCmd(cmd)
@@ -541,7 +564,7 @@ public class Docker {
         ByteArrayOutputStream stderr = new ByteArrayOutputStream();
         ExecStartResultCallback execStartResultCallback = new ExecStartResultCallback(stdout, stderr);
         // run 'docker exec' command
-        try (ExecStartCmd execStartCmd = client.execStartCmd(execCreateCmdResponse.getId())) {
+        try (ExecStartCmd execStartCmd = this.client.execStartCmd(execCreateCmdResponse.getId())) {
             execStartCmd
                     .exec(execStartResultCallback)
                     .awaitCompletion();
