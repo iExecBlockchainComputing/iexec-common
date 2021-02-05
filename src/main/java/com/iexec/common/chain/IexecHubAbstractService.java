@@ -361,6 +361,17 @@ public abstract class IexecHubAbstractService {
         return chainTask.get().getResults();
     }
 
+    /**
+     * Retrieves on-chain deal with its blockchain ID
+     *
+     * Note:
+     * If `start time` is invalid, it is likely a blockchain issue. In this case,
+     * in order to protect workflows based on top of it, the deal won't be
+     * accessible from this method
+     *
+     * @param chainDealId blockchain ID of the deal (e.g: 0x123..abc)
+     * @return deal object
+     */
     public Optional<ChainDeal> getChainDeal(String chainDealId) {
         IexecHubContract iexecHub = getHubContract(new DefaultGasProvider());
 
@@ -413,6 +424,14 @@ public abstract class IexecHubAbstractService {
                     .workerStake(config.component5())
                     .schedulerRewardRatio(config.component6())
                     .build();
+
+            if (chainDeal.getStartTime() == null
+                    || chainDeal.getStartTime().longValue() <= 0) {
+                log.error("Deal start time should be greater than zero (likely a " +
+                                "blockchain issue) [chainDealId:{}, startTime:{}]",
+                        chainDealId, chainDeal.getStartTime());
+                return Optional.empty();
+            }
             return Optional.of(chainDeal);
         } catch (Exception e) {
             log.error("Failed to get ChainDeal [chainDealId:{}]", chainDealId, e);
@@ -453,15 +472,33 @@ public abstract class IexecHubAbstractService {
         return Optional.empty();
     }
 
+    /**
+     * Retrieves on-chain category with its blockchain ID
+     *
+     * Note:
+     * If `max execution time` is invalid, it is likely a blockchain issue.
+     * In this case,in order to protect workflows based on top of it, the category
+     * won't be accessible from this method
+     *
+     * @param id blockchain ID of the category (e.g: 0x123..abc)
+     * @return category object
+     */
     public Optional<ChainCategory> getChainCategory(long id) {
         try {
             Tuple3<String, String, BigInteger> category = getHubContract()
                     .viewCategoryABILegacy(BigInteger.valueOf(id)).send();
-            return Optional.of(ChainCategory.tuple2ChainCategory(id,
+            ChainCategory chainCategory = ChainCategory.tuple2ChainCategory(id,
                     category.component1(),
                     category.component2(),
                     category.component3()
-            ));
+            );
+            if (chainCategory.getMaxExecutionTime() <= 0) {
+                log.error("Category max execution time should be greater than zero " +
+                        "(likely a blockchain issue) [categoryId:{}, maxExecutionTime:{}]",
+                        id, chainCategory.getMaxExecutionTime());
+                return Optional.empty();
+            }
+            return Optional.of(chainCategory);
         } catch (Exception e) {
             log.error("Failed to get ChainCategory [id:{}]", id, e);
         }
