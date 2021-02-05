@@ -19,11 +19,6 @@ package com.iexec.common.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.shared.utils.cli.CommandLineException;
 import org.apache.maven.shared.utils.cli.CommandLineUtils;
-import org.bouncycastle.util.Arrays;
-import org.web3j.crypto.Hash;
-import org.web3j.utils.Numeric;
-
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class ArgsUtils {

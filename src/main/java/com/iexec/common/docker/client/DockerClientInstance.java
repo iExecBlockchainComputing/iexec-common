@@ -31,7 +31,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
-import java.util.*;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +44,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DockerClientInstance {
 
-    static final String INTERNAL_DOCKER_NETWORK = "iexec-dataset-api-net";
+    private static final String RUNNING_STATUS = "running";
+    private static final String RESTARTING_STATUS = "restarting";
+    private static final String EXITED_STATUS = "exited";
 
     private DockerClient client;
 
@@ -84,22 +90,6 @@ public class DockerClientInstance {
 
     public boolean isVolumePresent(String volumeName) {
         return getVolume(volumeName).isPresent();
-        // if (StringUtils.isBlank(volumeName)) {
-        //     return false;
-        // }
-        // try (ListVolumesCmd listVolumesCmd = this.client.listVolumesCmd()) {
-        //     return listVolumesCmd
-        //             .withDanglingFilter(true)
-        //             .withFilter("name", Collections.singletonList(volumeName))
-        //             .exec()
-        //             .getVolumes()
-        //             .stream()
-        //             .map(InspectVolumeResponse::getName)
-        //             .anyMatch(name -> name.equals(volumeName));
-        // } catch (Exception e) {
-        //     log.error("Error checking docker volume [name:{}]", volumeName, e);
-        //     return false;
-        // }
     }
 
     public Optional<InspectVolumeResponse> getVolume(String volumeName) {
@@ -214,6 +204,13 @@ public class DockerClientInstance {
      * 
      */
 
+    /**
+     * Pull docker image and timeout after 1 minute.
+     * 
+     * @param imageName
+     * @return true if image is pulled successfully,
+     * false otherwise.
+     */
     public boolean pullImage(String imageName) {
         if (StringUtils.isBlank(imageName)) {
             return false;
@@ -227,14 +224,14 @@ public class DockerClientInstance {
                     this.client.pullImageCmd(repoAndTag.repos)) {
             pullImageCmd
                     .withTag(repoAndTag.tag)
-                    .exec(new PullImageResultCallback() {
-                    })
+                    .exec(new PullImageResultCallback() {})
                     .awaitCompletion(1, TimeUnit.MINUTES);
+            log.info("Pulled docker image [name:{}]", imageName);
             return true;
         } catch (Exception e) {
-            logError("pull image", imageName, "", e);
+            log.error("Error pulling docker image [name:{}]", imageName, e);
+            return false;
         }
-        return false;
     }
 
     public String getImageId(String imageName) {
@@ -255,7 +252,7 @@ public class DockerClientInstance {
                     .findFirst()
                     .orElse("");
         } catch (Exception e) {
-            logError("get image id", sanitizedImageName, "", e);
+            log.error("Error getting docker image id [name:{}]", imageName, e);
         }
         return "";
     }
@@ -299,9 +296,9 @@ public class DockerClientInstance {
             removeImageCmd.exec();
             return true;
         } catch (Exception e) {
-            logError("remove image", imageId, imageId, e);
+            log.error("Error removing docker image by id [id:{}]", imageId, e);
+            return false;
         }
-        return false;
     }
 
     /**
@@ -310,40 +307,43 @@ public class DockerClientInstance {
      */
 
     public String createContainer(DockerRunRequest dockerRunRequest) {
-        if (dockerRunRequest == null) {
+        if (dockerRunRequest == null
+                || StringUtils.isBlank(dockerRunRequest.getImageUri())
+                || StringUtils.isBlank(dockerRunRequest.getContainerName())) {
             return "";
         }
         String containerName = dockerRunRequest.getContainerName();
-        if (StringUtils.isBlank(containerName)) {
-            return "";
-        }
-
         String oldContainerId = getContainerId(containerName);
+        // clean duplicate if present
         if (!StringUtils.isBlank(oldContainerId)) {
-            logInfo("Container duplicate found",
+            log.info("Found duplicate container [name:{}, oldContainerId:{}]",
                     containerName, oldContainerId);
             stopContainer(oldContainerId);
             removeContainer(oldContainerId);
         }
-
-        if (StringUtils.isBlank(getNetworkId(INTERNAL_DOCKER_NETWORK))
-                && StringUtils.isBlank(createNetwork(INTERNAL_DOCKER_NETWORK))) {
+        // create network if needed
+        String network = dockerRunRequest.getDockerNetwork();
+        if (StringUtils.isNotBlank(network)
+                && StringUtils.isBlank(createNetwork(network))) {
             return "";
         }
-
-        if (StringUtils.isBlank(dockerRunRequest.getImageUri())) {
-            return "";
-        }
+        // create container
         try (CreateContainerCmd createContainerCmd = client
                 .createContainerCmd(dockerRunRequest.getImageUri())) {
-            return buildCreateContainerCmdFromRunRequest(dockerRunRequest, createContainerCmd)
-                    .map(CreateContainerCmd::exec)
-                    .map(CreateContainerResponse::getId)
-                    .orElse("");
+            String containerId =
+                    buildCreateContainerCmdFromRunRequest(dockerRunRequest, createContainerCmd)
+                            .map(CreateContainerCmd::exec)
+                            .map(CreateContainerResponse::getId)
+                            .orElse("");
+            if (StringUtils.isNotBlank(containerId)) {
+                log.info("Created docker container [name:{}, id:{}]",
+                        containerName, containerId);
+            }
+            return containerId;
         } catch (Exception e) {
-            logError("create container", containerName, "", e);
+            log.error("Error creating docker container [name:{}]", containerName, e);
+            return "";
         }
-        return "";
     }
 
     /**
@@ -353,16 +353,17 @@ public class DockerClientInstance {
      * @param dockerRunRequest contains information for creating container
      * @return a templated HostConfig
      */
-    public Optional<CreateContainerCmd> buildCreateContainerCmdFromRunRequest(DockerRunRequest dockerRunRequest,
-                                                                       CreateContainerCmd createContainerCmd) {
+    public Optional<CreateContainerCmd> buildCreateContainerCmdFromRunRequest(
+            DockerRunRequest dockerRunRequest,
+            CreateContainerCmd createContainerCmd
+    ) {
         if (dockerRunRequest == null || createContainerCmd == null) {
             return Optional.empty();
         }
         createContainerCmd
                 .withName(dockerRunRequest.getContainerName())
                 .withHostConfig(buildHostConfigFromRunRequest(dockerRunRequest));
-
-        if (!StringUtils.isBlank(dockerRunRequest.getCmd())) {
+        if (StringUtils.isNotBlank(dockerRunRequest.getCmd())) {
             createContainerCmd.withCmd(
                     ArgsUtils.stringArgsToArrayArgs(dockerRunRequest.getCmd()));
         }
@@ -388,31 +389,31 @@ public class DockerClientInstance {
         if (dockerRunRequest == null) {
             return null;
         }
-        HostConfig hostConfig = HostConfig.newHostConfig()
-                .withNetworkMode(INTERNAL_DOCKER_NETWORK);
-
+        HostConfig hostConfig = HostConfig.newHostConfig();
+        if (StringUtils.isNotBlank(dockerRunRequest.getDockerNetwork())) {
+            hostConfig.withNetworkMode(dockerRunRequest.getDockerNetwork());
+        }
         if (dockerRunRequest.getBinds() != null && !dockerRunRequest.getBinds().isEmpty()) {
             hostConfig.withBinds(Binds.fromPrimitive(
                     dockerRunRequest.getBinds().toArray(new String[0])));
         }
-
         return hostConfig;
     }
 
-    public String getContainerName(String containerId) {
-        if (StringUtils.isBlank(containerId)) {
-            return "";
-        }
-        try (InspectContainerCmd inspectContainerCmd =
-                     this.client.inspectContainerCmd(containerId)) {
-            String name = inspectContainerCmd.exec().getName();
-            // docker-java returns '/<container_id>' instead of '<container_id>'
-            return name != null ? name.replace("/", "") : "";
-        } catch (Exception e) {
-            logError("get container name", "", containerId, e);
-        }
-        return "";
-    }
+    // public String getContainerName(String containerId) {
+    //     if (StringUtils.isBlank(containerId)) {
+    //         return "";
+    //     }
+    //     try (InspectContainerCmd inspectContainerCmd =
+    //                  this.client.inspectContainerCmd(containerId)) {
+    //         String name = inspectContainerCmd.exec().getName();
+    //         // docker-java returns '/<container_id>' instead of '<container_id>'
+    //         return name != null ? name.replace("/", "") : "";
+    //     } catch (Exception e) {
+    //         log.error("Error getting docker container name [id:{}]", containerId, e);
+    //         return "";
+    //     }
+    // }
 
     public String getContainerId(String containerName) {
         if (StringUtils.isBlank(containerName)) {
@@ -428,86 +429,91 @@ public class DockerClientInstance {
                     .map(Container::getId)
                     .orElse("");
         } catch (Exception e) {
-            logError("get container id", containerName, "", e);
+            log.error("Error getting docker container id [name:{}]", containerName, e);
+            return "";
         }
-        return "";
     }
 
-    public String getContainerStatus(String containerId) {
-        if (StringUtils.isBlank(containerId)) {
+    public String getContainerStatus(String containerName) {
+        if (StringUtils.isBlank(containerName)) {
             return "";
         }
         try (InspectContainerCmd inspectContainerCmd =
-                     this.client.inspectContainerCmd(containerId)) {
+                    this.client.inspectContainerCmd(containerName)) {
             return inspectContainerCmd.exec()
                     .getState()
                     .getStatus();
         } catch (Exception e) {
-            logError("get container status",
-                    getContainerName(containerId), containerId, e);
+            log.error("Error getting docker container status [name:{}]", containerName, e);
         }
         return "";
     }
 
-    public boolean startContainer(String containerId) {
-        if (StringUtils.isBlank(containerId)) {
+    public boolean startContainer(String containerName) {
+        if (StringUtils.isBlank(containerName)) {
             return false;
         }
         try (StartContainerCmd startContainerCmd =
-                     this.client.startContainerCmd(containerId)) {
+                    this.client.startContainerCmd(containerName)) {
             startContainerCmd.exec();
+            log.info("Started docker container [name:{}]", containerName);
             return true;
         } catch (Exception e) {
-            logError("start container",
-                    getContainerName(containerId), containerId, e);
+            log.error("Error starting docker container [name:{}]", containerName, e);
+            return false;
         }
-        return false;
     }
 
-    public void waitContainerUntilExitOrTimeout(String containerId,
-                                                Date executionTimeoutDate) {
-        if (StringUtils.isBlank(containerId)) {
-            return;
+    /**
+     * Wait for a container to exit or timeout.
+     * @param containerName
+     * @param timeoutDate
+     * @return true if the container exited before
+     * the timeout, false if not.
+     */
+    public boolean waitContainerUntilExitOrTimeout(
+            String containerName,
+            Instant timeoutDate
+    ) {
+        if (StringUtils.isBlank(containerName)) {
+            throw new IllegalArgumentException("Container name cannot be blank");
+        }
+        if (timeoutDate == null) {
+            throw new IllegalArgumentException("Timeout date cannot be null");
         }
         boolean isExited = false;
         boolean isTimeout = false;
         int seconds = 0;
-        String containerName = getContainerName(containerId);
         while (!isExited && !isTimeout) {
-            if (seconds % 60 == 0) { //don't display logs too often
-                logInfo("Still running", containerName, containerId);
+            if (seconds % 2 == 0) { // don't display logs too often
+                log.info("Container is running [name:{}]", containerName);
             }
-
             WaitUtils.sleep(1);
-            isExited = getContainerStatus(containerId).equals("exited");
-            isTimeout = new Date().after(executionTimeoutDate);
+            isExited = getContainerStatus(containerName).equals(EXITED_STATUS);
+            isTimeout = Instant.now().isAfter(timeoutDate);
             seconds++;
         }
-
         if (isTimeout) {
-            log.warn("Container reached timeout, stopping [containerId:{}, " +
-                            "containerName:{}]",
-                    containerName, containerId);
+            log.warn("Container reached timeout [name:{}]", containerName);
         }
+        return !isTimeout;
     }
 
-    public Optional<DockerLogs> getContainerLogs(String containerId) {
-        if (StringUtils.isBlank(containerId)) {
+    public Optional<DockerLogs> getContainerLogs(String containerName) {
+        if (StringUtils.isBlank(containerName)) {
             return Optional.empty();
         }
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-
         try (LogContainerCmd logContainerCmd =
-                     this.client.logContainerCmd(containerId)) {
+                    this.client.logContainerCmd(containerName)) {
             logContainerCmd
                     .withStdOut(true)
                     .withStdErr(true)
                     .exec(new ExecStartResultCallback(stdout, stderr))
                     .awaitCompletion();
         } catch (Exception e) {
-            logError("get docker logs",
-                    getContainerName(containerId), containerId, e);
+            log.error("Error getting docker container logs [name:{}]", containerName);
             return Optional.empty();
         }
         return Optional.of(DockerLogs.builder()
@@ -516,57 +522,56 @@ public class DockerClientInstance {
                 .build());
     }
 
-    public boolean stopContainer(String containerId) {
-        if (StringUtils.isBlank(containerId)) {
+    public boolean stopContainer(String containerName) {
+        if (StringUtils.isBlank(containerName)) {
             return false;
         }
-        List<String> statusesToStop = Arrays.asList("restarting", "running");
-        if (!statusesToStop.contains(getContainerStatus(containerId))) {
+        List<String> statusesToStop = Arrays.asList(RESTARTING_STATUS, RUNNING_STATUS);
+        if (!statusesToStop.contains(getContainerStatus(containerName))) {
             return true;
         }
         try (StopContainerCmd stopContainerCmd =
-                     this.client.stopContainerCmd(containerId)) {
+                    this.client.stopContainerCmd(containerName)) {
             stopContainerCmd.exec();
+            log.info("Stopped docker container [name:{}]", containerName);
             return true;
         } catch (Exception e) {
-            logError("stop container",
-                    getContainerName(containerId), containerId, e);
+            log.error("Error stopping docker container [name:{}]", containerName, e);
+            return false;
         }
-        return false;
     }
 
-    public boolean removeContainer(String containerId) {
-        if (StringUtils.isBlank(containerId)) {
+    public boolean removeContainer(String containerName) {
+        if (StringUtils.isBlank(containerName)) {
             return false;
         }
         try (RemoveContainerCmd removeContainerCmd =
-                     this.client.removeContainerCmd(containerId)) {
+                    this.client.removeContainerCmd(containerName)) {
             removeContainerCmd.exec();
+            log.info("Removed docker container [name:{}]", containerName);
             return true;
         } catch (Exception e) {
-            logError("remove container", "", containerId, e);
+            log.error("Error removing docker container [name:{}]", containerName, e);
+            return false;
         }
-        return false;
     }
 
     public Optional<DockerLogs> exec(String containerName, String... cmd) {
-        String containerId = getContainerId(containerName);
-        if (containerId.isEmpty()) {
+        if (StringUtils.isBlank(containerName)) {
             return Optional.empty();
         }
         // create 'docker exec' command
-        ExecCreateCmdResponse execCreateCmdResponse = this.client.execCreateCmd(containerId)
+        ExecCreateCmdResponse execCreateCmdResponse = this.client.execCreateCmd(containerName)
                 .withAttachStderr(true)
                 .withAttachStdout(true)
                 .withCmd(cmd)
                 .exec();
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-        ExecStartResultCallback execStartResultCallback = new ExecStartResultCallback(stdout, stderr);
         // run 'docker exec' command
         try (ExecStartCmd execStartCmd = this.client.execStartCmd(execCreateCmdResponse.getId())) {
             execStartCmd
-                    .exec(execStartResultCallback)
+                    .exec(new ExecStartResultCallback(stdout, stderr))
                     .awaitCompletion();
         } catch (Exception e) {
             log.error("Error running docker exec command [containerName:{}, cmd:{}]",
@@ -600,15 +605,5 @@ public class DockerClientInstance {
                 .sslConfig(config.getSSLConfig())
                 .build();
         return DockerClientImpl.getInstance(config, httpClient);
-    }
-
-    private void logInfo(String infoMessage, String name, String id) {
-        log.info("{} [name:'{}', id:'{}']", infoMessage, name, id);
-    }
-
-    private void logError(String failureContext, String name, String id,
-                          Exception exception) {
-        log.error("Failed to {} [name:'{}', id:'{}']",
-                failureContext, name, id, exception);
     }
 }
