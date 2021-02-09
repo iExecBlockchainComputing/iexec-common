@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.order.payload;
+package com.iexec.common.sdk.order;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public abstract class OrderUtils {
 
-import java.math.BigInteger;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public abstract class Order {
-
-    BigInteger volume;
-    String tag;
-    String salt;
-    String sign;
-
-    @JsonIgnore
-    public boolean isSigned() {
-        return sign != null && !sign.isEmpty();
+    /**
+     * Lowercases string or returns empty
+     * @param s
+     * @return
+     */
+    public static String toLowerCase(String s) {
+        return s != null ? s.toLowerCase() : "";
     }
 }
-

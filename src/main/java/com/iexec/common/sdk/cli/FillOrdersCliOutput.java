@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.order.payload;
+package com.iexec.common.sdk.cli;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
-import java.math.BigInteger;
-
-@Data
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Order {
+public class FillOrdersCliOutput {
 
-    BigInteger volume;
-    String tag;
-    String salt;
-    String sign;
-
-    @JsonIgnore
-    public boolean isSigned() {
-        return sign != null && !sign.isEmpty();
-    }
+    @JsonProperty("ok")
+    private boolean ok;
+    @JsonProperty("dealid")
+    private String dealid;
+    private String volume;
+    private String txHash;
 }
-

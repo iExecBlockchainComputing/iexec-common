@@ -14,30 +14,44 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.cli.output;
+package com.iexec.common.sdk.cli;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.iexec.common.sdk.order.payload.RequestOrder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.iexec.common.sdk.broker.BrokerOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.tuple.Pair;
 
-@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignRequestOrderCliOutput extends CliOutput<RequestOrder> {
+public class BrokerOrderCliInput extends Pair<Integer, BrokerOrder> {
 
+    /*
+     * A pair is required for having a dynamic key (chainId field).
+     * e.g: {"133":{"requestorder":.., "apporder":.., "workerpoolorder":..}}
+     * */
 
-    @JsonProperty("ok")
-    private boolean ok;
-    @JsonProperty("requestorder")
-    private RequestOrder requestOrder;
+    @JsonIgnore
+    private Integer chainId;
+
+    @JsonIgnore
+    private BrokerOrder brokerOrder;
 
     @Override
-    public RequestOrder getBody() {
-        return requestOrder;
+    public Integer getLeft() {
+        return chainId;
+    }
+
+    @Override
+    public BrokerOrder getRight() {
+        return brokerOrder;
+    }
+
+    @Override
+    public BrokerOrder setValue(BrokerOrder brokerOrder) {
+        return brokerOrder;
     }
 
 }
