@@ -19,17 +19,16 @@ package com.iexec.common.sdk.cli;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.iexec.common.docker.DockerLogs;
+import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.docker.client.DockerClientFactory;
 import com.iexec.common.docker.client.DockerClientInstance;
-import com.iexec.common.docker.client.DockerLogs;
-import com.iexec.common.docker.client.DockerRunRequest;
 import com.iexec.common.sdk.broker.BrokerOrder;
-import com.iexec.common.utils.FileHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class IexecCli {
@@ -37,12 +36,23 @@ public class IexecCli {
     private static final String IEXEC_CLI = "iexec-cli";
     private static final String IEXEC_SDK_DOCKER_URI = "iexechub/iexec-sdk:5.0.0";
     private static final String WORKING_DIR = "/home/node";
+    private static final int DEV_CHAIN_ID = 17;
+    private static final String DEV_CHAIN_HUB = "0xBF6B2B07e47326B7c8bfCb4A5460bef9f0Fd2002";
 
     private static final DockerClientInstance dockerClient = DockerClientFactory.get();
 
-    /*
-     * WARN using iexec-cli infurwhatever key
-     *
+    /**
+     * Match order onchain by running "iexec order fill"
+     * in an iExec SDK docker image. For local chain, the
+     * container is connected to 
+     * 
+     * /!\ WARN using iexec-cli infurwhatever key
+     * 
+     * @param chainId
+     * @param brokerOrder
+     * @param walletContent
+     * @param walletPassword
+     * @return
      */
     public static synchronized String runIexecFillCommand(
             int chainId,
@@ -56,15 +66,19 @@ public class IexecCli {
                 .imageUri(IEXEC_SDK_DOCKER_URI)
                 .workingDir(WORKING_DIR)
                 .entrypoint("tail -f")
+                .dockerNetwork("host") // for local chain
                 .maxExecutionTime(-1) // run in detached mode
                 .build();
         dockerClient.run(request);
         // create iExec files in container
-        dockerClient.exec(IEXEC_CLI, getIexecInitCommand());
+        dockerClient.exec(IEXEC_CLI, "sh", "-c", getIexecInitCommand());
         // change dev chain id in chain.json
-        dockerClient.exec(IEXEC_CLI,"sh", "-c", "sed -i 's/65535/17/' chain.json");
+        // TODO change this hack
+        if (chainId == DEV_CHAIN_ID) {
+            setupLocalChainConfig();
+        }
         // copy wallet in container
-        dockerClient.exec(IEXEC_CLI, getCopyWalletCommand(walletContent));
+        dockerClient.exec(IEXEC_CLI, "sh", "-c", getCopyWalletCommand(walletContent));
         Optional<DockerLogs> walletCheckLogs = dockerClient.exec(IEXEC_CLI, "sh", "-c", "ls -l | grep wallet.json");
         if (walletCheckLogs.isEmpty() || StringUtils.isBlank(walletCheckLogs.get().getStdout())) {
             log.error("Error copying wallet for match order");
@@ -72,7 +86,7 @@ public class IexecCli {
             return "";
         }
         // copy orders in container
-        dockerClient.exec(IEXEC_CLI, getCopyOrdersCommand(chainId, brokerOrder));
+        dockerClient.exec(IEXEC_CLI, "sh", "-c", getCopyOrdersCommand(chainId, brokerOrder));
         Optional<DockerLogs> ordersCheckLogs = dockerClient.exec(IEXEC_CLI, "sh", "-c", "ls -l | grep orders.json");
         if (ordersCheckLogs.isEmpty() || StringUtils.isBlank(ordersCheckLogs.get().getStdout())) {
             log.error("Error copying orders for match order");
@@ -80,7 +94,7 @@ public class IexecCli {
             return "";
         }
         // run match order command
-        Optional<DockerLogs> matchOrderLogs = dockerClient.exec(IEXEC_CLI, getMatchOrdersCommand(chainId, walletPassword));
+        Optional<DockerLogs> matchOrderLogs = dockerClient.exec(IEXEC_CLI, "sh", "-c", getMatchOrdersCommand(chainId, walletPassword));
         if (matchOrderLogs.isEmpty()) {
             log.error("Failed to match orders");
             dockerClient.stopAndRemoveContainer(IEXEC_CLI);
@@ -114,31 +128,59 @@ public class IexecCli {
         }
     }
 
-    private static String[] getIexecInitCommand() {
-        return "iexec init --skip-wallet".split(" ");
+    private static String getIexecInitCommand() {
+        return "iexec init --skip-wallet";
     }
 
-    private static String[] getCopyWalletCommand(String walletContent) {
-        return new String[]{"sh", "-c", "echo '" + walletContent + "' > wallet.json"};
-    }
-
-    private static String[] getCopyOrdersCommand(int chainId, BrokerOrder brokerOrder) {
-        try {
-            BrokerOrderCliInput cliInput = new BrokerOrderCliInput(chainId, brokerOrder);
-            String cliInputJsonString = new ObjectMapper().writeValueAsString(cliInput);
-            return new String[]{"sh", "-c", "echo '" + cliInputJsonString + "' > orders.json"};
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            log.error("Failed to copyCliInputToHomeDir (writeValueAsString)");
-            return new String[0];
+    private static void setupLocalChainConfig() {
+        Optional<DockerLogs> catLogs =
+                dockerClient.exec(IEXEC_CLI, "sh", "-c", "cat chain.json");
+        if (catLogs.isEmpty()
+                || StringUtils.isBlank(catLogs.get().getStdout())) {
+            throw new RuntimeException("Cannot setup local chain");
+        }
+        JSONObject chainDotJson = new JSONObject(catLogs.get().getStdout());
+        // dev chain
+        chainDotJson.getJSONObject("chains").getJSONObject("dev").put("id", String.valueOf(DEV_CHAIN_ID));
+        chainDotJson.getJSONObject("chains").getJSONObject("dev").put("hub", DEV_CHAIN_HUB);
+        chainDotJson.getJSONObject("chains").getJSONObject("dev").put("sms", "http://localhost:15000");
+        // sidechain
+        JSONObject sidechain = new JSONObject();
+        sidechain.put("id", String.valueOf(DEV_CHAIN_ID));
+        sidechain.put("host", "http://localhost:8545");
+        sidechain.put("sms", "http://localhost:15000");
+        sidechain.put("resultProxy", "http://localhost:18089");
+        sidechain.put("hub", DEV_CHAIN_HUB);
+        sidechain.put("native", true);
+        chainDotJson.getJSONObject("chains").put("sidechain", sidechain);
+        Optional<DockerLogs> setChainLogs =
+                dockerClient.exec(IEXEC_CLI, "sh", "-c", "echo '" + chainDotJson.toString() + "' > chain.json");
+        if (setChainLogs.isEmpty()
+                || StringUtils.isNotBlank(setChainLogs.get().getStderr())) {
+            throw new RuntimeException("Cannot setup local chain");
         }
     }
 
-    private static String[] getMatchOrdersCommand(int chainId, String walletPassword) { 
+    private static String getCopyWalletCommand(String walletContent) {
+        return "echo '" + walletContent + "' > wallet.json";
+    }
+
+    private static String getCopyOrdersCommand(int chainId, BrokerOrder brokerOrder) {
+        try {
+            BrokerOrderCliInput cliInput = new BrokerOrderCliInput(chainId, brokerOrder);
+            String cliInputJsonString = new ObjectMapper().writeValueAsString(cliInput);
+            return "echo '" + cliInputJsonString + "' > orders.json";
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            log.error("Failed to copyCliInputToHomeDir (writeValueAsString)");
+            return "";
+        }
+    }
+
+    private static String getMatchOrdersCommand(int chainId, String walletPassword) { 
         return String.format(
                 "iexec order fill --skip-request-check --chain %s " +
                 "--wallet-file wallet.json --keystoredir %s --password %s --raw",
-                chainId, WORKING_DIR, walletPassword)
-                .split(" ");
+                chainId, WORKING_DIR, walletPassword);
     }
 }
