@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iexec.common.docker.client;
+package com.iexec.common.docker;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
