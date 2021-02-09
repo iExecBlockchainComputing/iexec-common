@@ -19,7 +19,6 @@ package com.iexec.common.docker.client;
 public abstract class DockerClientFactory {
 
     private static DockerClientInstance defaultClient;
-    private static DockerClientInstance authenticatedClient;
 
     public static synchronized DockerClientInstance get() {
         if (defaultClient == null) {
@@ -29,9 +28,6 @@ public abstract class DockerClientFactory {
     }
 
     public static synchronized DockerClientInstance get(String username, String password) {
-        if (authenticatedClient == null) {
-            authenticatedClient = new DockerClientInstance(username, password);
-        }
-        return defaultClient;
+        return new DockerClientInstance(username, password);
     }
 }
