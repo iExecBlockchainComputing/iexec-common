@@ -96,18 +96,14 @@ public class DockerClientInstance {
         if (StringUtils.isBlank(volumeName)) {
             return Optional.empty();
         }
-        log.info("Looking for: '{}'", volumeName);
         try (ListVolumesCmd listVolumesCmd = this.client.listVolumesCmd()) {
             List<InspectVolumeResponse> volumes = listVolumesCmd
-                    .withDanglingFilter(true)
                     .withFilter("name", Collections.singletonList(volumeName))
                     .exec()
                     .getVolumes();
-            log.info("Volumes: {}", volumes);
             List<InspectVolumeResponse> filtered = volumes.stream()
                     .filter(volume -> volumeName.equals(volume.getName()))
                     .collect(Collectors.toList());
-            log.info("Volumes filtered: {}", filtered);
             return filtered.stream().findFirst();
         } catch (Exception e) {
             log.error("Error getting docker volume [name:{}]", volumeName, e);
@@ -204,6 +200,10 @@ public class DockerClientInstance {
      * 
      */
 
+    public boolean isImagePresent(String image) {
+        return getImageId(image).isEmpty();
+    }
+
     /**
      * Pull docker image and timeout after 1 minute.
      * 
@@ -216,8 +216,8 @@ public class DockerClientInstance {
             return false;
         }
         NameParser.ReposTag repoAndTag = NameParser.parseRepositoryTag(imageName);
-        if (!StringUtils.isBlank(repoAndTag.repos)
-                || !StringUtils.isBlank(repoAndTag.tag)) {
+        if (StringUtils.isBlank(repoAndTag.repos)
+                || StringUtils.isBlank(repoAndTag.tag)) {
             return false;
         }
         try (PullImageCmd pullImageCmd =
@@ -277,6 +277,7 @@ public class DockerClientInstance {
         return removeImageById(getImageId(imageName));
     }
 
+    // TODO remove image by name to avoid conflict error
     /*
     * If same image has been pulled with multiple repository base names:
     *
@@ -305,6 +306,47 @@ public class DockerClientInstance {
      * Docker container
      * 
      */
+
+    public DockerRunResponse run(DockerRunRequest dockerRunRequest) {
+        DockerRunResponse dockerRunResponse = DockerRunResponse.builder()
+                .isSuccessful(false)
+                .build();
+        if (!pullImage(dockerRunRequest.getImageUri())) {
+            return dockerRunResponse;
+        }
+        String containerId = createContainer(dockerRunRequest);
+        if (containerId.isEmpty()) {
+            return dockerRunResponse;
+        }
+        if (!startContainer(containerId)) {
+            removeContainer(containerId);
+            return dockerRunResponse;
+        }
+        if (dockerRunRequest.getMaxExecutionTime() < 0) {
+            // container will run until self-exited or explicitly-stopped
+            dockerRunResponse.setSuccessful(true);
+            return dockerRunResponse;
+        }
+        Instant timeoutDate = Instant.now()
+                .plusMillis(dockerRunRequest.getMaxExecutionTime());
+        waitContainerUntilExitOrTimeout(containerId, timeoutDate);
+        if (!stopContainer(containerId)) {
+            return dockerRunResponse;
+        }
+        getContainerLogs(containerId).ifPresent(containerLogs -> {
+            dockerRunResponse.setDockerLogs(containerLogs);
+        });
+        if (!removeContainer(containerId)) {
+            return dockerRunResponse;
+        }
+        dockerRunResponse.setSuccessful(true);
+        return dockerRunResponse;
+    }
+
+    public boolean stopAndRemoveContainer(String containerName) {
+        return stopContainer(containerName)
+                && removeContainer(containerName);
+    }
 
     public String createContainer(DockerRunRequest dockerRunRequest) {
         if (dockerRunRequest == null
@@ -367,12 +409,21 @@ public class DockerClientInstance {
             createContainerCmd.withCmd(
                     ArgsUtils.stringArgsToArrayArgs(dockerRunRequest.getCmd()));
         }
+        // here the entrypoint can be an empty string
+        // to override the default behavior
+        if (dockerRunRequest.getEntrypoint() != null) {
+            createContainerCmd.withEntrypoint(
+                    ArgsUtils.stringArgsToArrayArgs(dockerRunRequest.getEntrypoint()));
+        }
         if (dockerRunRequest.getEnv() != null && !dockerRunRequest.getEnv().isEmpty()) {
             createContainerCmd.withEnv(dockerRunRequest.getEnv());
         }
         if (dockerRunRequest.getContainerPort() > 0) {
             createContainerCmd.withExposedPorts(
                     new ExposedPort(dockerRunRequest.getContainerPort()));
+        }
+        if (dockerRunRequest.getWorkingDir() != null) {
+            createContainerCmd.withWorkingDir(dockerRunRequest.getWorkingDir());
         }
         return Optional.of(createContainerCmd);
     }

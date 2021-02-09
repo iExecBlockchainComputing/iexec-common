@@ -34,12 +34,14 @@ public class DockerRunRequest {
     private String containerName;
     private int containerPort;
     private String imageUri;
+    private String entrypoint;
     private String cmd;
     private List<String> env;
     private List<String> binds;
     private long maxExecutionTime;
     private boolean isSgx;
     private String dockerNetwork;
+    private String workingDir;
     private boolean shouldDisplayLogs;
 
     public String getStringArgsCmd() {
