@@ -16,7 +16,6 @@
 
 package com.iexec.common.result.eip712;
 
-import com.iexec.common.result.eip712.Eip712Challenge;
 import org.junit.Before;
 import org.junit.Test;
 

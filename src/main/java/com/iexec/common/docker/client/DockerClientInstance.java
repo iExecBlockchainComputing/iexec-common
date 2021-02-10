@@ -46,6 +46,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
+@SuppressWarnings("deprecation") // ExecStartResultCallback
 public class DockerClientInstance {
 
     private static final String RUNNING_STATUS = "running";

@@ -18,7 +18,6 @@ package com.iexec.common.chain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -29,7 +28,6 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @Builder
 @Getter
-@Slf4j
 public class ChainDeal {
 
     String chainDealId;

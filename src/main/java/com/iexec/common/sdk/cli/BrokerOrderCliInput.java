@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SuppressWarnings("serial")
 public class BrokerOrderCliInput extends Pair<Integer, BrokerOrder> {
 
     /*

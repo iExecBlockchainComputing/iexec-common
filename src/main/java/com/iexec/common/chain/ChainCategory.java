@@ -19,7 +19,6 @@ package com.iexec.common.chain;
 import lombok.*;
 
 import java.math.BigInteger;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor

@@ -19,11 +19,9 @@ package com.iexec.common.utils;
 import com.iexec.common.security.Signature;
 import org.junit.Assert;
 import org.junit.Test;
-import org.web3j.crypto.Hash;
 
 import static com.iexec.common.utils.SignatureUtils.isExpectedSignerOnSignedMessageHash;
 import static com.iexec.common.utils.SignatureUtils.signMessageHashAndGetSignature;
-import static org.junit.Assert.assertEquals;
 
 public class SignatureUtilsTests {
 
