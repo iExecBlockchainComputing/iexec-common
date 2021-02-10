@@ -65,6 +65,9 @@ dependencies {
     // google core libs
     implementation "com.google.guava:guava:28.2-jre"
 
+    // json
+    implementation 'org.json:json:20201115'
+
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'io.github.openfeign:feign-okhttp:11.0'
     implementation 'io.github.openfeign:feign-jackson:11.0'
