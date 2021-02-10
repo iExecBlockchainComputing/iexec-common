@@ -30,6 +30,7 @@ import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.docker.DockerRunResponse;
 import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.WaitUtils;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,6 +52,7 @@ public class DockerClientInstance {
     private static final String RESTARTING_STATUS = "restarting";
     private static final String EXITED_STATUS = "exited";
 
+    @Getter
     private DockerClient client;
 
     DockerClientInstance() {
