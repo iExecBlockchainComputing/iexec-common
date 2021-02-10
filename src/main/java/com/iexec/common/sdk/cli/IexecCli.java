@@ -19,24 +19,24 @@ package com.iexec.common.sdk.cli;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.iexec.common.docker.client.DockerClientFactory;
+import com.iexec.common.docker.client.DockerLogs;
 import com.iexec.common.sdk.cli.input.CliInput;
 import com.iexec.common.sdk.cli.output.CliOutput;
-import com.iexec.common.sdk.docker.DockerService;
-import kotlin.Pair;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
 
 @Slf4j
 public class IexecCli {
 
     private static final String IEXEC_CLI = "iexec-cli";
-    private final DockerService dockerService;
     private final int chainId;
     private final String walletPassword;
 
     public IexecCli(int chainId, String walletPassword) {
         this.chainId = chainId;
         this.walletPassword = walletPassword;
-        this.dockerService = new DockerService();
     }
 
     /*
@@ -53,14 +53,14 @@ public class IexecCli {
         cmd = String.format("%s --chain %s --wallet-file wallet.json --keystoredir /wallet --password %s --raw",
                 cmd, chainId, walletPassword);
 
-        Pair<String, String> iexecCliResponse = dockerService.exec(IEXEC_CLI, cmd);
+        Optional<DockerLogs> iexecCliResponse = DockerClientFactory.get().exec(IEXEC_CLI, cmd);
 
-        if (iexecCliResponse == null){
+        if (iexecCliResponse.isEmpty()) {
             log.error("Failed to run (iexec-cli exec failed) [cmd:{}]", cmd);
             return null;
         }
-        String stdout = iexecCliResponse.getFirst();
-        String stderr = iexecCliResponse.getSecond();
+        String stdout = iexecCliResponse.get().getStdout();
+        String stderr = iexecCliResponse.get().getStderr();
 
         if (stderr != null && !stderr.isEmpty()){
             log.error("Failed to run (found stderr) [cmd:{}, stdout:{}, stderr:{}]", cmd, stdout, stderr);
@@ -93,8 +93,7 @@ public class IexecCli {
             log.error("Failed to copyCliInputToHomeDir (writeValueAsString)");
             return false;
         }
-        dockerService.exec(IEXEC_CLI, "echo '" + cliInputJsonString + "' > ~/" + fileName);
+        DockerClientFactory.get().exec(IEXEC_CLI, "echo '" + cliInputJsonString + "' > ~/" + fileName);
         return true;
     }
-
 }
