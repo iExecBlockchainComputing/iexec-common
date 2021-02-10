@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.cli.output;
+package com.iexec.common.sdk.cli;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -23,7 +23,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FillOrdersCliOutput extends CliOutput<String> {
+public class FillOrdersCliOutput {
 
     @JsonProperty("ok")
     private boolean ok;
@@ -31,9 +31,4 @@ public class FillOrdersCliOutput extends CliOutput<String> {
     private String dealid;
     private String volume;
     private String txHash;
-
-    @Override
-    public String getBody() {
-        return dealid;
-    }
 }

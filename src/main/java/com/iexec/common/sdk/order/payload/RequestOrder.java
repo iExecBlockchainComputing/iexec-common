@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
-import static com.iexec.common.sdk.util.Utils.toLowerCase;
+import static com.iexec.common.sdk.order.OrderUtils.toLowerCase;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

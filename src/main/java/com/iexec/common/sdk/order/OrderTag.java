@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.cli.output;
+package com.iexec.common.sdk.order;
 
-public abstract class CliOutput<T> {
+public enum OrderTag {
 
-    public abstract boolean isOk();
+    STANDARD("0x0000000000000000000000000000000000000000000000000000000000000000"),
+    TEE     ("0x0000000000000000000000000000000000000000000000000000000000000001");
 
-    public abstract T getBody();
+    private final String value;
+
+    private OrderTag(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return this.value;
+    }
 
 }

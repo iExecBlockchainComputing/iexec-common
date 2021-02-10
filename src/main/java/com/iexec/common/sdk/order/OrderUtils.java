@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.cli.input;
+package com.iexec.common.sdk.order;
 
-public interface CliInput<T> {
+public abstract class OrderUtils {
 
+    /**
+     * Lowercases string or returns empty
+     * @param s
+     * @return
+     */
+    public static String toLowerCase(String s) {
+        return s != null ? s.toLowerCase() : "";
+    }
 }
