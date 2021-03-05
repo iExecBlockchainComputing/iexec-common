@@ -42,6 +42,7 @@ public class DockerRunRequest {
     private boolean isSgx;
     private String dockerNetwork;
     private String workingDir;
+    private List<String> devices;
     private boolean shouldDisplayLogs;
 
     public String getStringArgsCmd() {

@@ -30,7 +30,6 @@ import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.docker.DockerRunResponse;
 import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.WaitUtils;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,11 +48,10 @@ import java.util.stream.Collectors;
 @SuppressWarnings("deprecation") // ExecStartResultCallback
 public class DockerClientInstance {
 
-    private static final String RUNNING_STATUS = "running";
-    private static final String RESTARTING_STATUS = "restarting";
-    private static final String EXITED_STATUS = "exited";
+    public static final String RUNNING_STATUS = "running";
+    public static final String RESTARTING_STATUS = "restarting";
+    public static final String EXITED_STATUS = "exited";
 
-    @Getter
     private DockerClient client;
 
     DockerClientInstance() {
@@ -64,12 +62,16 @@ public class DockerClientInstance {
         this.client = createClient(username, password);
     }
 
+    public DockerClient getClient() {
+        return this.client;
+    }
+
     /**
      * Docker volume
      * 
      */
 
-    public boolean createVolume(String volumeName) {
+    public synchronized boolean createVolume(String volumeName) {
         if (StringUtils.isBlank(volumeName)) {
             log.error("Invalid docker volume name [name:{}]", volumeName);
             return false;
@@ -78,7 +80,7 @@ public class DockerClientInstance {
             log.info("Docker volume already present [name:{}]", volumeName);
             return true;
         }
-        try (CreateVolumeCmd createVolumeCmd = this.client.createVolumeCmd()) {
+        try (CreateVolumeCmd createVolumeCmd = getClient().createVolumeCmd()) {
             String name = createVolumeCmd
                     .withName(volumeName)
                     .exec()
@@ -102,7 +104,7 @@ public class DockerClientInstance {
         if (StringUtils.isBlank(volumeName)) {
             return Optional.empty();
         }
-        try (ListVolumesCmd listVolumesCmd = this.client.listVolumesCmd()) {
+        try (ListVolumesCmd listVolumesCmd = getClient().listVolumesCmd()) {
             List<InspectVolumeResponse> volumes = listVolumesCmd
                     .withFilter("name", Collections.singletonList(volumeName))
                     .exec()
@@ -117,11 +119,15 @@ public class DockerClientInstance {
         }
     }
 
-    public boolean removeVolume(String volumeName) {
+    public synchronized boolean removeVolume(String volumeName) {
         if (StringUtils.isBlank(volumeName)) {
             return false;
         }
-        try (RemoveVolumeCmd removeVolumeCmd = this.client.removeVolumeCmd(volumeName)) {
+        if (!isVolumePresent(volumeName)) {
+            log.info("No docker volume to remove [name:{}]", volumeName);
+            return true;
+        }
+        try (RemoveVolumeCmd removeVolumeCmd = getClient().removeVolumeCmd(volumeName)) {
             removeVolumeCmd.exec();
             log.info("Removed docker volume [name:{}]", volumeName);
             return true;
@@ -136,7 +142,7 @@ public class DockerClientInstance {
      * 
      */
 
-    public String createNetwork(String networkName) {
+    public synchronized String createNetwork(String networkName) {
         if (StringUtils.isBlank(networkName)) {
             log.error("Invalid docker network name [name:{}]", networkName);
             return "";
@@ -145,7 +151,7 @@ public class DockerClientInstance {
             log.info("Docker network already present [name:{}]", networkName);
             return getNetworkId(networkName);
         }
-        try (CreateNetworkCmd networkCmd = this.client.createNetworkCmd()) {
+        try (CreateNetworkCmd networkCmd = getClient().createNetworkCmd()) {
             String id = networkCmd
                     .withName(networkName)
                     .withDriver("bridge")
@@ -164,9 +170,10 @@ public class DockerClientInstance {
 
     public String getNetworkId(String networkName) {
         if (StringUtils.isBlank(networkName)) {
+            log.error("Invalid docker network name [name:{}]", networkName);
             return "";
         }
-        try (ListNetworksCmd listNetworksCmd = this.client.listNetworksCmd()) {
+        try (ListNetworksCmd listNetworksCmd = getClient().listNetworksCmd()) {
             return listNetworksCmd
                     .withNameFilter(networkName)
                     .exec()
@@ -186,12 +193,17 @@ public class DockerClientInstance {
         return !getNetworkId(networkName).isEmpty();
     }
 
-    public boolean removeNetwork(String networkName) {
+    public synchronized boolean removeNetwork(String networkName) {
         if (StringUtils.isBlank(networkName)) {
+            log.error("Invalid docker network name [name:{}]", networkName);
             return false;
         }
+        if (!isNetworkPresent(networkName)) {
+            log.info("No docker network to remove [name:{}]", networkName);
+            return true;
+        }
         try (RemoveNetworkCmd removeNetworkCmd =
-                     this.client.removeNetworkCmd(networkName)) {
+                     getClient().removeNetworkCmd(networkName)) {
             removeNetworkCmd.exec();
             log.info("Removed docker network [name:{}]", networkName);
             return true;
@@ -206,10 +218,6 @@ public class DockerClientInstance {
      * 
      */
 
-    public boolean isImagePresent(String image) {
-        return getImageId(image).isEmpty();
-    }
-
     /**
      * Pull docker image and timeout after 1 minute.
      * 
@@ -219,15 +227,19 @@ public class DockerClientInstance {
      */
     public boolean pullImage(String imageName) {
         if (StringUtils.isBlank(imageName)) {
+            log.error("Invalid docker image name [name:{}]", imageName);
             return false;
         }
         NameParser.ReposTag repoAndTag = NameParser.parseRepositoryTag(imageName);
         if (StringUtils.isBlank(repoAndTag.repos)
                 || StringUtils.isBlank(repoAndTag.tag)) {
+            log.error("Error parsing docker image name [name:{}, repo:{}, tag:{}]",
+                    imageName, repoAndTag.repos, repoAndTag.tag);
             return false;
         }
         try (PullImageCmd pullImageCmd =
-                    this.client.pullImageCmd(repoAndTag.repos)) {
+                    getClient().pullImageCmd(repoAndTag.repos)) {
+            log.info("Pulling docker image [name:{}]", imageName);
             pullImageCmd
                     .withTag(repoAndTag.tag)
                     .exec(new PullImageResultCallback() {})
@@ -242,11 +254,12 @@ public class DockerClientInstance {
 
     public String getImageId(String imageName) {
         if (StringUtils.isBlank(imageName)) {
+            log.error("Invalid docker image name [name:{}]", imageName);
             return "";
         }
         String sanitizedImageName = sanitizeImageName(imageName);
 
-        try (ListImagesCmd listImagesCmd = this.client.listImagesCmd()) {
+        try (ListImagesCmd listImagesCmd = getClient().listImagesCmd()) {
             return listImagesCmd
                     .withDanglingFilter(false)
                     .withImageNameFilter(sanitizedImageName)
@@ -279,7 +292,15 @@ public class DockerClientInstance {
         return image;
     }
 
-    public boolean removeImage(String imageName) {
+    public boolean isImagePresent(String imageName) {
+        return !getImageId(imageName).isEmpty();
+    }
+
+    public synchronized boolean removeImage(String imageName) {
+        if (isImagePresent(imageName)) {
+            log.info("No docker image to remove [name:{}]", imageName);
+            return true;
+        }
         return removeImageById(getImageId(imageName));
     }
 
@@ -294,13 +315,15 @@ public class DockerClientInstance {
     * It will return conflict:
     * unable to delete <imageId> (must be forced) - image is referenced in multiple repositories
     * */
-    boolean removeImageById(String imageId) {
+    synchronized boolean removeImageById(String imageId) {
         if (StringUtils.isBlank(imageId)) {
+            log.error("Invalid docker image id [id:{}]", imageId);
             return false;
         }
         try (RemoveImageCmd removeImageCmd =
-                     this.client.removeImageCmd(imageId)) {
+                     getClient().removeImageCmd(imageId)) {
             removeImageCmd.exec();
+            log.info("Removed docker image by id [id:{}]", imageId);
             return true;
         } catch (Exception e) {
             log.error("Error removing docker image by id [id:{}]", imageId, e);
@@ -320,6 +343,7 @@ public class DockerClientInstance {
         if (!pullImage(dockerRunRequest.getImageUri())) {
             return dockerRunResponse;
         }
+        // TODO choose to remove duplicate containers or not
         String containerId = createContainer(dockerRunRequest);
         if (containerId.isEmpty()) {
             return dockerRunResponse;
@@ -354,7 +378,29 @@ public class DockerClientInstance {
                 && removeContainer(containerName);
     }
 
+    /**
+     * Create docker container and remove existing
+     * duplicate if found.
+     * 
+     * @param dockerRunRequest
+     * @return created container id or an empty
+     * string if a problem occurs
+     */
     public String createContainer(DockerRunRequest dockerRunRequest) {
+        return createContainer(dockerRunRequest, true);
+    }
+
+    /**
+     * Create docker container and choose whether to
+     * remove existing duplicate container (if found)
+     * or not.
+     * 
+     * @param dockerRunRequest
+     * @param removeDuplicate
+     * @return newly created container id if removeDuplicate is
+     * true, otherwise an empty string.
+     */
+    public synchronized String createContainer(DockerRunRequest dockerRunRequest, boolean removeDuplicate) {
         if (dockerRunRequest == null
                 || StringUtils.isBlank(dockerRunRequest.getImageUri())
                 || StringUtils.isBlank(dockerRunRequest.getContainerName())) {
@@ -363,9 +409,12 @@ public class DockerClientInstance {
         String containerName = dockerRunRequest.getContainerName();
         String oldContainerId = getContainerId(containerName);
         // clean duplicate if present
-        if (!StringUtils.isBlank(oldContainerId)) {
-            log.info("Found duplicate container [name:{}, oldContainerId:{}]",
-                    containerName, oldContainerId);
+        if (StringUtils.isNotBlank(oldContainerId)) {
+            log.info("Found duplicate container [name:{}, oldContainerId:{}, removeDuplicate:{}]",
+                    containerName, oldContainerId, removeDuplicate);
+            if (!removeDuplicate) {
+                return "";
+            }
             stopContainer(oldContainerId);
             removeContainer(oldContainerId);
         }
@@ -454,29 +503,41 @@ public class DockerClientInstance {
             hostConfig.withBinds(Binds.fromPrimitive(
                     dockerRunRequest.getBinds().toArray(new String[0])));
         }
+        if (dockerRunRequest.getDevices() != null) {
+            dockerRunRequest.getDevices().forEach(device ->
+                    hostConfig.withDevices(Device.parse(device))
+            );
+        }
         return hostConfig;
     }
 
-    // public String getContainerName(String containerId) {
-    //     if (StringUtils.isBlank(containerId)) {
-    //         return "";
-    //     }
-    //     try (InspectContainerCmd inspectContainerCmd =
-    //                  this.client.inspectContainerCmd(containerId)) {
-    //         String name = inspectContainerCmd.exec().getName();
-    //         // docker-java returns '/<container_id>' instead of '<container_id>'
-    //         return name != null ? name.replace("/", "") : "";
-    //     } catch (Exception e) {
-    //         log.error("Error getting docker container name [id:{}]", containerId, e);
-    //         return "";
-    //     }
-    // }
+    public boolean isContainerPresent(String containerName) {
+        return !getContainerId(containerName).isEmpty();
+    }
+
+    public String getContainerName(String containerId) {
+        if (StringUtils.isBlank(containerId)) {
+            // TODO throw IllegalArgumentException
+            log.error("Invalid docker container id [id:{}]", containerId);
+            return "";
+        }
+        try (InspectContainerCmd inspectContainerCmd =
+                     getClient().inspectContainerCmd(containerId)) {
+            String name = inspectContainerCmd.exec().getName();
+            // docker-java returns '/<container_id>' instead of '<container_id>'
+            return name != null ? name.replace("/", "") : "";
+        } catch (Exception e) {
+            log.error("Error getting docker container name [id:{}]", containerId, e);
+            return "";
+        }
+    }
 
     public String getContainerId(String containerName) {
         if (StringUtils.isBlank(containerName)) {
+            log.error("Invalid docker container name [name:{}]", containerName);
             return "";
         }
-        try (ListContainersCmd listContainersCmd = this.client.listContainersCmd()) {
+        try (ListContainersCmd listContainersCmd = getClient().listContainersCmd()) {
             return listContainersCmd
                     .withShowAll(true)
                     .withNameFilter(Collections.singleton(containerName))
@@ -496,7 +557,7 @@ public class DockerClientInstance {
             return "";
         }
         try (InspectContainerCmd inspectContainerCmd =
-                    this.client.inspectContainerCmd(containerName)) {
+                    getClient().inspectContainerCmd(containerName)) {
             return inspectContainerCmd.exec()
                     .getState()
                     .getStatus();
@@ -506,12 +567,12 @@ public class DockerClientInstance {
         return "";
     }
 
-    public boolean startContainer(String containerName) {
+    public synchronized boolean startContainer(String containerName) {
         if (StringUtils.isBlank(containerName)) {
             return false;
         }
         try (StartContainerCmd startContainerCmd =
-                    this.client.startContainerCmd(containerName)) {
+                    getClient().startContainerCmd(containerName)) {
             startContainerCmd.exec();
             log.info("Started docker container [name:{}]", containerName);
             return true;
@@ -522,13 +583,13 @@ public class DockerClientInstance {
     }
 
     /**
-     * Wait for a container to exit or timeout.
-     * @param containerName
-     * @param timeoutDate
-     * @return true if the container exited before
-     * the timeout, false if not.
+     * Waits for full execution of a container (and stops waiting after a
+     * particular date)
+     * @param containerName name of the container to wait for
+     * @param timeoutDate waiting is aborted once this date is reached
+     * @return container's exit code (when relevant)
      */
-    public boolean waitContainerUntilExitOrTimeout(
+    public Long waitContainerUntilExitOrTimeout(
             String containerName,
             Instant timeoutDate
     ) {
@@ -542,7 +603,7 @@ public class DockerClientInstance {
         boolean isTimeout = false;
         int seconds = 0;
         while (!isExited && !isTimeout) {
-            if (seconds % 2 == 0) { // don't display logs too often
+            if (seconds % 60 == 0) { // don't display logs too often
                 log.info("Container is running [name:{}]", containerName);
             }
             WaitUtils.sleep(1);
@@ -550,20 +611,46 @@ public class DockerClientInstance {
             isTimeout = Instant.now().isAfter(timeoutDate);
             seconds++;
         }
-        if (isTimeout) {
-            log.warn("Container reached timeout [name:{}]", containerName);
+        if (isExited) {
+            Long containerExitCode = getContainerExitCode(containerName);
+            log.info("Container exited by itself [name:{}, exitCode:{}]",
+                    containerName, containerExitCode);
+            return containerExitCode;
         }
-        return !isTimeout;
+        log.warn("Container reached timeout [name:{}]", containerName);
+        return null;
+    }
+
+    public Long getContainerExitCode(String containerName) {
+        if (StringUtils.isBlank(containerName)) {
+            // TODO throw new IllegalArgumentException("Container name cannot be blank");
+            log.error("Invalid docker container name [name:{}]", containerName);
+            return null;
+        }
+        try (InspectContainerCmd inspectContainerCmd =
+                     getClient().inspectContainerCmd(containerName)) {
+            return inspectContainerCmd.exec()
+                    .getState()
+                    .getExitCodeLong();
+        } catch (Exception e) {
+            log.error("Error getting container exit code [name:{}]", containerName, e);
+            return null;
+        }
     }
 
     public Optional<DockerLogs> getContainerLogs(String containerName) {
         if (StringUtils.isBlank(containerName)) {
+            log.error("Invalid docker container name [name:{}]", containerName);
+            return Optional.empty();
+        }
+        if (!isContainerPresent(containerName)) {
+            log.error("Cannot get logs of inexistent docker container [name:{}]", containerName);
             return Optional.empty();
         }
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         ByteArrayOutputStream stderr = new ByteArrayOutputStream();
         try (LogContainerCmd logContainerCmd =
-                    this.client.logContainerCmd(containerName)) {
+                    getClient().logContainerCmd(containerName)) {
             logContainerCmd
                     .withStdOut(true)
                     .withStdErr(true)
@@ -579,8 +666,13 @@ public class DockerClientInstance {
                 .build());
     }
 
-    public boolean stopContainer(String containerName) {
+    public synchronized boolean stopContainer(String containerName) {
         if (StringUtils.isBlank(containerName)) {
+            log.info("Invalid docker container name [name:{}]", containerName);
+            return false;
+        }
+        if (!isContainerPresent(containerName)) {
+            log.error("Cannot stop inexistent docker container [name:{}]", containerName);
             return false;
         }
         List<String> statusesToStop = Arrays.asList(RESTARTING_STATUS, RUNNING_STATUS);
@@ -588,7 +680,7 @@ public class DockerClientInstance {
             return true;
         }
         try (StopContainerCmd stopContainerCmd =
-                    this.client.stopContainerCmd(containerName)) {
+                    getClient().stopContainerCmd(containerName)) {
             stopContainerCmd.exec();
             log.info("Stopped docker container [name:{}]", containerName);
             return true;
@@ -598,12 +690,17 @@ public class DockerClientInstance {
         }
     }
 
-    public boolean removeContainer(String containerName) {
+    public synchronized boolean removeContainer(String containerName) {
         if (StringUtils.isBlank(containerName)) {
+            log.error("Invalid docker container name [name:{}]", containerName);
             return false;
         }
+        if (!isContainerPresent(containerName)) {
+            log.info("No docker container to remove [name:{}]", containerName);
+            return true;
+        }
         try (RemoveContainerCmd removeContainerCmd =
-                    this.client.removeContainerCmd(containerName)) {
+                    getClient().removeContainerCmd(containerName)) {
             removeContainerCmd.exec();
             log.info("Removed docker container [name:{}]", containerName);
             return true;
@@ -618,7 +715,7 @@ public class DockerClientInstance {
             return Optional.empty();
         }
         // create 'docker exec' command
-        ExecCreateCmdResponse execCreateCmdResponse = this.client.execCreateCmd(containerName)
+        ExecCreateCmdResponse execCreateCmdResponse = getClient().execCreateCmd(containerName)
                 .withAttachStderr(true)
                 .withAttachStdout(true)
                 .withCmd(cmd)
@@ -626,7 +723,7 @@ public class DockerClientInstance {
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         ByteArrayOutputStream stderr = new ByteArrayOutputStream();
         // run 'docker exec' command
-        try (ExecStartCmd execStartCmd = this.client.execStartCmd(execCreateCmdResponse.getId())) {
+        try (ExecStartCmd execStartCmd = getClient().execStartCmd(execCreateCmdResponse.getId())) {
             execStartCmd
                     .exec(new ExecStartResultCallback(stdout, stderr))
                     .awaitCompletion();
