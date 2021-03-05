@@ -16,8 +16,9 @@
 
 package com.iexec.common.docker.client;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DockerClientFactoryTests {
 
@@ -26,19 +27,21 @@ public class DockerClientFactoryTests {
      */
     @Test
     public void shouldCreateOnlyOneClientInstanceWithoutCredentials() {
-        Assertions.assertThat(
-            DockerClientFactory.get() == DockerClientFactory.get())
+        assertThat(DockerClientFactory.get() == DockerClientFactory.get())
                 .isTrue();
     }
 
     @Test
     public void shouldCreateClientWithAuthConfigCredentials() {
-        DockerClientInstance dockerClientInstance = DockerClientFactory
-                .get("username", "password");
+        String username = "username";
+        String password = "password";
 
-        Assertions.assertThat(dockerClientInstance.getClient().authConfig().getUsername())
-                .isEqualTo("username");
-        Assertions.assertThat(dockerClientInstance.getClient().authConfig().getPassword())
-                .isEqualTo("password");
+        DockerClientInstance dockerClientInstance = DockerClientFactory
+                .get(username, password);
+
+        assertThat(dockerClientInstance.getClient().authConfig().getUsername())
+                .isEqualTo(username);
+        assertThat(dockerClientInstance.getClient().authConfig().getPassword())
+                .isEqualTo(password);
     }
 }
