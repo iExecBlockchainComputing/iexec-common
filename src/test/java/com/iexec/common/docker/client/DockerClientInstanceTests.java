@@ -92,6 +92,7 @@ public class DockerClientInstanceTests {
         usedRandomNames.forEach(name -> 
                 DockerClientFactory.get().removeNetwork(name));
         DockerClientFactory.get().removeNetwork(DOCKER_NETWORK);
+        // TODO clean docker images
     }
 
     public DockerRunRequest getDefaultDockerRunRequest(boolean isSgx) {
@@ -284,9 +285,9 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldRemoveNetwork() {
         String networkName = getRandomString();
-        String networkId = dockerClientInstance.createNetwork(networkName);
+        dockerClientInstance.createNetwork(networkName);
         assertThat(dockerClientInstance.isNetworkPresent(networkName)).isTrue();
-        assertThat(dockerClientInstance.removeNetwork(networkId)).isTrue();
+        assertThat(dockerClientInstance.removeNetwork(networkName)).isTrue();
         assertThat(dockerClientInstance.isNetworkPresent(networkName)).isFalse();
     }
 
@@ -297,8 +298,11 @@ public class DockerClientInstanceTests {
 
     @Test
     public void shouldNotRemoveNetworkSinceDockerCmdException() {
+        String networkName = getRandomString();
+        dockerClientInstance.createNetwork(networkName);
+        assertThat(dockerClientInstance.isNetworkPresent(networkName)).isTrue();
         useCorruptedDockerClient();
-        assertThat(dockerClientInstance.removeNetwork(getRandomString())).isFalse();
+        assertThat(dockerClientInstance.removeNetwork(networkName)).isFalse();
     }
 
     /**
@@ -523,28 +527,26 @@ public class DockerClientInstanceTests {
     // Remove image
 
     @Test
-    public void shouldRemoveImageById() {
-        dockerClientInstance.pullImage(ALPINE_LATEST);
-        String imageId = dockerClientInstance.getImageId(ALPINE_LATEST);
-
-        assertThat(dockerClientInstance.removeImageById(imageId)).isTrue();
+    public void shouldRemoveImage() {
+        dockerClientInstance.pullImage(DOCKER_IO_CLASSIC_IMAGE);
+        assertThat(dockerClientInstance.removeImage(DOCKER_IO_CLASSIC_IMAGE)).isTrue();
     }
 
     @Test
     public void shouldRemoveImageByIdSinceEmptyName() {
-        assertThat(dockerClientInstance.removeImageById("")).isFalse();
+        assertThat(dockerClientInstance.removeImage("")).isFalse();
     }
 
     @Test
-    public void shouldRemoveImageByIdSinceDockerCmdException() {
+    public void shouldNotRemoveImageByIdSinceDockerCmdException() {
         dockerClientInstance.pullImage(ALPINE_LATEST);
-        String imageId = dockerClientInstance.getImageId(ALPINE_LATEST);
+        dockerClientInstance.getImageId(ALPINE_LATEST);
 
         useCorruptedDockerClient();
-        assertThat(dockerClientInstance.removeImageById(imageId)).isFalse();
+        assertThat(dockerClientInstance.removeImage(ALPINE_LATEST)).isFalse();
 
         // cleaning
-        dockerClientInstance.removeImageById(imageId);
+        dockerClientInstance.removeImage(ALPINE_LATEST);
     }
 
     /**
@@ -563,7 +565,7 @@ public class DockerClientInstanceTests {
         String containerId = dockerClientInstance.createContainer(request);
         assertThat(containerId).isNotEmpty();
         // cleaning
-        dockerClientInstance.removeContainer(containerId);
+        dockerClientInstance.removeContainer(request.getContainerName());
         dockerClientInstance.removeImage(request.getImageUri());
     }
 
@@ -768,11 +770,11 @@ public class DockerClientInstanceTests {
         String containerId = dockerClientInstance.createContainer(request);
 
         useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getContainerName(getRandomString())).isEmpty();
+        assertThat(dockerClientInstance.getContainerName(containerId)).isEmpty();
 
         // cleaning
         useRealDockerClient();
-        dockerClientInstance.removeContainer(containerId);
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
 
     // getContainerId
@@ -789,7 +791,7 @@ public class DockerClientInstanceTests {
         assertThat(containerId).isEqualTo(expectedId);
 
         // cleaning
-        dockerClientInstance.removeContainer(expectedId);
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
 
     @Test
@@ -809,12 +811,13 @@ public class DockerClientInstanceTests {
     public void shouldGetContainerStatus() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
         pullImageIfNecessary();
-        String containerId = dockerClientInstance.createContainer(request);
+        dockerClientInstance.createContainer(request);
 
-        assertThat(dockerClientInstance.getContainerStatus(containerId)).isEqualTo("created");
+        assertThat(dockerClientInstance.getContainerStatus(request.getContainerName()))
+                .isEqualTo(DockerClientInstance.CREATED_STATUS);
 
         // cleaning
-        dockerClientInstance.removeContainer(containerId);
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
 
     @Test
@@ -833,18 +836,18 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldStartContainer() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
-        String containerId = dockerClientInstance.createContainer(request);
+        dockerClientInstance.createContainer(request);
 
-        assertThat(dockerClientInstance.startContainer(containerId)).isTrue();
-
-        assertThat(dockerClientInstance.getContainerStatus(containerId))
+        assertThat(dockerClientInstance.startContainer(containerName)).isTrue();
+        assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
 
         // cleaning
-        dockerClientInstance.stopContainer(containerId);
-        dockerClientInstance.removeContainer(containerId);
+        dockerClientInstance.stopContainer(containerName);
+        dockerClientInstance.removeContainer(containerName);
     }
 
     @Test
@@ -855,56 +858,59 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldNotStartContainerSinceDockerCmdException() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
-        String containerId = dockerClientInstance.createContainer(request);
+        dockerClientInstance.createContainer(request);
 
         useCorruptedDockerClient();
-        assertThat(dockerClientInstance.startContainer(containerId)).isFalse();
+        assertThat(dockerClientInstance.startContainer(containerName)).isFalse();
 
         // cleaning
         useRealDockerClient();
-        dockerClientInstance.stopContainer(containerId);
-        dockerClientInstance.removeContainer(containerId);
+        dockerClientInstance.stopContainer(containerName);
+        dockerClientInstance.removeContainer(containerName);
     }
 
     // waitContainerUntilExitOrTimeout
     @Test
-    public void shouldTimeoutAfterWaitContainerUntilExitOrTimeoutSinceTimeout() {
+    public void shouldTimeoutAfterWaitContainerUntilExitOrTimeout() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
-        request.setCmd("sh -c 'sleep 2 && echo Hello from Docker alpine!'");
+        String containerName = request.getContainerName();
+        request.setCmd("sh -c 'sleep 30 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
-        String containerId = dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerId);
-        assertThat(dockerClientInstance.getContainerStatus(containerId))
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
+        assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
         Date before = new Date();
-        dockerClientInstance.waitContainerUntilExitOrTimeout(containerId,
-                Instant.now().plusMillis(1000));
-        assertThat(dockerClientInstance.getContainerStatus(containerId))
+        Long exitCode = dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
+                Instant.now().plusSeconds(5));
+        assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
+        assertThat(exitCode).isNull();
         assertThat(new Date().getTime() - before.getTime()).isGreaterThan(1000);
-
         // cleaning
-        dockerClientInstance.stopContainer(containerId);
-        dockerClientInstance.removeContainer(containerId);
+        dockerClientInstance.stopContainer(containerName);
+        dockerClientInstance.removeContainer(containerName);
     }
 
     @Test
     public void shouldWaitContainerUntilExitOrTimeoutSinceExited() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
-        String containerId = dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerId);
-        assertThat(dockerClientInstance.getContainerStatus(containerId))
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
+        assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        dockerClientInstance.waitContainerUntilExitOrTimeout(containerId,
+        dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
                 Instant.now().plusMillis(3000));
-        assertThat(dockerClientInstance.getContainerStatus(containerId))
+        assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.EXITED_STATUS);
 
         // cleaning
-        dockerClientInstance.stopContainer(containerId);
-        dockerClientInstance.removeContainer(containerId);
+        dockerClientInstance.stopContainer(containerName);
+        dockerClientInstance.removeContainer(containerName);
     }
 
     // getContainerLogs
@@ -963,19 +969,20 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldStopContainer() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
-        String containerId = dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerId);
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
 
-        assertThat(dockerClientInstance.getContainerStatus(containerId))
+        assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        assertThat(dockerClientInstance.stopContainer(containerId)).isTrue();
-        assertThat(dockerClientInstance.getContainerStatus(containerId))
+        assertThat(dockerClientInstance.stopContainer(containerName)).isTrue();
+        assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.EXITED_STATUS);
 
         // cleaning
-        dockerClientInstance.removeContainer(containerId);
+        dockerClientInstance.removeContainer(containerName);
     }
 
     @Test
@@ -988,12 +995,13 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldRemoveContainer() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
-        String containerId = dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerId);
-        dockerClientInstance.stopContainer(containerId);
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
+        dockerClientInstance.stopContainer(containerName);
 
-        assertThat(dockerClientInstance.removeContainer(containerId)).isTrue();
+        assertThat(dockerClientInstance.removeContainer(containerName)).isTrue();
     }
 
     @Test
@@ -1004,19 +1012,20 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldNotRemoveContainerSinceRunning() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 5 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
-        String containerId = dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerId);
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
 
-        assertThat(dockerClientInstance.getContainerStatus(containerId))
+        assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        assertThat(dockerClientInstance.removeContainer(containerId)).isFalse();
+        assertThat(dockerClientInstance.removeContainer(containerName)).isFalse();
 
         // cleaning
-        dockerClientInstance.waitContainerUntilExitOrTimeout(containerId,
+        dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
                 Instant.now().plusMillis(15000));
-        dockerClientInstance.removeContainer(containerId);
+        dockerClientInstance.removeContainer(containerName);
     }
 
     @Test

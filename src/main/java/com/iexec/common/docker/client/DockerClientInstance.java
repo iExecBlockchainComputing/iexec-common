@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("deprecation") // ExecStartResultCallback
 public class DockerClientInstance {
 
+    public static final String CREATED_STATUS = "created";
     public static final String RUNNING_STATUS = "running";
     public static final String RESTARTING_STATUS = "restarting";
     public static final String EXITED_STATUS = "exited";
@@ -125,7 +126,7 @@ public class DockerClientInstance {
         }
         if (!isVolumePresent(volumeName)) {
             log.info("No docker volume to remove [name:{}]", volumeName);
-            return true;
+            return false;
         }
         try (RemoveVolumeCmd removeVolumeCmd = getClient().removeVolumeCmd(volumeName)) {
             removeVolumeCmd.exec();
@@ -178,7 +179,7 @@ public class DockerClientInstance {
                     .withNameFilter(networkName)
                     .exec()
                     .stream()
-                    .filter(network -> !StringUtils.isBlank(network.getName()))
+                    .filter(network -> StringUtils.isNotBlank(network.getName()))
                     .filter(network -> network.getName().equals(networkName))
                     .map(Network::getId)
                     .findFirst()
@@ -200,7 +201,7 @@ public class DockerClientInstance {
         }
         if (!isNetworkPresent(networkName)) {
             log.info("No docker network to remove [name:{}]", networkName);
-            return true;
+            return false;
         }
         try (RemoveNetworkCmd removeNetworkCmd =
                      getClient().removeNetworkCmd(networkName)) {
@@ -257,7 +258,7 @@ public class DockerClientInstance {
             log.error("Invalid docker image name [name:{}]", imageName);
             return "";
         }
-        String sanitizedImageName = sanitizeImageName(imageName);
+        String sanitizedImageName = imageName;
 
         try (ListImagesCmd listImagesCmd = getClient().listImagesCmd()) {
             return listImagesCmd
@@ -272,8 +273,8 @@ public class DockerClientInstance {
                     .orElse("");
         } catch (Exception e) {
             log.error("Error getting docker image id [name:{}]", imageName, e);
+            return "";
         }
-        return "";
     }
 
     public String sanitizeImageName(String image) {
@@ -297,36 +298,22 @@ public class DockerClientInstance {
     }
 
     public synchronized boolean removeImage(String imageName) {
-        if (isImagePresent(imageName)) {
-            log.info("No docker image to remove [name:{}]", imageName);
-            return true;
+        if (StringUtils.isBlank(imageName)) {
+            // TODO throw new IllegalArgumentException("Image name cannot be blank");
+            log.error("Docker image name cannot be blank");
+            return false;
         }
-        return removeImageById(getImageId(imageName));
-    }
-
-    // TODO remove image by name to avoid conflict error
-    /*
-    * If same image has been pulled with multiple repository base names:
-    *
-    * - docker.io/repo/image:latest
-    * and
-    * - registry.hub.docker.com/repo/image:latest (e.g)
-    *
-    * It will return conflict:
-    * unable to delete <imageId> (must be forced) - image is referenced in multiple repositories
-    * */
-    synchronized boolean removeImageById(String imageId) {
-        if (StringUtils.isBlank(imageId)) {
-            log.error("Invalid docker image id [id:{}]", imageId);
+        if (!isImagePresent(imageName)) {
+            log.info("No docker image to remove [name:{}]", imageName);
             return false;
         }
         try (RemoveImageCmd removeImageCmd =
-                     getClient().removeImageCmd(imageId)) {
+                    getClient().removeImageCmd(imageName)) {
             removeImageCmd.exec();
-            log.info("Removed docker image by id [id:{}]", imageId);
+            log.info("Removed docker image [name:{}]", imageName);
             return true;
         } catch (Exception e) {
-            log.error("Error removing docker image by id [id:{}]", imageId, e);
+            log.error("Error removing docker image [name:{}]", imageName, e);
             return false;
         }
     }
@@ -348,8 +335,9 @@ public class DockerClientInstance {
         if (containerId.isEmpty()) {
             return dockerRunResponse;
         }
-        if (!startContainer(containerId)) {
-            removeContainer(containerId);
+        String containerName = dockerRunRequest.getContainerName();
+        if (!startContainer(containerName)) {
+            removeContainer(containerName);
             return dockerRunResponse;
         }
         if (dockerRunRequest.getMaxExecutionTime() < 0) {
@@ -359,14 +347,14 @@ public class DockerClientInstance {
         }
         Instant timeoutDate = Instant.now()
                 .plusMillis(dockerRunRequest.getMaxExecutionTime());
-        waitContainerUntilExitOrTimeout(containerId, timeoutDate);
-        if (!stopContainer(containerId)) {
+        waitContainerUntilExitOrTimeout(containerName, timeoutDate);
+        if (!stopContainer(containerName)) {
             return dockerRunResponse;
         }
-        getContainerLogs(containerId).ifPresent(containerLogs -> {
+        getContainerLogs(containerName).ifPresent(containerLogs -> {
             dockerRunResponse.setDockerLogs(containerLogs);
         });
-        if (!removeContainer(containerId)) {
+        if (!removeContainer(containerName)) {
             return dockerRunResponse;
         }
         dockerRunResponse.setSuccessful(true);
@@ -415,8 +403,8 @@ public class DockerClientInstance {
             if (!removeDuplicate) {
                 return "";
             }
-            stopContainer(oldContainerId);
-            removeContainer(oldContainerId);
+            stopContainer(containerName);
+            removeContainer(containerName);
         }
         // create network if needed
         String network = dockerRunRequest.getDockerNetwork();
@@ -672,7 +660,7 @@ public class DockerClientInstance {
             return false;
         }
         if (!isContainerPresent(containerName)) {
-            log.error("Cannot stop inexistent docker container [name:{}]", containerName);
+            log.error("No docker container to stop [name:{}]", containerName);
             return false;
         }
         List<String> statusesToStop = Arrays.asList(RESTARTING_STATUS, RUNNING_STATUS);
@@ -697,7 +685,7 @@ public class DockerClientInstance {
         }
         if (!isContainerPresent(containerName)) {
             log.info("No docker container to remove [name:{}]", containerName);
-            return true;
+            return false;
         }
         try (RemoveContainerCmd removeContainerCmd =
                     getClient().removeContainerCmd(containerName)) {
