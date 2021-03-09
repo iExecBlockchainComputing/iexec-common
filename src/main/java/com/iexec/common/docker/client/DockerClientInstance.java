@@ -332,10 +332,6 @@ public class DockerClientInstance {
      * If maxExecutionTime is 0, the container will run
      * in detached mode, thus, we return immediately without
      * waiting for it to exit.
-     * <p>
-     * If the needed docker image is not available locally,
-     * it will be downloaded but will not be removed since
-     * it could be attached to other containers.
      * @param dockerRunRequest config of the run
      * @return a response with metadata and success or failure
      * status.
@@ -347,9 +343,6 @@ public class DockerClientInstance {
         DockerRunResponse dockerRunResponse = DockerRunResponse.builder()
                 .isSuccessful(false)
                 .build();
-        if (!pullImage(dockerRunRequest.getImageUri())) {
-            return dockerRunResponse;
-        }
         // TODO choose to remove duplicate containers or not
         String containerId = createContainer(dockerRunRequest);
         if (containerId.isEmpty()) {
@@ -418,11 +411,10 @@ public class DockerClientInstance {
             return "";
         }
         String containerName = dockerRunRequest.getContainerName();
-        String oldContainerId = getContainerId(containerName);
         // clean duplicate if present
-        if (StringUtils.isNotBlank(oldContainerId)) {
+        if (isContainerPresent(containerName)) {
             log.info("Found duplicate container [name:{}, oldContainerId:{}, removeDuplicate:{}]",
-                    containerName, oldContainerId, removeDuplicate);
+                    containerName, getContainerId(containerName), removeDuplicate);
             if (!removeDuplicate) {
                 return "";
             }
@@ -436,7 +428,7 @@ public class DockerClientInstance {
             return "";
         }
         // create container
-        try (CreateContainerCmd createContainerCmd = client
+        try (CreateContainerCmd createContainerCmd = getClient()
                 .createContainerCmd(dockerRunRequest.getImageUri())) {
             String containerId =
                     buildCreateContainerCmdFromRunRequest(dockerRunRequest, createContainerCmd)
@@ -605,10 +597,14 @@ public class DockerClientInstance {
             Instant timeoutDate
     ) {
         if (StringUtils.isBlank(containerName)) {
-            throw new IllegalArgumentException("Container name cannot be blank");
+            // TODO throw new IllegalArgumentException("Container name cannot be blank");
+            log.error("Container name cannot be blank");
+            return null;
         }
         if (timeoutDate == null) {
-            throw new IllegalArgumentException("Timeout date cannot be null");
+            // TODO throw new IllegalArgumentException("Timeout date cannot be null");
+            log.error("Timeout date cannot be null");
+            return null;
         }
         boolean isExited = false;
         boolean isTimeout = false;
@@ -668,7 +664,7 @@ public class DockerClientInstance {
                     .exec(new ExecStartResultCallback(stdout, stderr))
                     .awaitCompletion();
         } catch (Exception e) {
-            log.error("Error getting docker container logs [name:{}]", containerName);
+            log.error("Error getting docker container logs [name:{}]", containerName, e);
             return Optional.empty();
         }
         return Optional.of(DockerLogs.builder()
