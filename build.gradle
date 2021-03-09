@@ -93,8 +93,9 @@ def isDev = project.hasProperty('dev')
 
 test {
     useJUnitPlatform {
-        // excludeTags isDev ? 'slow' : ''
-        // exclude isDev ? '**/docker/**' : ''
+        if (isDev) {
+            excludeTags 'slow'
+        }
     }
     reports {
         junitXml.enabled = true
