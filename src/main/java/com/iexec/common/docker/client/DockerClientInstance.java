@@ -692,7 +692,9 @@ public class DockerClientInstance {
         }
         try (StopContainerCmd stopContainerCmd =
                     getClient().stopContainerCmd(containerName)) {
-            stopContainerCmd.exec();
+            stopContainerCmd
+                    .withTimeout(0) // don't wait
+                    .exec();
             log.info("Stopped docker container [name:{}]", containerName);
             return true;
         } catch (Exception e) {
