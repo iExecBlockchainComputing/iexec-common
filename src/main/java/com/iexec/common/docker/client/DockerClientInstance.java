@@ -723,6 +723,11 @@ public class DockerClientInstance {
         if (StringUtils.isBlank(containerName)) {
             return Optional.empty();
         }
+        if (!isContainerPresent(containerName)) {
+            log.error("Cannot run docker exec since container not found [name:{}]",
+                    containerName);
+            return Optional.empty();
+        }
         // create 'docker exec' command
         ExecCreateCmdResponse execCreateCmdResponse = getClient().execCreateCmd(containerName)
                 .withAttachStderr(true)
@@ -737,7 +742,7 @@ public class DockerClientInstance {
                     .exec(new ExecStartResultCallback(stdout, stderr))
                     .awaitCompletion();
         } catch (Exception e) {
-            log.error("Error running docker exec command [containerName:{}, cmd:{}]",
+            log.error("Error running docker exec command [name:{}, cmd:{}]",
                     containerName, cmd, e);
             return Optional.empty();
         }

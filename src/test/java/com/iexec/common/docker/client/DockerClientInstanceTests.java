@@ -1298,16 +1298,80 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.removeContainer(containerName)).isFalse();
 
         // cleaning
-        dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
-                Instant.now().plusMillis(15000));
-        dockerClientInstance.removeContainer(containerName);
+        dockerClientInstance.stopAndRemoveContainer(containerName);
     }
 
     @Test
     public void shouldNotRemoveContainerSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.removeContainer(getRandomString())).isFalse();
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
+        request.setCmd("sh -c 'sleep 5 && echo Hello from Docker alpine!'");
+        pullImageIfNecessary();
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
+        when(dockerClientInstance.getClient())
+                .thenCallRealMethod() // isContainerPresent
+                .thenReturn(corruptedClient);
+
+        assertThat(dockerClientInstance.removeContainer(containerName)).isFalse();
+
+        // clean
+        dockerClientInstance.stopAndRemoveContainer(containerName);
     }
+
+    // exec
+
+    @Test
+    public void shouldExecuteCommandInContainer() {
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
+        request.setCmd("sh -c 'sleep 10'");
+        String msg = "Hello from Docker alpine!";
+        String cmd = "echo " + msg;
+        pullImageIfNecessary();
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
+
+        Optional<DockerLogs> logs = 
+                dockerClientInstance.exec(containerName, "sh", "-c", cmd);
+        assertThat(logs.get().getStdout().trim()).isEqualTo(msg);
+
+        // clean
+        dockerClientInstance.stopAndRemoveContainer(containerName);
+    }
+
+    @Test
+    public void shouldNotExecuteCommandSinceContainerNotFound() {
+        // no container created
+        Optional<DockerLogs> logs = 
+                dockerClientInstance.exec(getRandomString(), "sh", "-c", "ls");
+        assertThat(logs).isEmpty();
+    }
+
+    @Test
+    public void shouldNotExecuteCommandSinceDockerException() {
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
+        request.setCmd("sh -c 'sleep 10'");
+        String msg = "Hello from Docker alpine!";
+        String cmd = "echo " + msg;
+        pullImageIfNecessary();
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
+        when(dockerClientInstance.getClient())
+                .thenCallRealMethod() // isContainerPresent
+                .thenCallRealMethod() // create command
+                .thenReturn(corruptedClient);
+
+        Optional<DockerLogs> logs = 
+                dockerClientInstance.exec(containerName, "sh", "-c", cmd);
+        assertThat(logs).isEmpty();
+
+        // clean
+        dockerClientInstance.stopAndRemoveContainer(containerName);
+    }
+
+    // tools
 
     private String getRandomString() {
         String random = RandomStringUtils.randomAlphanumeric(20);
