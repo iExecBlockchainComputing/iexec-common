@@ -16,6 +16,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'jacoco'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.iexec.common'
@@ -102,6 +103,12 @@ test {
         html.enabled = true
     }
 }
+
+jacoco {
+    toolVersion = "0.8.3"
+    // reportsDir = file("$buildDir/TestCoverageReport")
+}
+build.dependsOn jacocoTestReport
 
 jar {
     // include source code in the jar
