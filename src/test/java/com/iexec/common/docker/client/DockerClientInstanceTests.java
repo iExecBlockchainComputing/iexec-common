@@ -18,7 +18,6 @@ package com.iexec.common.docker.client;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerCmd;
-import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
@@ -189,14 +188,41 @@ public class DockerClientInstanceTests {
         // create volume so isVolumePresent returns true
         String volumeName = getRandomString();
         dockerClientInstance.createVolume(volumeName);
-        // useCorruptedDockerClient();
-
-        when(realClient.removeVolumeCmd(volumeName)).thenThrow(newDockerException());
-        assertThat(dockerClientInstance.removeVolume(getRandomString())).isFalse();
+        assertThat(dockerClientInstance.isVolumePresent(volumeName)).isTrue();
         
-        when(realClient.removeVolumeCmd(volumeName)).thenCallRealMethod();
+        useCorruptedDockerClient();
+        assertThat(dockerClientInstance.removeVolume(volumeName)).isFalse();
+
+        useRealDockerClient();     
         dockerClientInstance.removeVolume(volumeName);
     }
+
+    // @Test
+    // public void shouldSetupVolumeSinceVolumeAlreadyCreated() {
+    //     String volumeName = "volumeName";
+    //     when(dockerClientService.isVolumeCreated(volumeName)).thenReturn(true);
+
+    //     Assertions.assertThat(dockerService.setupVolume(volumeName)).isTrue();
+    // }
+
+    // @Test
+    // public void shouldSetupVolumeSinceVolumeFreshlyCreated() {
+    //     String volumeName = "volumeName";
+    //     when(dockerClientService.isVolumeCreated(volumeName)).thenReturn(false);
+    //     when(dockerClientService.createVolume(volumeName)).thenReturn(true);
+
+    //     Assertions.assertThat(dockerService.setupVolume(volumeName)).isTrue();
+    // }
+
+    // @Test
+    // public void shouldNotSetupVolumeSinceVolumeCreationFailed() {
+    //     String volumeName = "volumeName";
+    //     when(dockerClientService.isVolumeCreated(volumeName)).thenReturn(false);
+    //     when(dockerClientService.createVolume(volumeName)).thenReturn(false);
+
+    //     Assertions.assertThat(dockerService.setupVolume(volumeName)).isFalse();
+    // }
+
 
     /**
      * docker network
@@ -426,12 +452,12 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.getImageId(ALPINE_LATEST)).isNotEmpty();
     }
 
-    @Test
-    public void shouldGetImageIdWithDockerIoClassicImage() {
-        String image = DOCKER_IO_CLASSIC_IMAGE;
-        dockerClientInstance.pullImage(image);
-        assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
-    }
+    // @Test
+    // public void shouldGetImageIdWithDockerIoClassicImage() {
+    //     String image = DOCKER_IO_CLASSIC_IMAGE;
+    //     dockerClientInstance.pullImage(image);
+    //     assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
+    // }
 
     @Test
     public void shouldGetImageIdWithShortClassicImage() {
@@ -440,19 +466,19 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
     }
 
-    @Test
-    public void shouldGetImageIdWithDockerIoLibraryImage() {
-        String image = DOCKER_IO_LIBRARY_IMAGE;
-        dockerClientInstance.pullImage(image);
-        assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
-    }
+    // @Test
+    // public void shouldGetImageIdWithDockerIoLibraryImage() {
+    //     String image = DOCKER_IO_LIBRARY_IMAGE;
+    //     dockerClientInstance.pullImage(image);
+    //     assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
+    // }
 
-    @Test
-    public void shouldGetImageIdWithShortLibraryImage() {
-        String image = SHORT_LIBRARY_IMAGE;
-        dockerClientInstance.pullImage(image);
-        assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
-    }
+    // @Test
+    // public void shouldGetImageIdWithShortLibraryImage() {
+    //     String image = SHORT_LIBRARY_IMAGE;
+    //     dockerClientInstance.pullImage(image);
+    //     assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
+    // }
 
     @Test
     public void shouldGetImageIdWithVeryShortLibraryImage() {
@@ -526,11 +552,11 @@ public class DockerClientInstanceTests {
 
     // Remove image
 
-    @Test
-    public void shouldRemoveImage() {
-        dockerClientInstance.pullImage(DOCKER_IO_CLASSIC_IMAGE);
-        assertThat(dockerClientInstance.removeImage(DOCKER_IO_CLASSIC_IMAGE)).isTrue();
-    }
+    // @Test
+    // public void shouldRemoveImage() {
+    //     dockerClientInstance.pullImage(DOCKER_IO_CLASSIC_IMAGE);
+    //     assertThat(dockerClientInstance.removeImage(DOCKER_IO_CLASSIC_IMAGE)).isTrue();
+    // }
 
     @Test
     public void shouldRemoveImageByIdSinceEmptyName() {
@@ -554,7 +580,135 @@ public class DockerClientInstanceTests {
      */
 
     // docker run
-    // TODO
+
+    // @Test
+    // public void shouldRun() {
+    //     String containerId = "containerId";
+    //     String containerName = "containerName";
+    //     DockerRunRequest dockerRunRequest = DockerRunRequest.builder()
+    //             .containerName(containerName)
+    //             .maxExecutionTime(5000)
+    //             .build();
+    //     when(dockerClientInstance.createContainer(dockerRunRequest))
+    //             .thenReturn(containerId);
+    //     when(dockerClientInstance.startContainer(containerId)).thenReturn(true);
+    //     when(dockerClientInstance.stopContainer(containerId)).thenReturn(true);
+    //     when(dockerClientInstance.getContainerLogs(containerId)).thenReturn(Optional.of(
+    //             DockerLogs.builder().stdout("stdout").stderr("stderr").build()));
+    //     when(dockerClientInstance.removeContainer(containerId)).thenReturn(true);
+
+    //     DockerRunResponse dockerRunResponse =
+    //             dockerService.run(dockerRunRequest);
+
+    //     Assertions.assertThat(dockerRunResponse).isNotNull();
+    //     Assertions.assertThat(dockerRunResponse.isSuccessful()).isTrue();
+    //     Assertions.assertThat(dockerRunResponse.getStdout()).isEqualTo(
+    //             "stdout");
+    //     Assertions.assertThat(dockerRunResponse.getDockerLogs().getStdout()).isEqualTo("stdout");
+    //     Assertions.assertThat(dockerRunResponse.getDockerLogs().getStderr()).isEqualTo("stderr");
+
+    //     verify(dockerClientInstance, times(1))
+    //             .waitContainerUntilExitOrTimeout(anyString(), any());
+    // }
+
+    // @Test
+    // public void shouldRunWithoutWaiting() {
+    //     String containerId = "containerId";
+    //     String containerName = "containerName";
+    //     DockerRunRequest dockerRunRequest = DockerRunRequest.builder()
+    //             .containerName(containerName)
+    //             .maxExecutionTime(-1)
+    //             .build();
+    //     when(dockerClientInstance.createContainer(dockerRunRequest))
+    //             .thenReturn(containerId);
+    //     when(dockerClientInstance.startContainer(containerId)).thenReturn(true);
+
+    //     DockerRunResponse dockerRunResponse =
+    //             dockerService.run(dockerRunRequest);
+
+    //     Assertions.assertThat(dockerRunResponse).isNotNull();
+    //     Assertions.assertThat(dockerRunResponse.isSuccessful()).isTrue();
+    //     Assertions.assertThat(dockerRunResponse.getStdout()).isEmpty();
+    // }
+
+    // @Test
+    // public void shouldNotRunSinceCantCreateContainer() {
+    //     String containerName = "containerName";
+    //     DockerRunRequest dockerRunRequest = DockerRunRequest.builder()
+    //             .containerName(containerName)
+    //             .maxExecutionTime(5000)
+    //             .build();
+    //     when(dockerClientInstance.createContainer(dockerRunRequest))
+    //             .thenReturn("");
+
+    //     DockerRunResponse dockerRunResponse =
+    //             dockerService.run(dockerRunRequest);
+
+    //     Assertions.assertThat(dockerRunResponse).isNotNull();
+    //     Assertions.assertThat(dockerRunResponse.isSuccessful()).isFalse();
+    // }
+
+    // @Test
+    // public void shouldNotRunSinceCantStartContainer() {
+    //     String containerId = "containerId";
+    //     String containerName = "containerName";
+    //     DockerRunRequest dockerRunRequest = DockerRunRequest.builder()
+    //             .containerName(containerName)
+    //             .maxExecutionTime(5000)
+    //             .build();
+    //     when(dockerClientInstance.createContainer(dockerRunRequest))
+    //             .thenReturn(containerId);
+    //     when(dockerClientInstance.startContainer(containerId)).thenReturn(false);
+
+    //     DockerRunResponse dockerRunResponse =
+    //             dockerService.run(dockerRunRequest);
+
+    //     Assertions.assertThat(dockerRunResponse).isNotNull();
+    //     Assertions.assertThat(dockerRunResponse.isSuccessful()).isFalse();
+    //     verify(dockerClientInstance, times(1))
+    //             .removeContainer(containerId);
+    // }
+
+    // @Test
+    // public void shouldNotRunSinceCantStopContainer() {
+    //     String containerId = "containerId";
+    //     String containerName = "containerName";
+    //     DockerRunRequest dockerRunRequest = DockerRunRequest.builder()
+    //             .containerName(containerName)
+    //             .maxExecutionTime(5000)
+    //             .build();
+    //     when(dockerClientInstance.createContainer(dockerRunRequest))
+    //             .thenReturn(containerId);
+    //     when(dockerClientInstance.startContainer(containerId)).thenReturn(true);
+    //     when(dockerClientInstance.stopContainer(containerId)).thenReturn(false);
+
+    //     DockerRunResponse dockerRunResponse =
+    //             dockerService.run(dockerRunRequest);
+
+    //     Assertions.assertThat(dockerRunResponse).isNotNull();
+    //     Assertions.assertThat(dockerRunResponse.isSuccessful()).isFalse();
+    // }
+
+    // @Test
+    // public void shouldNotRunSinceCantRemoveContainer() {
+    //     String containerId = "containerId";
+    //     String containerName = "containerName";
+    //     DockerRunRequest dockerRunRequest = DockerRunRequest.builder()
+    //             .containerName(containerName)
+    //             .maxExecutionTime(5000)
+    //             .build();
+    //     when(dockerClientInstance.createContainer(dockerRunRequest))
+    //             .thenReturn(containerId);
+    //     when(dockerClientInstance.startContainer(containerId)).thenReturn(true);
+    //     when(dockerClientInstance.stopContainer(containerId)).thenReturn(true);
+    //     when(dockerClientInstance.removeContainer(containerId)).thenReturn(false);
+
+    //     DockerRunResponse dockerRunResponse =
+    //             dockerService.run(dockerRunRequest);
+
+    //     Assertions.assertThat(dockerRunResponse).isNotNull();
+    //     Assertions.assertThat(dockerRunResponse.isSuccessful()).isFalse();
+    // }
 
     // createContainer
 
@@ -1034,6 +1188,34 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.removeContainer(getRandomString())).isFalse();
     }
 
+    // stopAndRemoveContainer
+
+    // @Test
+    // public void shouldStopAndRemoveContainer() {
+    //     String containerName = "containerName";
+    //     when(dockerClientService.stopContainer(containerName)).thenReturn(true);
+    //     when(dockerClientService.removeContainer(containerName)).thenReturn(true);
+
+    //     Assertions.assertThat(dockerService.stopAndRemoveContainer(containerName)).isTrue();
+    // }
+
+    // @Test
+    // public void shouldStopAndRemoveContainerSinceCantStop() {
+    //     String containerName = "containerName";
+    //     when(dockerClientService.stopContainer(containerName)).thenReturn(false);
+
+    //     Assertions.assertThat(dockerService.stopAndRemoveContainer(containerName)).isFalse();
+    // }
+
+    // @Test
+    // public void shouldStopAndRemoveContainerSinceCantRemove() {
+    //     String containerName = "containerName";
+    //     when(dockerClientService.stopContainer(containerName)).thenReturn(true);
+    //     when(dockerClientService.removeContainer(containerName)).thenReturn(false);
+
+    //     Assertions.assertThat(dockerService.stopAndRemoveContainer(containerName)).isFalse();
+    // }
+
     private String getRandomString() {
         String random = RandomStringUtils.randomAlphanumeric(20);
         usedRandomNames.add(random);
@@ -1065,9 +1247,4 @@ public class DockerClientInstanceTests {
             dockerClientInstance.pullImage(ALPINE_LATEST);
         }
     }
-
-    private DockerException newDockerException() {
-        return new DockerException("Test exception", -1);
-    }
-
 }
