@@ -70,7 +70,7 @@ public class DockerClientInstanceTests {
     private static List<String> usedRandomNames = new ArrayList<>();
 
     @Spy
-    private DockerClientInstance dockerClientInstance = DockerClientFactory.get();
+    private DockerClientInstance dockerClientInstance = DockerClientFactory.getDockerClientInstance();
 
     @Spy
     private DockerClient realClient = dockerClientInstance.getClient();
@@ -86,11 +86,11 @@ public class DockerClientInstanceTests {
     public static void afterAll() {
         // clean containers
         usedRandomNames.forEach(name -> 
-                DockerClientFactory.get().stopAndRemoveContainer(name));
+                DockerClientFactory.getDockerClientInstance().stopAndRemoveContainer(name));
         // clean networks
         usedRandomNames.forEach(name -> 
-                DockerClientFactory.get().removeNetwork(name));
-        DockerClientFactory.get().removeNetwork(DOCKER_NETWORK);
+                DockerClientFactory.getDockerClientInstance().removeNetwork(name));
+        DockerClientFactory.getDockerClientInstance().removeNetwork(DOCKER_NETWORK);
         // TODO clean docker images
     }
 
@@ -392,7 +392,7 @@ public class DockerClientInstanceTests {
             return;
         }
         // Get an authenticated docker client
-        DockerClientInstance authClientInstance = DockerClientFactory.get(username, password);
+        DockerClientInstance authClientInstance = DockerClientFactory.getDockerClientInstance(username, password);
         // clean to avoid previous tests collisions
         authClientInstance.removeImage(PRIVATE_IMAGE_NAME);
         // pull image and check
@@ -413,7 +413,7 @@ public class DockerClientInstanceTests {
     public void shouldFailToPullPrivateImageWithWrongCredentials() {
         // Get an authenticated docker client
         DockerClientInstance authClientInstance = DockerClientFactory
-                .get("dummyUsername", "dummyPassword");
+                .getDockerClientInstance("dummyUsername", "dummyPassword");
         assertThat(authClientInstance.pullImage(PRIVATE_IMAGE_NAME)).isFalse();
     }
 

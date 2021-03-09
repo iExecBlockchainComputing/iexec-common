@@ -20,14 +20,14 @@ public abstract class DockerClientFactory {
 
     private static DockerClientInstance defaultClient;
 
-    public static synchronized DockerClientInstance get() {
+    public static synchronized DockerClientInstance getDockerClientInstance() {
         if (defaultClient == null) {
             defaultClient = new DockerClientInstance();
         }
         return defaultClient;
     }
 
-    public static synchronized DockerClientInstance get(String username, String password) {
+    public static synchronized DockerClientInstance getDockerClientInstance(String username, String password) {
         return new DockerClientInstance(username, password);
     }
 }

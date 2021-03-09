@@ -27,7 +27,7 @@ public class DockerClientFactoryTests {
      */
     @Test
     public void shouldCreateOnlyOneClientInstanceWithoutCredentials() {
-        assertThat(DockerClientFactory.get() == DockerClientFactory.get())
+        assertThat(DockerClientFactory.getDockerClientInstance() == DockerClientFactory.getDockerClientInstance())
                 .isTrue();
     }
 
@@ -37,7 +37,7 @@ public class DockerClientFactoryTests {
         String password = "password";
 
         DockerClientInstance dockerClientInstance = DockerClientFactory
-                .get(username, password);
+                .getDockerClientInstance(username, password);
 
         assertThat(dockerClientInstance.getClient().authConfig().getUsername())
                 .isEqualTo(username);
