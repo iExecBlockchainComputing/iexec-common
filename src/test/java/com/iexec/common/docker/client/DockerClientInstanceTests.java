@@ -197,33 +197,6 @@ public class DockerClientInstanceTests {
         dockerClientInstance.removeVolume(volumeName);
     }
 
-    // @Test
-    // public void shouldSetupVolumeSinceVolumeAlreadyCreated() {
-    //     String volumeName = "volumeName";
-    //     when(dockerClientService.isVolumeCreated(volumeName)).thenReturn(true);
-
-    //     Assertions.assertThat(dockerService.setupVolume(volumeName)).isTrue();
-    // }
-
-    // @Test
-    // public void shouldSetupVolumeSinceVolumeFreshlyCreated() {
-    //     String volumeName = "volumeName";
-    //     when(dockerClientService.isVolumeCreated(volumeName)).thenReturn(false);
-    //     when(dockerClientService.createVolume(volumeName)).thenReturn(true);
-
-    //     Assertions.assertThat(dockerService.setupVolume(volumeName)).isTrue();
-    // }
-
-    // @Test
-    // public void shouldNotSetupVolumeSinceVolumeCreationFailed() {
-    //     String volumeName = "volumeName";
-    //     when(dockerClientService.isVolumeCreated(volumeName)).thenReturn(false);
-    //     when(dockerClientService.createVolume(volumeName)).thenReturn(false);
-
-    //     Assertions.assertThat(dockerService.setupVolume(volumeName)).isFalse();
-    // }
-
-
     /**
      * docker network
      */
@@ -452,12 +425,12 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.getImageId(ALPINE_LATEST)).isNotEmpty();
     }
 
-    // @Test
-    // public void shouldGetImageIdWithDockerIoClassicImage() {
-    //     String image = DOCKER_IO_CLASSIC_IMAGE;
-    //     dockerClientInstance.pullImage(image);
-    //     assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
-    // }
+    @Test
+    public void shouldGetImageIdWithDockerIoClassicImage() {
+        String image = DOCKER_IO_CLASSIC_IMAGE;
+        dockerClientInstance.pullImage(image);
+        assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
+    }
 
     @Test
     public void shouldGetImageIdWithShortClassicImage() {
@@ -466,19 +439,19 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
     }
 
-    // @Test
-    // public void shouldGetImageIdWithDockerIoLibraryImage() {
-    //     String image = DOCKER_IO_LIBRARY_IMAGE;
-    //     dockerClientInstance.pullImage(image);
-    //     assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
-    // }
+    @Test
+    public void shouldGetImageIdWithDockerIoLibraryImage() {
+        String image = DOCKER_IO_LIBRARY_IMAGE;
+        dockerClientInstance.pullImage(image);
+        assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
+    }
 
-    // @Test
-    // public void shouldGetImageIdWithShortLibraryImage() {
-    //     String image = SHORT_LIBRARY_IMAGE;
-    //     dockerClientInstance.pullImage(image);
-    //     assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
-    // }
+    @Test
+    public void shouldGetImageIdWithShortLibraryImage() {
+        String image = SHORT_LIBRARY_IMAGE;
+        dockerClientInstance.pullImage(image);
+        assertThat(dockerClientInstance.getImageId(image)).isNotEmpty();
+    }
 
     @Test
     public void shouldGetImageIdWithVeryShortLibraryImage() {
@@ -520,12 +493,6 @@ public class DockerClientInstanceTests {
     }
 
     @Test
-    public void shouldGetSanitizedImageWithDockerComClassicImage() {
-        assertThat(dockerClientInstance.sanitizeImageName(DOCKER_COM_CLASSIC_IMAGE))
-                .isEqualTo("alpine/socat:latest");
-    }
-
-    @Test
     public void shouldGetSanitizedImageWithDockerIoLibraryImage() {
         assertThat(dockerClientInstance.sanitizeImageName(DOCKER_IO_LIBRARY_IMAGE))
                 .isEqualTo("alpine:latest");
@@ -544,6 +511,12 @@ public class DockerClientInstanceTests {
     }
 
     @Test
+    public void shouldDoNothingTOSanitizeImageWithDockerComClassicImage() {
+        assertThat(dockerClientInstance.sanitizeImageName(DOCKER_COM_CLASSIC_IMAGE))
+                .isEqualTo(DOCKER_COM_CLASSIC_IMAGE);
+    }
+
+    @Test
     public void shouldDoNothingForSanitizedImage() {
         String image = "nexus.iex.ec/some-app:latest";
         assertThat(dockerClientInstance.sanitizeImageName(image))
@@ -552,11 +525,11 @@ public class DockerClientInstanceTests {
 
     // Remove image
 
-    // @Test
-    // public void shouldRemoveImage() {
-    //     dockerClientInstance.pullImage(DOCKER_IO_CLASSIC_IMAGE);
-    //     assertThat(dockerClientInstance.removeImage(DOCKER_IO_CLASSIC_IMAGE)).isTrue();
-    // }
+    @Test
+    public void shouldRemoveImage() {
+        dockerClientInstance.pullImage(DOCKER_IO_CLASSIC_IMAGE);
+        assertThat(dockerClientInstance.removeImage(DOCKER_IO_CLASSIC_IMAGE)).isTrue();
+    }
 
     @Test
     public void shouldRemoveImageByIdSinceEmptyName() {

@@ -258,7 +258,7 @@ public class DockerClientInstance {
             log.error("Invalid docker image name [name:{}]", imageName);
             return "";
         }
-        String sanitizedImageName = imageName;
+        String sanitizedImageName = sanitizeImageName(imageName);
 
         try (ListImagesCmd listImagesCmd = getClient().listImagesCmd()) {
             return listImagesCmd
@@ -277,12 +277,16 @@ public class DockerClientInstance {
         }
     }
 
+    /**
+     * Remove "docker.io" and "library" from image name.
+     * @param image
+     * @return
+     */
     public String sanitizeImageName(String image) {
         List<String> regexList = Arrays.asList( // order matters
                 "docker.io/library/(.*)", // docker.io/library/alpine:latest
                 "library/(.*)", // library/alpine:latest
-                "docker.io/(.*)", // docker.io/repo/image:latest
-                "docker.com/(.*)"); // registry.hub.docker.com/repo/image:latest (deprecated)
+                "docker.io/(.*)"); // docker.io/repo/image:latest
 
         for (String regex : regexList) {
             Matcher m = Pattern.compile(regex).matcher(image);
