@@ -1161,34 +1161,6 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.removeContainer(getRandomString())).isFalse();
     }
 
-    // stopAndRemoveContainer
-
-    // @Test
-    // public void shouldStopAndRemoveContainer() {
-    //     String containerName = "containerName";
-    //     when(dockerClientService.stopContainer(containerName)).thenReturn(true);
-    //     when(dockerClientService.removeContainer(containerName)).thenReturn(true);
-
-    //     Assertions.assertThat(dockerService.stopAndRemoveContainer(containerName)).isTrue();
-    // }
-
-    // @Test
-    // public void shouldStopAndRemoveContainerSinceCantStop() {
-    //     String containerName = "containerName";
-    //     when(dockerClientService.stopContainer(containerName)).thenReturn(false);
-
-    //     Assertions.assertThat(dockerService.stopAndRemoveContainer(containerName)).isFalse();
-    // }
-
-    // @Test
-    // public void shouldStopAndRemoveContainerSinceCantRemove() {
-    //     String containerName = "containerName";
-    //     when(dockerClientService.stopContainer(containerName)).thenReturn(true);
-    //     when(dockerClientService.removeContainer(containerName)).thenReturn(false);
-
-    //     Assertions.assertThat(dockerService.stopAndRemoveContainer(containerName)).isFalse();
-    // }
-
     private String getRandomString() {
         String random = RandomStringUtils.randomAlphanumeric(20);
         usedRandomNames.add(random);

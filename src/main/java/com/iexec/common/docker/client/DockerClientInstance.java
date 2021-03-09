@@ -327,7 +327,23 @@ public class DockerClientInstance {
      * 
      */
 
+    /**
+     * Run a docker container with the specified config.
+     * If maxExecutionTime is 0, the container will run
+     * in detached mode, thus, we return immediately without
+     * waiting for it to exit.
+     * <p>
+     * If the needed docker image is not available locally,
+     * it will be downloaded but will not be removed since
+     * it could be attached to other containers.
+     * @param dockerRunRequest config of the run
+     * @return a response with metadata and success or failure
+     * status.
+     */
     public DockerRunResponse run(DockerRunRequest dockerRunRequest) {
+        log.info("Running docker container [name:{}, image:{}, cmd:{}]",
+                dockerRunRequest.getContainerName(), dockerRunRequest.getImageUri(),
+                dockerRunRequest.getArrayArgsCmd());
         DockerRunResponse dockerRunResponse = DockerRunResponse.builder()
                 .isSuccessful(false)
                 .build();
@@ -344,15 +360,18 @@ public class DockerClientInstance {
             removeContainer(containerName);
             return dockerRunResponse;
         }
-        if (dockerRunRequest.getMaxExecutionTime() < 0) {
+        if (dockerRunRequest.getMaxExecutionTime() == 0) {
             // container will run until self-exited or explicitly-stopped
             dockerRunResponse.setSuccessful(true);
             return dockerRunResponse;
         }
         Instant timeoutDate = Instant.now()
                 .plusMillis(dockerRunRequest.getMaxExecutionTime());
-        waitContainerUntilExitOrTimeout(containerName, timeoutDate);
-        if (!stopContainer(containerName)) {
+        Long exitCode = waitContainerUntilExitOrTimeout(containerName, timeoutDate);
+        dockerRunResponse.setContainerExitCode(exitCode);
+        boolean isTimeout = exitCode == null;
+        boolean isSuccessful = exitCode == 0;
+        if (isTimeout && !stopContainer(containerName)) {
             return dockerRunResponse;
         }
         getContainerLogs(containerName).ifPresent(containerLogs -> {
@@ -361,7 +380,7 @@ public class DockerClientInstance {
         if (!removeContainer(containerName)) {
             return dockerRunResponse;
         }
-        dockerRunResponse.setSuccessful(true);
+        dockerRunResponse.setSuccessful(isSuccessful);
         return dockerRunResponse;
     }
 
