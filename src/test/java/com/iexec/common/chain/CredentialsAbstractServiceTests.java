@@ -17,20 +17,25 @@
 package com.iexec.common.chain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 
 public class CredentialsAbstractServiceTests {
+
+    @TempDir
+    File tempDir;
+
+    public static final String WALLET_PASS = "wallet-pass";
 
     class CredentialsServiceStub extends CredentialsAbstractService {
         public CredentialsServiceStub(String walletPassword, String walletPath) throws Exception {
@@ -41,11 +46,6 @@ public class CredentialsAbstractServiceTests {
             super();
         }
     }
-
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    public static final String WALLET_PASS = "wallet-pass";
 
     @Test
     public void shouldLoadCorrectCredentials() throws Exception {
@@ -59,29 +59,28 @@ public class CredentialsAbstractServiceTests {
         assertThat(claimedCredentials.getAddress()).isEqualTo(correctCredentials.getAddress());
     }
 
-    @Test(expected=FileNotFoundException.class)
+    @Test
     public void shouldThrowIOExceptionSinceWalletFileNotFind() throws Exception {
-        new CredentialsServiceStub(WALLET_PASS, "dummy-path");
+        assertThrows(FileNotFoundException.class, () -> new CredentialsServiceStub(WALLET_PASS, "dummy-path"));
     }
 
-    @Test(expected=IOException.class)
+    @Test
     public void shouldThrowIOExceptionSinceCorruptedWalletFile() throws Exception {
         String walletPath = createTempWallet(WALLET_PASS);
         FileWriter fw = new FileWriter(walletPath);
         fw.write("{new: devilish corrupted content}");
         fw.close();
-        new CredentialsServiceStub(WALLET_PASS, walletPath);
+        assertThrows(IOException.class, () -> new CredentialsServiceStub(WALLET_PASS, walletPath));
     }
 
-    @Test(expected=CipherException.class)
+    @Test
     public void shouldThrowCipherExceptionSinceWrongPassword() throws Exception {
         String wrongPass = "wrong-pass";
         String walletPath = createTempWallet(WALLET_PASS);
-        new CredentialsServiceStub(wrongPass, walletPath);
+        assertThrows(CipherException.class, () -> new CredentialsServiceStub(wrongPass, walletPath));
     }
 
     String createTempWallet(String password) throws Exception {
-        File tempDir = temporaryFolder.newFolder("temp-dir");
         String walletFilename = WalletUtils.generateFullNewWalletFile(password, tempDir);
         return tempDir + "/" + walletFilename;
     }

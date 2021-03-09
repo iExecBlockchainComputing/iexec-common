@@ -17,8 +17,8 @@
 package com.iexec.common.utils;
 
 import com.iexec.common.result.ComputedFile;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class IexecFileHelperTest {
 
@@ -29,7 +29,7 @@ public class IexecFileHelperTest {
         String computedFileDirPath = "src/test/resources/result/valid/";
 
         ComputedFile computedFile = IexecFileHelper.readComputedFile(CHAIN_TASK_ID, computedFileDirPath);
-        Assert.assertEquals("/iexec_out/computing-trace.txt", computedFile.getDeterministicOutputPath());
+        Assertions.assertEquals("/iexec_out/computing-trace.txt", computedFile.getDeterministicOutputPath());
     }
 
     @Test
@@ -37,7 +37,7 @@ public class IexecFileHelperTest {
         String computedFileDirPath = "src/test/resources/result/valid";
 
         ComputedFile computedFile = IexecFileHelper.readComputedFile(CHAIN_TASK_ID, computedFileDirPath);
-        Assert.assertEquals("/iexec_out/computing-trace.txt", computedFile.getDeterministicOutputPath());
+        Assertions.assertEquals("/iexec_out/computing-trace.txt", computedFile.getDeterministicOutputPath());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class IexecFileHelperTest {
         String computedFileDirPath = "";
 
         ComputedFile computedFile = IexecFileHelper.readComputedFile(CHAIN_TASK_ID, computedFileDirPath);
-        Assert.assertNull(computedFile);
+        Assertions.assertNull(computedFile);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class IexecFileHelperTest {
         String computedFileDirPath = "/nowhere/nowhere/";
 
         ComputedFile computedFile = IexecFileHelper.readComputedFile(CHAIN_TASK_ID, computedFileDirPath);
-        Assert.assertNull(computedFile);
+        Assertions.assertNull(computedFile);
     }
 
 }

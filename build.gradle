@@ -84,16 +84,18 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
     testImplementation 'org.assertj:assertj-core:3.18.1'
 
-
-    // test
-    testCompile "junit:junit:$junitVersion"
-    testCompile("org.assertj:assertj-core:3.11.1")
-
     // package cloud
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
 }
 
+// ./gradlew build -Pdev
+def isDev = project.hasProperty('dev')
+
 test {
+    useJUnitPlatform {
+        // excludeTags isDev ? 'slow' : ''
+        // exclude isDev ? '**/docker/**' : ''
+    }
     reports {
         junitXml.enabled = true
         html.enabled = true

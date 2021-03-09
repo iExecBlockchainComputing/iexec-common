@@ -17,7 +17,7 @@
 package com.iexec.common.security;
 
 import com.iexec.common.utils.BytesUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.web3j.crypto.Hash;
 
 import java.security.KeyPair;
@@ -25,7 +25,7 @@ import java.util.Random;
 
 
 import static com.iexec.common.security.CipherHelper.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CipherHelperTests {
 

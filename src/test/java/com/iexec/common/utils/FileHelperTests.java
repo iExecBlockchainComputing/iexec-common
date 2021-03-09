@@ -17,9 +17,9 @@
 package com.iexec.common.utils;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,29 +31,30 @@ import java.nio.file.Paths;
 
 import static com.iexec.common.utils.FileHelper.downloadFileInDirectory;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FileHelperTests {
 
     private static final String TEST_FOLDER = "/tmp/iexec-test";
 
     // clean the test repo before and after each test
-    @Before
+    @BeforeEach
     public void init() throws IOException {
         FileUtils.deleteDirectory(new File(TEST_FOLDER));
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws IOException {
         FileUtils.deleteDirectory(new File(TEST_FOLDER));
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void shouldThrowExceptionWhenInvokingConstructor() throws Exception {
         Constructor<FileHelper> clazz = FileHelper.class.getDeclaredConstructor();
         clazz.setAccessible(true);
         // calling the private constructor
-        clazz.newInstance();
+        assertThrows(Exception.class, () -> clazz.newInstance());
     }
 
 

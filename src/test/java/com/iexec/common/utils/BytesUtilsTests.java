@@ -16,10 +16,10 @@
 
 package com.iexec.common.utils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.iexec.common.utils.BytesUtils.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BytesUtilsTests {
 

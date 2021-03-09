@@ -22,7 +22,7 @@ import com.iexec.common.contract.generated.IexecLibOrders_v5;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 
