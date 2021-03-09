@@ -185,12 +185,14 @@ public class DockerClientInstanceTests {
 
     @Test
     public void shouldNotRemoveVolumeSinceDockerCmdException() {
-        // create volume so isVolumePresent returns true
         String volumeName = getRandomString();
         dockerClientInstance.createVolume(volumeName);
         assertThat(dockerClientInstance.isVolumePresent(volumeName)).isTrue();
         
-        useCorruptedDockerClient();
+        when(dockerClientInstance.getClient())
+                .thenCallRealMethod() // isVolumePresent returns true
+                .thenReturn(corruptedClient);
+
         assertThat(dockerClientInstance.removeVolume(volumeName)).isFalse();
 
         useRealDockerClient();     
@@ -300,8 +302,15 @@ public class DockerClientInstanceTests {
         String networkName = getRandomString();
         dockerClientInstance.createNetwork(networkName);
         assertThat(dockerClientInstance.isNetworkPresent(networkName)).isTrue();
-        useCorruptedDockerClient();
+
+        when(dockerClientInstance.getClient())
+                .thenCallRealMethod() // isVolumePresent returns true
+                .thenReturn(corruptedClient);
+
         assertThat(dockerClientInstance.removeNetwork(networkName)).isFalse();
+        
+        useRealDockerClient();
+        dockerClientInstance.removeNetwork(networkName);
     }
 
     /**
@@ -556,19 +565,23 @@ public class DockerClientInstanceTests {
 
     // @Test
     // public void shouldRun() {
-    //     String containerId = "containerId";
     //     String containerName = "containerName";
+    //     String containerId = "containerId";
     //     DockerRunRequest dockerRunRequest = DockerRunRequest.builder()
     //             .containerName(containerName)
     //             .maxExecutionTime(5000)
     //             .build();
+    //     DockerLogs dockerLogs = DockerLogs.builder()
+    //             .stdout("stdout")
+    //             .stderr("stderr")
+    //             .build();
     //     when(dockerClientInstance.createContainer(dockerRunRequest))
     //             .thenReturn(containerId);
-    //     when(dockerClientInstance.startContainer(containerId)).thenReturn(true);
-    //     when(dockerClientInstance.stopContainer(containerId)).thenReturn(true);
-    //     when(dockerClientInstance.getContainerLogs(containerId)).thenReturn(Optional.of(
-    //             DockerLogs.builder().stdout("stdout").stderr("stderr").build()));
-    //     when(dockerClientInstance.removeContainer(containerId)).thenReturn(true);
+    //     when(dockerClientInstance.startContainer(containerName)).thenReturn(true);
+    //     when(dockerClientInstance.stopContainer(containerName)).thenReturn(true);
+    //     when(dockerClientInstance.getContainerLogs(containerName))
+    //             .thenReturn(Optional.of(dockerLogs));
+    //     when(dockerClientInstance.removeContainer(containerName)).thenReturn(true);
 
     //     DockerRunResponse dockerRunResponse =
     //             dockerService.run(dockerRunRequest);
@@ -583,6 +596,92 @@ public class DockerClientInstanceTests {
     //     verify(dockerClientInstance, times(1))
     //             .waitContainerUntilExitOrTimeout(anyString(), any());
     // }
+
+    //     @Test
+    //     public void shouldRunWithFailureSincePoorlyExited() {
+    //         String containerId = "containerId";
+    //         String containerName = "containerName";
+    //         DockerRunRequest dockerRunRequest = DockerRunRequest.builder()
+    //                 .containerName(containerName)
+    //                 .maxExecutionTime(5000)
+    //                 .build();
+    //         when(dockerClientService.createContainer(dockerRunRequest))
+    //                 .thenReturn(containerId);
+    //         when(dockerClientService.startContainer(containerId)).thenReturn(true);
+    //         when(dockerClientService.waitContainerUntilExitOrTimeout(anyString(), any()))
+    //                 .thenReturn(1L);
+    //         when(dockerClientService.stopContainer(containerId)).thenReturn(true);
+    //         when(dockerClientService.getContainerLogs(containerId)).thenReturn(Optional.of(
+    //                 DockerLogs.builder().stdout("stdout").stderr("stderr").build()));
+    //         when(dockerClientService.removeContainer(containerId)).thenReturn(true);
+
+    //         DockerRunResponse dockerRunResponse =
+    //                 dockerService.run(dockerRunRequest);
+
+    //         Assertions.assertThat(dockerRunResponse).isNotNull();
+    //         Assertions.assertThat(dockerRunResponse.isSuccessful()).isFalse();
+    //         Assertions.assertThat(dockerRunResponse.getStdout()).isEqualTo(
+    //                 "stdout");
+    //         Assertions.assertThat(dockerRunResponse.getDockerLogs().getStdout()).isEqualTo("stdout");
+    //         Assertions.assertThat(dockerRunResponse.getDockerLogs().getStderr()).isEqualTo("stderr");
+
+    //         verify(dockerClientService, times(1))
+    //                 .waitContainerUntilExitOrTimeout(anyString(), any());
+    //     }
+
+    //     @Test
+    //     public void shouldRunWithFailureSinceTimeout() {
+    //         String containerId = "containerId";
+    //         String containerName = "containerName";
+    //         DockerRunRequest dockerRunRequest = DockerRunRequest.builder()
+    //                 .containerName(containerName)
+    //                 .maxExecutionTime(5000)
+    //                 .build();
+    //         when(dockerClientService.createContainer(dockerRunRequest))
+    //                 .thenReturn(containerId);
+    //         when(dockerClientService.startContainer(containerId)).thenReturn(true);
+    //         when(dockerClientService.waitContainerUntilExitOrTimeout(anyString(), any()))
+    //                 .thenReturn(null);
+    //         when(dockerClientService.stopContainer(containerId)).thenReturn(true);
+    //         when(dockerClientService.getContainerLogs(containerId)).thenReturn(Optional.of(
+    //                 DockerLogs.builder().stdout("stdout").stderr("stderr").build()));
+    //         when(dockerClientService.removeContainer(containerId)).thenReturn(true);
+
+    //         DockerRunResponse dockerRunResponse =
+    //                 dockerService.run(dockerRunRequest);
+
+    //         Assertions.assertThat(dockerRunResponse).isNotNull();
+    //         Assertions.assertThat(dockerRunResponse.isSuccessful()).isFalse();
+    //         Assertions.assertThat(dockerRunResponse.getStdout()).isEqualTo(
+    //                 "stdout");
+    //         Assertions.assertThat(dockerRunResponse.getDockerLogs().getStdout()).isEqualTo("stdout");
+    //         Assertions.assertThat(dockerRunResponse.getDockerLogs().getStderr()).isEqualTo("stderr");
+
+    //         verify(dockerClientService, times(1))
+    //                 .waitContainerUntilExitOrTimeout(anyString(), any());
+    //     }
+
+    //     @Test
+    //     public void shouldRunWithoutWaiting() {
+    //         String containerId = "containerId";
+    //         String containerName = "containerName";
+    //         DockerRunRequest dockerRunRequest = DockerRunRequest.builder()
+    //                 .containerName(containerName)
+    //                 .maxExecutionTime(0)
+    //                 .build();
+    //         when(dockerClientService.createContainer(dockerRunRequest))
+    //                 .thenReturn(containerId);
+    //         when(dockerClientService.startContainer(containerId)).thenReturn(true);
+    //         when(dockerClientService.waitContainerUntilExitOrTimeout(anyString(), any()))
+    //                 .thenReturn(0L);
+
+    //         DockerRunResponse dockerRunResponse =
+    //                 dockerService.run(dockerRunRequest);
+
+    //         Assertions.assertThat(dockerRunResponse).isNotNull();
+    //         Assertions.assertThat(dockerRunResponse.isSuccessful()).isTrue();
+    //         Assertions.assertThat(dockerRunResponse.getStdout()).isEmpty();
+    //     }
 
     // @Test
     // public void shouldRunWithoutWaiting() {
@@ -718,7 +817,11 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldNotCreateContainerSinceDockerCmdException() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
-        useCorruptedDockerClient();
+        when(dockerClientInstance.getClient())
+                .thenCallRealMethod() // isContainerPresent
+                .thenCallRealMethod() // isNetworkPresent
+                .thenCallRealMethod() // createNetwork
+                .thenReturn(corruptedClient);
         assertThat(dockerClientInstance.createContainer(request)).isEmpty();
     }
 
@@ -999,6 +1102,7 @@ public class DockerClientInstanceTests {
     }
 
     // waitContainerUntilExitOrTimeout
+
     @Test
     public void shouldTimeoutAfterWaitContainerUntilExitOrTimeout() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
@@ -1040,7 +1144,26 @@ public class DockerClientInstanceTests {
         dockerClientInstance.removeContainer(containerName);
     }
 
+    // getContainerExitCode
+
+    @Test
+    public void shouldGetContainerExitCode() {
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        dockerClientInstance.createContainer(request);
+        Long exitCode = dockerClientInstance
+                .getContainerExitCode(request.getContainerName());
+        assertThat(exitCode).isEqualTo(0);
+    }
+
+    @Test
+    public void shouldNotGetContainerExitCodeSinceDockerCmdException() {
+        useCorruptedDockerClient();
+        assertThat(dockerClientInstance.getContainerExitCode(getRandomString()))
+                .isNull();
+    }
+
     // getContainerLogs
+
     @Test
     public void shouldGetContainerLogsSinceStdout() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
@@ -1088,16 +1211,22 @@ public class DockerClientInstanceTests {
 
     @Test
     public void shouldNotGetContainerLogsSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getContainerLogs(getRandomString())).isEmpty();
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        dockerClientInstance.createContainer(request);
+        when(dockerClientInstance.getClient())
+                .thenCallRealMethod() // isContainerPresent
+                .thenReturn(corruptedClient);
+        assertThat(dockerClientInstance.getContainerLogs(request.getContainerName()))
+                .isEmpty();
     }
 
     // stopContainer
+
     @Test
     public void shouldStopContainer() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
         String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
+        request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
         dockerClientInstance.createContainer(request);
         dockerClientInstance.startContainer(containerName);
@@ -1117,13 +1246,32 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.stopContainer("")).isFalse();
     }
 
+    @Test
+    public void shouldNotStopContainerSinceDockerCmdException() {
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
+        request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
+        pullImageIfNecessary();
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
+        when(dockerClientInstance.getClient())
+                .thenCallRealMethod() // isContainerPresent
+                .thenCallRealMethod() // getContainerStatus
+                .thenReturn(corruptedClient);
+
+        assertThat(dockerClientInstance.stopContainer(containerName)).isFalse();
+        // clean
+        dockerClientInstance.stopAndRemoveContainer(containerName);
+
+    }
+
     // removeContainer
 
     @Test
     public void shouldRemoveContainer() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
         String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
+        request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
         dockerClientInstance.createContainer(request);
         dockerClientInstance.startContainer(containerName);
         dockerClientInstance.stopContainer(containerName);
