@@ -16,17 +16,16 @@
 
 package com.iexec.common.result.eip712;
 
-import com.iexec.common.result.eip712.Eip712Challenge;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Eip712ChallengeUtilsTests {
 
     private Eip712Challenge eip712Challenge;
 
-    @Before
+    @BeforeEach
     public void init() {
         eip712Challenge = new Eip712Challenge("0x10ff103511e3e233033628dbd641136d4670c16c33a4ce11950ab316ef18bce9", 17);
     }

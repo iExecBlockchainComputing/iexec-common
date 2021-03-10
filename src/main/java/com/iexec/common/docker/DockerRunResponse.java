@@ -25,17 +25,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DockerRunResponse implements ComputeResponse {
+public class DockerRunResponse {
 
     private boolean isSuccessful;
     private DockerLogs dockerLogs;
+    private Long containerExitCode;
 
-    @Override
-    public boolean isSuccessful() {
-        return isSuccessful;
-    }
-
-    @Override
     public String getStdout() {
         if (dockerLogs != null && dockerLogs.getStdout() != null) {
             return dockerLogs.getStdout();
@@ -43,13 +38,10 @@ public class DockerRunResponse implements ComputeResponse {
         return "";
     }
 
-    @Override
     public String getStderr() {
         if (dockerLogs != null && dockerLogs.getStderr() != null) {
             return dockerLogs.getStderr();
         }
         return "";
     }
-
-
 }

@@ -18,7 +18,7 @@ package com.iexec.common.chain.eip712;
 
 import com.iexec.common.utils.BytesUtils;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 

@@ -18,13 +18,13 @@ package com.iexec.common.security;
 
 import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.FileHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.web3j.crypto.Hash;
 
 import static com.iexec.common.utils.FileHelper.readAllBytes;
 import static com.iexec.common.utils.FileHelper.readFile;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EncryptionHelperTests {
 
@@ -32,7 +32,7 @@ public class EncryptionHelperTests {
     private String plainTextRsaPublicKey;
     private String plainTextRsaPrivateKey;
 
-    @Before
+    @BeforeEach
     public void before() {
         plainTextRsaPublicKey = readFile(DOT_SLASH + "test_rsa_key.pub");
         plainTextRsaPrivateKey = readFile(DOT_SLASH + "test_rsa_key");

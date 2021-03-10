@@ -22,8 +22,6 @@ import org.web3j.utils.Numeric;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.iexec.common.utils.BytesUtils.bytesToString;

@@ -17,13 +17,11 @@
 package com.iexec.common.utils;
 
 import com.iexec.common.security.Signature;
-import org.junit.Assert;
-import org.junit.Test;
-import org.web3j.crypto.Hash;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static com.iexec.common.utils.SignatureUtils.isExpectedSignerOnSignedMessageHash;
 import static com.iexec.common.utils.SignatureUtils.signMessageHashAndGetSignature;
-import static org.junit.Assert.assertEquals;
 
 public class SignatureUtilsTests {
 
@@ -37,7 +35,7 @@ public class SignatureUtilsTests {
 
         boolean isExpectedSigner = isExpectedSignerOnSignedMessageHash(messageHash, signature, address);
 
-        Assert.assertTrue(isExpectedSigner);
+        Assertions.assertTrue(isExpectedSigner);
     }
 
 }

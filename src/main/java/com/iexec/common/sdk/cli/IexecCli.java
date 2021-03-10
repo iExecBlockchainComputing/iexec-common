@@ -39,7 +39,7 @@ public class IexecCli {
     private static final int DEV_CHAIN_ID = 17;
     private static final String DEV_CHAIN_HUB = "0xBF6B2B07e47326B7c8bfCb4A5460bef9f0Fd2002";
 
-    private static final DockerClientInstance dockerClient = DockerClientFactory.get();
+    private static final DockerClientInstance dockerClient = DockerClientFactory.getDockerClientInstance();
 
     /**
      * Match order onchain by running "iexec order fill"

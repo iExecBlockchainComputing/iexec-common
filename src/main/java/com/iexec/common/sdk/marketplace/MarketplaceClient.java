@@ -138,6 +138,7 @@ public class MarketplaceClient implements Marketplace {
         return getOrders(type, new MPQueryParams());
     }
 
+    @SuppressWarnings("unchecked")
     private <T> List<T> getOrders(OrderType orderType, MPQueryParams queryParams) {
         if (orderType == null) {
             throw new IllegalArgumentException("Order type should not be null");
@@ -153,6 +154,7 @@ public class MarketplaceClient implements Marketplace {
             log.error("Error while getting order [type:{}, queryParams:{}]", orderType, queryParams, e);
             return List.of();
         }
+        @SuppressWarnings("rawtypes")
         Orderbook orderbook;
         try {
             orderbook = convertJsonToOrderbook(orderType, jsonPayload);
@@ -168,6 +170,7 @@ public class MarketplaceClient implements Marketplace {
         return orderbook.getOrders() != null ? orderbook.getOrders() : List.of();
     }
 
+    @SuppressWarnings("rawtypes")
     private Orderbook convertJsonToOrderbook(
         OrderType type,
         String jsonPayload

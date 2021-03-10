@@ -17,16 +17,13 @@
 package com.iexec.common.sdk.order.payload;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.contract.generated.IexecLibOrders_v5;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
-
-import static org.junit.Assert.*;
 
 public class DatasetOrderTest {
 
@@ -42,9 +39,6 @@ public class DatasetOrderTest {
                 .requesterrestrict(BytesUtils.EMPTY_ADDRESS)
                 .salt(BytesUtils.EMPTY_HEXASTRING_64)
                 .build();
-
-        String datasetOrderAsString =
-                new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(datasetOrder);
 
         IexecLibOrders_v5.DatasetOrder generatedDatasetOrder = new IexecLibOrders_v5.DatasetOrder(
                 BytesUtils.EMPTY_ADDRESS,
