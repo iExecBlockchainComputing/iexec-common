@@ -89,6 +89,12 @@ public class DockerClientInstanceTests {
         MockitoAnnotations.openMocks(this);
     }
 
+    @BeforeAll
+    public static void beforeAll() {
+        usedImages.forEach(imageName ->
+                DockerClientFactory.getDockerClientInstance().pullImage(imageName));
+    }
+
     @AfterAll
     public static void afterAll() {
         System.out.println("Cleaning after all tests");
@@ -576,9 +582,9 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldRunSuccessfullyAndWaitForContainerToFinish() {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
-        dockerRunRequest.setMaxExecutionTime(10000); // 10s
+        dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
-        dockerRunRequest.setCmd("sh -c 'sleep 5 && echo " + msg + "'");
+        dockerRunRequest.setCmd("sh -c 'sleep 2 && echo " + msg + "'");
         String containerName = dockerRunRequest.getContainerName();
 
         DockerRunResponse dockerRunResponse =
@@ -627,7 +633,7 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldRunAndReturnFailureInStderrSinceBadCmd() {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
-        dockerRunRequest.setMaxExecutionTime(10000); // 10s
+        dockerRunRequest.setMaxExecutionTime(5000); // 5s
         dockerRunRequest.setCmd("sh -c 'someBadCmd'");
         String containerName = dockerRunRequest.getContainerName();
 
@@ -655,7 +661,7 @@ public class DockerClientInstanceTests {
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg1 = "First message";
         String msg2 = "Second message";
-        String cmd = String.format("sh -c 'echo %s && sleep 30 && echo %s'", msg1, msg2);
+        String cmd = String.format("sh -c 'echo %s && sleep 10 && echo %s'", msg1, msg2);
         dockerRunRequest.setCmd(cmd);
         String containerName = dockerRunRequest.getContainerName();
 
@@ -680,9 +686,9 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldReturnFailureSinceCantCreateContainer() {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
-        dockerRunRequest.setMaxExecutionTime(10000); // 10s
+        dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
-        dockerRunRequest.setCmd("sh -c 'sleep 5 && echo " + msg + "'");
+        dockerRunRequest.setCmd("sh -c 'sleep 2 && echo " + msg + "'");
         String containerName = dockerRunRequest.getContainerName();
         doReturn("").when(dockerClientInstance).createContainer(dockerRunRequest);
 
@@ -707,9 +713,9 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldReturnFailureSinceCantStartContainer() {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
-        dockerRunRequest.setMaxExecutionTime(10000); // 10s
+        dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
-        dockerRunRequest.setCmd("sh -c 'sleep 5 && echo " + msg + "'");
+        dockerRunRequest.setCmd("sh -c 'sleep 2 && echo " + msg + "'");
         String containerName = dockerRunRequest.getContainerName();
         doReturn(false).when(dockerClientInstance).startContainer(containerName);
 
@@ -736,7 +742,7 @@ public class DockerClientInstanceTests {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
-        dockerRunRequest.setCmd("sh -c 'sleep 30 && echo " + msg + "'");
+        dockerRunRequest.setCmd("sh -c 'sleep 10 && echo " + msg + "'");
         String containerName = dockerRunRequest.getContainerName();
         doReturn(false).when(dockerClientInstance).stopContainer(containerName);
 
@@ -1265,11 +1271,9 @@ public class DockerClientInstanceTests {
                 .thenCallRealMethod() // isContainerPresent
                 .thenCallRealMethod() // getContainerStatus
                 .thenReturn(corruptedClient);
-
         assertThat(dockerClientInstance.stopContainer(containerName)).isFalse();
         // clean
         dockerClientInstance.stopAndRemoveContainer(containerName);
-
     }
 
     // removeContainer
@@ -1303,7 +1307,6 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
         assertThat(dockerClientInstance.removeContainer(containerName)).isFalse();
-
         // cleaning
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
@@ -1321,7 +1324,6 @@ public class DockerClientInstanceTests {
                 .thenReturn(corruptedClient);
 
         assertThat(dockerClientInstance.removeContainer(containerName)).isFalse();
-
         // clean
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
@@ -1342,7 +1344,6 @@ public class DockerClientInstanceTests {
         Optional<DockerLogs> logs = 
                 dockerClientInstance.exec(containerName, "sh", "-c", cmd);
         assertThat(logs.get().getStdout().trim()).isEqualTo(msg);
-
         // clean
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
@@ -1373,7 +1374,6 @@ public class DockerClientInstanceTests {
         Optional<DockerLogs> logs = 
                 dockerClientInstance.exec(containerName, "sh", "-c", cmd);
         assertThat(logs).isEmpty();
-
         // clean
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
