@@ -329,9 +329,10 @@ public class DockerClientInstance {
 
     /**
      * Run a docker container with the specified config.
-     * If maxExecutionTime is 0, the container will run
-     * in detached mode, thus, we return immediately without
-     * waiting for it to exit.
+     * If maxExecutionTime is les or equal to 0, the container
+     * will run in detached mode, thus, we return immediately
+     * without waiting for it to exit.
+     * 
      * @param dockerRunRequest config of the run
      * @return a response with metadata and success or failure
      * status.
@@ -353,8 +354,9 @@ public class DockerClientInstance {
             removeContainer(containerName);
             return dockerRunResponse;
         }
-        if (dockerRunRequest.getMaxExecutionTime() == 0) {
+        if (dockerRunRequest.getMaxExecutionTime() <= 0) {
             // container will run until self-exited or explicitly-stopped
+            log.info("Docker container will run in detached mode [name:{}]", containerName);
             dockerRunResponse.setSuccessful(true);
             return dockerRunResponse;
         }
@@ -363,7 +365,7 @@ public class DockerClientInstance {
         Long exitCode = waitContainerUntilExitOrTimeout(containerName, timeoutDate);
         dockerRunResponse.setContainerExitCode(exitCode);
         boolean isTimeout = exitCode == null;
-        boolean isSuccessful = exitCode == 0;
+        boolean isSuccessful = !isTimeout && exitCode == 0L;
         if (isTimeout && !stopContainer(containerName)) {
             return dockerRunResponse;
         }
