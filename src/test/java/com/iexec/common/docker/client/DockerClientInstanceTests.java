@@ -70,6 +70,11 @@ public class DockerClientInstanceTests {
     private static final String SLASH_TMP = "/tmp";
 
     private static List<String> usedRandomNames = new ArrayList<>();
+    private static List<String> usedImages = List.of(
+            DOCKER_IO_CLASSIC_IMAGE, SHORT_CLASSIC_IMAGE, DOCKER_IO_LIBRARY_IMAGE,
+            SHORT_LIBRARY_IMAGE, VERY_SHORT_LIBRARY_IMAGE, DOCKER_COM_CLASSIC_IMAGE,
+            ALPINE_LATEST);
+
 
     @Spy
     private DockerClientInstance dockerClientInstance = DockerClientFactory.getDockerClientInstance();
@@ -94,7 +99,9 @@ public class DockerClientInstanceTests {
         usedRandomNames.forEach(name -> 
                 DockerClientFactory.getDockerClientInstance().removeNetwork(name));
         DockerClientFactory.getDockerClientInstance().removeNetwork(DOCKER_NETWORK);
-        // TODO clean docker images
+        // clean docker images
+        usedImages.forEach(imageName ->
+                DockerClientFactory.getDockerClientInstance().removeImage(imageName));
     }
 
     public DockerRunRequest getDefaultDockerRunRequest(boolean isSgx) {
