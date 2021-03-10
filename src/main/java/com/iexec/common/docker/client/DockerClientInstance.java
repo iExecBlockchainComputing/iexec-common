@@ -344,13 +344,14 @@ public class DockerClientInstance {
         DockerRunResponse dockerRunResponse = DockerRunResponse.builder()
                 .isSuccessful(false)
                 .build();
+        String containerName = dockerRunRequest.getContainerName();
         // TODO choose to remove duplicate containers or not
-        String containerId = createContainer(dockerRunRequest);
-        if (containerId.isEmpty()) {
+        if (createContainer(dockerRunRequest).isEmpty()) {
+            log.error("Failed to create container for docker run [name:{}]", containerName);
             return dockerRunResponse;
         }
-        String containerName = dockerRunRequest.getContainerName();
         if (!startContainer(containerName)) {
+            log.error("Failed to start container for docker run [name:{}]", containerName);
             removeContainer(containerName);
             return dockerRunResponse;
         }
@@ -367,14 +368,18 @@ public class DockerClientInstance {
         boolean isTimeout = exitCode == null;
         boolean isSuccessful = !isTimeout && exitCode == 0L;
         if (isTimeout && !stopContainer(containerName)) {
+            log.error("Failed to force-stop container after timeout [name:{}]", containerName);
             return dockerRunResponse;
         }
         getContainerLogs(containerName).ifPresent(containerLogs -> {
             dockerRunResponse.setDockerLogs(containerLogs);
         });
         if (!removeContainer(containerName)) {
+            log.error("Failed to remove container after run [name:{}]", containerName);
             return dockerRunResponse;
         }
+        log.info("Finished running docker container [name:{}, isSuccessful:{}]",
+                containerName, isSuccessful);
         dockerRunResponse.setSuccessful(isSuccessful);
         return dockerRunResponse;
     }
@@ -410,6 +415,7 @@ public class DockerClientInstance {
         if (dockerRunRequest == null
                 || StringUtils.isBlank(dockerRunRequest.getImageUri())
                 || StringUtils.isBlank(dockerRunRequest.getContainerName())) {
+            log.error("Invalid docker run request [dockerRunRequest:{}]", dockerRunRequest);
             return "";
         }
         String containerName = dockerRunRequest.getContainerName();
@@ -424,9 +430,11 @@ public class DockerClientInstance {
             removeContainer(containerName);
         }
         // create network if needed
-        String network = dockerRunRequest.getDockerNetwork();
-        if (StringUtils.isNotBlank(network)
-                && StringUtils.isBlank(createNetwork(network))) {
+        String networkName = dockerRunRequest.getDockerNetwork();
+        if (StringUtils.isNotBlank(networkName)
+                && StringUtils.isBlank(createNetwork(networkName))) {
+            log.error("Failed to create network for the container [name:{}, networkName:{}]",
+                    containerName, networkName);
             return "";
         }
         // create container
@@ -600,7 +608,7 @@ public class DockerClientInstance {
     ) {
         if (StringUtils.isBlank(containerName)) {
             // TODO throw new IllegalArgumentException("Container name cannot be blank");
-            log.error("Container name cannot be blank");
+            log.error("Container name cannot be blank [name:{}]", containerName);
             return null;
         }
         if (timeoutDate == null) {
