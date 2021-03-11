@@ -16,12 +16,14 @@
 
 package com.iexec.common.docker;
 
+import com.github.dockerjava.api.model.Device;
 import com.iexec.common.utils.ArgsUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -39,17 +41,30 @@ public class DockerRunRequest {
     private List<String> env;
     private List<String> binds;
     private long maxExecutionTime;
-    private boolean isSgx;
     private String dockerNetwork;
     private String workingDir;
-    private List<String> devices;
     private boolean shouldDisplayLogs;
 
+    private final List<Device> devices = new ArrayList<>();
+
+    public DockerRunRequest device(
+            String cGroupPermissions,
+            String pathInContainer,
+            String pathOnHost) {
+        Device device = new Device(cGroupPermissions, pathInContainer, pathOnHost);
+        return device(device);
+    }
+
+    public DockerRunRequest device(Device device) {
+        this.devices.add(device);
+        return this;
+    }
+
     public String getStringArgsCmd() {
-        return cmd;
+        return this.cmd;
     }
 
     public String[] getArrayArgsCmd() {
-        return ArgsUtils.stringArgsToArrayArgs(cmd);
+        return ArgsUtils.stringArgsToArrayArgs(this.cmd);
     }
 }

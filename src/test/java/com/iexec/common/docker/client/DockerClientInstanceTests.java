@@ -18,6 +18,7 @@ package com.iexec.common.docker.client;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerCmd;
+import com.github.dockerjava.api.model.Device;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
@@ -66,7 +67,8 @@ public class DockerClientInstanceTests {
     private final static String PRIVATE_IMAGE_NAME =
             "sconecuratedimages/iexec:runtime-scone-3.0.0-production";
     private final static String DOCKER_NETWORK = "dockerTestsNetwork";
-    private static final String NULL_DEVICE = "/dev/null";
+    private static final String DEVICE_PATH_IN_CONTAINER = "/dev/some-device-in-container";
+    private static final String DEVICE_PATH_ON_HOST = "/dev/some-device-on-host";
     private static final String SLASH_TMP = "/tmp";
 
     private static List<String> usedRandomNames = new ArrayList<>();
@@ -120,7 +122,6 @@ public class DockerClientInstanceTests {
                 .containerPort(1000)
                 .binds(Collections.singletonList(FileHelper.SLASH_IEXEC_IN +
                         ":" + FileHelper.SLASH_IEXEC_OUT))
-                .isSgx(isSgx)
                 .maxExecutionTime(500000)
                 .dockerNetwork(DOCKER_NETWORK)
                 .workingDir(SLASH_TMP)
@@ -888,9 +889,7 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldBuildHostConfigWithDeviceFromRunRequest() {
         DockerRunRequest request = getDefaultDockerRunRequest(true);
-        String device = NULL_DEVICE + ":" + NULL_DEVICE;
-        request.setDevices(new ArrayList<>());
-        request.getDevices().add(device);
+        request.device(new Device("", DEVICE_PATH_IN_CONTAINER, DEVICE_PATH_ON_HOST));
 
         HostConfig hostConfig =
                 dockerClientInstance.buildHostConfigFromRunRequest(request);
@@ -902,9 +901,9 @@ public class DockerClientInstanceTests {
                 .isEqualTo(FileHelper.SLASH_IEXEC_OUT);
         assertThat(hostConfig.getDevices()).isNotNull();
         assertThat(hostConfig.getDevices()[0].getPathInContainer())
-                .isEqualTo(NULL_DEVICE);
+                .isEqualTo(DEVICE_PATH_IN_CONTAINER);
         assertThat(hostConfig.getDevices()[0].getPathOnHost())
-                .isEqualTo(NULL_DEVICE);
+                .isEqualTo(DEVICE_PATH_ON_HOST);
     }
 
     @Test
