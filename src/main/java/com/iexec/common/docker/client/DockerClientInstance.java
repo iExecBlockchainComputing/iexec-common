@@ -517,9 +517,7 @@ public class DockerClientInstance {
                     dockerRunRequest.getBinds().toArray(new String[0])));
         }
         if (dockerRunRequest.getDevices() != null) {
-            dockerRunRequest.getDevices().forEach(device ->
-                    hostConfig.withDevices(Device.parse(device))
-            );
+            dockerRunRequest.getDevices().forEach(device -> hostConfig.withDevices(device));
         }
         return hostConfig;
     }
