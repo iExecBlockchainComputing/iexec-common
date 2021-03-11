@@ -30,6 +30,7 @@ import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.docker.DockerRunResponse;
 import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.FileHelper;
+import com.iexec.common.utils.SgxUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.*;
@@ -119,6 +120,7 @@ public class DockerClientInstanceTests {
                 .imageUri(ALPINE_LATEST)
                 .cmd(CMD)
                 .env(ENV)
+                .isSgx(isSgx)
                 .containerPort(1000)
                 .binds(Collections.singletonList(FileHelper.SLASH_IEXEC_IN +
                         ":" + FileHelper.SLASH_IEXEC_OUT))
@@ -888,8 +890,9 @@ public class DockerClientInstanceTests {
 
     @Test
     public void shouldBuildHostConfigWithDeviceFromRunRequest() {
-        DockerRunRequest request = getDefaultDockerRunRequest(true);
-        request.device(new Device("", DEVICE_PATH_IN_CONTAINER, DEVICE_PATH_ON_HOST));
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        request.setDevices(new ArrayList<>());
+        request.getDevices().add(new Device("", DEVICE_PATH_IN_CONTAINER, DEVICE_PATH_ON_HOST));
 
         HostConfig hostConfig =
                 dockerClientInstance.buildHostConfigFromRunRequest(request);
@@ -904,6 +907,26 @@ public class DockerClientInstanceTests {
                 .isEqualTo(DEVICE_PATH_IN_CONTAINER);
         assertThat(hostConfig.getDevices()[0].getPathOnHost())
                 .isEqualTo(DEVICE_PATH_ON_HOST);
+    }
+
+    @Test
+    public void shouldBuildHostConfigWithSgxDeviceFromRunRequest() {
+        DockerRunRequest request = getDefaultDockerRunRequest(true);
+
+        HostConfig hostConfig =
+                dockerClientInstance.buildHostConfigFromRunRequest(request);
+        assertThat(hostConfig.getNetworkMode())
+                .isEqualTo(DOCKER_NETWORK);
+        assertThat((hostConfig.getBinds()[0].getPath()))
+                .isEqualTo(FileHelper.SLASH_IEXEC_IN);
+        assertThat((hostConfig.getBinds()[0].getVolume().getPath()))
+                .isEqualTo(FileHelper.SLASH_IEXEC_OUT);
+        assertThat(hostConfig.getDevices()[0].getcGroupPermissions())
+                .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);
+        assertThat(hostConfig.getDevices()[0].getPathInContainer())
+                .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
+        assertThat(hostConfig.getDevices()[0].getPathOnHost())
+                .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
     }
 
     @Test

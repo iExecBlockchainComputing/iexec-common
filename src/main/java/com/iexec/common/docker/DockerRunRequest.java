@@ -18,6 +18,7 @@ package com.iexec.common.docker;
 
 import com.github.dockerjava.api.model.Device;
 import com.iexec.common.utils.ArgsUtils;
+import com.iexec.common.utils.SgxUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,24 +42,11 @@ public class DockerRunRequest {
     private List<String> env;
     private List<String> binds;
     private long maxExecutionTime;
+    private boolean isSgx;
     private String dockerNetwork;
     private String workingDir;
     private boolean shouldDisplayLogs;
-
-    private final List<Device> devices = new ArrayList<>();
-
-    public DockerRunRequest device(
-            String cGroupPermissions,
-            String pathInContainer,
-            String pathOnHost) {
-        Device device = new Device(cGroupPermissions, pathInContainer, pathOnHost);
-        return device(device);
-    }
-
-    public DockerRunRequest device(Device device) {
-        this.devices.add(device);
-        return this;
-    }
+    private List<Device> devices;
 
     public String getStringArgsCmd() {
         return this.cmd;
@@ -66,5 +54,48 @@ public class DockerRunRequest {
 
     public String[] getArrayArgsCmd() {
         return ArgsUtils.stringArgsToArrayArgs(this.cmd);
+    }
+
+    // override builder's isSgx() & devices() methods
+    public static class DockerRunRequestBuilder { 
+        private boolean isSgx;
+        private List<Device> devices;
+
+        /**
+         * Add an SGX device when isSgx is true.
+         * 
+         * @param isSgx
+         * @return
+         */
+        public DockerRunRequestBuilder isSgx(boolean isSgx) {
+            this.isSgx = isSgx;
+            if (!isSgx) {
+                return this;
+            }
+            if (this.devices == null) {
+                this.devices = new ArrayList<>();
+            }
+            Device sgxDevice = new Device(
+                    SgxUtils.SGX_CGROUP_PERMISSIONS,
+                    SgxUtils.SGX_DEVICE_PATH,
+                    SgxUtils.SGX_DEVICE_PATH);
+            this.devices.add(sgxDevice);
+            return this;
+        }
+
+        /**
+         * Add new elements without replacing
+         * the existing list.
+         * 
+         * @param devices
+         * @return
+         */
+        public DockerRunRequestBuilder devices(List<Device> devices) {
+            if (this.devices == null) {
+                this.devices = new ArrayList<>();
+            }
+            this.devices.addAll(devices);
+            return this;
+        }
     }
 }
