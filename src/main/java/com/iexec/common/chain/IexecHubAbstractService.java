@@ -260,11 +260,9 @@ public abstract class IexecHubAbstractService {
      * Default method for creating workerpool
      *
      * @param name workerpool name
-     * @param multiAddress workerpool url
-     * @param checksum workerpool sha256 checksum
      * @return workerpool address (e.g.: 0x95ba540ca3c2dfd52a7e487a03e1358dfe9441ce)
      */
-    public String createWorkerpool(String name, String multiAddress, String checksum) {
+    public String createWorkerpool(String name) {
         return createWorkerpool(name, 10 * 60, 5);
     }
 
@@ -273,8 +271,6 @@ public abstract class IexecHubAbstractService {
      *
      * @param owner workerpool owner
      * @param name workerpool name
-     * @param multiAddress workerpool url
-     * @param checksum workerpool sha256 checksum
      * @return workerpool address (e.g.: 0x95ba540ca3c2dfd52a7e487a03e1358dfe9441ce)
      */
     public String predictWorkerpool(String owner, String name) {
@@ -355,6 +351,10 @@ public abstract class IexecHubAbstractService {
      * tokenId is the generic form of appAddress
      *
      * @param name app name
+     * @param multiAddress app url
+     * @param type app type
+     * @param checksum app sha256 checksum
+     * @param mrEnclave app mrEnclave
      * @param secondsTimeout await app deployment for couple seconds
      * @param secondsPollingInterval check if app is deployed every couple seconds
      * @return app address (e.g.: 0x95ba540ca3c2dfd52a7e487a03e1358dfe9441ce)
@@ -436,7 +436,9 @@ public abstract class IexecHubAbstractService {
      *
      * @param name app name
      * @param multiAddress app url
+     * @param type app type
      * @param checksum app sha256 checksum
+     * @param mrEnclave app mrEnclave
      * @return app address (e.g.: 0x95ba540ca3c2dfd52a7e487a03e1358dfe9441ce)
      */
     public String createApp(String name, String multiAddress, String type,
