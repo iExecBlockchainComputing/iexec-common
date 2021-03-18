@@ -694,8 +694,12 @@ public abstract class IexecHubAbstractService {
 
         ChainDeal chainDeal = optionalChainDeal.get();
 
-        String datasetURI = chainDeal.getChainDataset() != null ?
-                MultiAddressHelper.convertToURI(chainDeal.getChainDataset().getUri()) : "";
+        String datasetURI = "";
+        String datasetChecksum = "";
+        if (chainDeal.getChainDataset() != null){
+            datasetURI = chainDeal.getChainDataset().getUri();
+            datasetChecksum = chainDeal.getChainDataset().getChecksum();
+        }
 
         return Optional.of(TaskDescription.builder()
                 .chainTaskId(chainTaskId)
@@ -716,6 +720,7 @@ public abstract class IexecHubAbstractService {
                 .teePostComputeImage(chainDeal.getParams().getIexecTeePostComputeImage())
                 .teePostComputeFingerprint(chainDeal.getParams().getIexecTeePostComputeFingerprint())
                 .datasetUri(datasetURI)
+                .datasetChecksum(datasetChecksum)
                 .botSize(chainDeal.botSize.intValue())
                 .botFirstIndex(chainDeal.botFirst.intValue())
                 .botIndex(chainTask.getIdx())

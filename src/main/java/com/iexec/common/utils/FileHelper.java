@@ -113,35 +113,49 @@ public class FileHelper {
         }
     }
 
-    public static boolean downloadFileInDirectory(String fileUri, String directoryPath) {
-        if (!createFolder(directoryPath)) {
-            log.error("Failed to create base directory [directoryPath:{}]", directoryPath);
-            return false;
+    /**
+     * Download file and returns downloaded file location path if successful
+     * @param fileUri URI of the file
+     * @param downloadDirectoryPath directory path where the file will be downloaded
+     * @return downloaded file location path if successful download
+     */
+    public static String downloadFile(String fileUri, String downloadDirectoryPath) {
+        if (!createFolder(downloadDirectoryPath)) {
+            log.error("Failed to create base directory" +
+                    "[downloadDirectoryPath:{}]", downloadDirectoryPath);
+            return "";
         }
 
         if (fileUri.isEmpty()) {
             log.error("FileUri shouldn't be empty [fileUri:{}]", fileUri);
-            return false;
+            return "";
         }
 
         InputStream in;
         try {
             in = new URL(fileUri).openStream();//Not working with https resources yet
         } catch (IOException e) {
-            log.error("Failed to download file [fileUri:{}, exception:{}]", fileUri, e.getCause());
-            return false;
+            log.error("Failed to download file [fileUri:{}, exception:{}]",
+                    fileUri, e.getCause());
+            return "";
         }
 
         try {
             String fileName = Paths.get(fileUri).getFileName().toString();
-            Files.copy(in, Paths.get(directoryPath + File.separator + fileName), StandardCopyOption.REPLACE_EXISTING);
+            String filePath = downloadDirectoryPath + File.separator + fileName;
+            Files.copy(in, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
             log.info("Downloaded data [fileUri:{}]", fileUri);
-            return true;
+            return filePath;
         } catch (IOException e) {
-            log.error("Failed to copy downloaded file to disk [directoryPath:{}, fileUri:{}]",
-                    directoryPath, fileUri);
-            return false;
+            log.error("Failed to copy downloaded file to disk " +
+                            "[downloadDirectoryPath:{}, fileUri:{}]",
+                    downloadDirectoryPath, fileUri);
+            return "";
         }
+    }
+
+    public static boolean downloadFileInDirectory(String fileUri, String directoryPath){
+        return !downloadFile(fileUri, directoryPath).isEmpty();
     }
 
     public static boolean createFolder(String folderPath) {
