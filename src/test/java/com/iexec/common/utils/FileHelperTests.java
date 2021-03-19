@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 
 
 import static com.iexec.common.utils.FileHelper.downloadFile;
+import static com.iexec.common.utils.FileHelper.downloadFileInDirectory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -193,6 +194,13 @@ public class FileHelperTests {
     }
 
     @Test
+    public void shouldNotDownloadFileSinceCannotCreateFolder() {
+        String fileUri = "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
+        String downloadedFilePath = downloadFile(fileUri, "/unauthorized");
+        assertThat(downloadedFilePath).isEmpty();
+    }
+
+    @Test
     public void shouldNotDownloadFileSinceEmptyUri() {
         String fileUri = "";
         String downloadedFilePath = downloadFile(fileUri, TEST_FOLDER);
@@ -204,6 +212,20 @@ public class FileHelperTests {
         String fileUri = "http://dummy-uri";
         String downloadedFilePath = downloadFile(fileUri, TEST_FOLDER);
         assertThat(downloadedFilePath).isEmpty();
+    }
+
+    @Test
+    public void shouldDownloadFileInDirectory() {
+        String fileUri = "http://dummy-uri";
+        boolean isDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
+        assertThat(isDownloaded).isFalse();
+    }
+
+    @Test
+    public void shouldNotDownloadFileInDirectory() {
+        String fileUri = "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
+        boolean isDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
+        assertThat(isDownloaded).isTrue();
     }
 
     @Test
