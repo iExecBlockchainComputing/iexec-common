@@ -21,6 +21,7 @@ import com.iexec.common.dapp.DappType;
 import com.iexec.common.task.TaskDescription;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
+import com.iexec.common.utils.MultiAddressHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.Awaitility;
@@ -676,7 +677,7 @@ public abstract class IexecHubAbstractService {
         String datasetURI = "";
         String datasetChecksum = "";
         if (chainDeal.getChainDataset() != null){
-            datasetURI = chainDeal.getChainDataset().getUri();
+            datasetURI = MultiAddressHelper.convertToURI(chainDeal.getChainDataset().getUri());
             datasetChecksum = chainDeal.getChainDataset().getChecksum();
         }
 
