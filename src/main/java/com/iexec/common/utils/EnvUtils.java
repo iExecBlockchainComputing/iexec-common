@@ -34,6 +34,7 @@ public abstract class EnvUtils {
      * /!\ If you change those values please don't forget to update 
      * the palaemon config file.
      */
+    public static final String IEXEC_TASK_ID_ENV_PROPERTY = "IEXEC_TASK_ID";
     public static final String IEXEC_IN_ENV_PROPERTY = "IEXEC_IN";
     public static final String IEXEC_OUT_ENV_PROPERTY = "IEXEC_OUT";
     public static final String IEXEC_DATASET_FILENAME_ENV_PROPERTY = "IEXEC_DATASET_FILENAME";
@@ -47,6 +48,7 @@ public abstract class EnvUtils {
     public static Map<String, String> getContainerEnvMap(TaskDescription taskDescription) {
         String datasetFilename = FileHelper.getFilenameFromUri(taskDescription.getDatasetUri());
         Map<String, String> map = new HashMap<String, String>();
+        map.put(IEXEC_TASK_ID_ENV_PROPERTY, taskDescription.getChainTaskId());
         map.put(IEXEC_IN_ENV_PROPERTY, FileHelper.SLASH_IEXEC_IN);
         map.put(IEXEC_OUT_ENV_PROPERTY, FileHelper.SLASH_IEXEC_OUT);
         map.put(IEXEC_DATASET_FILENAME_ENV_PROPERTY, datasetFilename);
