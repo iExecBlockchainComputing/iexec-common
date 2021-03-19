@@ -76,6 +76,13 @@ public class HashUtils {
         return "";
     }
 
+    /**
+     * Compute sha256sum of a file
+     *
+     * @param filePath path of the file
+     * @return sha256sum of the file
+     * e.g: 0x66daf4e6810d83d4859846a5df1afabf88c9fda135bc732ea977f25348d98ede
+     */
     public static String getFileSha256(String filePath) {
         if (!new File((filePath)).exists()){
             return "";

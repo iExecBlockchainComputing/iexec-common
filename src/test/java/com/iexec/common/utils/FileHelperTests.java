@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 
+import static com.iexec.common.utils.FileHelper.downloadFile;
 import static com.iexec.common.utils.FileHelper.downloadFileInDirectory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -187,23 +188,44 @@ public class FileHelperTests {
         //TODO 1 - Try https resources: https://iex.ec/wp-content/uploads/2018/12/token.svg
         //TODO 2- Try resources with redirection: https://goo.gl/t8JxoX
         String fileUri = "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
-        boolean isFileDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
-        assertThat(isFileDownloaded).isTrue();
+        String downloadedFilePath = downloadFile(fileUri, TEST_FOLDER);
+        assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/iExec-RLC-RLC-icon.png");
         assertThat(new File(TEST_FOLDER + "/" + Paths.get(fileUri).getFileName().toString())).exists();
+    }
+
+    @Test
+    public void shouldNotDownloadFileSinceCannotCreateFolder() {
+        String fileUri = "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
+        String downloadedFilePath = downloadFile(fileUri, "/unauthorized");
+        assertThat(downloadedFilePath).isEmpty();
     }
 
     @Test
     public void shouldNotDownloadFileSinceEmptyUri() {
         String fileUri = "";
-        boolean isFileDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
-        assertThat(isFileDownloaded).isFalse();
+        String downloadedFilePath = downloadFile(fileUri, TEST_FOLDER);
+        assertThat(downloadedFilePath).isEmpty();
     }
 
     @Test
     public void shouldNotDownloadFileSinceDummyUri() {
         String fileUri = "http://dummy-uri";
-        boolean isFileDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
-        assertThat(isFileDownloaded).isFalse();
+        String downloadedFilePath = downloadFile(fileUri, TEST_FOLDER);
+        assertThat(downloadedFilePath).isEmpty();
+    }
+
+    @Test
+    public void shouldDownloadFileInDirectory() {
+        String fileUri = "http://dummy-uri";
+        boolean isDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
+        assertThat(isDownloaded).isFalse();
+    }
+
+    @Test
+    public void shouldNotDownloadFileInDirectory() {
+        String fileUri = "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
+        boolean isDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
+        assertThat(isDownloaded).isTrue();
     }
 
     @Test
