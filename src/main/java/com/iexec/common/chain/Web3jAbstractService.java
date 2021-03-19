@@ -18,6 +18,7 @@ package com.iexec.common.chain;
 
 import com.iexec.common.utils.WaitUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -275,30 +276,7 @@ public abstract class Web3jAbstractService {
 
             @Override
             public BigInteger getGasLimit(String functionName) {
-                long gasLimit;
-                switch (functionName) {
-                    case FUNC_INITIALIZE:
-                        gasLimit = 300000;//seen 176340
-                        break;
-                    case FUNC_CONTRIBUTE:
-                        gasLimit = 500000;//seen 333541
-                        break;
-                    case FUNC_REVEAL:
-                        gasLimit = 100000;//seen 56333
-                        break;
-                    case FUNC_FINALIZE:
-                        gasLimit = 3000000;//seen 175369 (242641 in reopen case)
-                        break;
-                    case FUNC_REOPEN:
-                        gasLimit = 500000;//seen 43721
-                        break;
-                    case FUNC_CREATEDATASET:
-                        gasLimit = 700000;//seen 608878
-                        break;
-                    default:
-                        gasLimit = GAS_LIMIT_CAP;
-                }
-                return BigInteger.valueOf(gasLimit);
+                return getGasLimitForFunction(functionName);
             }
 
             @Override
@@ -306,6 +284,34 @@ public abstract class Web3jAbstractService {
                 return BigInteger.valueOf(GAS_LIMIT_CAP);
             }
         };
+    }
+
+    @NotNull
+    static BigInteger getGasLimitForFunction(String functionName) {
+        long gasLimit;
+        switch (functionName) {
+            case FUNC_INITIALIZE:
+                gasLimit = 300000;//seen 176340
+                break;
+            case FUNC_CONTRIBUTE:
+                gasLimit = 500000;//seen 333541
+                break;
+            case FUNC_REVEAL:
+                gasLimit = 100000;//seen 56333
+                break;
+            case FUNC_FINALIZE:
+                gasLimit = 3000000;//seen 175369 (242641 in reopen case)
+                break;
+            case FUNC_REOPEN:
+                gasLimit = 500000;//seen 43721
+                break;
+            case FUNC_CREATEDATASET:
+                gasLimit = 700000;//seen 608878
+                break;
+            default:
+                gasLimit = GAS_LIMIT_CAP;
+        }
+        return BigInteger.valueOf(gasLimit);
     }
 
     /*

@@ -17,7 +17,10 @@
 package com.iexec.common.chain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iexec.common.utils.BytesUtils;
 import lombok.*;
+import org.web3j.tuples.generated.Tuple6;
+import org.web3j.tuples.generated.Tuple9;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -62,7 +65,7 @@ public class ChainDeal {
     public static DealParams stringToDealParams(String params) {
         try {
             DealParams dealParams = new ObjectMapper().readValue(params, DealParams.class);
-            if(dealParams.getIexecInputFiles() == null) {
+            if (dealParams.getIexecInputFiles() == null) {
                 dealParams.setIexecInputFiles(new ArrayList<>());
             }
             return dealParams;
@@ -74,5 +77,35 @@ public class ChainDeal {
                     .iexecDeveloperLoggerEnabled(false)
                     .build();
         }
+    }
+
+    public static ChainDeal parts2ChainDeal(String chainDealId, Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger> dealPt1, Tuple6<BigInteger, byte[], String, String, String, String> dealPt2, Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> config, ChainApp app, ChainCategory category, ChainDataset dataset) {
+        if (dealPt1 == null || dealPt2 == null || config == null || app == null || category == null) {
+            return new ChainDeal();
+        }
+        return ChainDeal.builder()
+                .chainDealId(chainDealId)
+                .chainApp(app)
+                .dappOwner(dealPt1.component2())
+                .dappPrice(dealPt1.component3())
+                .chainDataset(dataset)
+                .dataOwner(dealPt1.component5())
+                .dataPrice(dealPt1.component6())
+                .poolPointer(dealPt1.component7())
+                .poolOwner(dealPt1.component8())
+                .poolPrice(dealPt1.component9())
+                .trust(dealPt2.component1())
+                .tag(BytesUtils.bytesToString(dealPt2.component2()))
+                .requester(dealPt2.component3())
+                .beneficiary(dealPt2.component4())
+                .callback(dealPt2.component5())
+                .params(stringToDealParams(dealPt2.component6()))
+                .chainCategory(category)
+                .startTime(config.component2())
+                .botFirst(config.component3())
+                .botSize(config.component4())
+                .workerStake(config.component5())
+                .schedulerRewardRatio(config.component6())
+                .build();
     }
 }

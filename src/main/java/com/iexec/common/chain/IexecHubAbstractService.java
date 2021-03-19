@@ -21,7 +21,6 @@ import com.iexec.common.dapp.DappType;
 import com.iexec.common.task.TaskDescription;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
-import com.iexec.common.utils.MultiAddressHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.Awaitility;
@@ -393,37 +392,17 @@ public abstract class IexecHubAbstractService {
             if (chainApp.isEmpty()) {
                 return Optional.empty();
             }
+            ChainApp app = chainApp.get();
             Optional<ChainCategory> chainCategory = getChainCategory(categoryId.longValue());
             if (chainCategory.isEmpty()) {
                 return Optional.empty();
             }
+            ChainCategory category = chainCategory.get();
             Optional<ChainDataset> chainDataset =
                     getChainDataset(getDatasetContract(datasetAddress));
+            ChainDataset dataset = chainDataset.orElse(null);
 
-            ChainDeal chainDeal = ChainDeal.builder()
-                    .chainDealId(chainDealId)
-                    .chainApp(chainApp.get())
-                    .dappOwner(dealPt1.component2())
-                    .dappPrice(dealPt1.component3())
-                    .chainDataset(chainDataset.orElse(null))
-                    .dataOwner(dealPt1.component5())
-                    .dataPrice(dealPt1.component6())
-                    .poolPointer(dealPt1.component7())
-                    .poolOwner(dealPt1.component8())
-                    .poolPrice(dealPt1.component9())
-                    .trust(dealPt2.component1())
-                    .tag(BytesUtils.bytesToString(dealPt2.component2()))
-                    .requester(dealPt2.component3())
-                    .beneficiary(dealPt2.component4())
-                    .callback(dealPt2.component5())
-                    .params(stringToDealParams(dealPt2.component6()))
-                    .chainCategory(chainCategory.get())
-                    .startTime(config.component2())
-                    .botFirst(config.component3())
-                    .botSize(config.component4())
-                    .workerStake(config.component5())
-                    .schedulerRewardRatio(config.component6())
-                    .build();
+            ChainDeal chainDeal = ChainDeal.parts2ChainDeal(chainDealId, dealPt1, dealPt2, config, app, category, dataset);
 
             if (chainDeal.getStartTime() == null
                     || chainDeal.getStartTime().longValue() <= 0) {
@@ -694,8 +673,12 @@ public abstract class IexecHubAbstractService {
 
         ChainDeal chainDeal = optionalChainDeal.get();
 
-        String datasetURI = chainDeal.getChainDataset() != null ?
-                MultiAddressHelper.convertToURI(chainDeal.getChainDataset().getUri()) : "";
+        String datasetURI = "";
+        String datasetChecksum = "";
+        if (chainDeal.getChainDataset() != null){
+            datasetURI = chainDeal.getChainDataset().getUri();
+            datasetChecksum = chainDeal.getChainDataset().getChecksum();
+        }
 
         return Optional.of(TaskDescription.builder()
                 .chainTaskId(chainTaskId)
@@ -716,6 +699,7 @@ public abstract class IexecHubAbstractService {
                 .teePostComputeImage(chainDeal.getParams().getIexecTeePostComputeImage())
                 .teePostComputeFingerprint(chainDeal.getParams().getIexecTeePostComputeFingerprint())
                 .datasetUri(datasetURI)
+                .datasetChecksum(datasetChecksum)
                 .botSize(chainDeal.botSize.intValue())
                 .botFirstIndex(chainDeal.botFirst.intValue())
                 .botIndex(chainTask.getIdx())
