@@ -349,8 +349,7 @@ public class CipherUtils {
                 .replace("\n", "")
                 .replace("-----BEGIN PUBLIC KEY-----", "")
                 .replace("-----END PUBLIC KEY-----", "");
-        byte[] decodedKey = Base64.getDecoder()
-                .decode(strippedBase64RsaPub.getBytes());
+        byte[] decodedKey = Base64.getDecoder().decode(strippedBase64RsaPub);
         X509EncodedKeySpec spec = new X509EncodedKeySpec(decodedKey);
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -372,8 +371,7 @@ public class CipherUtils {
                 .replace("\n", "")
                 .replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "");
-        byte[] decodedKey = Base64.getDecoder()
-                .decode(strippedBase64RsaPriv.getBytes());
+        byte[] decodedKey = Base64.getDecoder().decode(strippedBase64RsaPriv);
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decodedKey);
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
