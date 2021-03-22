@@ -16,66 +16,130 @@
 
 package com.iexec.common.security;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Objects;
 
 import static com.iexec.common.utils.FileHelper.readFile;
 
-@Deprecated
-public class CipherHelper {
+@Slf4j
+public class CipherUtils {
 
+    // ###############
+    // #     AES     #
+    // ###############
 
-    /****************
-     *
-     *  AES material
-     *
-     * **************/
+    /**
+     * Generate a 256 bits AES key.
+     * 
+     * @return 256 bits key if success,
+     * empty byte array otherwise.
+     */
+    public static byte[] generateAesKey() {
+        return generateAesKey(256);
+    }
 
-    /*
-     * Generate AES key
-     * */
+    /**
+     * Generate an AES symmetric key with the
+     * given size.
+     * 
+     * @param size
+     * @return Generated AES key if success,
+     * empty byte array otherwise.
+     */
     public static byte[] generateAesKey(int size) {
-        byte[] encodedKey = null;
         try {
             KeyGenerator generator = KeyGenerator.getInstance("AES");
             generator.init(size); // The AES key size in number of bits
             SecretKey secKey = generator.generateKey();
-            encodedKey = Base64.getEncoder().encode(secKey.getEncoded());
+            return secKey.getEncoded();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            log.error("Failed to generate AES key", e);
+            return new byte[0];
         }
-        return encodedKey;
     }
 
-    public static byte[] generateAesKey() {
-        return generateAesKey(128);
+    /**
+     * Encrypt binary data with AES/CBC/PKCS7Padding and
+     * encode the encrypted data in Base64. The first
+     * 16 bytes of the data must be the IV which means
+     * that the data length should be greater than 16 bytes.
+     * 
+     * @param binaryDataWithIv Binary data to encrypt
+     * @param base64Key Base64 encoded AES key
+     * @return encrypted data encoded in Base64 if success,
+     * empty byte array otherwise.
+     * @throws GeneralSecurityException
+     * @throws IllegalArgumentException if the data's length
+     * is less than 16 bytes.
+     * @see https://stackoverflow.com/a/34004582 for large files
+     */
+    public static byte[] aesEncrypt(byte[] binaryDataWithIv, byte[] base64Key)
+            throws GeneralSecurityException {
+        Objects.requireNonNull(binaryDataWithIv, "Binary data cannot be null");
+        Objects.requireNonNull(base64Key, "Base64 AES key cannot be null");
+        if (binaryDataWithIv.length < 16) {
+            throw new IllegalArgumentException("Data cannot be less than 16 bytes");
+        }
+        byte[] binaryIv = Arrays.copyOfRange(binaryDataWithIv, 0, 16);
+        byte[] binaryData = Arrays.copyOfRange(binaryDataWithIv, 16, binaryDataWithIv.length);
+        byte[] binaryKey = Base64.getDecoder().decode(base64Key);
+        return aesEncrypt(binaryData, binaryKey, binaryIv);
     }
 
-    /*
-     * AES encryption
-     *
-     * For large files: https://stackoverflow.com/a/34004582
-     * */
-    public static byte[] aesEncrypt(byte[] data, byte[] aesKey) {
-        byte[] encryptedData = null;
-        try {
-            byte[] decodedKey = Base64.getDecoder().decode(aesKey);
-            SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+    /**
+     * Encrypt binary data with AES/CBC/PKCS7Padding.
+     * 
+     * @param binaryData Binary data to encrypt
+     * @param binaryKey Binary AES key
+     * @param binaryIv Binary initialization vector
+     * @return encrypted data encoded in Base64 if success.
+     * @throws GeneralSecurityException
+     * 
+     * @see https://stackoverflow.com/a/34004582 for large files
+     */
+    public static byte[] aesEncrypt(byte[] binaryData, byte[] binaryKey, byte[] binaryIv)
+            throws GeneralSecurityException {
+        Objects.requireNonNull(binaryData, "data cannot be null");
+        Objects.requireNonNull(binaryKey, "AES key cannot be null");
+        Objects.requireNonNull(binaryIv, "IV cannot be null");
+        // try {
+            // byte[] decodedKey = Base64.getDecoder().decode(base64Key);
+        SecretKey secretKey = new SecretKeySpec(binaryKey, "AES");
+        IvParameterSpec ivParam = new IvParameterSpec(binaryIv);
+        Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+        aesCipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParam);
+        byte[] byteCipherText = aesCipher.doFinal(binaryData);
+        return byteCipherText;
+        // } catch(GeneralSecurityException e) {
+        //     return new byte[0];
+        // }
+        // catch (IllegalBlockSizeException | BadPaddingException |
+        //         NoSuchPaddingException | NoSuchAlgorithmException |
+        //         InvalidKeyException | InvalidAlgorithmParameterException e) {
+        //     log.error("Failed to AES encrypt data", e);
+        //     return new byte[0];
+        // }
+    }
 
-            // AES defaults to AES/ECB/PKCS5Padding in Java 7
-            Cipher aesCipher = Cipher.getInstance("AES");
-            aesCipher.init(Cipher.ENCRYPT_MODE, originalKey);
-            byte[] byteCipherText = aesCipher.doFinal(data);
-            encryptedData = Base64.getEncoder().encode(byteCipherText);
-        } catch (IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
-            e.printStackTrace();
-        }
-        return encryptedData;
+    public static String encrypt(String algorithm, String input, SecretKey key, IvParameterSpec iv)
+            throws NoSuchPaddingException, NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException, InvalidKeyException,
+            BadPaddingException, IllegalBlockSizeException {
+        
+        Cipher cipher = Cipher.getInstance(algorithm);
+        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+        byte[] cipherText = cipher.doFinal(input.getBytes());
+        return Base64.getEncoder().encodeToString(cipherText);
     }
 
     /*
