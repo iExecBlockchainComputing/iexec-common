@@ -92,13 +92,57 @@ public class CipherUtils {
         byte[] iv = new byte[size];
         new SecureRandom().nextBytes(iv);
         return iv;
-    }    
+    }
+
+    /**
+     * Extract IV (initialization vector) from the
+     * encrypted data. The IV occupies the first
+     * 16 bytes of the data.
+     * 
+     * @param dataWithIv
+     * @return Extracted 16 bytes IV
+     */
+    public static byte[] getIvFromEncryptedData(byte[] dataWithIv) {
+        return Arrays.copyOfRange(dataWithIv, 0, 16); // 0 -> 15;
+    }
+
+    /**
+     * Remove prepended IV (initialization vector)
+     * from the encrypted data.
+     * 
+     * @param dataWithIv
+     * @return a new array without the IV.
+     */
+    public static byte[] stripIvFromEncryptedData(byte[] dataWithIv) {
+        return Arrays.copyOfRange(dataWithIv, 16, dataWithIv.length);
+    }
+
+    /**
+     * Concatenate IV (initialization vector) to the
+     * beginning of the encrypted data.
+     * 
+     * @param iv
+     * @param encryptedData
+     * @return
+     * @throws IOException
+     */
+    public static byte[] prependIvToEncryptedData(byte[] iv, byte[] encryptedData)
+            throws IOException {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        result.write(iv);
+        result.write(encryptedData);
+        return result.toByteArray();
+    }
 
     /**
      * Decode Base64 key and encrypt binary data
-     * with AES256/CBC/PKCS7Padding. The first 16
+     * with AES256/CBC/PKCS5Padding. The first 16
      * bytes of the result will contain the IV
      * (initialization vector).
+     * <p>
+     * Note: PKCS5Padding is equivalent to PKCS7Padding
+     * <p>
+     * Ref: https://stackoverflow.com/a/10194082/7631879
      * 
      * @param plainData to encrypt
      * @param base64Key Base64 encoded AES key
@@ -114,14 +158,15 @@ public class CipherUtils {
         byte[] iv = generateIv();
         byte[] decodeKey = Base64.getDecoder().decode(base64Key);
         byte[] encryptedData = aesEncrypt(plainData, decodeKey, iv);
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        result.write(iv);
-        result.write(encryptedData);
-        return result.toByteArray();
+        return prependIvToEncryptedData(iv, encryptedData);
     }
 
     /**
-     * Encrypt binary data with AES256/CBC/PKCS7Padding.
+     * Encrypt binary data with AES256/CBC/PKCS5Padding.
+     * <p>
+     * Note: PKCS5Padding is equivalent to PKCS7Padding
+     * <p>
+     * Ref: https://stackoverflow.com/a/10194082/7631879
      * 
      * @param plainData to encrypt
      * @param key
@@ -140,16 +185,20 @@ public class CipherUtils {
         Objects.requireNonNull(iv, "IV cannot be null");
         SecretKey secretKey = new SecretKeySpec(key, "AES");
         IvParameterSpec ivParam = new IvParameterSpec(iv);
-        Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+        Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         aesCipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParam);
         return aesCipher.doFinal(plainData);
     }
 
     /**
      * Decode Base64 key, extract the IV and decrypt the data
-     * with AES/CBC/PKCS7Padding. The IV (Initialization
+     * with AES/CBC/PKCS5Padding. The IV (Initialization
      * Vector) must occupy the first 16 bytes of the data which
      * means its length should be greater than 16 bytes.
+     * <p>
+     * Note: PKCS5Padding is equivalent to PKCS7Padding
+     * <p>
+     * Ref: https://stackoverflow.com/a/10194082/7631879
      * 
      * @param encryptedDataWithIv to decrypt
      * @param base64Key Base64 encoded AES key
@@ -168,13 +217,17 @@ public class CipherUtils {
             throw new IllegalArgumentException("Data cannot be less than 16 bytes");
         }
         byte[] decodedKey = Base64.getDecoder().decode(base64Key);
-        byte[] iv = Arrays.copyOfRange(encryptedDataWithIv, 0, 16); // 0 -> 15
-        byte[] data = Arrays.copyOfRange(encryptedDataWithIv, 16, encryptedDataWithIv.length);
+        byte[] iv = getIvFromEncryptedData(encryptedDataWithIv);
+        byte[] data = stripIvFromEncryptedData(encryptedDataWithIv);
         return aesDecrypt(data, decodedKey, iv);
     }
 
     /**
-     * Decrypt data with AES256/CBC/PKCS7Padding.
+     * Decrypt data with AES256/CBC/PKCS5Padding.
+     * <p>
+     * Note: PKCS5Padding is equivalent to PKCS7Padding
+     * <p>
+     * Ref: https://stackoverflow.com/a/10194082/7631879
      * 
      * @param plainData
      * @param key
@@ -191,7 +244,7 @@ public class CipherUtils {
         Objects.requireNonNull(iv, "IV cannot be null");
         SecretKey secretKey = new SecretKeySpec(key, "AES");
         IvParameterSpec ivParam = new IvParameterSpec(iv);
-        Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+        Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         aesCipher.init(Cipher.DECRYPT_MODE, secretKey, ivParam);
         return aesCipher.doFinal(plainData);  // heap size issues after 500MB
     }
