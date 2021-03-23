@@ -200,7 +200,7 @@ public class CipherUtils {
      * <p>
      * Ref: https://stackoverflow.com/a/10194082/7631879
      * 
-     * @param encryptedDataWithIv to decrypt
+     * @param ivAndEncryptedData to decrypt
      * @param base64Key Base64 encoded AES key
      * @return Decrypted data
      * @throws GeneralSecurityException
@@ -209,16 +209,16 @@ public class CipherUtils {
      * 
      * @see https://stackoverflow.com/a/34004582 for large files
      */
-    public static byte[] aesDecrypt(byte[] encryptedDataWithIv, byte[] base64Key)
+    public static byte[] aesDecrypt(byte[] ivAndEncryptedData, byte[] base64Key)
             throws GeneralSecurityException {
-        Objects.requireNonNull(encryptedDataWithIv, "Data cannot be null");
+        Objects.requireNonNull(ivAndEncryptedData, "Data cannot be null");
         Objects.requireNonNull(base64Key, "Base64 AES key cannot be null");
-        if (encryptedDataWithIv.length < 16) {
+        if (ivAndEncryptedData.length < 16) {
             throw new IllegalArgumentException("Data cannot be less than 16 bytes");
         }
         byte[] decodedKey = Base64.getDecoder().decode(base64Key);
-        byte[] iv = getIvFromEncryptedData(encryptedDataWithIv);
-        byte[] data = stripIvFromEncryptedData(encryptedDataWithIv);
+        byte[] iv = getIvFromEncryptedData(ivAndEncryptedData);
+        byte[] data = stripIvFromEncryptedData(ivAndEncryptedData);
         return aesDecrypt(data, decodedKey, iv);
     }
 
