@@ -19,5 +19,6 @@ package com.iexec.common.precompute;
 public class PreComputeUtils {
 
     public static final String IEXEC_DATASET_KEY_PROPERTY = "IEXEC_DATASET_KEY";
+    public static final String IEXEC_DATASET_CHECKSUM_PROPERTY = "IEXEC_DATASET_CHECKSUM";
 
 }
