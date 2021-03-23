@@ -25,7 +25,7 @@ import com.iexec.common.task.TaskDescription;
 
 import org.apache.commons.io.FilenameUtils;
 
-public abstract class IexecEnvUtils {
+public class IexecEnvUtils {
 
     /*
      * Env variables that will be injected in the container of
@@ -44,6 +44,10 @@ public abstract class IexecEnvUtils {
     public static final String IEXEC_NB_INPUT_FILES_ENV_PROPERTY = "IEXEC_NB_INPUT_FILES";
     public static final String IEXEC_INPUT_FILES_ENV_PROPERTY_PREFIX = "IEXEC_INPUT_FILE_NAME_";
     public static final String IEXEC_INPUT_FILES_FOLDER_ENV_PROPERTY = "IEXEC_INPUT_FILES_FOLDER";
+
+    private IexecEnvUtils() {
+        throw new UnsupportedOperationException();
+    }
 
     public static Map<String, String> getComputeStageEnvMap(TaskDescription taskDescription) {
         String datasetFilename = FileHelper.getFilenameFromUri(taskDescription.getDatasetUri());
