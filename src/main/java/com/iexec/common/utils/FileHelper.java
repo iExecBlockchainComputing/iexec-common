@@ -239,7 +239,7 @@ public class FileHelper {
             new ZipFile(zipFilePath).extractAll(destDirPath);
             return true;
         } catch (ZipException e) {
-            log.error("Failed to unZipFile (can't extract) [zipFilePath:{}, destDirPath:{}]" + zipFilePath + destDirPath);
+            log.error("Failed to unZipFile (can't extract) [zipFilePath:{}, destDirPath:{}]", zipFilePath, destDirPath);
         }
         return false;
     }

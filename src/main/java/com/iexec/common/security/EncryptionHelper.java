@@ -121,26 +121,32 @@ public class EncryptionHelper {
         return outEncDir;
     }
 
-    /*
+    /**
      *
      * Required: aes-key.rsa file should be found next to encryptedDataFile
-     *
+     * <p>
      * #1: AES key is decrypted with RSA
+     * <p>
      * #2: Data is decrypted with AES key
-     *
+     * <p>
      * before
+     * <p>
      * └── encrypted-result-0xabc.zip
+     * <p>
      * with zip content
+     * <p>
      * ├── aes-key.rsa
      * └── result-0xabc.zip.aes
-     *
+     * <p>
      * after
      * ├── encrypted-result-0xabc.zip
      * └── plain-result-0xabc.zip
+     * <p>
+     * @param encryptedDataFilePath
+     * @param plainTextRsaPriv
+     * @return plain data path (zip here)
      *
-     * Returns: clear data path (zip here)
-     *
-     * */
+     */
     public static String decryptData(String encryptedDataFilePath, String plainTextRsaPriv) {
         String encryptedResultFolder = Paths.get(encryptedDataFilePath).getParent().toString();
         String outClearDataFilename = DECRYPTION_PREFIX + FilenameUtils.getBaseName(encryptedDataFilePath);
