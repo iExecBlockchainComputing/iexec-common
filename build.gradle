@@ -50,6 +50,13 @@ dependencies {
     // google core libs
     api 'com.google.guava:guava:29.0-jre'
 
+    // test
+    api 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    api 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+    api 'org.mockito:mockito-core:3.6.0'
+    api 'org.mockito:mockito-junit-jupiter:3.6.0'
+    api 'org.assertj:assertj-core:3.18.1'
+
     //jaxb required with Java 11
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
 
@@ -67,13 +74,6 @@ dependencies {
     // docker
     implementation 'com.github.docker-java:docker-java:3.2.5'
     implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.5'
-
-    // test
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
-    testImplementation 'org.mockito:mockito-core:3.6.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
-    testImplementation 'org.assertj:assertj-core:3.18.1'
 
     // package cloud
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
