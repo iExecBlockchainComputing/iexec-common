@@ -343,6 +343,7 @@ public class DockerClientInstance {
                 dockerRunRequest.getArrayArgsCmd());
         DockerRunResponse dockerRunResponse = DockerRunResponse.builder()
                 .isSuccessful(false)
+                .containerExitCode(-1)
                 .build();
         String containerName = dockerRunRequest.getContainerName();
         // TODO choose to remove duplicate containers or not
