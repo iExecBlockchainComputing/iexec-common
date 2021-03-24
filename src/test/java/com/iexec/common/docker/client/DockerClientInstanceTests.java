@@ -1149,7 +1149,7 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
         Date before = new Date();
-        Long exitCode = dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
+        int exitCode = dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
                 Instant.now().plusSeconds(5));
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
@@ -1185,7 +1185,7 @@ public class DockerClientInstanceTests {
     public void shouldGetContainerExitCode() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
         dockerClientInstance.createContainer(request);
-        Long exitCode = dockerClientInstance
+        int exitCode = dockerClientInstance
                 .getContainerExitCode(request.getContainerName());
         assertThat(exitCode).isEqualTo(0);
     }

@@ -16,6 +16,11 @@
 
 package com.iexec.common.precompute;
 
+import javax.annotation.CheckForNull;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * To avoid confusion with exit codes of the chroot standard
  * (followed also by docker), we use exit codes between
@@ -25,6 +30,8 @@ package com.iexec.common.precompute;
  */
 public enum PreComputeExitCode {
 
+    UNKNOWN_ERROR(-1),
+    SUCCESS(0),
     EMPTY_REQUIRED_ENV_VAR(64),
     INPUT_FOLDER_NOT_FOUND(65),
     DATASET_FILE_NOT_FOUND(66),
@@ -39,7 +46,33 @@ public enum PreComputeExitCode {
         this.value = n;
     }
 
-    public int getValue() {
+    public int value() {
         return value;
+    }
+
+    public static boolean contains(int n) {
+        return List.of(values())
+                .stream()
+                .map(PreComputeExitCode::value)
+                .collect(Collectors.toList())
+                .contains(n);
+    }
+
+    public static boolean isSuccess(int n) {
+        return SUCCESS.value() == n;
+    }
+
+    /**
+     * Get element e such as "e.getValue() == n".
+     * @param n
+     * @return element or null if nothing matched.
+     */
+    @CheckForNull
+    public static PreComputeExitCode nameOf(int n) {
+        return List.of(values())
+                .stream()
+                .filter(code -> code.value() == n)
+                .findFirst()
+                .orElse(null);
     }
 }
