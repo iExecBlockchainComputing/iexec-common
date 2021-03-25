@@ -619,7 +619,7 @@ public class DockerClientInstanceTests {
 
         assertThat(dockerRunResponse).isNotNull();
         assertThat(dockerRunResponse.isSuccessful()).isTrue();
-        assertThat(dockerRunResponse.getContainerExitCode()).isNull();
+        assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
         verify(dockerClientInstance).createContainer(dockerRunRequest);
@@ -674,7 +674,7 @@ public class DockerClientInstanceTests {
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
         assertThat(dockerRunResponse.isSuccessful()).isFalse();
-        assertThat(dockerRunResponse.getContainerExitCode()).isNull();
+        assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout().trim()).isEqualTo(msg1);
         assertThat(dockerRunResponse.getStderr()).isEmpty();
         verify(dockerClientInstance).createContainer(dockerRunRequest);
@@ -701,7 +701,7 @@ public class DockerClientInstanceTests {
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
         assertThat(dockerRunResponse.isSuccessful()).isFalse();
-        assertThat(dockerRunResponse.getContainerExitCode()).isNull();
+        assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
         verify(dockerClientInstance).createContainer(dockerRunRequest);
@@ -728,7 +728,7 @@ public class DockerClientInstanceTests {
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
         assertThat(dockerRunResponse.isSuccessful()).isFalse();
-        assertThat(dockerRunResponse.getContainerExitCode()).isNull();
+        assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
         verify(dockerClientInstance).createContainer(dockerRunRequest);
@@ -755,7 +755,7 @@ public class DockerClientInstanceTests {
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
         assertThat(dockerRunResponse.isSuccessful()).isFalse();
-        assertThat(dockerRunResponse.getContainerExitCode()).isNull();
+        assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
         verify(dockerClientInstance).createContainer(dockerRunRequest);
@@ -1149,11 +1149,11 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
         Date before = new Date();
-        Long exitCode = dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
+        int exitCode = dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
                 Instant.now().plusSeconds(5));
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        assertThat(exitCode).isNull();
+        assertThat(exitCode).isEqualTo(-1);
         assertThat(new Date().getTime() - before.getTime()).isGreaterThan(1000);
         // cleaning
         dockerClientInstance.stopContainer(containerName);
@@ -1185,7 +1185,7 @@ public class DockerClientInstanceTests {
     public void shouldGetContainerExitCode() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
         dockerClientInstance.createContainer(request);
-        Long exitCode = dockerClientInstance
+        int exitCode = dockerClientInstance
                 .getContainerExitCode(request.getContainerName());
         assertThat(exitCode).isEqualTo(0);
     }
@@ -1194,7 +1194,7 @@ public class DockerClientInstanceTests {
     public void shouldNotGetContainerExitCodeSinceDockerCmdException() {
         useCorruptedDockerClient();
         assertThat(dockerClientInstance.getContainerExitCode(getRandomString()))
-                .isNull();
+                .isEqualTo(-1);
     }
 
     // getContainerLogs
