@@ -1852,6 +1852,7 @@ public class IexecHubContract extends Contract {
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
+    @SuppressWarnings("unchecked")
     public RemoteFunctionCall<Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]>> viewTaskABILegacy(byte[] _taskid) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWTASKABILEGACY, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes32(_taskid)), 

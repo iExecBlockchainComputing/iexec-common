@@ -14,8 +14,22 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.cli.input;
+package com.iexec.common.sdk.order;
 
-public interface CliInput<T> {
+public enum OrderTag {
+
+    STANDARD("0x0000000000000000000000000000000000000000000000000000000000000000"),
+    TEE     ("0x0000000000000000000000000000000000000000000000000000000000000001");
+
+    private final String value;
+
+    private OrderTag(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return this.value;
+    }
 
 }

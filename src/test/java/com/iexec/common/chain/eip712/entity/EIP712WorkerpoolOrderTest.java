@@ -17,7 +17,7 @@
 package com.iexec.common.chain.eip712.entity;
 
 import com.iexec.common.chain.eip712.EIP712Domain;
-import com.iexec.common.sdk.order.payload.DatasetOrder;
+import com.iexec.common.sdk.order.payload.WorkerpoolOrder;
 import com.iexec.common.utils.BytesUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,39 +28,41 @@ import org.web3j.crypto.WalletUtils;
 import java.io.IOException;
 import java.math.BigInteger;
 
-public class EIP712DatasetOrderTest {
+public class EIP712WorkerpoolOrderTest {
 
     public static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
-    public static final String DATASET_ADDRESS = "0x2550E5B60f48742aBce2275F34417e7cBf5AcA86";
+    public static final String POOL_ADDRESS = "0x53Ef1328a96E40E125bca15b9a4da045C5e63E1A";
 
     /**
      * Expected signature string could also be found with:
      * <p>
-     * iexec order sign --dataset --chain 133 \
+     * iexec order sign --workerpool --chain 133 \
      * --keystoredir /home/$USER/iexecdev/iexec-common/src/test/resources/ \
      * --wallet-file wallet.json --password whatever
      * <p>
      * Note: Don't forget to update salt
      */
     @Test
-    public void signDatasetOrderEIP712() {
-        EIP712DatasetOrder eip712DatasetOrder = new EIP712DatasetOrder(
+    public void signWorkerpoolOrderEIP712() {
+        EIP712WorkerpoolOrder eip712WorkerpoolOrder = new EIP712WorkerpoolOrder(
                 DOMAIN,
-                DatasetOrder.builder()
-                        .dataset(DATASET_ADDRESS)
-                        .price(BigInteger.valueOf(0))
-                        .volume(BigInteger.valueOf(1000000))
-                        .tag("0x0000000000000000000000000000000000000000000000000000000000000001")
+                WorkerpoolOrder.builder()
+                        .workerpool(POOL_ADDRESS)
+                        .price(BigInteger.ZERO)
+                        .volume(BigInteger.ONE)
+                        .category(BigInteger.ZERO)
+                        .trust(BigInteger.ZERO)
+                        .tag("0x0000000000000000000000000000000000000000000000000000000000000000")
+                        .datasetrestrict(BytesUtils.EMPTY_ADDRESS)
                         .apprestrict(BytesUtils.EMPTY_ADDRESS)
-                        .workerpoolrestrict(BytesUtils.EMPTY_ADDRESS)
                         .requesterrestrict(BytesUtils.EMPTY_ADDRESS)
-                        .salt("0xc49d07f99c47096900653b6ade4ccde4c52f773a5ad68f1da0a47c993cad4595")
+                        .salt("0x40af1a4975ca6ca7285d7738e51c8da91a9daee4a23fb45d105068be56f85e56")
                         .build()
         );
 
-        String signatureString = eip712DatasetOrder.signMessage(getWallet());
+        String signatureString = eip712WorkerpoolOrder.signMessage(getWallet());
         Assertions.assertThat(signatureString)
-                .isEqualTo("0x955db5242901dfec80d1cf20dce54a8c60274db55fb572ead03f32a2475e18b60e308e1a3bc599d774549283ec737bcedca8420bdae9e4784e3f62e8f4ff085f1c");
+                .isEqualTo("0x5d7c625e34c1dbfa76c6f1b953910f21d83fb51499748e2ccf15f9d357142f1c4f8b24dc583914b02c868d5a1d751409bbe83c753152cfd88fdd3ac65b39e9fe1c");
     }
 
     private ECKeyPair getWallet() {

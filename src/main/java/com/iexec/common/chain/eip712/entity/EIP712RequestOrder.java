@@ -19,16 +19,12 @@ package com.iexec.common.chain.eip712.entity;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.chain.eip712.TypeParam;
-
-import com.iexec.common.contract.generated.IexecLibOrders_v5;
 import com.iexec.common.sdk.order.payload.RequestOrder;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Slf4j
 @Getter
 public class EIP712RequestOrder extends EIP712Entity<RequestOrder> {
 

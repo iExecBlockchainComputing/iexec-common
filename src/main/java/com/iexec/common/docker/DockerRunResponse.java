@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.cli.output;
+package com.iexec.common.docker;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FillOrdersCliOutput extends CliOutput<String> {
+public class DockerRunResponse {
 
-    @JsonProperty("ok")
-    private boolean ok;
-    @JsonProperty("dealid")
-    private String dealid;
-    private String volume;
-    private String txHash;
+    private boolean isSuccessful;
+    private DockerLogs dockerLogs;
+    private Long containerExitCode;
 
-    @Override
-    public String getBody() {
-        return dealid;
+    public String getStdout() {
+        if (dockerLogs != null && dockerLogs.getStdout() != null) {
+            return dockerLogs.getStdout();
+        }
+        return "";
+    }
+
+    public String getStderr() {
+        if (dockerLogs != null && dockerLogs.getStderr() != null) {
+            return dockerLogs.getStderr();
+        }
+        return "";
     }
 }

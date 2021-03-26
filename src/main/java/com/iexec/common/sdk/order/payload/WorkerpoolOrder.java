@@ -20,7 +20,7 @@ import lombok.*;
 
 import java.math.BigInteger;
 
-import static com.iexec.common.sdk.util.Utils.toLowerCase;
+import static com.iexec.common.sdk.order.OrderUtils.toLowerCase;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -30,18 +30,23 @@ public class WorkerpoolOrder extends Order {
 
     private String workerpool;
     private BigInteger workerpoolprice;
-    private BigInteger category;
     private BigInteger trust;
+    private BigInteger category;
     private String apprestrict;
     private String datasetrestrict;
     private String requesterrestrict;
 
     @Builder
-    public WorkerpoolOrder(String workerpool, BigInteger price, BigInteger volume, String tag,
-                           String salt, String sign, String apprestrict, String datasetrestrict, String requesterrestrict) {
+    public WorkerpoolOrder(
+            String workerpool, BigInteger price, BigInteger volume,
+            String tag, BigInteger trust, BigInteger category,
+            String salt, String sign, String apprestrict,
+            String datasetrestrict, String requesterrestrict) {
         super(volume, tag, salt, sign);
         this.workerpool = workerpool;
         this.workerpoolprice = price;
+        this.trust = trust;
+        this.category = category;
         setApprestrict(apprestrict);
         setDatasetrestrict(datasetrestrict);
         setRequesterrestrict(requesterrestrict);

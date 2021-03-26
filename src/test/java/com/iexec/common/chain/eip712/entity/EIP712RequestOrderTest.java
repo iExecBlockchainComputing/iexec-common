@@ -21,7 +21,7 @@ import com.iexec.common.sdk.order.payload.RequestOrder;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.WalletUtils;

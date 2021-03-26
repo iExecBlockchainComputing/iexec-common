@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.cli.output;
+package com.iexec.common.docker.client;
 
-public abstract class CliOutput<T> {
+public abstract class DockerClientFactory {
 
-    public abstract boolean isOk();
+    private static DockerClientInstance defaultClient;
 
-    public abstract T getBody();
+    public static synchronized DockerClientInstance getDockerClientInstance() {
+        if (defaultClient == null) {
+            defaultClient = new DockerClientInstance();
+        }
+        return defaultClient;
+    }
 
+    public static synchronized DockerClientInstance getDockerClientInstance(String username, String password) {
+        return new DockerClientInstance(username, password);
+    }
 }

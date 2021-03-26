@@ -14,30 +14,16 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.cli.output;
+package com.iexec.common.sdk.order;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.iexec.common.sdk.order.payload.RequestOrder;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+public abstract class OrderUtils {
 
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class SignRequestOrderCliOutput extends CliOutput<RequestOrder> {
-
-
-    @JsonProperty("ok")
-    private boolean ok;
-    @JsonProperty("requestorder")
-    private RequestOrder requestOrder;
-
-    @Override
-    public RequestOrder getBody() {
-        return requestOrder;
+    /**
+     * Lowercases string or returns empty
+     * @param s
+     * @return
+     */
+    public static String toLowerCase(String s) {
+        return s != null ? s.toLowerCase() : "";
     }
-
 }

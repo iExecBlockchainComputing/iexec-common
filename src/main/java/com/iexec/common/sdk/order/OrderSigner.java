@@ -17,10 +17,14 @@
 package com.iexec.common.sdk.order;
 
 import com.iexec.common.chain.eip712.EIP712Domain;
+import com.iexec.common.chain.eip712.entity.EIP712AppOrder;
 import com.iexec.common.chain.eip712.entity.EIP712DatasetOrder;
 import com.iexec.common.chain.eip712.entity.EIP712RequestOrder;
+import com.iexec.common.chain.eip712.entity.EIP712WorkerpoolOrder;
+import com.iexec.common.sdk.order.payload.AppOrder;
 import com.iexec.common.sdk.order.payload.DatasetOrder;
 import com.iexec.common.sdk.order.payload.RequestOrder;
+import com.iexec.common.sdk.order.payload.WorkerpoolOrder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.crypto.ECKeyPair;
@@ -38,6 +42,34 @@ public class OrderSigner {
     ) {
         this.ecKeyPair = ecKeyPair;
         eip712Domain = new EIP712Domain(chainId, verifyingContract);
+    }
+
+    public AppOrder signAppOrder(AppOrder appOrder) {
+        if (appOrder == null) {
+            return null;
+        }
+        String signature = new EIP712AppOrder(eip712Domain, appOrder)
+                .signMessage(ecKeyPair);
+        if (StringUtils.isEmpty(signature)) {
+            log.error("Empty signature [appOrder:{}]", appOrder.toString());
+            return null;
+        }
+        appOrder.setSign(signature);
+        return appOrder;
+    }
+
+    public WorkerpoolOrder signWorkerpoolOrder(WorkerpoolOrder workerpoolOrder) {
+        if (workerpoolOrder == null) {
+            return null;
+        }
+        String signature = new EIP712WorkerpoolOrder(eip712Domain, workerpoolOrder)
+                .signMessage(ecKeyPair);
+        if (StringUtils.isEmpty(signature)) {
+            log.error("Empty signature [workerpoolOrder:{}]", workerpoolOrder.toString());
+            return null;
+        }
+        workerpoolOrder.setSign(signature);
+        return workerpoolOrder;
     }
 
     public DatasetOrder signDatasetOrder(DatasetOrder datasetOrder) {

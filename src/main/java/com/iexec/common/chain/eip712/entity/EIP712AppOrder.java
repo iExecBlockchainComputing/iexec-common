@@ -19,32 +19,32 @@ package com.iexec.common.chain.eip712.entity;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.chain.eip712.TypeParam;
-import com.iexec.common.sdk.order.payload.DatasetOrder;
+import com.iexec.common.sdk.order.payload.AppOrder;
 import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Getter
-public class EIP712DatasetOrder extends EIP712Entity<DatasetOrder> {
+public class EIP712AppOrder extends EIP712Entity<AppOrder> {
 
-    public EIP712DatasetOrder(EIP712Domain domain, DatasetOrder datasetOrder) {
-        super(domain, datasetOrder);
+    public EIP712AppOrder(EIP712Domain domain, AppOrder appOrder) {
+        super(domain, appOrder);
     }
 
     @Override
     public String getPrimaryType() {
-        return "DatasetOrder";
+        return "AppOrder";
     }
 
     @Override
     public List<TypeParam> getMessageTypeParams() {
         return Arrays.asList(
-                new TypeParam("dataset", "address"),
-                new TypeParam("datasetprice", "uint256"),
+                new TypeParam("app", "address"),
+                new TypeParam("appprice", "uint256"),
                 new TypeParam("volume", "uint256"),
                 new TypeParam("tag", "bytes32"),
-                new TypeParam("apprestrict", "address"),
+                new TypeParam("datasetrestrict", "address"),
                 new TypeParam("workerpoolrestrict", "address"),
                 new TypeParam("requesterrestrict", "address"),
                 new TypeParam("salt", "bytes32"));
@@ -53,11 +53,11 @@ public class EIP712DatasetOrder extends EIP712Entity<DatasetOrder> {
     @Override
     public String getMessageHash() {
         return super.hashMessageValues(
-                getMessage().getDataset(),
-                getMessage().getDatasetprice(),
+                getMessage().getApp(),
+                getMessage().getAppprice(),
                 getMessage().getVolume(),
                 getMessage().getTag(),
-                getMessage().getApprestrict(),
+                getMessage().getDatasetrestrict(),
                 getMessage().getWorkerpoolrestrict(),
                 getMessage().getRequesterrestrict(),
                 getMessage().getSalt()

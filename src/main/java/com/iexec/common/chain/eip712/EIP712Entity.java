@@ -19,14 +19,12 @@ package com.iexec.common.chain.eip712;
 import com.google.common.collect.ObjectArrays;
 import com.iexec.common.utils.HashUtils;
 import com.iexec.common.utils.SignatureUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.ECKeyPair;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-@Slf4j
 public abstract class EIP712Entity<M> implements EIP712<M> {
 
     private final HashMap<String, List<TypeParam>> types;

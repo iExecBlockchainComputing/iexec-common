@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.cli.input;
+package com.iexec.common.sdk.cli;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iexec.common.sdk.broker.BrokerOrder;
@@ -26,7 +26,8 @@ import org.apache.commons.lang3.tuple.Pair;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BrokerOrderCliInput extends Pair<Integer, BrokerOrder> implements CliInput<BrokerOrder> {
+@SuppressWarnings("serial")
+public class BrokerOrderCliInput extends Pair<Integer, BrokerOrder> {
 
     /*
      * A pair is required for having a dynamic key (chainId field).

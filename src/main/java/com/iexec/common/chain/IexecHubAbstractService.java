@@ -70,9 +70,9 @@ public abstract class IexecHubAbstractService {
     private final String iexecHubAddress;
     private final Web3jAbstractService web3jAbstractService;
     private long maxNbOfPeriodsForConsensus;
-    private int nbBlocksToWaitPerRetry;
-    private int maxRetries;
-    private Map<String, TaskDescription> taskDescriptions = new HashMap<>();
+    private final int nbBlocksToWaitPerRetry;
+    private final int maxRetries;
+    private final Map<String, TaskDescription> taskDescriptions = new HashMap<>();
 
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
@@ -92,7 +92,8 @@ public abstract class IexecHubAbstractService {
         this.maxRetries = maxRetries;
 
         String hubAddress = getHubContract().getContractAddress();
-        log.info("Abstract IexecHubService initialized (iexec proxy address) [hubAddress:{}]", hubAddress);
+        log.info("Abstract IexecHubService initialized (iexec proxy address) " +
+                "[hubAddress:{}]", hubAddress);
         setMaxNbOfPeriodsForConsensus();
     }
 
@@ -105,12 +106,16 @@ public abstract class IexecHubAbstractService {
      * the last ContractGasProvider which depends on the gas price of the network
      */
     public IexecHubContract getHubContract(ContractGasProvider contractGasProvider) {
-        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load IexecHub contract from address " + iexecHubAddress);
+        ExceptionInInitializerError exceptionInInitializerError =
+                new ExceptionInInitializerError("Failed to load IexecHub " +
+                        "contract from address " + iexecHubAddress);
 
         if (iexecHubAddress != null && !iexecHubAddress.isEmpty()) {
             try {
-                return IexecHubContract.load(
-                        iexecHubAddress, web3jAbstractService.getWeb3j(), credentials, contractGasProvider);
+                return IexecHubContract.load(iexecHubAddress,
+                        web3jAbstractService.getWeb3j(),
+                        credentials,
+                        contractGasProvider);
             } catch (EnsResolutionException e) {
                 throw exceptionInInitializerError;
             }
@@ -127,44 +132,59 @@ public abstract class IexecHubAbstractService {
     }
 
     public App getAppContract(String appAddress) {
-        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load App contract address " + appAddress);
+        ExceptionInInitializerError exceptionInInitializerError =
+                new ExceptionInInitializerError("Failed to load App " +
+                        "contract address " + appAddress);
         try {
             if (appAddress == null || appAddress.isEmpty()) {
                 throw exceptionInInitializerError;
             }
 
-            return App.load(appAddress, web3jAbstractService.getWeb3j(), credentials, new DefaultGasProvider());
+            return App.load(appAddress,
+                    web3jAbstractService.getWeb3j(),
+                    credentials,
+                    new DefaultGasProvider());
         } catch (Exception e) {
-            log.error("Failed to load chainApp [address:{}]", appAddress);
+            log.error("Failed to load chainApp [address:{}]", appAddress, e);
         }
         return null;
     }
 
     public Dataset getDatasetContract(String datasetAddress) {
-        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load Dataset contract address " + datasetAddress);
+        ExceptionInInitializerError exceptionInInitializerError =
+                new ExceptionInInitializerError("Failed to load Dataset " +
+                        "contract address " + datasetAddress);
         try {
             if (datasetAddress == null || datasetAddress.isEmpty()) {
                 throw exceptionInInitializerError;
             }
 
-            return Dataset.load(datasetAddress, web3jAbstractService.getWeb3j(), credentials, new DefaultGasProvider());
+            return Dataset.load(datasetAddress,
+                    web3jAbstractService.getWeb3j(),
+                    credentials,
+                    new DefaultGasProvider());
         } catch (Exception e) {
-            log.error("Failed to load chainDataset [address:{}]", datasetAddress);
+            log.error("Failed to load chainDataset [address:{}]", datasetAddress, e);
         }
         return null;
     }
 
     public DatasetRegistry getDatasetRegistryContract(ContractGasProvider contractGasProvider) {
         String datasetRegistryAddress = "";
-        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load DatasetRegistry contract");
+        ExceptionInInitializerError exceptionInInitializerError =
+                new ExceptionInInitializerError("Failed to load DatasetRegistry contract");
         try {
             datasetRegistryAddress = getHubContract().datasetregistry().send();
             if (datasetRegistryAddress == null || datasetRegistryAddress.isEmpty()) {
                 throw exceptionInInitializerError;
             }
-            return DatasetRegistry.load(datasetRegistryAddress, web3jAbstractService.getWeb3j(), credentials, contractGasProvider);
+            return DatasetRegistry.load(datasetRegistryAddress,
+                    web3jAbstractService.getWeb3j(),
+                    credentials,
+                    contractGasProvider);
         } catch (Exception e) {
-            log.error("Failed to load DatasetRegistry contract [address:{}]", datasetRegistryAddress);
+            log.error("Failed to load DatasetRegistry contract [address:{}]",
+                    datasetRegistryAddress, e);
         }
         return null;
     }
@@ -176,11 +196,11 @@ public abstract class IexecHubAbstractService {
      * ERC721 mint method to retrieve dataset address
      * tokenId is the generic form of datasetAddress
      *
-     * @param name
-     * @param multiAddress
-     * @param checksum
-     * @param secondsTimeout
-     * @param secondsPollingInterval
+     * @param name dataset name
+     * @param multiAddress dataset url
+     * @param checksum dataset sha256 checksum
+     * @param secondsTimeout await dataset deployment for couple seconds
+     * @param secondsPollingInterval check if dataset is deployed every couple seconds
      * @return dataset address (e.g.: 0x95ba540ca3c2dfd52a7e487a03e1358dfe9441ce)
      */
     public String createDataset(String name, String multiAddress, String checksum,
@@ -262,10 +282,10 @@ public abstract class IexecHubAbstractService {
     /**
      * Default method for creating dataset
      *
-     * @param name
-     * @param multiAddress
-     * @param checksum
-     * @return
+     * @param name dataset name
+     * @param multiAddress dataset url
+     * @param checksum dataset sha256 checksum
+     * @return dataset address (e.g.: 0x95ba540ca3c2dfd52a7e487a03e1358dfe9441ce)
      */
     public String createDataset(String name, String multiAddress, String checksum) {
         return createDataset(name, multiAddress, checksum, 10 * 60, 5);
@@ -274,13 +294,14 @@ public abstract class IexecHubAbstractService {
     /**
      * This method to predict dataset address without deploying it
      *
-     * @param owner
-     * @param name
-     * @param multiAddress
-     * @param checksum
-     * @return dataset address
+     * @param owner dataset owner
+     * @param name dataset name
+     * @param multiAddress dataset url
+     * @param checksum dataset sha256 checksum
+     * @return dataset address (e.g.: 0x95ba540ca3c2dfd52a7e487a03e1358dfe9441ce)
      */
-    public String predictDataset(String owner, String name, String multiAddress, String checksum) {
+    public String predictDataset(String owner, String name, String multiAddress,
+                                 String checksum) {
         final String paramsPrinter = " [owner:{}, name:{}, multiAddress:{}, checksum:{}]";
 
         if (StringUtils.isEmpty(owner) || StringUtils.isEmpty(name)
@@ -315,7 +336,7 @@ public abstract class IexecHubAbstractService {
 
     public Optional<String> getTaskBeneficiary(String chainTaskId, Integer chainId) {
         Optional<ChainTask> chainTask = getChainTask(chainTaskId);
-        if (!chainTask.isPresent()) {
+        if (chainTask.isEmpty()) {
             return Optional.empty();
         }
         Optional<ChainDeal> optionalChainDeal = getChainDeal(chainTask.get().getDealid());
@@ -324,8 +345,9 @@ public abstract class IexecHubAbstractService {
 
     public boolean isPublicResult(String chainTaskId, Integer chainId) {
         Optional<String> beneficiary = getTaskBeneficiary(chainTaskId, chainId);
-        if (!beneficiary.isPresent()) {
-            log.error("Failed to get beneficiary for isPublicResult() method [chainTaskId:{}]", chainTaskId);
+        if (beneficiary.isEmpty()) {
+            log.error("Failed to get beneficiary for isPublicResult() method" +
+                    " [chainTaskId:{}]", chainTaskId);
             return false;
         }
         return beneficiary.get().equals(BytesUtils.EMPTY_ADDRESS);
@@ -333,12 +355,23 @@ public abstract class IexecHubAbstractService {
 
     public String getTaskResults(String chainTaskId, Integer chainId) {
         Optional<ChainTask> chainTask = getChainTask(chainTaskId);
-        if (!chainTask.isPresent()) {
+        if (chainTask.isEmpty()) {
             return "";
         }
         return chainTask.get().getResults();
     }
 
+    /**
+     * Retrieves on-chain deal with its blockchain ID
+     *
+     * Note:
+     * If `start time` is invalid, it is likely a blockchain issue. In this case,
+     * in order to protect workflows based on top of it, the deal won't be
+     * accessible from this method
+     *
+     * @param chainDealId blockchain ID of the deal (e.g: 0x123..abc)
+     * @return deal object
+     */
     public Optional<ChainDeal> getChainDeal(String chainDealId) {
         IexecHubContract iexecHub = getHubContract(new DefaultGasProvider());
 
@@ -352,88 +385,122 @@ public abstract class IexecHubAbstractService {
                     iexecHub.viewConfigABILegacy(chainDealIdBytes).send();
 
 
-            String appAddress = dealPt1.getValue1();
-            String datasetAddress = dealPt1.getValue4();
-            BigInteger categoryId = config.getValue1();
+            String appAddress = dealPt1.component1();
+            String datasetAddress = dealPt1.component4();
+            BigInteger categoryId = config.component1();
 
             Optional<ChainApp> chainApp = getChainApp(getAppContract(appAddress));
-            if (!chainApp.isPresent()) {
+            if (chainApp.isEmpty()) {
                 return Optional.empty();
             }
             Optional<ChainCategory> chainCategory = getChainCategory(categoryId.longValue());
-            if (!chainCategory.isPresent()) {
+            if (chainCategory.isEmpty()) {
                 return Optional.empty();
             }
-            Optional<ChainDataset> chainDataset = getChainDataset(getDatasetContract(datasetAddress));
+            Optional<ChainDataset> chainDataset =
+                    getChainDataset(getDatasetContract(datasetAddress));
 
-            return Optional.of(ChainDeal.builder()
+            ChainDeal chainDeal = ChainDeal.builder()
                     .chainDealId(chainDealId)
                     .chainApp(chainApp.get())
-                    .dappOwner(dealPt1.getValue2())
-                    .dappPrice(dealPt1.getValue3())
+                    .dappOwner(dealPt1.component2())
+                    .dappPrice(dealPt1.component3())
                     .chainDataset(chainDataset.orElse(null))
-                    .dataOwner(dealPt1.getValue5())
-                    .dataPrice(dealPt1.getValue6())
-                    .poolPointer(dealPt1.getValue7())
-                    .poolOwner(dealPt1.getValue8())
-                    .poolPrice(dealPt1.getValue9())
-                    .trust(dealPt2.getValue1())
-                    .tag(BytesUtils.bytesToString(dealPt2.getValue2()))
-                    .requester(dealPt2.getValue3())
-                    .beneficiary(dealPt2.getValue4())
-                    .callback(dealPt2.getValue5())
-                    .params(stringToDealParams(dealPt2.getValue6()))
+                    .dataOwner(dealPt1.component5())
+                    .dataPrice(dealPt1.component6())
+                    .poolPointer(dealPt1.component7())
+                    .poolOwner(dealPt1.component8())
+                    .poolPrice(dealPt1.component9())
+                    .trust(dealPt2.component1())
+                    .tag(BytesUtils.bytesToString(dealPt2.component2()))
+                    .requester(dealPt2.component3())
+                    .beneficiary(dealPt2.component4())
+                    .callback(dealPt2.component5())
+                    .params(stringToDealParams(dealPt2.component6()))
                     .chainCategory(chainCategory.get())
-                    .startTime(config.getValue2())
-                    .botFirst(config.getValue3())
-                    .botSize(config.getValue4())
-                    .workerStake(config.getValue5())
-                    .schedulerRewardRatio(config.getValue6())
-                    .build());
+                    .startTime(config.component2())
+                    .botFirst(config.component3())
+                    .botSize(config.component4())
+                    .workerStake(config.component5())
+                    .schedulerRewardRatio(config.component6())
+                    .build();
+
+            if (chainDeal.getStartTime() == null
+                    || chainDeal.getStartTime().longValue() <= 0) {
+                log.error("Deal start time should be greater than zero (likely a " +
+                                "blockchain issue) [chainDealId:{}, startTime:{}]",
+                        chainDealId, chainDeal.getStartTime());
+                return Optional.empty();
+            }
+            return Optional.of(chainDeal);
         } catch (Exception e) {
-            log.error("Failed to get ChainDeal [chainDealId:{}]", chainDealId);
+            log.error("Failed to get ChainDeal [chainDealId:{}]", chainDealId, e);
         }
         return Optional.empty();
     }
 
     public Optional<ChainTask> getChainTask(String chainTaskId) {
         try {
-            return Optional.of(ChainTask.tuple2ChainTask(getHubContract().viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send()));
+            return Optional.of(ChainTask.tuple2ChainTask(getHubContract()
+                    .viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send()));
         } catch (Exception e) {
-            log.error("Failed to get ChainTask [chainTaskId:{}]", chainTaskId);
+            log.error("Failed to get ChainTask [chainTaskId:{}]", chainTaskId, e);
         }
         return Optional.empty();
     }
 
     public Optional<ChainAccount> getChainAccount(String walletAddress) {
         try {
-            return Optional.of(ChainAccount.tuple2Account(getHubContract(new DefaultGasProvider()).viewAccountABILegacy(walletAddress).send()));
+            return Optional.of(ChainAccount.tuple2Account(getHubContract(new DefaultGasProvider())
+                    .viewAccountABILegacy(walletAddress).send()));
         } catch (Exception e) {
-            log.info("Failed to get ChainAccount");
+            log.error("Failed to get ChainAccount [walletAddress:{}]", walletAddress, e);
         }
         return Optional.empty();
     }
 
-    public Optional<ChainContribution> getChainContribution(String chainTaskId, String workerAddress) {
+    public Optional<ChainContribution> getChainContribution(String chainTaskId,
+                                                            String workerAddress) {
         try {
-            return Optional.of(ChainContribution.tuple2Contribution(
-                    getHubContract().viewContributionABILegacy(BytesUtils.stringToBytes(chainTaskId), workerAddress).send()));
+            return Optional.of(ChainContribution.tuple2Contribution(getHubContract()
+                    .viewContributionABILegacy(BytesUtils
+                            .stringToBytes(chainTaskId), workerAddress).send()));
         } catch (Exception e) {
-            log.error("Failed to get ChainContribution [chainTaskId:{}, workerAddress:{}]", chainTaskId, workerAddress);
+            log.error("Failed to get ChainContribution [chainTaskId:{}" +
+                    ", workerAddress:{}]", chainTaskId, workerAddress, e);
         }
         return Optional.empty();
     }
 
+    /**
+     * Retrieves on-chain category with its blockchain ID
+     *
+     * Note:
+     * If `max execution time` is invalid, it is likely a blockchain issue.
+     * In this case,in order to protect workflows based on top of it, the category
+     * won't be accessible from this method
+     *
+     * @param id blockchain ID of the category (e.g: 0x123..abc)
+     * @return category object
+     */
     public Optional<ChainCategory> getChainCategory(long id) {
         try {
-            Tuple3<String, String, BigInteger> category = getHubContract().viewCategoryABILegacy(BigInteger.valueOf(id)).send();
-            return Optional.of(ChainCategory.tuple2ChainCategory(id,
-                    category.getValue1(),
-                    category.getValue2(),
-                    category.getValue3()
-            ));
+            Tuple3<String, String, BigInteger> category = getHubContract()
+                    .viewCategoryABILegacy(BigInteger.valueOf(id)).send();
+            ChainCategory chainCategory = ChainCategory.tuple2ChainCategory(id,
+                    category.component1(),
+                    category.component2(),
+                    category.component3()
+            );
+            if (chainCategory.getMaxExecutionTime() <= 0) {
+                log.error("Category max execution time should be greater than zero " +
+                        "(likely a blockchain issue) [categoryId:{}, maxExecutionTime:{}]",
+                        id, chainCategory.getMaxExecutionTime());
+                return Optional.empty();
+            }
+            return Optional.of(chainCategory);
         } catch (Exception e) {
-            log.error("Failed to get ChainCategory [id:{}]", id);
+            log.error("Failed to get ChainCategory [id:{}]", id, e);
         }
         return Optional.empty();
     }
@@ -450,7 +517,8 @@ public abstract class IexecHubAbstractService {
                         .fingerprint(BytesUtils.hexStringToAscii(BytesUtils.bytesToString(app.m_appMREnclave().send())))
                         .build());
             } catch (Exception e) {
-                log.error("Failed to get ChainApp [chainAppId:{}]", app.getContractAddress());
+                log.error("Failed to get ChainApp [chainAppId:{}]",
+                        app.getContractAddress(), e);
             }
         }
         return Optional.empty();
@@ -467,7 +535,8 @@ public abstract class IexecHubAbstractService {
                         .checksum(BytesUtils.bytesToString(dataset.m_datasetChecksum().send()))
                         .build());
             } catch (Exception e) {
-                log.info("Failed to get ChainDataset [chainDatasetId:{}]", dataset.getContractAddress());
+                log.error("Failed to get ChainDataset [chainDatasetId:{}]",
+                        dataset.getContractAddress(), e);
             }
         }
         return Optional.empty();
@@ -479,7 +548,7 @@ public abstract class IexecHubAbstractService {
                 BigInteger workerScore = getHubContract().viewScore(address).send();
                 return Optional.of(workerScore.intValue());
             } catch (Exception e) {
-                log.error("Failed to getWorkerScore [address:{}]", address);
+                log.error("Failed to getWorkerScore [address:{}]", address, e);
             }
         }
         return Optional.empty();
@@ -487,24 +556,30 @@ public abstract class IexecHubAbstractService {
 
     public int getWorkerWeight(String address) {
         Optional<Integer> workerScore = getWorkerScore(address);
-        if (!workerScore.isPresent()) {
+        if (workerScore.isEmpty()) {
             return 0;
         }
         int weight = scoreToWeight(workerScore.get());
-        log.info("Get worker weight [address:{}, score:{}, weight:{}]", address, workerScore.get(), weight);
+        log.info("Get worker weight [address:{}, score:{}, weight:{}]",
+                address, workerScore.get(), weight);
         return weight;
     }
 
     public Ownable getOwnableContract(String address) {
-        ExceptionInInitializerError exceptionInInitializerError = new ExceptionInInitializerError("Failed to load Ownable contract " + address);
+        ExceptionInInitializerError exceptionInInitializerError =
+                new ExceptionInInitializerError("Failed to load Ownable " +
+                        "contract " + address);
         try {
             if (address == null || address.isEmpty()) {
                 throw exceptionInInitializerError;
             }
 
-            return Ownable.load(address, web3jAbstractService.getWeb3j(), credentials, new DefaultGasProvider());
+            return Ownable.load(address,
+                    web3jAbstractService.getWeb3j(),
+                    credentials,
+                    new DefaultGasProvider());
         } catch (Exception e) {
-            log.error("Failed to load Ownable [address:{}]", address);
+            log.error("Failed to load Ownable [address:{}]", address, e);
         }
         return null;
     }
@@ -516,7 +591,7 @@ public abstract class IexecHubAbstractService {
             try {
                 return ownableContract.owner().send();
             } catch (Exception e) {
-                log.error("Failed to get owner [address:{}]", address);
+                log.error("Failed to get owner [address:{}]", address, e);
             }
         }
         return "";
@@ -541,7 +616,7 @@ public abstract class IexecHubAbstractService {
             this.maxNbOfPeriodsForConsensus = getHubContract()
                     .contribution_deadline_ratio().send().longValue();
         } catch (Exception e) {
-            log.error("Failed to get maxNbOfPeriodsForConsensus from the chain");
+            log.error("Failed to get maxNbOfPeriodsForConsensus from the chain", e);
             this.maxNbOfPeriodsForConsensus = -1;
         }
     }
@@ -551,10 +626,12 @@ public abstract class IexecHubAbstractService {
     }
 
 
-    protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId, ChainStatus onchainStatus,
+    protected boolean isStatusValidOnChainAfterPendingReceipt(String chainTaskId,
+                                                              ChainStatus onchainStatus,
                                                               BiFunction<String, ChainStatus, Boolean> isStatusValidOnChainFunction) {
         long maxWaitingTime = web3jAbstractService.getMaxWaitingTimeWhenPendingReceipt();
-        log.info("Waiting for on-chain status after pending receipt [chainTaskId:{}, status:{}, maxWaitingTime:{}]",
+        log.info("Waiting for on-chain status after pending receipt " +
+                        "[chainTaskId:{}, status:{}, maxWaitingTime:{}]",
                 chainTaskId, onchainStatus, maxWaitingTime);
 
         final long startTime = System.currentTimeMillis();
@@ -566,12 +643,13 @@ public abstract class IexecHubAbstractService {
                 }
                 Thread.sleep(500);
             } catch (InterruptedException e) {
-                log.error("Error in checking the latest block number");
+                log.error("Error in checking the latest block number", e);
             }
             duration = System.currentTimeMillis() - startTime;
         }
 
-        log.error("Timeout reached after waiting for on-chain status [chainTaskId:{}, maxWaitingTime:{}]",
+        log.error("Timeout reached after waiting for on-chain status " +
+                        "[chainTaskId:{}, maxWaitingTime:{}]",
                 chainTaskId, maxWaitingTime);
         return false;
     }
@@ -582,12 +660,14 @@ public abstract class IexecHubAbstractService {
      */
     public TaskDescription getTaskDescription(String chainTaskId) {
         if (taskDescriptions.get(chainTaskId) == null) {
-            Optional<TaskDescription> taskDescriptionFromChain = this.getTaskDescriptionFromChain(chainTaskId);
-            taskDescriptionFromChain.ifPresent((taskDescription) -> {
+            Optional<TaskDescription> taskDescriptionFromChain =
+                    this.getTaskDescriptionFromChain(chainTaskId);
+            taskDescriptionFromChain.ifPresent(taskDescription -> {
                 if (taskDescription.getChainTaskId() != null) {
                     taskDescriptions.putIfAbsent(taskDescription.getChainTaskId(), taskDescription);
                 } else {
-                    log.error("Cant putTaskDescription [taskDescription:{}]", taskDescription);
+                    log.error("Cant putTaskDescription [taskDescription:{}]",
+                            taskDescription);
                 }
             });
         }
@@ -597,22 +677,25 @@ public abstract class IexecHubAbstractService {
     public Optional<TaskDescription> getTaskDescriptionFromChain(String chainTaskId) {
 
         Optional<ChainTask> optionalChainTask = getChainTask(chainTaskId);
-        if (!optionalChainTask.isPresent()) {
-            log.info("Failed to get TaskDescription, ChainTask error  [chainTaskId:{}]", chainTaskId);
+        if (optionalChainTask.isEmpty()) {
+            log.info("Failed to get TaskDescription, ChainTask error " +
+                    "[chainTaskId:{}]", chainTaskId);
             return Optional.empty();
         }
 
         ChainTask chainTask = optionalChainTask.get();
 
         Optional<ChainDeal> optionalChainDeal = getChainDeal(chainTask.getDealid());
-        if (!optionalChainDeal.isPresent()) {
-            log.info("Failed to get TaskDescription, ChainDeal error  [chainTaskId:{}]", chainTaskId);
+        if (optionalChainDeal.isEmpty()) {
+            log.info("Failed to get TaskDescription, ChainDeal error " +
+                    "[chainTaskId:{}]", chainTaskId);
             return Optional.empty();
         }
 
         ChainDeal chainDeal = optionalChainDeal.get();
 
-        String datasetURI = chainDeal.getChainDataset() != null ? MultiAddressHelper.convertToURI(chainDeal.getChainDataset().getUri()) : "";
+        String datasetURI = chainDeal.getChainDataset() != null ?
+                MultiAddressHelper.convertToURI(chainDeal.getChainDataset().getUri()) : "";
 
         return Optional.of(TaskDescription.builder()
                 .chainTaskId(chainTaskId)
@@ -640,17 +723,20 @@ public abstract class IexecHubAbstractService {
     }
 
     public boolean isTeeTask(String chainTaskId) {
-        Optional<TaskDescription> oTaskDescription = getTaskDescriptionFromChain(chainTaskId);
+        Optional<TaskDescription> oTaskDescription =
+                getTaskDescriptionFromChain(chainTaskId);
 
-        if (!oTaskDescription.isPresent()) {
-            log.error("Couldn't get task description from chain [chainTaskId:{}]", chainTaskId);
+        if (oTaskDescription.isEmpty()) {
+            log.error("Couldn't get task description from chain [chainTaskId:{}]",
+                    chainTaskId);
             return false;
         }
 
         return oTaskDescription.get().isTeeTask();
     }
 
-    public ChainReceipt getContributionBlock(String chainTaskId, String workerWallet, long fromBlock) {
+    public ChainReceipt getContributionBlock(String chainTaskId, String workerWallet,
+                                             long fromBlock) {
         long latestBlock = web3jAbstractService.getLatestBlockNumber();
         if (fromBlock > latestBlock) {
             return ChainReceipt.builder().build();
@@ -692,7 +778,8 @@ public abstract class IexecHubAbstractService {
                 .blockingFirst();
     }
 
-    public ChainReceipt getRevealBlock(String chainTaskId, String workerWallet, long fromBlock) {
+    public ChainReceipt getRevealBlock(String chainTaskId, String workerWallet,
+                                       long fromBlock) {
         long latestBlock = web3jAbstractService.getLatestBlockNumber();
         if (fromBlock > latestBlock) {
             return ChainReceipt.builder().build();
@@ -729,8 +816,10 @@ public abstract class IexecHubAbstractService {
 
     private EthFilter createEthFilter(long fromBlock, long toBlock, Event event) {
         IexecHubContract iexecHub = getHubContract();
-        DefaultBlockParameter startBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(fromBlock));
-        DefaultBlockParameter endBlock = DefaultBlockParameter.valueOf(BigInteger.valueOf(toBlock));
+        DefaultBlockParameter startBlock =
+                DefaultBlockParameter.valueOf(BigInteger.valueOf(fromBlock));
+        DefaultBlockParameter endBlock =
+                DefaultBlockParameter.valueOf(BigInteger.valueOf(toBlock));
 
         // define the filter
         EthFilter ethFilter = new EthFilter(
@@ -744,13 +833,13 @@ public abstract class IexecHubAbstractService {
     }
 
     public boolean repeatIsContributedTrue(String chainTaskId, String walletAddress) {
-        return web3jAbstractService.repeatCheck(nbBlocksToWaitPerRetry, maxRetries, "isContributedTrue",
-                this::isContributedTrue, chainTaskId, walletAddress);
+        return web3jAbstractService.repeatCheck(nbBlocksToWaitPerRetry, maxRetries,
+                "isContributedTrue", this::isContributedTrue, chainTaskId, walletAddress);
     }
 
     public boolean repeatIsRevealedTrue(String chainTaskId, String walletAddress) {
-        return web3jAbstractService.repeatCheck(nbBlocksToWaitPerRetry, maxRetries, "isRevealedTrue",
-                this::isRevealedTrue, chainTaskId, walletAddress);
+        return web3jAbstractService.repeatCheck(nbBlocksToWaitPerRetry, maxRetries,
+                "isRevealedTrue", this::isRevealedTrue, chainTaskId, walletAddress);
     }
 
     private boolean isContributedTrue(String... args) {
@@ -761,9 +850,11 @@ public abstract class IexecHubAbstractService {
         return this.isStatusTrueOnChain(args[0], args[1], REVEALED);
     }
 
-    public boolean isStatusTrueOnChain(String chainTaskId, String walletAddress, ChainContributionStatus wishedStatus) {
-        Optional<ChainContribution> optional = getChainContribution(chainTaskId, walletAddress);
-        if (!optional.isPresent()) {
+    public boolean isStatusTrueOnChain(String chainTaskId, String walletAddress,
+                                       ChainContributionStatus wishedStatus) {
+        Optional<ChainContribution> optional =
+                getChainContribution(chainTaskId, walletAddress);
+        if (optional.isEmpty()) {
             return false;
         }
 

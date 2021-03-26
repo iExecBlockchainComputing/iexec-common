@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.util;
+package com.iexec.common.docker;
 
-public abstract class Utils {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    /**
-     * Lowercases string or returns empty
-     * @param s
-     * @return
-     */
-    public static String toLowerCase(String s) {
-        return s != null ? s.toLowerCase() : "";
-    }
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class DockerLogs {
+
+    private String stdout;
+    private String stderr;
+
 }

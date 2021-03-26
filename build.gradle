@@ -16,6 +16,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'jacoco'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'com.iexec.common'
@@ -65,6 +66,9 @@ dependencies {
     // google core libs
     implementation "com.google.guava:guava:28.2-jre"
 
+    // json
+    implementation 'org.json:json:20201115'
+
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'io.github.openfeign:feign-okhttp:11.0'
     implementation 'io.github.openfeign:feign-jackson:11.0'
@@ -75,27 +79,36 @@ dependencies {
     implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.5'
 
     // test
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
     testImplementation 'org.mockito:mockito-core:3.6.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
     testImplementation 'org.assertj:assertj-core:3.18.1'
-
-
-    // test
-    testCompile "junit:junit:$junitVersion"
-    testCompile("org.assertj:assertj-core:3.11.1")
 
     // package cloud
     deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
 }
 
+// ./gradlew build -Pdev
+def isDev = project.hasProperty('dev')
+
 test {
+    useJUnitPlatform {
+        if (isDev) {
+            excludeTags 'slow'
+        }
+    }
     reports {
         junitXml.enabled = true
         html.enabled = true
     }
 }
+
+jacoco {
+    toolVersion = "0.8.3"
+    // reportsDir = file("$buildDir/TestCoverageReport")
+}
+build.dependsOn jacocoTestReport
 
 jar {
     // include source code in the jar

@@ -16,31 +16,31 @@
 
 package com.iexec.common.sdk.broker;
 
-import com.iexec.common.chain.ChainUtils;
 import com.iexec.common.sdk.cli.IexecCli;
-import com.iexec.common.sdk.cli.input.BrokerOrderCliInput;
-import com.iexec.common.sdk.cli.input.CliInput;
-import com.iexec.common.sdk.cli.output.FillOrdersCliOutput;
 import com.iexec.common.sdk.order.payload.AppOrder;
 import com.iexec.common.sdk.order.payload.DatasetOrder;
 import com.iexec.common.sdk.order.payload.RequestOrder;
 import com.iexec.common.sdk.order.payload.WorkerpoolOrder;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigInteger;
 
 @Slf4j
-public class BrokerEngine {
+@Builder
+public class BrokeringEngine {
 
-    private final IexecCli iexecCli;
     private final int chainId;
+    private final String walletContent;
+    private final String walletPassword;
 
-    public BrokerEngine(int chainId, String walletPassword) {
+    public BrokeringEngine(int chainId, String walletContent, String walletPassword) {
         this.chainId = chainId;
-        this.iexecCli = new IexecCli(chainId, walletPassword);
+        this.walletContent = walletContent;
+        this.walletPassword = walletPassword;
     }
 
-    public String fillBrokerOrder(BrokerOrder brokerOrder, long deposit, boolean withDataset) {
+    public String matchOrders(BrokerOrder brokerOrder, long deposit, boolean withDataset) {
         if (brokerOrder == null) {
             throw new IllegalArgumentException("Broker order cannot be null");
         }
@@ -70,21 +70,15 @@ public class BrokerEngine {
         if (!hasRequesterDepositedEnough(brokerOrder.getRequestOrder(), deposit)) {
             throw new IllegalStateException("Deposit too low");
         }
-        CliInput cliInput = new BrokerOrderCliInput(chainId, brokerOrder);
-        iexecCli.copyInputToHomeDir(cliInput, "orders.json");
         String beneficiary = brokerOrder.getRequestOrder().getBeneficiary();
-        log.info("Filling valid request order [requester:{}, beneficiary:{}, " +
+        log.info("Matching valid orders onchain [requester:{}, beneficiary:{}, " +
                 "pool:{}, app:{}, dataset:{}]", requestOrder.getRequester(), beneficiary,
-                workerpoolOrder.getWorkerpool(), appOrder.getApp(), datasetOrder.getDataset());
-        String chainDealId = iexecCli.run("iexec order fill --skip-request-check", FillOrdersCliOutput.class);
+                workerpoolOrder.getWorkerpool(), appOrder.getApp(), datasetOrder.getDataset());        
+        String chainDealId = IexecCli.runIexecFillCommand(chainId, brokerOrder, walletContent, walletPassword);
         if (chainDealId == null || chainDealId.isEmpty()) {
             throw new RuntimeException("Failed to fill order");
         }
-        String chainTaskId = ChainUtils.generateChainTaskId(chainDealId, 0);
-        log.info("Filled valid request order [chainTaskId:{}, requester:{}, beneficiary:{}, " +
-                "pool:{}, app:{}, dataset:{}]", chainTaskId, requestOrder.getRequester(), beneficiary,
-                workerpoolOrder.getWorkerpool(), appOrder.getApp(), datasetOrder.getDataset());
-        return chainTaskId;
+        return chainDealId;
     }
 
     public boolean hasRequesterAcceptedPrices(
