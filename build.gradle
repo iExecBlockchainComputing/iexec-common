@@ -1,5 +1,5 @@
 plugins {
-    id 'java-library'
+    id 'java'
     id 'eclipse'
     id 'maven'
     id 'jacoco'
@@ -24,40 +24,33 @@ configurations {
 }
 
 dependencies {
-    // api dependencies will be exposed to
-    // projects using this lib
-    
     // lombok
-    api "org.projectlombok:lombok:1.18.2"
+    compileOnly "org.projectlombok:lombok:1.18.2"
     annotationProcessor "org.projectlombok:lombok:1.18.2"
 
-    // swagger
-    api "io.springfox:springfox-swagger2:2.9.2"
-    api "io.springfox:springfox-swagger-ui:2.9.2"
-
-    // web3j
-    api "org.web3j:core:4.7.0"
+    // web3j dependency
+    compile "org.web3j:core:4.7.0"
     
     // apache commons.lang3
-    api "org.apache.commons:commons-lang3:3.9"
+    compile "org.apache.commons:commons-lang3:3.9"
 
     // multiaddresses (IPFS)
-    api 'com.github.multiformats:java-multiaddr:1.3.1'
-
-    // json
-    api 'org.json:json:20201115'
-
-    // google core libs
-    api 'com.google.guava:guava:29.0-jre'
+    compile 'com.github.multiformats:java-multiaddr:1.3.1'
 
     //jaxb required with Java 11
-    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    compile 'javax.xml.bind:jaxb-api:2.3.0'
 
     //args utils
-    implementation 'org.apache.maven.shared:maven-shared-utils:3.2.1'
+    compile 'org.apache.maven.shared:maven-shared-utils:3.2.1'
 
     // zip
-    implementation 'net.lingala.zip4j:zip4j:2.3.1'
+    compile 'net.lingala.zip4j:zip4j:2.3.1'
+
+    // google core libs
+    implementation "com.google.guava:guava:28.2-jre"
+
+    // json
+    implementation 'org.json:json:20201115'
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'io.github.openfeign:feign-okhttp:11.0'
