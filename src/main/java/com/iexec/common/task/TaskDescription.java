@@ -44,6 +44,7 @@ public class TaskDescription {
     private int botFirstIndex;
     private boolean developerLoggerEnabled;
     private String datasetUri;
+    private String datasetName;
     private String datasetChecksum;
     private List<String> inputFiles;
     private boolean isCallbackRequested;
