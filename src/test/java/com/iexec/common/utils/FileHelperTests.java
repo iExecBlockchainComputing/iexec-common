@@ -233,20 +233,6 @@ public class FileHelperTests {
     }
 
     @Test
-    public void shouldDownloadFileInDirectory() {
-        String fileUri = "http://dummy-uri";
-        boolean isDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
-        assertThat(isDownloaded).isFalse();
-    }
-
-    @Test
-    public void shouldNotDownloadFileInDirectory() {
-        String fileUri = "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
-        boolean isDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
-        assertThat(isDownloaded).isTrue();
-    }
-
-    @Test
     public void shouldRemoveZipExtension() {
         String fileName = FileHelper.removeZipExtension("/some/where/file.zip");
         assertEquals("/some/where/file", fileName);

@@ -21,6 +21,7 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.web3j.crypto.Hash;
 
 import java.io.File;
@@ -123,19 +124,17 @@ public class FileHelper {
     public static String downloadFile(String fileUri,
                                       String downloadDirectoryPath,
                                       String outputFilename) {
-        if (!createFolder(downloadDirectoryPath)) {
-            log.error("Failed to create base directory" +
-                    "[downloadDirectoryPath:{}]", downloadDirectoryPath);
-            return "";
-        }
-
-        if (fileUri.isEmpty()) {
+        if (StringUtils.isBlank(fileUri)) {
             log.error("FileUri shouldn't be empty [fileUri:{}]", fileUri);
             return "";
         }
-
         if (StringUtils.isBlank(outputFilename)) {
             log.error("Output filename shouldn't be empty [fileUri:{}]", fileUri);
+            return "";
+        }
+        if (!createFolder(downloadDirectoryPath)) {
+            log.error("Failed to create base directory" +
+                    "[downloadDirectoryPath:{}]", downloadDirectoryPath);
             return "";
         }
 
