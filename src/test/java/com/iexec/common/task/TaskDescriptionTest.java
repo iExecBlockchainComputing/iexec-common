@@ -19,10 +19,15 @@ either express or implied.
 
 package com.iexec.common.task;
 
+import com.iexec.common.chain.*;
 import com.iexec.common.dapp.DappType;
+import com.iexec.common.tee.TeeUtils;
+import com.iexec.common.utils.BytesUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,15 +38,15 @@ class TaskDescriptionTest {
     public static final String BENEFICIARY = "beneficiary";
     public static final String CALLBACK = "callback";
     public static final DappType APP_TYPE = DappType.DOCKER;
-    public static final String APP_URI = "appUri";
+    public static final String APP_URI = "https://uri";
     public static final String CMD = "cmd";
     public static final int MAX_EXECUTION_TIME = 1;
     public static final boolean IS_TEE_TASK = true;
-    public static final int BOT_INDEX = 1;
-    public static final int BOT_SIZE = 3;
-    public static final int BOT_FIRST_INDEX = 2;
+    public static final int BOT_SIZE = 1;
+    public static final int BOT_FIRST = 2;
+    public static final int TASK_IDX = 3;
     public static final boolean DEVELOPER_LOGGER_ENABLED = true;
-    public static final String DATASET_URI = "datasetUri";
+    public static final String DATASET_URI = "https://datasetUri";
     public static final String DATASET_NAME = "datasetName";
     public static final String DATASET_CHECKSUM = "datasetChecksum";
     public static final List<String> INPUT_FILES = Collections.singletonList("inputFiles");
@@ -64,9 +69,9 @@ class TaskDescriptionTest {
                 .cmd(CMD)
                 .maxExecutionTime(MAX_EXECUTION_TIME)
                 .isTeeTask(IS_TEE_TASK)
-                .botIndex(BOT_INDEX)
                 .botSize(BOT_SIZE)
-                .botFirstIndex(BOT_FIRST_INDEX)
+                .botFirstIndex(BOT_FIRST)
+                .botIndex(TASK_IDX)
                 .developerLoggerEnabled(DEVELOPER_LOGGER_ENABLED)
                 .datasetUri(DATASET_URI)
                 .datasetName(DATASET_NAME)
@@ -97,11 +102,94 @@ class TaskDescriptionTest {
                 task.getMaxExecutionTime());
         Assertions.assertEquals(IS_TEE_TASK,
                 task.isTeeTask());
-        Assertions.assertEquals(BOT_INDEX,
+        Assertions.assertEquals(TASK_IDX,
                 task.getBotIndex());
         Assertions.assertEquals(BOT_SIZE,
                 task.getBotSize());
-        Assertions.assertEquals(BOT_FIRST_INDEX,
+        Assertions.assertEquals(BOT_FIRST,
+                task.getBotFirstIndex());
+        Assertions.assertEquals(DEVELOPER_LOGGER_ENABLED,
+                task.isDeveloperLoggerEnabled());
+        Assertions.assertEquals(DATASET_URI,
+                task.getDatasetUri());
+        Assertions.assertEquals(DATASET_NAME,
+                task.getDatasetName());
+        Assertions.assertEquals(DATASET_CHECKSUM,
+                task.getDatasetChecksum());
+        Assertions.assertEquals(INPUT_FILES,
+                task.getInputFiles());
+        Assertions.assertEquals(IS_CALLBACK_REQUESTED,
+                task.isCallbackRequested());
+        Assertions.assertEquals(IS_RESULT_ENCRYPTION,
+                task.isResultEncryption());
+        Assertions.assertEquals(RESULT_STORAGE_PROVIDER,
+                task.getResultStorageProvider());
+        Assertions.assertEquals(RESULT_STORAGE_PROXY,
+                task.getResultStorageProxy());
+        Assertions.assertEquals(TEE_POST_COMPUTE_IMAGE,
+                task.getTeePostComputeImage());
+        Assertions.assertEquals(TEE_POST_COMPUTE_FINGERPRINT,
+                task.getTeePostComputeFingerprint());
+    }
+
+    @Test
+    void toTaskDescription() {
+        ChainDeal chainDeal = ChainDeal.builder()
+                .requester(REQUESTER)
+                .beneficiary(BENEFICIARY)
+                .callback(CALLBACK)
+                .chainApp(ChainApp.builder()
+                        .type(APP_TYPE.toString())
+                        .uri(BytesUtils.bytesToString(APP_URI.getBytes(StandardCharsets.UTF_8)))
+                        .build())
+                .params(DealParams.builder()
+                        .iexecArgs(CMD)
+                        .iexecInputFiles(INPUT_FILES)
+                        .iexecDeveloperLoggerEnabled(DEVELOPER_LOGGER_ENABLED)
+                        .iexecResultStorageProvider(RESULT_STORAGE_PROVIDER)
+                        .iexecResultStorageProxy(RESULT_STORAGE_PROXY)
+                        .iexecResultEncryption(IS_RESULT_ENCRYPTION)
+                        .iexecTeePostComputeImage(TEE_POST_COMPUTE_IMAGE)
+                        .iexecTeePostComputeFingerprint(TEE_POST_COMPUTE_FINGERPRINT)
+                        .build())
+                .chainDataset(ChainDataset.builder()
+                        .name(DATASET_NAME)
+                        .uri(BytesUtils.bytesToString(DATASET_URI.getBytes(StandardCharsets.UTF_8)))
+                        .checksum(DATASET_CHECKSUM).build())
+                .tag(TeeUtils.TEE_TAG)
+                .chainCategory(ChainCategory.builder()
+                        .maxExecutionTime(MAX_EXECUTION_TIME)
+                        .build())
+                .botFirst(BigInteger.valueOf(BOT_FIRST))
+                .botSize(BigInteger.valueOf(BOT_SIZE))
+                .build();
+
+        TaskDescription task =
+                TaskDescription.toTaskDescription(CHAIN_TASK_ID, TASK_IDX, chainDeal);
+
+        Assertions.assertEquals(CHAIN_TASK_ID,
+                task.getChainTaskId());
+        Assertions.assertEquals(REQUESTER,
+                task.getRequester());
+        Assertions.assertEquals(BENEFICIARY,
+                task.getBeneficiary());
+        Assertions.assertEquals(CALLBACK,
+                task.getCallback());
+        Assertions.assertEquals(APP_TYPE,
+                task.getAppType());
+        Assertions.assertEquals(APP_URI,
+                task.getAppUri());
+        Assertions.assertEquals(CMD,
+                task.getCmd());
+        Assertions.assertEquals(MAX_EXECUTION_TIME,
+                task.getMaxExecutionTime());
+        Assertions.assertEquals(IS_TEE_TASK,
+                task.isTeeTask());
+        Assertions.assertEquals(TASK_IDX,
+                task.getBotIndex());
+        Assertions.assertEquals(BOT_SIZE,
+                task.getBotSize());
+        Assertions.assertEquals(BOT_FIRST,
                 task.getBotFirstIndex());
         Assertions.assertEquals(DEVELOPER_LOGGER_ENABLED,
                 task.isDeveloperLoggerEnabled());

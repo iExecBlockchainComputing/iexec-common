@@ -17,11 +17,8 @@
 package com.iexec.common.chain;
 
 import com.iexec.common.contract.generated.*;
-import com.iexec.common.dapp.DappType;
 import com.iexec.common.task.TaskDescription;
-import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
-import com.iexec.common.utils.MultiAddressHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.Awaitility;
@@ -53,7 +50,6 @@ import java.util.function.BiFunction;
 
 import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
 import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
-import static com.iexec.common.chain.ChainDeal.stringToDealParams;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
 
 
@@ -674,40 +670,11 @@ public abstract class IexecHubAbstractService {
 
         ChainDeal chainDeal = optionalChainDeal.get();
 
-        String datasetURI = "";
-        String datasetName = "";
-        String datasetChecksum = "";
-        if (chainDeal.getChainDataset() != null){
-            datasetURI = MultiAddressHelper.convertToURI(chainDeal.getChainDataset().getUri());
-            datasetName = chainDeal.getChainDataset().getName();
-            datasetChecksum = chainDeal.getChainDataset().getChecksum();
-        }
-
-        return Optional.of(TaskDescription.builder()
-                .chainTaskId(chainTaskId)
-                .requester(chainDeal.getRequester())
-                .beneficiary(chainDeal.getBeneficiary())
-                .callback(chainDeal.getCallback())
-                .appType(DappType.DOCKER)
-                .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp().getUri()))
-                .cmd(chainDeal.getParams().getIexecArgs())
-                .inputFiles(chainDeal.getParams().getIexecInputFiles())
-                .maxExecutionTime(chainDeal.getChainCategory().getMaxExecutionTime())
-                .isTeeTask(TeeUtils.isTeeTag(chainDeal.getTag()))
-                .developerLoggerEnabled(chainDeal.getParams().isIexecDeveloperLoggerEnabled())
-                .resultStorageProvider(chainDeal.getParams().getIexecResultStorageProvider())
-                .resultStorageProxy(chainDeal.getParams().getIexecResultStorageProxy())
-                .isResultEncryption(chainDeal.getParams().isIexecResultEncryption())
-                .isCallbackRequested(chainDeal.getCallback() != null && !chainDeal.getCallback().equals(BytesUtils.EMPTY_ADDRESS))
-                .teePostComputeImage(chainDeal.getParams().getIexecTeePostComputeImage())
-                .teePostComputeFingerprint(chainDeal.getParams().getIexecTeePostComputeFingerprint())
-                .datasetUri(datasetURI)
-                .datasetName(datasetName)
-                .datasetChecksum(datasetChecksum)
-                .botSize(chainDeal.botSize.intValue())
-                .botFirstIndex(chainDeal.botFirst.intValue())
-                .botIndex(chainTask.getIdx())
-                .build());
+        TaskDescription taskDescription =
+                TaskDescription.toTaskDescription(chainTaskId,
+                        chainTask.getIdx(),
+                        chainDeal);
+        return taskDescription != null ? Optional.of(taskDescription) : Optional.empty();
     }
 
     public boolean isTeeTask(String chainTaskId) {
