@@ -182,7 +182,7 @@ public class FileHelper {
      * @param directoryPath directory path where the file will be downloaded
      * @return true if successful download
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static boolean downloadFileInDirectory(String fileUri, String directoryPath){
         return !downloadFile(fileUri, directoryPath).isEmpty();
     }
