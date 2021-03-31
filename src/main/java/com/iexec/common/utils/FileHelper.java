@@ -134,7 +134,7 @@ public class FileHelper {
             return "";
         }
 
-        if (outputFilename.isEmpty()) {
+        if (StringUtils.isBlank(outputFilename)) {
             log.error("Output filename shouldn't be empty [fileUri:{}]", fileUri);
             return "";
         }
