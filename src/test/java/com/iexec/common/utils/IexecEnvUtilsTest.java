@@ -20,7 +20,9 @@ import com.iexec.common.task.TaskDescription;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static com.iexec.common.utils.IexecEnvUtils.*;
@@ -62,5 +64,31 @@ class IexecEnvUtilsTest {
                 map.get(IEXEC_INPUT_FILES_ENV_PROPERTY_PREFIX + "1"));
         Assertions.assertEquals(FileHelper.SLASH_IEXEC_IN,
                 map.get(IEXEC_INPUT_FILES_FOLDER_ENV_PROPERTY));
+    }
+
+    @Test
+    void getComputeStageEnvList() {
+        TaskDescription taskDescription = TaskDescription.builder()
+                .chainTaskId(CHAIN_TASK_ID)
+                .datasetName(DATASET_NAME)
+                .botSize(1)
+                .botFirstIndex(0)
+                .inputFiles(Collections.singletonList(INPUT_FILE_1))
+                .build();
+        List<String> expected = Arrays
+                .asList("IEXEC_TASK_ID=chainTaskId",
+                        "IEXEC_IN=/iexec_in",
+                        "IEXEC_OUT=/iexec_out",
+                        "IEXEC_DATASET_FILENAME=datasetName",
+                        "IEXEC_INPUT_FILES_FOLDER=/iexec_in",
+                        "IEXEC_BOT_SIZE=1",
+                        "IEXEC_BOT_FIRST_INDEX=0",
+                        "IEXEC_BOT_TASK_INDEX=0",
+                        "IEXEC_NB_INPUT_FILES=1",
+                        "IEXEC_INPUT_FILE_NAME_1=inputFile1");
+        List<String> actual = IexecEnvUtils.getComputeStageEnvList(taskDescription);
+        Collections.sort(expected);
+        Collections.sort(actual);
+        Assertions.assertEquals(expected, actual);
     }
 }
