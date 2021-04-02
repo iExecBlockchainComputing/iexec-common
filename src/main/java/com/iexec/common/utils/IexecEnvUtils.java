@@ -51,8 +51,8 @@ public class IexecEnvUtils {
     public static Map<String, String> getComputeStageEnvMap(TaskDescription taskDescription) {
         Map<String, String> map = new HashMap<String, String>();
         map.put(IEXEC_TASK_ID_ENV_PROPERTY, taskDescription.getChainTaskId());
-        map.put(IEXEC_IN_ENV_PROPERTY, FileHelper.SLASH_IEXEC_IN);
-        map.put(IEXEC_OUT_ENV_PROPERTY, FileHelper.SLASH_IEXEC_OUT);
+        map.put(IEXEC_IN_ENV_PROPERTY, IexecFileHelper.SLASH_IEXEC_IN);
+        map.put(IEXEC_OUT_ENV_PROPERTY, IexecFileHelper.SLASH_IEXEC_OUT);
         map.put(IEXEC_DATASET_FILENAME_ENV_PROPERTY, taskDescription.getDatasetName());
         map.put(IEXEC_BOT_SIZE_ENV_PROPERTY, String.valueOf(taskDescription.getBotSize()));
         map.put(IEXEC_BOT_FIRST_INDEX_ENV_PROPERTY, String.valueOf(taskDescription.getBotFirstIndex()));
@@ -64,7 +64,7 @@ public class IexecEnvUtils {
             map.put(IEXEC_INPUT_FILES_ENV_PROPERTY_PREFIX + inputFileIndex, FilenameUtils.getName(inputFile));
             inputFileIndex++;
         }
-        map.put(IEXEC_INPUT_FILES_FOLDER_ENV_PROPERTY, FileHelper.SLASH_IEXEC_IN);
+        map.put(IEXEC_INPUT_FILES_FOLDER_ENV_PROPERTY, IexecFileHelper.SLASH_IEXEC_IN);
         return map;
     }
 
