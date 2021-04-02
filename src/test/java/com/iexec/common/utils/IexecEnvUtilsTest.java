@@ -46,9 +46,9 @@ class IexecEnvUtilsTest {
                 IexecEnvUtils.getComputeStageEnvMap(taskDescription);
         Assertions.assertEquals(taskDescription.getChainTaskId(),
                 map.get(IEXEC_TASK_ID_ENV_PROPERTY));
-        Assertions.assertEquals(FileHelper.SLASH_IEXEC_IN,
+        Assertions.assertEquals(IexecFileHelper.SLASH_IEXEC_IN,
                 map.get(IEXEC_IN_ENV_PROPERTY));
-        Assertions.assertEquals(FileHelper.SLASH_IEXEC_OUT,
+        Assertions.assertEquals(IexecFileHelper.SLASH_IEXEC_OUT,
                 map.get(IEXEC_OUT_ENV_PROPERTY));
         Assertions.assertEquals(taskDescription.getDatasetName(),
                 map.get(IEXEC_DATASET_FILENAME_ENV_PROPERTY));
@@ -62,7 +62,7 @@ class IexecEnvUtilsTest {
                 map.get(IEXEC_NB_INPUT_FILES_ENV_PROPERTY));
         Assertions.assertEquals(INPUT_FILE_1,
                 map.get(IEXEC_INPUT_FILES_ENV_PROPERTY_PREFIX + "1"));
-        Assertions.assertEquals(FileHelper.SLASH_IEXEC_IN,
+        Assertions.assertEquals(IexecFileHelper.SLASH_IEXEC_IN,
                 map.get(IEXEC_INPUT_FILES_FOLDER_ENV_PROPERTY));
     }
 

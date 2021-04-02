@@ -20,5 +20,6 @@ public class PreComputeUtils {
 
     public static final String IEXEC_DATASET_KEY_PROPERTY = "IEXEC_DATASET_KEY";
     public static final String IEXEC_DATASET_CHECKSUM_PROPERTY = "IEXEC_DATASET_CHECKSUM";
-
+    public static final String IEXEC_PRE_COMPUTE_IN_PROPERTY = "IEXEC_PRE_COMPUTE_IN";
+    public static final String IEXEC_PRE_COMPUTE_OUT_PROPERTY = "IEXEC_PRE_COMPUTE_OUT";
 }

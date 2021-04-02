@@ -14,7 +14,7 @@ public class PreComputeExitCodeTests {
         assertThat(PreComputeExitCode.contains(70)).isTrue();
         assertThat(PreComputeExitCode.contains(-3)).isFalse();
         assertThat(PreComputeExitCode.contains(3)).isFalse();
-        assertThat(PreComputeExitCode.contains(71)).isFalse();
+        assertThat(PreComputeExitCode.contains(72)).isFalse();
         assertThat(PreComputeExitCode.contains(9999)).isFalse();
     }
 
@@ -28,7 +28,7 @@ public class PreComputeExitCodeTests {
                 .isEqualTo(PreComputeExitCode.EMPTY_REQUIRED_ENV_VAR);
         assertThat(PreComputeExitCode.nameOf(70))
                 .isEqualTo(PreComputeExitCode.DATASET_DECRYPTION_ERROR);
-        assertThat(PreComputeExitCode.nameOf(71)).isNull();
+        assertThat(PreComputeExitCode.nameOf(72)).isNull();
         assertThat(PreComputeExitCode.nameOf(999999)).isNull();
     }
 }

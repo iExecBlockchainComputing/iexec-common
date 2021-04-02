@@ -37,10 +37,13 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class FileHelper {
 
-    //TODO move to IexecFileHelper.java
+    @Deprecated(forRemoval = true)
     public static final String SLASH_IEXEC_OUT = File.separator + "iexec_out";
+    @Deprecated(forRemoval = true)
     public static final String SLASH_IEXEC_IN = File.separator + "iexec_in";
+    @Deprecated(forRemoval = true)
     public static final String SLASH_OUTPUT = File.separator + "output";
+    @Deprecated(forRemoval = true)
     public static final String SLASH_INPUT = File.separator + "input";
 
     private FileHelper() {

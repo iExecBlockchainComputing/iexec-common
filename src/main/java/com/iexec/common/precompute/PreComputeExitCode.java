@@ -38,7 +38,8 @@ public enum PreComputeExitCode {
     INVALID_DATASET_CHECKSUM(67),
     INVALID_DATASET_KEY(68),
     IO_ERROR(69),
-    DATASET_DECRYPTION_ERROR(70);
+    DATASET_DECRYPTION_ERROR(70),
+    OUTPUT_FOLDER_NOT_FOUND(71);
 
     private final int value;
 
