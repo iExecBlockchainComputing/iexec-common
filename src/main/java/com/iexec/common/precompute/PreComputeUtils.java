@@ -20,6 +20,11 @@ import java.io.File;
 
 public class PreComputeUtils {
 
+    /**
+     * /!\ If you change those values please update
+     * the palaemon config file.
+     */
+
     public static final String IEXEC_DATASET_KEY_PROPERTY = "IEXEC_DATASET_KEY";
     public static final String IEXEC_DATASET_CHECKSUM_PROPERTY = "IEXEC_DATASET_CHECKSUM";
 
