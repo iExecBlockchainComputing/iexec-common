@@ -16,7 +16,11 @@
 
 package com.iexec.common.task;
 
+import com.iexec.common.chain.ChainDeal;
 import com.iexec.common.dapp.DappType;
+import com.iexec.common.tee.TeeUtils;
+import com.iexec.common.utils.BytesUtils;
+import com.iexec.common.utils.MultiAddressHelper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,6 +48,8 @@ public class TaskDescription {
     private int botFirstIndex;
     private boolean developerLoggerEnabled;
     private String datasetUri;
+    private String datasetName;
+    private String datasetChecksum;
     private List<String> inputFiles;
     private boolean isCallbackRequested;
     private boolean isResultEncryption;
@@ -51,5 +57,67 @@ public class TaskDescription {
     private String resultStorageProxy;
     private String teePostComputeImage;
     private String teePostComputeFingerprint;
+
+    public static TaskDescription toTaskDescription(String chainTaskId,
+                                                    int taskIdx,
+                                                    ChainDeal chainDeal) {
+        if (chainDeal == null) {
+            return null;
+        }
+
+        String datasetURI = "";
+        String datasetName = "";
+        String datasetChecksum = "";
+        if (chainDeal.getChainDataset() != null) {
+            datasetURI =
+                    MultiAddressHelper.convertToURI(chainDeal.getChainDataset()
+                            .getUri());
+            datasetName = chainDeal.getChainDataset().getName();
+            datasetChecksum = chainDeal.getChainDataset().getChecksum();
+        }
+
+        return TaskDescription.builder()
+                .chainTaskId(chainTaskId)
+                .requester(chainDeal
+                        .getRequester())
+                .beneficiary(chainDeal
+                        .getBeneficiary())
+                .callback(chainDeal
+                        .getCallback())
+                .appType(DappType.DOCKER)
+                .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp()
+                        .getUri()))
+                .cmd(chainDeal.getParams()
+                        .getIexecArgs())
+                .inputFiles(chainDeal.getParams()
+                        .getIexecInputFiles())
+                .maxExecutionTime(chainDeal.getChainCategory()
+                        .getMaxExecutionTime())
+                .isTeeTask(TeeUtils
+                        .isTeeTag(chainDeal.getTag()))
+                .developerLoggerEnabled(chainDeal.getParams()
+                        .isIexecDeveloperLoggerEnabled())
+                .resultStorageProvider(chainDeal.getParams()
+                        .getIexecResultStorageProvider())
+                .resultStorageProxy(chainDeal.getParams()
+                        .getIexecResultStorageProxy())
+                .isResultEncryption(chainDeal.getParams()
+                        .isIexecResultEncryption())
+                .isCallbackRequested(chainDeal.getCallback() != null
+                        && !chainDeal.getCallback().equals(BytesUtils.EMPTY_ADDRESS))
+                .teePostComputeImage(chainDeal.getParams()
+                        .getIexecTeePostComputeImage())
+                .teePostComputeFingerprint(chainDeal.getParams()
+                        .getIexecTeePostComputeFingerprint())
+                .datasetUri(datasetURI)
+                .datasetName(datasetName)
+                .datasetChecksum(datasetChecksum)
+                .botSize(chainDeal
+                        .getBotSize().intValue())
+                .botFirstIndex(chainDeal
+                        .getBotFirst().intValue())
+                .botIndex(taskIdx)
+                .build();
+    }
 
 }

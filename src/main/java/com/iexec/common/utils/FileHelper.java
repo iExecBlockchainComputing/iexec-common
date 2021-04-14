@@ -21,6 +21,7 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.web3j.crypto.Hash;
 
 import java.io.File;
@@ -36,10 +37,13 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 public class FileHelper {
 
-    //TODO move to IexecFileHelper.java
+    @Deprecated(forRemoval = true)
     public static final String SLASH_IEXEC_OUT = File.separator + "iexec_out";
+    @Deprecated(forRemoval = true)
     public static final String SLASH_IEXEC_IN = File.separator + "iexec_in";
+    @Deprecated(forRemoval = true)
     public static final String SLASH_OUTPUT = File.separator + "output";
+    @Deprecated(forRemoval = true)
     public static final String SLASH_INPUT = File.separator + "input";
 
     private FileHelper() {
@@ -113,35 +117,76 @@ public class FileHelper {
         }
     }
 
-    public static boolean downloadFileInDirectory(String fileUri, String directoryPath) {
-        if (!createFolder(directoryPath)) {
-            log.error("Failed to create base directory [directoryPath:{}]", directoryPath);
-            return false;
-        }
-
-        if (fileUri.isEmpty()) {
+    /**
+     * Download file with custom name in specified directory
+     * @param fileUri URI of the file
+     * @param downloadDirectoryPath directory path where the file will be downloaded
+     * @param outputFilename desired name for future downloaded file
+     * @return downloaded file location path if successful download
+     */
+    public static String downloadFile(String fileUri,
+                                      String downloadDirectoryPath,
+                                      String outputFilename) {
+        if (StringUtils.isBlank(fileUri)) {
             log.error("FileUri shouldn't be empty [fileUri:{}]", fileUri);
-            return false;
+            return "";
+        }
+        if (StringUtils.isBlank(outputFilename)) {
+            log.error("Output filename shouldn't be empty [fileUri:{}]", fileUri);
+            return "";
+        }
+        if (!createFolder(downloadDirectoryPath)) {
+            log.error("Failed to create base directory" +
+                    "[downloadDirectoryPath:{}]", downloadDirectoryPath);
+            return "";
         }
 
         InputStream in;
         try {
             in = new URL(fileUri).openStream();//Not working with https resources yet
         } catch (IOException e) {
-            log.error("Failed to download file [fileUri:{}, exception:{}]", fileUri, e.getCause());
-            return false;
+            log.error("Failed to download file [fileUri:{}, exception:{}]",
+                    fileUri, e.getCause());
+            return "";
         }
 
         try {
-            String fileName = Paths.get(fileUri).getFileName().toString();
-            Files.copy(in, Paths.get(directoryPath + File.separator + fileName), StandardCopyOption.REPLACE_EXISTING);
+            String filePath = downloadDirectoryPath + File.separator + outputFilename;
+            Files.copy(in, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
             log.info("Downloaded data [fileUri:{}]", fileUri);
-            return true;
+            return filePath;
         } catch (IOException e) {
-            log.error("Failed to copy downloaded file to disk [directoryPath:{}, fileUri:{}]",
-                    directoryPath, fileUri);
-            return false;
+            log.error("Failed to copy downloaded file to disk " +
+                            "[downloadDirectoryPath:{}, fileUri:{}]",
+                    downloadDirectoryPath, fileUri);
+            return "";
         }
+    }
+
+    /**
+     * Download file and returns downloaded file location path if successful.
+     * Downloaded file name is inferred from uri end path
+     * @param fileUri URI of the file
+     * @param downloadDirectoryPath directory path where the file will be downloaded
+     * @return downloaded file location path if successful download
+     */
+    public static String downloadFile(String fileUri, String downloadDirectoryPath) {
+        return downloadFile(fileUri,
+                downloadDirectoryPath,
+                Paths.get(fileUri).getFileName().toString());
+    }
+
+    /**
+     * Download file
+     * @deprecated
+     * <p> Use {@link FileHelper#downloadFile(String, String, String)} instead.
+     * @param fileUri URI of the file
+     * @param directoryPath directory path where the file will be downloaded
+     * @return true if successful download
+     */
+    @Deprecated(forRemoval = true)
+    public static boolean downloadFileInDirectory(String fileUri, String directoryPath){
+        return !downloadFile(fileUri, directoryPath).isEmpty();
     }
 
     public static boolean createFolder(String folderPath) {
@@ -225,7 +270,7 @@ public class FileHelper {
             new ZipFile(zipFilePath).extractAll(destDirPath);
             return true;
         } catch (ZipException e) {
-            log.error("Failed to unZipFile (can't extract) [zipFilePath:{}, destDirPath:{}]" + zipFilePath + destDirPath);
+            log.error("Failed to unZipFile (can't extract) [zipFilePath:{}, destDirPath:{}]", zipFilePath, destDirPath);
         }
         return false;
     }

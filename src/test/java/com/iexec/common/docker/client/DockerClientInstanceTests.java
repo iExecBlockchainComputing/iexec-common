@@ -29,7 +29,7 @@ import com.iexec.common.docker.DockerLogs;
 import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.docker.DockerRunResponse;
 import com.iexec.common.utils.ArgsUtils;
-import com.iexec.common.utils.FileHelper;
+import com.iexec.common.utils.IexecFileHelper;
 import com.iexec.common.utils.SgxUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -122,8 +122,8 @@ public class DockerClientInstanceTests {
                 .env(ENV)
                 .isSgx(isSgx)
                 .containerPort(1000)
-                .binds(Collections.singletonList(FileHelper.SLASH_IEXEC_IN +
-                        ":" + FileHelper.SLASH_IEXEC_OUT))
+                .binds(Collections.singletonList(IexecFileHelper.SLASH_IEXEC_IN +
+                        ":" + IexecFileHelper.SLASH_IEXEC_OUT))
                 .maxExecutionTime(500000)
                 .dockerNetwork(DOCKER_NETWORK)
                 .workingDir(SLASH_TMP)
@@ -619,7 +619,7 @@ public class DockerClientInstanceTests {
 
         assertThat(dockerRunResponse).isNotNull();
         assertThat(dockerRunResponse.isSuccessful()).isTrue();
-        assertThat(dockerRunResponse.getContainerExitCode()).isNull();
+        assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
         verify(dockerClientInstance).createContainer(dockerRunRequest);
@@ -674,7 +674,7 @@ public class DockerClientInstanceTests {
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
         assertThat(dockerRunResponse.isSuccessful()).isFalse();
-        assertThat(dockerRunResponse.getContainerExitCode()).isNull();
+        assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout().trim()).isEqualTo(msg1);
         assertThat(dockerRunResponse.getStderr()).isEmpty();
         verify(dockerClientInstance).createContainer(dockerRunRequest);
@@ -701,7 +701,7 @@ public class DockerClientInstanceTests {
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
         assertThat(dockerRunResponse.isSuccessful()).isFalse();
-        assertThat(dockerRunResponse.getContainerExitCode()).isNull();
+        assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
         verify(dockerClientInstance).createContainer(dockerRunRequest);
@@ -728,7 +728,7 @@ public class DockerClientInstanceTests {
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
         assertThat(dockerRunResponse.isSuccessful()).isFalse();
-        assertThat(dockerRunResponse.getContainerExitCode()).isNull();
+        assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
         verify(dockerClientInstance).createContainer(dockerRunRequest);
@@ -755,7 +755,7 @@ public class DockerClientInstanceTests {
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
         assertThat(dockerRunResponse.isSuccessful()).isFalse();
-        assertThat(dockerRunResponse.getContainerExitCode()).isNull();
+        assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
         verify(dockerClientInstance).createContainer(dockerRunRequest);
@@ -882,9 +882,9 @@ public class DockerClientInstanceTests {
         assertThat(hostConfig.getNetworkMode())
                 .isEqualTo(DOCKER_NETWORK);
         assertThat((hostConfig.getBinds()[0].getPath()))
-                .isEqualTo(FileHelper.SLASH_IEXEC_IN);
+                .isEqualTo(IexecFileHelper.SLASH_IEXEC_IN);
         assertThat((hostConfig.getBinds()[0].getVolume().getPath()))
-                .isEqualTo(FileHelper.SLASH_IEXEC_OUT);
+                .isEqualTo(IexecFileHelper.SLASH_IEXEC_OUT);
         assertThat(hostConfig.getDevices()).isNull();
     }
 
@@ -899,9 +899,9 @@ public class DockerClientInstanceTests {
         assertThat(hostConfig.getNetworkMode())
                 .isEqualTo(DOCKER_NETWORK);
         assertThat((hostConfig.getBinds()[0].getPath()))
-                .isEqualTo(FileHelper.SLASH_IEXEC_IN);
+                .isEqualTo(IexecFileHelper.SLASH_IEXEC_IN);
         assertThat((hostConfig.getBinds()[0].getVolume().getPath()))
-                .isEqualTo(FileHelper.SLASH_IEXEC_OUT);
+                .isEqualTo(IexecFileHelper.SLASH_IEXEC_OUT);
         assertThat(hostConfig.getDevices()).isNotNull();
         assertThat(hostConfig.getDevices()[0].getPathInContainer())
                 .isEqualTo(DEVICE_PATH_IN_CONTAINER);
@@ -918,9 +918,9 @@ public class DockerClientInstanceTests {
         assertThat(hostConfig.getNetworkMode())
                 .isEqualTo(DOCKER_NETWORK);
         assertThat((hostConfig.getBinds()[0].getPath()))
-                .isEqualTo(FileHelper.SLASH_IEXEC_IN);
+                .isEqualTo(IexecFileHelper.SLASH_IEXEC_IN);
         assertThat((hostConfig.getBinds()[0].getVolume().getPath()))
-                .isEqualTo(FileHelper.SLASH_IEXEC_OUT);
+                .isEqualTo(IexecFileHelper.SLASH_IEXEC_OUT);
         assertThat(hostConfig.getDevices()[0].getcGroupPermissions())
                 .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);
         assertThat(hostConfig.getDevices()[0].getPathInContainer())
@@ -1149,11 +1149,11 @@ public class DockerClientInstanceTests {
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
         Date before = new Date();
-        Long exitCode = dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
+        int exitCode = dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
                 Instant.now().plusSeconds(5));
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        assertThat(exitCode).isNull();
+        assertThat(exitCode).isEqualTo(-1);
         assertThat(new Date().getTime() - before.getTime()).isGreaterThan(1000);
         // cleaning
         dockerClientInstance.stopContainer(containerName);
@@ -1185,7 +1185,7 @@ public class DockerClientInstanceTests {
     public void shouldGetContainerExitCode() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
         dockerClientInstance.createContainer(request);
-        Long exitCode = dockerClientInstance
+        int exitCode = dockerClientInstance
                 .getContainerExitCode(request.getContainerName());
         assertThat(exitCode).isEqualTo(0);
     }
@@ -1194,7 +1194,7 @@ public class DockerClientInstanceTests {
     public void shouldNotGetContainerExitCodeSinceDockerCmdException() {
         useCorruptedDockerClient();
         assertThat(dockerClientInstance.getContainerExitCode(getRandomString()))
-                .isNull();
+                .isEqualTo(-1);
     }
 
     // getContainerLogs
