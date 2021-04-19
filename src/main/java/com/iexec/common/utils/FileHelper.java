@@ -27,10 +27,10 @@ import org.web3j.crypto.Hash;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -119,47 +119,65 @@ public class FileHelper {
 
     /**
      * Download file with custom name in specified directory
-     * @param fileUri URI of the file
-     * @param downloadDirectoryPath directory path where the file will be downloaded
+     * @param fileUrl URL of the file
+     * @param parentFolderPath directory path where the file will be downloaded
      * @param outputFilename desired name for future downloaded file
      * @return downloaded file location path if successful download
      */
-    public static String downloadFile(String fileUri,
-                                      String downloadDirectoryPath,
+    public static String downloadFile(String fileUrl,
+                                      String parentFolderPath,
                                       String outputFilename) {
-        if (StringUtils.isBlank(fileUri)) {
-            log.error("FileUri shouldn't be empty [fileUri:{}]", fileUri);
+        if (StringUtils.isEmpty(fileUrl)) {
+            log.error("Invalid file url [fileUrl:{}]", fileUrl);
             return "";
         }
-        if (StringUtils.isBlank(outputFilename)) {
-            log.error("Output filename shouldn't be empty [fileUri:{}]", fileUri);
+        if (StringUtils.isEmpty(parentFolderPath)) {
+            log.error("Invalid parent folder path [fileUrl:{}, path:{}]",
+                    fileUrl, parentFolderPath);
             return "";
         }
-        if (!createFolder(downloadDirectoryPath)) {
-            log.error("Failed to create base directory" +
-                    "[downloadDirectoryPath:{}]", downloadDirectoryPath);
+        if (StringUtils.isEmpty(outputFilename)) {
+            log.error("Invalid output filename [fileUrl:{}, outputFilename:{}]",
+                    fileUrl, outputFilename);
             return "";
         }
+        byte[] fileBytes = readFileBytesFromUrl(fileUrl);
+        if (fileBytes == null) {
+            log.error("Failed to download file [fileUrl:{}]", fileUrl);
+            return "";
+        }
+        boolean parentFolderAlreadyExisted = exists(parentFolderPath);
+        if (!createFolder(parentFolderPath)) {
+            log.error("Failed to create parent folder [fileUrl:{}, parentFolderPath:{}]",
+                    fileUrl, parentFolderPath);
+            return "";
+        }
+        String filePath = parentFolderPath + File.separator + outputFilename;
+        boolean isWritten = writeFile(filePath, fileBytes);
+        if (!isWritten) {
+            log.error("Failed to write downloaded file to disk " +
+                    "[fileUrl:{}, filePath:{}]", fileUrl, filePath);
+            if (!parentFolderAlreadyExisted) {
+                deleteFolder(parentFolderPath);
+            }
+            return "";
+        }
+        log.info("Downloaded data [fileUrl:{}, filePath:{}]", fileUrl, filePath);
+        return filePath;
+    }
 
-        InputStream in;
+    /**
+     * Read the content of the remote file located at the provided URI.
+     * @param url
+     * @return Optional describing an input stream with the file's content
+     * if success, empty optional otherwise.
+     */
+    public static byte[] readFileBytesFromUrl(String url) {
         try {
-            in = new URL(fileUri).openStream();//Not working with https resources yet
-        } catch (IOException e) {
-            log.error("Failed to download file [fileUri:{}, exception:{}]",
-                    fileUri, e.getCause());
-            return "";
-        }
-
-        try {
-            String filePath = downloadDirectoryPath + File.separator + outputFilename;
-            Files.copy(in, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-            log.info("Downloaded data [fileUri:{}]", fileUri);
-            return filePath;
-        } catch (IOException e) {
-            log.error("Failed to copy downloaded file to disk " +
-                            "[downloadDirectoryPath:{}, fileUri:{}]",
-                    downloadDirectoryPath, fileUri);
-            return "";
+            return new URL(url).openStream().readAllBytes();
+        } catch (Exception e) {
+            log.error("Failed to read file bytes from url [url:{}]", url, e);
+            return null;
         }
     }
 
@@ -187,6 +205,11 @@ public class FileHelper {
     @Deprecated(forRemoval = true)
     public static boolean downloadFileInDirectory(String fileUri, String directoryPath){
         return !downloadFile(fileUri, directoryPath).isEmpty();
+    }
+
+    public static boolean exists(String path) {
+        Objects.requireNonNull(path, "Path must not be null");
+        return new File(path).exists();
     }
 
     public static boolean createFolder(String folderPath) {

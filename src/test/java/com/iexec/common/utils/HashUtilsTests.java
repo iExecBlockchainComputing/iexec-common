@@ -16,9 +16,10 @@
 
 package com.iexec.common.utils;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.Hash;
+
+import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -59,16 +60,29 @@ public class HashUtilsTests {
     public void shouldGetFileSha256() {
         String filePath = "src/test/resources/utils/file-helper/file-hash/output/iexec_out/result1.txt";
 
-        String sha256 = HashUtils.getFileSha256(filePath);
-        Assertions.assertEquals("0xd885f429a59e0816822fc0927be6a6af20ade2c79db49df6c6022f79cb27ac16", sha256);
+        String sha256 = HashUtils.sha256(new File(filePath));
+        assertEquals("0xd885f429a59e0816822fc0927be6a6af20ade2c79db49df6c6022f79cb27ac16", sha256);
     }
 
     @Test
     public void shouldNotGetFileSha256SinceInvalidPath() {
         String filePath = "/nowhere/nowhere";
 
-        String sha256 = HashUtils.getFileSha256(filePath);
-        Assertions.assertEquals("", sha256);
+        String sha256 = HashUtils.sha256(new File(filePath));
+        assertEquals("", sha256);
+    }
+
+    @Test
+    public void shouldGetStringSha256() {
+        assertEquals("0xb33845db05fb0822f1f1e3677cc6787b8a1a7a21f3c12f9e97c70cb596222218",
+                HashUtils.sha256("utf8String"));
+    }
+
+    @Test
+    public void shouldGetBytesSha256() {
+        byte[] bytes = "hello".getBytes();
+        assertEquals("0x2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+                HashUtils.sha256(bytes));
     }
 
     @Test
@@ -76,7 +90,7 @@ public class HashUtilsTests {
         String filePath = "src/test/resources/utils/file-helper/file-hash/output/iexec_out/";
 
         String sha256 = HashUtils.getFileTreeSha256(filePath);
-        Assertions.assertEquals("0xcc77508549295dd5de5876a2f4f00d4c3c27a547c6403450e43ab4de191bf1bc", sha256);
+        assertEquals("0xcc77508549295dd5de5876a2f4f00d4c3c27a547c6403450e43ab4de191bf1bc", sha256);
     }
 
     @Test
@@ -84,8 +98,8 @@ public class HashUtilsTests {
         String filePath = "src/test/resources/utils/file-helper/file-hash/output/iexec_out/result1.txt";
 
         String sha256 = HashUtils.getFileTreeSha256(filePath);
-        Assertions.assertEquals("0xd885f429a59e0816822fc0927be6a6af20ade2c79db49df6c6022f79cb27ac16", sha256);
-        Assertions.assertEquals(sha256, HashUtils.getFileTreeSha256(filePath));
+        assertEquals("0xd885f429a59e0816822fc0927be6a6af20ade2c79db49df6c6022f79cb27ac16", sha256);
+        assertEquals(sha256, HashUtils.getFileTreeSha256(filePath));
     }
 
     @Test
@@ -93,6 +107,6 @@ public class HashUtilsTests {
         String filePath = "/nowhere/nowhere";
 
         String sha256 = HashUtils.getFileTreeSha256(filePath);
-        Assertions.assertEquals("", sha256);
+        assertEquals("", sha256);
     }
 }

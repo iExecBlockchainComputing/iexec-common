@@ -28,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-
 import static com.iexec.common.utils.FileHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +36,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class FileHelperTests {
 
     private static final String TEST_FOLDER = "/tmp/iexec-test";
+
+    private static final String RLC_ICON_HTTP_URL =
+            "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/" +
+            "512/iExec-RLC-RLC-icon.png";
+    private static final String RLC_ICON_HTTPS_URL =
+            "https://iex.ec/wp-content/uploads/2018/12/token.svg";
+    // private static final String RLC_ICON_REDIRECTION_URL = "https://goo.gl/t8JxoX";
+    private static final String ICON_PNG = "icon.png";
 
     // clean the test repo before and after each test
     @BeforeEach
@@ -182,45 +189,93 @@ public class FileHelperTests {
         assertThat(zipFile.getAbsolutePath()).isEqualTo(TEST_FOLDER + "/taskId.zip");
     }
 
+    // downloadFile(url, dir, name)
+
     @Test
     public void shouldDownloadFileWithName() {
-        //TODO 1 - Try https resources: https://iex.ec/wp-content/uploads/2018/12/token.svg
-        //TODO 2- Try resources with redirection: https://goo.gl/t8JxoX
-        String fileUri = "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
-        String downloadedFilePath = FileHelper.downloadFile(fileUri, TEST_FOLDER, "icon.png");
+        String downloadedFilePath = FileHelper.downloadFile(
+                RLC_ICON_HTTP_URL, TEST_FOLDER, ICON_PNG);
         assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/icon.png");
-        assertThat(new File(TEST_FOLDER + "/icon.png")).exists();
+        assertThat(new File(downloadedFilePath)).exists();
+        // check that the correct file is downloaded
+        assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+                .isEqualTo("0x240987ee1480e8e0b1b26fa806810fea04021191a8e6d8ab6325c15fa61fa9b6");
+    }
+
+    @Test
+    public void shouldDownloadFileWithNameFromHttpsUrl() {
+        String downloadedFilePath = FileHelper.downloadFile(
+                RLC_ICON_HTTPS_URL, TEST_FOLDER, "token.svg");
+        assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/token.svg");
+        assertThat(new File(TEST_FOLDER + "/token.svg")).exists();
+        // check that the correct file is downloaded
+        assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+                .isEqualTo("0x5e824f880294851ce7cf77671231f41fcd5502579c603adc884a978b2a3ce364");
+    }
+
+    // TODO
+    // @Test
+    // public void shouldDownloadFileWithNameWithHttpRedirection() {
+    //     String downloadedFilePath = FileHelper.downloadFile(
+    //             RLC_ICON_REDIRECTION_URL, TEST_FOLDER, ICON_PNG);
+    //     assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/icon.png");
+    //     assertThat(new File(TEST_FOLDER + "/icon.png")).exists();
+    //     // check that the correct file is downloaded
+    //     assertThat(HashUtils.getFileSha256(downloadedFilePath))
+    //             .isEqualTo("0x240987ee1480e8e0b1b26fa806810fea04021191a8e6d8ab6325c15fa61fa9b6");
+    // }
+
+    @Test
+    public void shouldNotDownloadFileWithEmptyUrl() {
+        assertThat(FileHelper.downloadFile("", TEST_FOLDER, "file.txt")).isEmpty();
+        assertThat(new File(TEST_FOLDER).exists()).isFalse();
+    }
+
+    @Test
+    public void shouldNotDownloadFileWithEmptyParentFolderPath() {
+        assertThat(FileHelper.downloadFile(RLC_ICON_HTTP_URL, "", ICON_PNG)).isEmpty();
+        assertThat(new File(TEST_FOLDER).exists()).isFalse();
+    }
+
+    @Test
+    public void shouldNotDownloadFileWithEmptyOutputFileName() {
+        assertThat(FileHelper.downloadFile(RLC_ICON_HTTP_URL, TEST_FOLDER, "")).isEmpty();
+        assertThat(new File(TEST_FOLDER).exists()).isFalse();
+    }
+
+    @Test
+    public void shouldNotDownloadFileWithBadUrl() {
+        assertThat(FileHelper.downloadFile("http://bad-url", TEST_FOLDER, "file.txt"))
+                .isEmpty();
+        assertThat(new File(TEST_FOLDER).exists()).isFalse();
     }
 
     @Test
     public void shouldNotDownloadFileSinceCannotCreateFolder() {
-        String fileUri = "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
-        String downloadedFilePath = FileHelper.downloadFile(fileUri, "/unauthorized", "icon.png");
+        String downloadedFilePath = FileHelper.downloadFile(
+                RLC_ICON_HTTP_URL, "/unauthorized", ICON_PNG);
         assertThat(downloadedFilePath).isEmpty();
     }
 
+    // TODO
+    // @Test
+    // public void shouldCleanCreatedParentFolderWhenFailingToWriteDownloadedFile() {}
+
+    // readFileBytesFromUri(url)
+
     @Test
-    public void shouldNotDownloadFileSinceEmptyUri() {
-        String fileUri = "";
-        String downloadedFilePath = FileHelper.downloadFile(fileUri, TEST_FOLDER, "icon.png");
-        assertThat(downloadedFilePath).isEmpty();
+    public void shouldReadFileBytesFromUrl() {
+        byte[] bytes = FileHelper.readFileBytesFromUrl(RLC_ICON_HTTP_URL);
+        assertThat(bytes).isNotEmpty();
     }
 
     @Test
-    public void shouldNotDownloadFileSinceDummyUri() {
-        String fileUri = "http://dummy-uri";
-        String downloadedFilePath = FileHelper.downloadFile(fileUri, TEST_FOLDER, "icon.png");
-        assertThat(downloadedFilePath).isEmpty();
+    public void shouldNotReadFileBytesFromBadUrl() {
+        byte[] bytes = FileHelper.readFileBytesFromUrl("http://bad-url");
+        assertThat(bytes).isNull();
     }
 
-    @Test
-    public void shoulNotdDownloadFileWithNameSinceNoName() {
-        //TODO 1 - Try https resources: https://iex.ec/wp-content/uploads/2018/12/token.svg
-        //TODO 2- Try resources with redirection: https://goo.gl/t8JxoX
-        String fileUri = "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
-        String downloadedFilePath = FileHelper.downloadFile(fileUri, TEST_FOLDER, "");
-        assertThat(downloadedFilePath).isEmpty();
-    }
+    // downloadFile(url, dir)
 
     @Test
     public void shouldDownloadFile() {
@@ -231,6 +286,26 @@ public class FileHelperTests {
         assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/iExec-RLC-RLC-icon.png");
         assertThat(new File(TEST_FOLDER + "/" + Paths.get(fileUri).getFileName().toString())).exists();
     }
+
+    // exists()
+
+    @Test
+    public void shouldFindFolder() {
+        assertThat(FileHelper.exists("/tmp")).isTrue();
+    }
+
+    @Test
+    public void shouldFindFile() {
+        File file = FileHelper.createFileWithContent(TEST_FOLDER + "/test.txt", "whatever");
+        assertThat(FileHelper.exists(file.getAbsolutePath())).isTrue();
+    }
+
+    @Test
+    public void shouldNotFindFolder() {
+        assertThat(FileHelper.exists("/not-found")).isFalse();
+    }
+
+    // removeZipExtension(path)
 
     @Test
     public void shouldRemoveZipExtension() {
