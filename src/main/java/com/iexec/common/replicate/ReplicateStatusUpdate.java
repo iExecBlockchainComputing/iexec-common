@@ -66,6 +66,7 @@ public class ReplicateStatusUpdate {
         }
     }
 
+    @JsonIgnore
     public ReplicateStatusDetails getDetailsWithoutStdout() {
         if (details == null || details.getStdout() == null) {
             return details;

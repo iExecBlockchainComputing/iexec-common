@@ -16,21 +16,17 @@
 
 package com.iexec.common.precompute;
 
-import java.io.File;
-
 public class PreComputeUtils {
 
     /**
      * /!\ If you change those values please update
      * the palaemon config file.
      */
+    
+    public static final String IEXEC_DATASET_URL = "IEXEC_DATASET_URL";
+    public static final String IEXEC_DATASET_KEY = "IEXEC_DATASET_KEY";
+    public static final String IEXEC_DATASET_CHECKSUM = "IEXEC_DATASET_CHECKSUM";
 
-    public static final String IEXEC_DATASET_KEY_PROPERTY = "IEXEC_DATASET_KEY";
-    public static final String IEXEC_DATASET_CHECKSUM_PROPERTY = "IEXEC_DATASET_CHECKSUM";
-
-    public static final String IEXEC_PRE_COMPUTE_IN_PROPERTY = "IEXEC_PRE_COMPUTE_IN";
-    public static final String SLASH_PRE_COMPUTE_IN = File.separator + "pre-compute-in";
-
-    public static final String IEXEC_PRE_COMPUTE_OUT_PROPERTY = "IEXEC_PRE_COMPUTE_OUT";
+    public static final String IEXEC_PRE_COMPUTE_OUT = "IEXEC_PRE_COMPUTE_OUT";
     // pre-compute writes its output in compute stage's input (/iexec_in).
 }
