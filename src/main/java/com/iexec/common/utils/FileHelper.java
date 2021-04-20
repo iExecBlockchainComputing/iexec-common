@@ -147,7 +147,7 @@ public class FileHelper {
             return "";
         }
         boolean parentFolderAlreadyExisted = exists(parentFolderPath);
-        if (!createFolder(parentFolderPath)) {
+        if (!parentFolderAlreadyExisted && !createFolder(parentFolderPath)) {
             log.error("Failed to create parent folder [fileUrl:{}, parentFolderPath:{}]",
                     fileUrl, parentFolderPath);
             return "";
@@ -167,10 +167,10 @@ public class FileHelper {
     }
 
     /**
-     * Read the content of the remote file located at the provided URI.
-     * @param url
-     * @return Optional describing an input stream with the file's content
-     * if success, empty optional otherwise.
+     * Read the content of the remote file located at the provided URL.
+     * @param url of the file
+     * @return the content of the file in a byte array if success,
+     * null otherwise.
      */
     public static byte[] readFileBytesFromUrl(String url) {
         try {
