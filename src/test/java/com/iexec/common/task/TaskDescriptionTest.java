@@ -46,6 +46,7 @@ class TaskDescriptionTest {
     public static final int BOT_FIRST = 2;
     public static final int TASK_IDX = 3;
     public static final boolean DEVELOPER_LOGGER_ENABLED = true;
+    public static final String DATASET_ADDRESS = "datasetAddress";
     public static final String DATASET_URI = "https://datasetUri";
     public static final String DATASET_NAME = "datasetName";
     public static final String DATASET_CHECKSUM = "datasetChecksum";
@@ -153,6 +154,7 @@ class TaskDescriptionTest {
                         .iexecTeePostComputeFingerprint(TEE_POST_COMPUTE_FINGERPRINT)
                         .build())
                 .chainDataset(ChainDataset.builder()
+                        .chainDatasetId(DATASET_ADDRESS)
                         .name(DATASET_NAME)
                         .uri(BytesUtils.bytesToString(DATASET_URI.getBytes(StandardCharsets.UTF_8)))
                         .checksum(DATASET_CHECKSUM).build())
