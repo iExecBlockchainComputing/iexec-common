@@ -23,10 +23,7 @@ public class PreComputeUtils {
      * the palaemon config file.
      */
     
-    public static final String IEXEC_DATASET_URL = "IEXEC_DATASET_URL";
     public static final String IEXEC_DATASET_KEY = "IEXEC_DATASET_KEY";
-    public static final String IEXEC_DATASET_CHECKSUM = "IEXEC_DATASET_CHECKSUM";
-
     public static final String IEXEC_PRE_COMPUTE_OUT = "IEXEC_PRE_COMPUTE_OUT";
     // pre-compute writes its output in compute stage's input (/iexec_in).
 }

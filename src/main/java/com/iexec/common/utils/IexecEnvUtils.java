@@ -33,38 +33,84 @@ public class IexecEnvUtils {
      * /!\ If you change those values please don't forget to update
      * the palaemon config file.
      */
-    public static final String IEXEC_TASK_ID_ENV_PROPERTY = "IEXEC_TASK_ID";
-    public static final String IEXEC_IN_ENV_PROPERTY = "IEXEC_IN";
-    public static final String IEXEC_OUT_ENV_PROPERTY = "IEXEC_OUT";
-    public static final String IEXEC_DATASET_FILENAME_ENV_PROPERTY = "IEXEC_DATASET_FILENAME";
-    public static final String IEXEC_BOT_TASK_INDEX_ENV_PROPERTY = "IEXEC_BOT_TASK_INDEX";
-    public static final String IEXEC_BOT_SIZE_ENV_PROPERTY = "IEXEC_BOT_SIZE";
-    public static final String IEXEC_BOT_FIRST_INDEX_ENV_PROPERTY = "IEXEC_BOT_FIRST_INDEX";
-    public static final String IEXEC_NB_INPUT_FILES_ENV_PROPERTY = "IEXEC_NB_INPUT_FILES";
-    public static final String IEXEC_INPUT_FILES_ENV_PROPERTY_PREFIX = "IEXEC_INPUT_FILE_NAME_";
-    public static final String IEXEC_INPUT_FILES_FOLDER_ENV_PROPERTY = "IEXEC_INPUT_FILES_FOLDER";
+    public static final String IEXEC_TASK_ID = "IEXEC_TASK_ID";
+    public static final String IEXEC_IN = "IEXEC_IN";
+    public static final String IEXEC_OUT = "IEXEC_OUT";
+    // dataset
+    public static final String IEXEC_DATASET_ADDRESS = "IEXEC_DATASET_ADDRESS";
+    public static final String IEXEC_DATASET_URL = "IEXEC_DATASET_URL";
+    public static final String IEXEC_DATASET_FILENAME = "IEXEC_DATASET_FILENAME";
+    public static final String IEXEC_DATASET_CHECKSUM = "IEXEC_DATASET_CHECKSUM";
+    // BoT
+    public static final String IEXEC_BOT_TASK_INDEX = "IEXEC_BOT_TASK_INDEX";
+    public static final String IEXEC_BOT_SIZE = "IEXEC_BOT_SIZE";
+    public static final String IEXEC_BOT_FIRST_INDEX = "IEXEC_BOT_FIRST_INDEX";
+    // input files
+    public static final String IEXEC_INPUT_FILES_NUMBER = "IEXEC_INPUT_FILES_NUMBER";
+    public static final String IEXEC_INPUT_FILES_FOLDER = "IEXEC_INPUT_FILES_FOLDER";
+    public static final String IEXEC_INPUT_FILE_NAME_PREFIX = "IEXEC_INPUT_FILE_NAME_";
+    public static final String IEXEC_INPUT_FILE_URL_PREFIX = "IEXEC_INPUT_FILE_URL_";
 
     private IexecEnvUtils() {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Get compute stage environment variables plus other additional ones
+     * used by the pre-compute stage (e.g. IEXEC_DATASET_URL,
+     * IEXEC_DATASET_CHECKSUM, IEXEC_INPUT_FILE_URL_1, ...etc).
+     * 
+     * @param taskDescription
+     * @return
+     */
+    public static Map<String, String> getAllIexecEnv(TaskDescription taskDescription) {
+        Map<String, String> map = new HashMap<>();
+        map.putAll(getComputeStageEnvMap(taskDescription));
+        map.put(IEXEC_DATASET_URL, taskDescription.getDatasetUri());
+        map.put(IEXEC_DATASET_CHECKSUM, taskDescription.getDatasetChecksum());
+        if (taskDescription.getInputFiles() == null) {
+            return map;
+        }
+        int index = 1;
+        for (String inputFileUrl : taskDescription.getInputFiles()) {
+            map.put(IEXEC_INPUT_FILE_URL_PREFIX + index, inputFileUrl);
+            index++;
+        }
+        return map;
+    }
+
+    /**
+     * Get environment variables available for the compute stage
+     * (e.g. IEXEC_TASK_ID, IEXEC_IN, IEXEC_OUT,
+     * IEXEC_DATASET_FILENAME, ...etc).
+     * 
+     * @param taskDescription
+     * @return
+     */
     public static Map<String, String> getComputeStageEnvMap(TaskDescription taskDescription) {
         Map<String, String> map = new HashMap<String, String>();
-        map.put(IEXEC_TASK_ID_ENV_PROPERTY, taskDescription.getChainTaskId());
-        map.put(IEXEC_IN_ENV_PROPERTY, IexecFileHelper.SLASH_IEXEC_IN);
-        map.put(IEXEC_OUT_ENV_PROPERTY, IexecFileHelper.SLASH_IEXEC_OUT);
-        map.put(IEXEC_DATASET_FILENAME_ENV_PROPERTY, taskDescription.getDatasetName());
-        map.put(IEXEC_BOT_SIZE_ENV_PROPERTY, String.valueOf(taskDescription.getBotSize()));
-        map.put(IEXEC_BOT_FIRST_INDEX_ENV_PROPERTY, String.valueOf(taskDescription.getBotFirstIndex()));
-        map.put(IEXEC_BOT_TASK_INDEX_ENV_PROPERTY, String.valueOf(taskDescription.getBotIndex()));
+        map.put(IEXEC_TASK_ID, taskDescription.getChainTaskId());
+        map.put(IEXEC_IN, IexecFileHelper.SLASH_IEXEC_IN);
+        map.put(IEXEC_OUT, IexecFileHelper.SLASH_IEXEC_OUT);
+        // dataset
+        map.put(IEXEC_DATASET_ADDRESS, taskDescription.getDatasetAddress());
+        map.put(IEXEC_DATASET_FILENAME, taskDescription.getDatasetName());
+        // BoT
+        map.put(IEXEC_BOT_SIZE, String.valueOf(taskDescription.getBotSize()));
+        map.put(IEXEC_BOT_FIRST_INDEX, String.valueOf(taskDescription.getBotFirstIndex()));
+        map.put(IEXEC_BOT_TASK_INDEX, String.valueOf(taskDescription.getBotIndex()));
+        // input files
         int nbFiles = taskDescription.getInputFiles() == null ? 0 : taskDescription.getInputFiles().size();
-        map.put(IEXEC_NB_INPUT_FILES_ENV_PROPERTY, String.valueOf(nbFiles));
-        int inputFileIndex = 1;
-        for (String inputFile : taskDescription.getInputFiles()) {
-            map.put(IEXEC_INPUT_FILES_ENV_PROPERTY_PREFIX + inputFileIndex, FilenameUtils.getName(inputFile));
-            inputFileIndex++;
+        map.put(IEXEC_INPUT_FILES_NUMBER, String.valueOf(nbFiles));
+        map.put(IEXEC_INPUT_FILES_FOLDER, IexecFileHelper.SLASH_IEXEC_IN);
+        if (nbFiles == 0) {
+            return map;
         }
-        map.put(IEXEC_INPUT_FILES_FOLDER_ENV_PROPERTY, IexecFileHelper.SLASH_IEXEC_IN);
+        int index = 1;
+        for (String inputFileUrl : taskDescription.getInputFiles()) {
+            map.put(IEXEC_INPUT_FILE_NAME_PREFIX + index, FilenameUtils.getName(inputFileUrl));
+            index++;
+        }
         return map;
     }
 
