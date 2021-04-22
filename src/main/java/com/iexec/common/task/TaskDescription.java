@@ -66,8 +66,10 @@ public class TaskDescription {
      * only if all fields of the dataset are non-empty,
      * non-null values. The stack shouldn't accept
      * datasets with missing information since they,
-     * inevitably, will break the workflow.  
-     * @return
+     * inevitably, will break the workflow.
+     * 
+     * @return true if all dataset fields are all non-null,
+     * non-empty values, false otherwise.
      */
     public boolean containsDataset() {
         return !StringUtils.isEmpty(datasetAddress) &&
