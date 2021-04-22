@@ -25,6 +25,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class TaskDescription {
     private int botSize;
     private int botFirstIndex;
     private boolean developerLoggerEnabled;
+    private String datasetAddress;
     private String datasetUri;
     private String datasetName;
     private String datasetChecksum;
@@ -58,24 +60,44 @@ public class TaskDescription {
     private String teePostComputeImage;
     private String teePostComputeFingerprint;
 
+    /**
+     * Check if this task includes a dataset or not.
+     * The task is considered as including a dataset
+     * only if all fields of the dataset are non-empty,
+     * non-null values. The stack shouldn't accept
+     * datasets with missing information since they,
+     * inevitably, will break the workflow.  
+     * @return
+     */
+    public boolean containsDataset() {
+        return !StringUtils.isEmpty(datasetAddress) &&
+                !StringUtils.isEmpty(datasetUri) &&
+                !StringUtils.isEmpty(datasetChecksum) &&
+                !StringUtils.isEmpty(datasetName);
+    }
+
+    public boolean containsCallback() {
+        return getCallback() != null &&
+                !getCallback().equals(BytesUtils.EMPTY_ADDRESS);
+    }
+
     public static TaskDescription toTaskDescription(String chainTaskId,
                                                     int taskIdx,
                                                     ChainDeal chainDeal) {
         if (chainDeal == null) {
             return null;
         }
-
-        String datasetURI = "";
+        String datasetAddress = "";
+        String datasetUri = "";
         String datasetName = "";
         String datasetChecksum = "";
-        if (chainDeal.getChainDataset() != null) {
-            datasetURI =
-                    MultiAddressHelper.convertToURI(chainDeal.getChainDataset()
-                            .getUri());
+        if (chainDeal.containsDataset()) {
+            datasetAddress = chainDeal.getChainDataset().getChainDatasetId();
+            datasetUri = MultiAddressHelper.convertToURI(
+                            chainDeal.getChainDataset().getUri());
             datasetName = chainDeal.getChainDataset().getName();
             datasetChecksum = chainDeal.getChainDataset().getChecksum();
         }
-
         return TaskDescription.builder()
                 .chainTaskId(chainTaskId)
                 .requester(chainDeal
@@ -109,7 +131,8 @@ public class TaskDescription {
                         .getIexecTeePostComputeImage())
                 .teePostComputeFingerprint(chainDeal.getParams()
                         .getIexecTeePostComputeFingerprint())
-                .datasetUri(datasetURI)
+                .datasetAddress(datasetAddress)
+                .datasetUri(datasetUri)
                 .datasetName(datasetName)
                 .datasetChecksum(datasetChecksum)
                 .botSize(chainDeal
