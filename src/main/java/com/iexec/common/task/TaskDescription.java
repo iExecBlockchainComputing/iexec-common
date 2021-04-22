@@ -61,12 +61,12 @@ public class TaskDescription {
     private String teePostComputeFingerprint;
 
     /**
-     * Check if this task includes a dataset or not.
-     * The task is considered as including a dataset
-     * only if all fields of the dataset are non-empty,
-     * non-null values. The stack shouldn't accept
-     * datasets with missing information since they,
-     * inevitably, will break the workflow.
+     * Check if this task includes a dataset or not. The task is considered
+     * as including a dataset only if all fields of the dataset are non-empty,
+     * non-null values. The stack should ignore datasets with missing
+     * information since they, inevitably, break the workflow. In the case
+     * where those datasets are ignored, the worker will contribute an
+     * application error caused by the missing dataset file.
      * 
      * @return true if all dataset fields are all non-null,
      * non-empty values, false otherwise.
