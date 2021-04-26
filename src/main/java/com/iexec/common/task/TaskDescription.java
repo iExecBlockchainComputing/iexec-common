@@ -41,6 +41,7 @@ public class TaskDescription {
     private String callback;
     private DappType appType;
     private String appUri;
+    private String appFingerprint;
     private String cmd;
     private long maxExecutionTime;
     private boolean isTeeTask;
@@ -53,7 +54,6 @@ public class TaskDescription {
     private String datasetName;
     private String datasetChecksum;
     private List<String> inputFiles;
-    private boolean isCallbackRequested;
     private boolean isResultEncryption;
     private String resultStorageProvider;
     private String resultStorageProxy;
@@ -78,11 +78,35 @@ public class TaskDescription {
                 !StringUtils.isEmpty(datasetName);
     }
 
+    /**
+     * Check if a callback is requested for this task. 
+     * 
+     * @return true if a callback address is found in the deal,
+     * false otherwise.
+     */
     public boolean containsCallback() {
         return getCallback() != null &&
                 !getCallback().equals(BytesUtils.EMPTY_ADDRESS);
     }
 
+    /**
+     * Get input files list that will never be null.
+     * 
+     * @return list of input files, or empty unmodifiable list if no input file
+     * is present.
+     */
+    public List<String> getInputFiles() {
+        return inputFiles;
+    }
+
+    /**
+     * Create a {@link TaskDescriptionBuilder} from the provided chain deal.
+     * 
+     * @param chainTaskId
+     * @param taskIdx
+     * @param chainDeal
+     * @return
+     */
     public static TaskDescription toTaskDescription(String chainTaskId,
                                                     int taskIdx,
                                                     ChainDeal chainDeal) {
@@ -100,6 +124,11 @@ public class TaskDescription {
             datasetName = chainDeal.getChainDataset().getName();
             datasetChecksum = chainDeal.getChainDataset().getChecksum();
         }
+        List<String> inputFiles = List.of();
+        if (chainDeal.getParams() != null &&
+                chainDeal.getParams().getIexecInputFiles() != null) {
+            inputFiles = chainDeal.getParams().getIexecInputFiles();
+        }
         return TaskDescription.builder()
                 .chainTaskId(chainTaskId)
                 .requester(chainDeal
@@ -111,10 +140,10 @@ public class TaskDescription {
                 .appType(DappType.DOCKER)
                 .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp()
                         .getUri()))
+                .appFingerprint(chainDeal.getChainApp().getFingerprint())
                 .cmd(chainDeal.getParams()
                         .getIexecArgs())
-                .inputFiles(chainDeal.getParams()
-                        .getIexecInputFiles())
+                .inputFiles(inputFiles)
                 .maxExecutionTime(chainDeal.getChainCategory()
                         .getMaxExecutionTime())
                 .isTeeTask(TeeUtils
@@ -127,8 +156,6 @@ public class TaskDescription {
                         .getIexecResultStorageProxy())
                 .isResultEncryption(chainDeal.getParams()
                         .isIexecResultEncryption())
-                .isCallbackRequested(chainDeal.getCallback() != null
-                        && !chainDeal.getCallback().equals(BytesUtils.EMPTY_ADDRESS))
                 .teePostComputeImage(chainDeal.getParams()
                         .getIexecTeePostComputeImage())
                 .teePostComputeFingerprint(chainDeal.getParams()
@@ -144,5 +171,4 @@ public class TaskDescription {
                 .botIndex(taskIdx)
                 .build();
     }
-
 }
