@@ -286,6 +286,23 @@ class TaskDescriptionTest {
                 // .callback(CALLBACK)
                 .build()
                 .containsCallback());
-        
+    }
+
+    @Test
+    public void shouldContainInputFiles() {
+        Assertions.assertTrue(TaskDescription.builder()
+                .chainTaskId(CHAIN_TASK_ID)
+                .inputFiles(List.of("http://file1", "http://file2"))
+                .build()
+                .containsInputFiles());
+    }
+
+    @Test
+    public void shouldNotContainInputFiles() {
+        Assertions.assertFalse(TaskDescription.builder()
+                .chainTaskId(CHAIN_TASK_ID)
+                // .inputFiles(List.of("http://file1", "http://file2"))
+                .build()
+                .containsInputFiles());
     }
 }

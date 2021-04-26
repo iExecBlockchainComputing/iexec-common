@@ -81,8 +81,7 @@ public class TaskDescription {
     /**
      * Check if a callback is requested for this task. 
      * 
-     * @return true if a callback address is found in the deal,
-     * false otherwise.
+     * @return true if a callback address is found in the deal, false otherwise.
      */
     public boolean containsCallback() {
         return getCallback() != null &&
@@ -90,22 +89,22 @@ public class TaskDescription {
     }
 
     /**
-     * Get input files list that will never be null.
+     * Check if this task includes some input files.
      * 
-     * @return list of input files, or empty unmodifiable list if no input file
-     * is present.
+     * @return true if at least one input file is present, false otherwise
      */
-    public List<String> getInputFiles() {
-        return inputFiles;
+    public boolean containsInputFiles() {
+        return inputFiles != null && !inputFiles.isEmpty();
     }
 
     /**
-     * Create a {@link TaskDescriptionBuilder} from the provided chain deal.
+     * Create a {@link TaskDescription} from the provided chain deal. This method
+     * if preferred to constructors or the builder method.
      * 
      * @param chainTaskId
      * @param taskIdx
      * @param chainDeal
-     * @return
+     * @return the created taskDescription
      */
     public static TaskDescription toTaskDescription(String chainTaskId,
                                                     int taskIdx,
