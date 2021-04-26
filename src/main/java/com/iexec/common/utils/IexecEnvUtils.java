@@ -82,7 +82,7 @@ public class IexecEnvUtils {
     /**
      * Get environment variables available for the compute stage
      * (e.g. IEXEC_TASK_ID, IEXEC_IN, IEXEC_OUT,
-     * IEXEC_DATASET_FILENAME, ...etc).
+     * IEXEC_DATASET_FILENAME, IEXEC_INPUT_FILE_NAME_1, ...etc).
      * 
      * @param taskDescription
      * @return
