@@ -68,6 +68,7 @@ public abstract class IexecHubAbstractService {
     private long maxNbOfPeriodsForConsensus;
     private final int nbBlocksToWaitPerRetry;
     private final int maxRetries;
+    // /!\ TODO remove expired task descriptions
     private final Map<String, TaskDescription> taskDescriptions = new HashMap<>();
 
     public IexecHubAbstractService(Credentials credentials,

@@ -13,8 +13,8 @@ public class PreComputeExitCodeTests {
         assertThat(PreComputeExitCode.contains(-3)).isFalse();
         assertThat(PreComputeExitCode.contains(3)).isFalse();
         assertThat(PreComputeExitCode.contains(64)).isTrue();
-        assertThat(PreComputeExitCode.contains(70)).isTrue();
-        assertThat(PreComputeExitCode.contains(71)).isFalse();
+        assertThat(PreComputeExitCode.contains(72)).isTrue();
+        assertThat(PreComputeExitCode.contains(73)).isFalse();
         assertThat(PreComputeExitCode.contains(9999)).isFalse();
     }
 
@@ -28,6 +28,8 @@ public class PreComputeExitCodeTests {
         assertThat(PreComputeExitCode.INVALID_DATASET_CHECKSUM.value()).isEqualTo(67);
         assertThat(PreComputeExitCode.INVALID_DATASET_KEY.value()).isEqualTo(68);
         assertThat(PreComputeExitCode.DATASET_DECRYPTION_FAILED.value()).isEqualTo(69);
-        assertThat(PreComputeExitCode.WRITING_PLAIN_DATASET_FAILED.value()).isEqualTo(70);
+        assertThat(PreComputeExitCode.SAVING_PLAIN_DATASET_FAILED.value()).isEqualTo(70);
+        assertThat(PreComputeExitCode.BAD_INPUT_FILE_ARGS.value()).isEqualTo(71);
+        assertThat(PreComputeExitCode.INPUT_FILE_DOWNLOAD_FAILED.value()).isEqualTo(72);
     }
 }

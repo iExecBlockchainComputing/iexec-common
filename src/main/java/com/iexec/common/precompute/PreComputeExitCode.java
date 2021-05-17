@@ -21,6 +21,8 @@ import javax.annotation.CheckForNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO merge PreComputeExitCode and ReplicateStatusCause.
+
 /**
  * To avoid confusion with exit codes of the chroot standard
  * (followed also by docker), we use exit codes between
@@ -38,7 +40,9 @@ public enum PreComputeExitCode {
     INVALID_DATASET_CHECKSUM(67),
     INVALID_DATASET_KEY(68),
     DATASET_DECRYPTION_FAILED(69),
-    WRITING_PLAIN_DATASET_FAILED(70);
+    SAVING_PLAIN_DATASET_FAILED(70),
+    BAD_INPUT_FILE_ARGS(71),
+    INPUT_FILE_DOWNLOAD_FAILED(72);
 
     private final int value;
 
