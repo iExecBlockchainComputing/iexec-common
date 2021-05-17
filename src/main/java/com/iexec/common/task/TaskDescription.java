@@ -73,6 +73,7 @@ public class TaskDescription {
      */
     public boolean containsDataset() {
         return !StringUtils.isEmpty(datasetAddress) &&
+                !datasetAddress.equals(BytesUtils.EMPTY_ADDRESS) &&
                 !StringUtils.isEmpty(datasetUri) &&
                 !StringUtils.isEmpty(datasetChecksum) &&
                 !StringUtils.isEmpty(datasetName);
@@ -84,7 +85,7 @@ public class TaskDescription {
      * @return true if a callback address is found in the deal, false otherwise.
      */
     public boolean containsCallback() {
-        return getCallback() != null &&
+        return StringUtils.isEmpty(getCallback()) &&
                 !getCallback().equals(BytesUtils.EMPTY_ADDRESS);
     }
 

@@ -64,19 +64,19 @@ public class IexecEnvUtils {
      * @return
      */
     public static Map<String, String> getAllIexecEnv(TaskDescription taskDescription) {
-        Map<String, String> map = new HashMap<>();
-        map.putAll(getComputeStageEnvMap(taskDescription));
-        map.put(IEXEC_DATASET_URL, taskDescription.getDatasetUri());
-        map.put(IEXEC_DATASET_CHECKSUM, taskDescription.getDatasetChecksum());
+        Map<String, String> envMap = new HashMap<>();
+        envMap.putAll(getComputeStageEnvMap(taskDescription));
+        envMap.put(IEXEC_DATASET_URL, taskDescription.getDatasetUri());
+        envMap.put(IEXEC_DATASET_CHECKSUM, taskDescription.getDatasetChecksum());
         if (taskDescription.getInputFiles() == null) {
-            return map;
+            return envMap;
         }
         int index = 1;
         for (String inputFileUrl : taskDescription.getInputFiles()) {
-            map.put(IEXEC_INPUT_FILE_URL_PREFIX + index, inputFileUrl);
+            envMap.put(IEXEC_INPUT_FILE_URL_PREFIX + index, inputFileUrl);
             index++;
         }
-        return map;
+        return envMap;
     }
 
     /**
