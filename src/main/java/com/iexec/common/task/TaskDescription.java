@@ -85,7 +85,7 @@ public class TaskDescription {
      * @return true if a callback address is found in the deal, false otherwise.
      */
     public boolean containsCallback() {
-        return StringUtils.isEmpty(getCallback()) &&
+        return !StringUtils.isEmpty(getCallback()) &&
                 !getCallback().equals(BytesUtils.EMPTY_ADDRESS);
     }
 
