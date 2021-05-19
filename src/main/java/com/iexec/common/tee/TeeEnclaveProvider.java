@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2021 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-package com.iexec.common.chain;
+package com.iexec.common.tee;
 
-import com.iexec.common.tee.TeeEnclaveConfiguration;
-import lombok.*;
+public enum TeeEnclaveProvider {
 
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Getter
-public class ChainApp {
-
-    private String chainAppId;
-    private String name;
-    private String type;
-    private String uri;
-    private String checksum;
-    private TeeEnclaveConfiguration enclaveConfiguration;
+    SCONE
 
 }

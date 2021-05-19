@@ -18,6 +18,7 @@ package com.iexec.common.chain;
 
 import com.iexec.common.contract.generated.*;
 import com.iexec.common.task.TaskDescription;
+import com.iexec.common.tee.TeeEnclaveConfiguration;
 import com.iexec.common.utils.BytesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +52,7 @@ import java.util.function.BiFunction;
 import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
 import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
+import static com.iexec.common.tee.TeeEnclaveConfiguration.buildEnclaveConfigurationFromJsonString;
 
 
 /*
@@ -491,7 +493,7 @@ public abstract class IexecHubAbstractService {
                         .type(app.m_appType().send())
                         .uri(BytesUtils.bytesToString(app.m_appMultiaddr().send()))
                         .checksum(BytesUtils.bytesToString(app.m_appChecksum().send()))
-                        .fingerprint(BytesUtils.hexStringToAscii(BytesUtils.bytesToString(app.m_appMREnclave().send())))
+                        .enclaveConfiguration(buildEnclaveConfigurationFromJsonString(new String(app.m_appMREnclave().send())))
                         .build());
             } catch (Exception e) {
                 log.error("Failed to get ChainApp [chainAppId:{}]",
