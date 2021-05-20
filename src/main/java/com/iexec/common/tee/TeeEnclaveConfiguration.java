@@ -16,6 +16,7 @@
 
 package com.iexec.common.tee;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -43,5 +44,10 @@ public class TeeEnclaveConfiguration {
 
     public String toJsonString() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(this);
+    }
+
+    @JsonIgnore
+    public TeeEnclaveConfigurationValidator getValidator() {
+        return new TeeEnclaveConfigurationValidator(this);
     }
 }
