@@ -21,8 +21,10 @@ package com.iexec.common.task;
 
 import com.iexec.common.chain.*;
 import com.iexec.common.dapp.DappType;
+import com.iexec.common.tee.TeeEnclaveConfiguration;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +41,7 @@ class TaskDescriptionTest {
     public static final String CALLBACK = "callback";
     public static final DappType APP_TYPE = DappType.DOCKER;
     public static final String APP_URI = "https://uri";
-    public static final String APP_FINGERPRINT = "appFingerprint";
+    public static final TeeEnclaveConfiguration enclaveConfig = new TeeEnclaveConfiguration();
     public static final String CMD = "cmd";
     public static final int MAX_EXECUTION_TIME = 1;
     public static final boolean IS_TEE_TASK = true;
@@ -68,7 +70,7 @@ class TaskDescriptionTest {
                 .callback(CALLBACK)
                 .appType(APP_TYPE)
                 .appUri(APP_URI)
-                .appFingerprint(APP_FINGERPRINT)
+                .appEnclaveConfiguration(enclaveConfig)
                 .cmd(CMD)
                 .maxExecutionTime(MAX_EXECUTION_TIME)
                 .isTeeTask(IS_TEE_TASK)
@@ -99,8 +101,8 @@ class TaskDescriptionTest {
                 task.getAppType());
         Assertions.assertEquals(APP_URI,
                 task.getAppUri());
-        Assertions.assertEquals(APP_FINGERPRINT,
-                task.getAppFingerprint());
+        Assertions.assertEquals(enclaveConfig,
+                task.getAppEnclaveConfiguration());
         Assertions.assertEquals(CMD,
                 task.getCmd());
         Assertions.assertEquals(MAX_EXECUTION_TIME,

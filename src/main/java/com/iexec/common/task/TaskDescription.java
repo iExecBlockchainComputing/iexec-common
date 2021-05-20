@@ -18,6 +18,7 @@ package com.iexec.common.task;
 
 import com.iexec.common.chain.ChainDeal;
 import com.iexec.common.dapp.DappType;
+import com.iexec.common.tee.TeeEnclaveConfiguration;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.MultiAddressHelper;
@@ -41,7 +42,7 @@ public class TaskDescription {
     private String callback;
     private DappType appType;
     private String appUri;
-    private String appFingerprint;
+    private TeeEnclaveConfiguration appEnclaveConfiguration;
     private String cmd;
     private long maxExecutionTime;
     private boolean isTeeTask;
@@ -140,7 +141,8 @@ public class TaskDescription {
                 .appType(DappType.DOCKER)
                 .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp()
                         .getUri()))
-                .appFingerprint(chainDeal.getChainApp().getFingerprint())
+                .appEnclaveConfiguration(chainDeal.getChainApp()
+                        .getEnclaveConfiguration())
                 .cmd(chainDeal.getParams()
                         .getIexecArgs())
                 .inputFiles(inputFiles)
