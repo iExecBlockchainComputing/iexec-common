@@ -100,6 +100,17 @@ public class TaskDescription {
     }
 
     /**
+     * Check if this task contains a post-compute image uri and its fingerprint.
+     * 
+     * @return true if and only if both image uri and fingerprint are present,
+     * false otherwise
+     */
+    public boolean containsPostCompute() {
+        return !StringUtils.isEmpty(teePostComputeImage) &&
+                !StringUtils.isEmpty(teePostComputeFingerprint);
+    }
+
+    /**
      * Create a {@link TaskDescription} from the provided chain deal. This method
      * if preferred to constructors or the builder method.
      * 
