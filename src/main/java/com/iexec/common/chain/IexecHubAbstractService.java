@@ -18,7 +18,6 @@ package com.iexec.common.chain;
 
 import com.iexec.common.contract.generated.*;
 import com.iexec.common.task.TaskDescription;
-import com.iexec.common.tee.TeeEnclaveConfiguration;
 import com.iexec.common.utils.BytesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
