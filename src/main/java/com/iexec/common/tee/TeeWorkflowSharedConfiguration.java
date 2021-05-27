@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2021 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,34 +14,26 @@
  * limitations under the License.
  */
 
-package com.iexec.common.config;
+package com.iexec.common.tee;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Configuration of TEE workflow provided from the sms to the worker.
+ * It contains: pre-compute image, pre-compute heap size, post-compute
+ * image, post-compute heap size.
+ */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class PublicConfiguration {
+public class TeeWorkflowSharedConfiguration {
 
-    // blockchain
-    private Integer chainId;
-    private String blockchainURL;
-    private String iexecHubAddress;
-    private String workerPoolAddress;
-    private String schedulerPublicAddress;
-    private boolean isSidechain;
-
-    // repos URLs
-    private String resultRepositoryURL;
-
-    // address of the SMS
-    private String smsURL;
-
-    private long askForReplicatePeriod;
-    private String requiredWorkerVersion;
+    private String preComputeImage;
+    private long preComputeHeapSize;
+    private String postComputeImage;
+    private long postComputeHeapSize;
 }
-

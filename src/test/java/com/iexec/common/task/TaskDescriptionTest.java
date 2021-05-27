@@ -24,7 +24,6 @@ import com.iexec.common.dapp.DappType;
 import com.iexec.common.tee.TeeEnclaveConfiguration;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -306,5 +305,45 @@ class TaskDescriptionTest {
                 // .inputFiles(List.of("http://file1", "http://file2"))
                 .build()
                 .containsInputFiles());
+    }
+
+    @Test
+    public void shouldContainPostCompute() {
+        Assertions.assertTrue(TaskDescription.builder()
+                .chainTaskId(CHAIN_TASK_ID)
+                .teePostComputeImage(TEE_POST_COMPUTE_IMAGE)
+                .teePostComputeFingerprint(TEE_POST_COMPUTE_FINGERPRINT)
+                .build()
+                .containsPostCompute());
+    }
+
+    @Test
+    public void shouldNotContainPostComputeIfMissingImage() {
+        Assertions.assertFalse(TaskDescription.builder()
+                .chainTaskId(CHAIN_TASK_ID)
+                // .teePostComputeImage(TEE_POST_COMPUTE_IMAGE)
+                .teePostComputeFingerprint(TEE_POST_COMPUTE_FINGERPRINT)
+                .build()
+                .containsPostCompute());
+    }
+
+    @Test
+    public void shouldNotContainPostComputeIfMissingFingerprint() {
+        Assertions.assertFalse(TaskDescription.builder()
+                .chainTaskId(CHAIN_TASK_ID)
+                .teePostComputeImage(TEE_POST_COMPUTE_IMAGE)
+                // .teePostComputeFingerprint(TEE_POST_COMPUTE_FINGERPRINT)
+                .build()
+                .containsPostCompute());
+    }
+
+    @Test
+    public void shouldNotContainPostComputeIfMissingBothImageAndFingerprint() {
+        Assertions.assertFalse(TaskDescription.builder()
+                .chainTaskId(CHAIN_TASK_ID)
+                // .teePostComputeImage(TEE_POST_COMPUTE_IMAGE)
+                // .teePostComputeFingerprint(TEE_POST_COMPUTE_FINGERPRINT)
+                .build()
+                .containsPostCompute());
     }
 }
