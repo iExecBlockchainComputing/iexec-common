@@ -520,7 +520,8 @@ public abstract class IexecHubAbstractService {
                     buildEnclaveConfigurationFromJsonString(mrEnclave));
         } catch (Exception e) {
             log.error("Failed to get tee chain app enclave configuration " +
-                    "[chainAppId:{}]", app.getContractAddress(), mrEnclave);
+                    "[chainAppId:{}, mrEnclave:{}]", app.getContractAddress(),
+                    mrEnclave, e);
             return Optional.empty();
         }
         return Optional.of(chainApp);
