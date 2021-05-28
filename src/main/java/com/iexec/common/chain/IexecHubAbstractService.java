@@ -484,23 +484,46 @@ public abstract class IexecHubAbstractService {
     }
 
     public Optional<ChainApp> getChainApp(App app) {
-        if (app != null && !app.getContractAddress().equals(BytesUtils.EMPTY_ADDRESS)) {
-            try {
-                return Optional.of(ChainApp.builder()
-                        .chainAppId(app.getContractAddress())
-                        .name(app.m_appName().send())
-                        .type(app.m_appType().send())
-                        .uri(BytesUtils.bytesToString(app.m_appMultiaddr().send()))
-                        .checksum(BytesUtils.bytesToString(app.m_appChecksum().send()))
-                        .enclaveConfiguration(buildEnclaveConfigurationFromJsonString(
-                                new String(app.m_appMREnclave().send())))
-                        .build());
-            } catch (Exception e) {
-                log.error("Failed to get ChainApp [chainAppId:{}]",
-                        app.getContractAddress(), e);
-            }
+        if (app == null ||
+                StringUtils.isEmpty(app.getContractAddress()) ||
+                app.getContractAddress().equals(BytesUtils.EMPTY_ADDRESS)) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        ChainApp chainApp;
+        try {
+            chainApp = ChainApp.builder()
+                    .chainAppId(app.getContractAddress())
+                    .name(app.m_appName().send())
+                    .type(app.m_appType().send())
+                    .uri(BytesUtils.bytesToString(app.m_appMultiaddr().send()))
+                    .checksum(BytesUtils.bytesToString(app.m_appChecksum().send()))
+                    .build();
+        } catch (Exception e) {
+            log.error("Failed to get chain app [chainAppId:{}]",
+                    app.getContractAddress(), e);
+            return Optional.empty();
+        }
+        String mrEnclave = "";
+        try {
+            mrEnclave = new String(app.m_appMREnclave().send());
+        } catch (Exception e) {
+            log.error("Failed to get chain app mrenclave [chainAppId:{}]",
+                    app.getContractAddress(), e);
+            return Optional.empty();
+        }
+        if (StringUtils.isEmpty(mrEnclave)) {
+            // Standard application
+            return Optional.of(chainApp);
+        }
+        try {
+            chainApp.setEnclaveConfiguration(
+                    buildEnclaveConfigurationFromJsonString(mrEnclave));
+        } catch (Exception e) {
+            log.error("Failed to get tee chain app enclave configuration " +
+                    "[chainAppId:{}]", app.getContractAddress(), mrEnclave);
+            return Optional.empty();
+        }
+        return Optional.of(chainApp);
     }
 
     public Optional<ChainDataset> getChainDataset(Dataset dataset) {
