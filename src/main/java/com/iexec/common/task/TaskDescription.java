@@ -16,11 +16,17 @@
 
 package com.iexec.common.task;
 
+import com.iexec.common.chain.ChainDeal;
 import com.iexec.common.dapp.DappType;
+import com.iexec.common.tee.TeeEnclaveConfiguration;
+import com.iexec.common.tee.TeeUtils;
+import com.iexec.common.utils.BytesUtils;
+import com.iexec.common.utils.MultiAddressHelper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -36,6 +42,7 @@ public class TaskDescription {
     private String callback;
     private DappType appType;
     private String appUri;
+    private TeeEnclaveConfiguration appEnclaveConfiguration;
     private String cmd;
     private long maxExecutionTime;
     private boolean isTeeTask;
@@ -43,13 +50,138 @@ public class TaskDescription {
     private int botSize;
     private int botFirstIndex;
     private boolean developerLoggerEnabled;
+    private String datasetAddress;
     private String datasetUri;
+    private String datasetName;
+    private String datasetChecksum;
     private List<String> inputFiles;
-    private boolean isCallbackRequested;
     private boolean isResultEncryption;
     private String resultStorageProvider;
     private String resultStorageProxy;
     private String teePostComputeImage;
     private String teePostComputeFingerprint;
 
+    /**
+     * Check if this task includes a dataset or not. The task is considered
+     * as including a dataset only if all fields of the dataset are non-empty,
+     * non-null values. The stack should ignore datasets with missing
+     * information since they, inevitably, break the workflow. In the case
+     * where those datasets are ignored, the worker will contribute an
+     * application error caused by the missing dataset file.
+     * 
+     * @return true if all dataset fields are all non-null,
+     * non-empty values, false otherwise.
+     */
+    public boolean containsDataset() {
+        return !StringUtils.isEmpty(datasetAddress) &&
+                !datasetAddress.equals(BytesUtils.EMPTY_ADDRESS) &&
+                !StringUtils.isEmpty(datasetUri) &&
+                !StringUtils.isEmpty(datasetChecksum) &&
+                !StringUtils.isEmpty(datasetName);
+    }
+
+    /**
+     * Check if a callback is requested for this task. 
+     * 
+     * @return true if a callback address is found in the deal, false otherwise.
+     */
+    public boolean containsCallback() {
+        return !StringUtils.isEmpty(getCallback()) &&
+                !getCallback().equals(BytesUtils.EMPTY_ADDRESS);
+    }
+
+    /**
+     * Check if this task includes some input files.
+     * 
+     * @return true if at least one input file is present, false otherwise
+     */
+    public boolean containsInputFiles() {
+        return inputFiles != null && !inputFiles.isEmpty();
+    }
+
+    /**
+     * Check if this task contains a post-compute image uri and its fingerprint.
+     * 
+     * @return true if and only if both image uri and fingerprint are present,
+     * false otherwise
+     */
+    public boolean containsPostCompute() {
+        return !StringUtils.isEmpty(teePostComputeImage) &&
+                !StringUtils.isEmpty(teePostComputeFingerprint);
+    }
+
+    /**
+     * Create a {@link TaskDescription} from the provided chain deal. This method
+     * if preferred to constructors or the builder method.
+     * 
+     * @param chainTaskId
+     * @param taskIdx
+     * @param chainDeal
+     * @return the created taskDescription
+     */
+    public static TaskDescription toTaskDescription(String chainTaskId,
+                                                    int taskIdx,
+                                                    ChainDeal chainDeal) {
+        if (chainDeal == null) {
+            return null;
+        }
+        String datasetAddress = "";
+        String datasetUri = "";
+        String datasetName = "";
+        String datasetChecksum = "";
+        if (chainDeal.containsDataset()) {
+            datasetAddress = chainDeal.getChainDataset().getChainDatasetId();
+            datasetUri = MultiAddressHelper.convertToURI(
+                            chainDeal.getChainDataset().getUri());
+            datasetName = chainDeal.getChainDataset().getName();
+            datasetChecksum = chainDeal.getChainDataset().getChecksum();
+        }
+        List<String> inputFiles = List.of();
+        if (chainDeal.getParams() != null &&
+                chainDeal.getParams().getIexecInputFiles() != null) {
+            inputFiles = chainDeal.getParams().getIexecInputFiles();
+        }
+        return TaskDescription.builder()
+                .chainTaskId(chainTaskId)
+                .requester(chainDeal
+                        .getRequester())
+                .beneficiary(chainDeal
+                        .getBeneficiary())
+                .callback(chainDeal
+                        .getCallback())
+                .appType(DappType.DOCKER)
+                .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp()
+                        .getUri()))
+                .appEnclaveConfiguration(chainDeal.getChainApp()
+                        .getEnclaveConfiguration())
+                .cmd(chainDeal.getParams()
+                        .getIexecArgs())
+                .inputFiles(inputFiles)
+                .maxExecutionTime(chainDeal.getChainCategory()
+                        .getMaxExecutionTime())
+                .isTeeTask(TeeUtils
+                        .isTeeTag(chainDeal.getTag()))
+                .developerLoggerEnabled(chainDeal.getParams()
+                        .isIexecDeveloperLoggerEnabled())
+                .resultStorageProvider(chainDeal.getParams()
+                        .getIexecResultStorageProvider())
+                .resultStorageProxy(chainDeal.getParams()
+                        .getIexecResultStorageProxy())
+                .isResultEncryption(chainDeal.getParams()
+                        .isIexecResultEncryption())
+                .teePostComputeImage(chainDeal.getParams()
+                        .getIexecTeePostComputeImage())
+                .teePostComputeFingerprint(chainDeal.getParams()
+                        .getIexecTeePostComputeFingerprint())
+                .datasetAddress(datasetAddress)
+                .datasetUri(datasetUri)
+                .datasetName(datasetName)
+                .datasetChecksum(datasetChecksum)
+                .botSize(chainDeal
+                        .getBotSize().intValue())
+                .botFirstIndex(chainDeal
+                        .getBotFirst().intValue())
+                .botIndex(taskIdx)
+                .build();
+    }
 }

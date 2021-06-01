@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2021 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,34 +14,26 @@
  * limitations under the License.
  */
 
-package com.iexec.common.docker;
+package com.iexec.common.tee;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Configuration of TEE workflow provided from the sms to the worker.
+ * It contains: pre-compute image, pre-compute heap size, post-compute
+ * image, post-compute heap size.
+ */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DockerRunResponse {
+public class TeeWorkflowSharedConfiguration {
 
-    private boolean isSuccessful;
-    private DockerLogs dockerLogs;
-    private int containerExitCode;
-
-    public String getStdout() {
-        if (dockerLogs != null && dockerLogs.getStdout() != null) {
-            return dockerLogs.getStdout();
-        }
-        return "";
-    }
-
-    public String getStderr() {
-        if (dockerLogs != null && dockerLogs.getStderr() != null) {
-            return dockerLogs.getStderr();
-        }
-        return "";
-    }
+    private String preComputeImage;
+    private long preComputeHeapSize;
+    private String postComputeImage;
+    private long postComputeHeapSize;
 }

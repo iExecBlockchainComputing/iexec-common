@@ -26,6 +26,10 @@ import java.io.IOException;
 @Slf4j
 public class IexecFileHelper {
 
+    public static final String SLASH_IEXEC_OUT = File.separator + "iexec_out";
+    public static final String SLASH_IEXEC_IN = File.separator + "iexec_in";
+    public static final String SLASH_OUTPUT = File.separator + "output";
+    public static final String SLASH_INPUT = File.separator + "input";    
     public static final String COMPUTED_JSON = "computed.json";
     public static final String SLASH_COMPUTED_JSON = File.separator + "computed.json";
 

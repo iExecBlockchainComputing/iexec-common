@@ -17,11 +17,8 @@
 package com.iexec.common.chain;
 
 import com.iexec.common.contract.generated.*;
-import com.iexec.common.dapp.DappType;
 import com.iexec.common.task.TaskDescription;
-import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
-import com.iexec.common.utils.MultiAddressHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.Awaitility;
@@ -53,8 +50,8 @@ import java.util.function.BiFunction;
 
 import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
 import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
-import static com.iexec.common.chain.ChainDeal.stringToDealParams;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
+import static com.iexec.common.tee.TeeEnclaveConfiguration.buildEnclaveConfigurationFromJsonString;
 
 
 /*
@@ -72,6 +69,7 @@ public abstract class IexecHubAbstractService {
     private long maxNbOfPeriodsForConsensus;
     private final int nbBlocksToWaitPerRetry;
     private final int maxRetries;
+    // /!\ TODO remove expired task descriptions
     private final Map<String, TaskDescription> taskDescriptions = new HashMap<>();
 
     public IexecHubAbstractService(Credentials credentials,
@@ -393,37 +391,17 @@ public abstract class IexecHubAbstractService {
             if (chainApp.isEmpty()) {
                 return Optional.empty();
             }
+            ChainApp app = chainApp.get();
             Optional<ChainCategory> chainCategory = getChainCategory(categoryId.longValue());
             if (chainCategory.isEmpty()) {
                 return Optional.empty();
             }
+            ChainCategory category = chainCategory.get();
             Optional<ChainDataset> chainDataset =
                     getChainDataset(getDatasetContract(datasetAddress));
+            ChainDataset dataset = chainDataset.orElse(null);
 
-            ChainDeal chainDeal = ChainDeal.builder()
-                    .chainDealId(chainDealId)
-                    .chainApp(chainApp.get())
-                    .dappOwner(dealPt1.component2())
-                    .dappPrice(dealPt1.component3())
-                    .chainDataset(chainDataset.orElse(null))
-                    .dataOwner(dealPt1.component5())
-                    .dataPrice(dealPt1.component6())
-                    .poolPointer(dealPt1.component7())
-                    .poolOwner(dealPt1.component8())
-                    .poolPrice(dealPt1.component9())
-                    .trust(dealPt2.component1())
-                    .tag(BytesUtils.bytesToString(dealPt2.component2()))
-                    .requester(dealPt2.component3())
-                    .beneficiary(dealPt2.component4())
-                    .callback(dealPt2.component5())
-                    .params(stringToDealParams(dealPt2.component6()))
-                    .chainCategory(chainCategory.get())
-                    .startTime(config.component2())
-                    .botFirst(config.component3())
-                    .botSize(config.component4())
-                    .workerStake(config.component5())
-                    .schedulerRewardRatio(config.component6())
-                    .build();
+            ChainDeal chainDeal = ChainDeal.parts2ChainDeal(chainDealId, dealPt1, dealPt2, config, app, category, dataset);
 
             if (chainDeal.getStartTime() == null
                     || chainDeal.getStartTime().longValue() <= 0) {
@@ -514,7 +492,8 @@ public abstract class IexecHubAbstractService {
                         .type(app.m_appType().send())
                         .uri(BytesUtils.bytesToString(app.m_appMultiaddr().send()))
                         .checksum(BytesUtils.bytesToString(app.m_appChecksum().send()))
-                        .fingerprint(BytesUtils.hexStringToAscii(BytesUtils.bytesToString(app.m_appMREnclave().send())))
+                        .enclaveConfiguration(buildEnclaveConfigurationFromJsonString(
+                                new String(app.m_appMREnclave().send())))
                         .build());
             } catch (Exception e) {
                 log.error("Failed to get ChainApp [chainAppId:{}]",
@@ -694,32 +673,11 @@ public abstract class IexecHubAbstractService {
 
         ChainDeal chainDeal = optionalChainDeal.get();
 
-        String datasetURI = chainDeal.getChainDataset() != null ?
-                MultiAddressHelper.convertToURI(chainDeal.getChainDataset().getUri()) : "";
-
-        return Optional.of(TaskDescription.builder()
-                .chainTaskId(chainTaskId)
-                .requester(chainDeal.getRequester())
-                .beneficiary(chainDeal.getBeneficiary())
-                .callback(chainDeal.getCallback())
-                .appType(DappType.DOCKER)
-                .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp().getUri()))
-                .cmd(chainDeal.getParams().getIexecArgs())
-                .inputFiles(chainDeal.getParams().getIexecInputFiles())
-                .maxExecutionTime(chainDeal.getChainCategory().getMaxExecutionTime())
-                .isTeeTask(TeeUtils.isTeeTag(chainDeal.getTag()))
-                .developerLoggerEnabled(chainDeal.getParams().isIexecDeveloperLoggerEnabled())
-                .resultStorageProvider(chainDeal.getParams().getIexecResultStorageProvider())
-                .resultStorageProxy(chainDeal.getParams().getIexecResultStorageProxy())
-                .isResultEncryption(chainDeal.getParams().isIexecResultEncryption())
-                .isCallbackRequested(chainDeal.getCallback() != null && !chainDeal.getCallback().equals(BytesUtils.EMPTY_ADDRESS))
-                .teePostComputeImage(chainDeal.getParams().getIexecTeePostComputeImage())
-                .teePostComputeFingerprint(chainDeal.getParams().getIexecTeePostComputeFingerprint())
-                .datasetUri(datasetURI)
-                .botSize(chainDeal.botSize.intValue())
-                .botFirstIndex(chainDeal.botFirst.intValue())
-                .botIndex(chainTask.getIdx())
-                .build());
+        TaskDescription taskDescription =
+                TaskDescription.toTaskDescription(chainTaskId,
+                        chainTask.getIdx(),
+                        chainDeal);
+        return taskDescription != null ? Optional.of(taskDescription) : Optional.empty();
     }
 
     public boolean isTeeTask(String chainTaskId) {

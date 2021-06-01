@@ -28,8 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-
-import static com.iexec.common.utils.FileHelper.downloadFileInDirectory;
+import static com.iexec.common.utils.FileHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,6 +36,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class FileHelperTests {
 
     private static final String TEST_FOLDER = "/tmp/iexec-test";
+    // http
+    private static final String HTTP_URL = "http://icons.iconarchive.com/icons/" +
+            "cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
+    // private static final String HTTP_FILENAME = "iExec-RLC-RLC-icon.png";
+    private static final String HTTP_FILE_DIGEST =
+            "0x240987ee1480e8e0b1b26fa806810fea04021191a8e6d8ab6325c15fa61fa9b6";
+    // https
+    private static final String HTTPS_URL =
+            "https://iex.ec/wp-content/uploads/2018/12/token.svg";
+    // private static final String HTTPS_FILENAME = "token.svg";
+    private static final String HTTPS_FILE_DIGEST =
+            "0x5e824f880294851ce7cf77671231f41fcd5502579c603adc884a978b2a3ce364";
+    // redirection
+    // private static final String REDIRECTION_URL = "https://goo.gl/t8JxoX";
+    // private static final String REDIRECTION_FILE_DIGEST = "TODO";
+
+    private static final String ICON_PNG = "icon.png";
 
     // clean the test repo before and after each test
     @BeforeEach
@@ -182,29 +198,148 @@ public class FileHelperTests {
         assertThat(zipFile.getAbsolutePath()).isEqualTo(TEST_FOLDER + "/taskId.zip");
     }
 
+    // downloadFile(url, dir, name)
+
     @Test
-    public void shouldDownloadFile() {
-        //TODO 1 - Try https resources: https://iex.ec/wp-content/uploads/2018/12/token.svg
-        //TODO 2- Try resources with redirection: https://goo.gl/t8JxoX
-        String fileUri = "http://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
-        boolean isFileDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
-        assertThat(isFileDownloaded).isTrue();
-        assertThat(new File(TEST_FOLDER + "/" + Paths.get(fileUri).getFileName().toString())).exists();
+    public void shouldDownloadFileWithName() {
+        String downloadedFilePath = FileHelper.downloadFile(
+                HTTP_URL, TEST_FOLDER, ICON_PNG);
+        assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/icon.png");
+        assertThat(new File(downloadedFilePath)).exists();
+        // check that the correct file is downloaded
+        assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+                .isEqualTo(HTTP_FILE_DIGEST);
     }
 
     @Test
-    public void shouldNotDownloadFileSinceEmptyUri() {
-        String fileUri = "";
-        boolean isFileDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
-        assertThat(isFileDownloaded).isFalse();
+    public void shouldDownloadFileWithNameFromHttpsUrl() {
+        String downloadedFilePath = FileHelper.downloadFile(
+                HTTPS_URL, TEST_FOLDER, "token.svg");
+        assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/token.svg");
+        assertThat(new File(TEST_FOLDER + "/token.svg")).exists();
+        // check that the correct file is downloaded
+        assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+                .isEqualTo(HTTPS_FILE_DIGEST);
+    }
+
+    // TODO
+    // @Test
+    // public void shouldDownloadFileWithNameWithHttpRedirection() {
+    //     String downloadedFilePath = FileHelper.downloadFile(
+    //             REDIRECTION_URL, TEST_FOLDER, ICON_PNG);
+    //     assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/icon.png");
+    //     assertThat(new File(TEST_FOLDER + "/icon.png")).exists();
+    //     // check that the correct file is downloaded
+    //     assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+    //             .isEqualTo(REDIRECTION_FILE_DIGEST);
+    // }
+
+    @Test
+    public void shouldNotDownloadFileWithEmptyUrl() {
+        assertThat(FileHelper.downloadFile("", TEST_FOLDER, "file.txt")).isEmpty();
+        assertThat(new File(TEST_FOLDER).exists()).isFalse();
     }
 
     @Test
-    public void shouldNotDownloadFileSinceDummyUri() {
-        String fileUri = "http://dummy-uri";
-        boolean isFileDownloaded = downloadFileInDirectory(fileUri, TEST_FOLDER);
-        assertThat(isFileDownloaded).isFalse();
+    public void shouldNotDownloadFileWithEmptyParentFolderPath() {
+        assertThat(FileHelper.downloadFile(HTTP_URL, "", ICON_PNG)).isEmpty();
+        assertThat(new File(TEST_FOLDER).exists()).isFalse();
     }
+
+    @Test
+    public void shouldNotDownloadFileWithEmptyOutputFileName() {
+        assertThat(FileHelper.downloadFile(HTTP_URL, TEST_FOLDER, "")).isEmpty();
+        assertThat(new File(TEST_FOLDER).exists()).isFalse();
+    }
+
+    @Test
+    public void shouldNotDownloadFileWithBadUrl() {
+        assertThat(FileHelper.downloadFile("http://bad-url", TEST_FOLDER, "file.txt"))
+                .isEmpty();
+        assertThat(new File(TEST_FOLDER).exists()).isFalse();
+    }
+
+    @Test
+    public void shouldNotDownloadFileSinceCannotCreateFolder() {
+        String downloadedFilePath = FileHelper.downloadFile(
+                HTTP_URL, "/unauthorized", ICON_PNG);
+        assertThat(downloadedFilePath).isEmpty();
+    }
+
+    // TODO
+    // @Test
+    // public void shouldCleanCreatedParentFolderWhenFailingToWriteDownloadedFile() {}
+
+    // readFileBytesFromUri(url)
+
+    @Test
+    public void shouldReadFileBytesFromUrl() {
+        byte[] bytes = FileHelper.readFileBytesFromUrl(HTTP_URL);
+        assertThat(bytes).isNotEmpty();
+    }
+
+    @Test
+    public void shouldNotReadFileBytesFromBadUrl() {
+        byte[] bytes = FileHelper.readFileBytesFromUrl("http://bad-url");
+        assertThat(bytes).isNull();
+    }
+
+    // downloadFile(url, dir)
+
+    @Test
+    public void shouldDownloadFileWithHttpUrl() {
+        String downloadedFilePath = downloadFile(HTTP_URL, TEST_FOLDER);
+        String filename = Paths.get(HTTP_URL).getFileName().toString();
+        assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/" + filename);
+        assertThat(new File(TEST_FOLDER + "/" + filename)).exists();
+        // check that the correct file is downloaded
+        assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+                .isEqualTo(HTTP_FILE_DIGEST);
+
+    }
+
+    @Test
+    public void shouldDownloadFileWithHttpsUrl() {
+        String downloadedFilePath = downloadFile(HTTPS_URL, TEST_FOLDER);
+        String filename = Paths.get(HTTPS_URL).getFileName().toString();
+        assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/" + filename);
+        assertThat(new File(TEST_FOLDER + "/" + filename)).exists();
+        // check that the correct file is downloaded
+        assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+                .isEqualTo(HTTPS_FILE_DIGEST);
+    }
+
+    // TODO
+    // @Test
+    // public void shouldDownloadFileWithRedirectionUrl() {
+    //     String downloadedFilePath = downloadFile(REDIRECTION_URL, TEST_FOLDER);
+    //     String filename = Paths.get(REDIRECTION_URL).getFileName().toString();
+    //     assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/" + filename);
+    //     assertThat(new File(TEST_FOLDER + "/" + filename)).exists();
+    //     // check that the correct file is downloaded
+    //     assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+    //             .isEqualTo(REDIRECTION_FILE_DIGEST);
+    // }
+
+    // exists()
+
+    @Test
+    public void shouldFindFolder() {
+        assertThat(FileHelper.exists("/tmp")).isTrue();
+    }
+
+    @Test
+    public void shouldFindFile() {
+        File file = FileHelper.createFileWithContent(TEST_FOLDER + "/test.txt", "whatever");
+        assertThat(FileHelper.exists(file.getAbsolutePath())).isTrue();
+    }
+
+    @Test
+    public void shouldNotFindFolder() {
+        assertThat(FileHelper.exists("/not-found")).isFalse();
+    }
+
+    // removeZipExtension(path)
 
     @Test
     public void shouldRemoveZipExtension() {

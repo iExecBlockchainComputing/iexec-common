@@ -26,6 +26,7 @@ import java.util.Base64;
 
 import static com.iexec.common.utils.FileHelper.readFile;
 
+@Deprecated
 public class CipherHelper {
 
 

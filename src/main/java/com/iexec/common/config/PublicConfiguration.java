@@ -40,7 +40,6 @@ public class PublicConfiguration {
 
     // address of the SMS
     private String smsURL;
-    private String sconeCasURL;
 
     private long askForReplicatePeriod;
     private String requiredWorkerVersion;

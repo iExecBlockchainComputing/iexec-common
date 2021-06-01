@@ -343,6 +343,7 @@ public class DockerClientInstance {
                 dockerRunRequest.getArrayArgsCmd());
         DockerRunResponse dockerRunResponse = DockerRunResponse.builder()
                 .isSuccessful(false)
+                .containerExitCode(-1)
                 .build();
         String containerName = dockerRunRequest.getContainerName();
         // TODO choose to remove duplicate containers or not
@@ -363,9 +364,9 @@ public class DockerClientInstance {
         }
         Instant timeoutDate = Instant.now()
                 .plusMillis(dockerRunRequest.getMaxExecutionTime());
-        Long exitCode = waitContainerUntilExitOrTimeout(containerName, timeoutDate);
+        int exitCode = waitContainerUntilExitOrTimeout(containerName, timeoutDate);
         dockerRunResponse.setContainerExitCode(exitCode);
-        boolean isTimeout = exitCode == null;
+        boolean isTimeout = exitCode == -1;
         boolean isSuccessful = !isTimeout && exitCode == 0L;
         if (isTimeout && !stopContainer(containerName)) {
             log.error("Failed to force-stop container after timeout [name:{}]", containerName);
@@ -600,19 +601,19 @@ public class DockerClientInstance {
      * @param timeoutDate waiting is aborted once this date is reached
      * @return container's exit code (when relevant)
      */
-    public Long waitContainerUntilExitOrTimeout(
+    public int waitContainerUntilExitOrTimeout(
             String containerName,
             Instant timeoutDate
     ) {
         if (StringUtils.isBlank(containerName)) {
             // TODO throw new IllegalArgumentException("Container name cannot be blank");
             log.error("Container name cannot be blank [name:{}]", containerName);
-            return null;
+            return -1;
         }
         if (timeoutDate == null) {
             // TODO throw new IllegalArgumentException("Timeout date cannot be null");
             log.error("Timeout date cannot be null");
-            return null;
+            return -1;
         }
         boolean isExited = false;
         boolean isTimeout = false;
@@ -626,30 +627,30 @@ public class DockerClientInstance {
             isTimeout = Instant.now().isAfter(timeoutDate);
             seconds++;
         }
-        if (isExited) {
-            Long containerExitCode = getContainerExitCode(containerName);
-            log.info("Container exited by itself [name:{}, exitCode:{}]",
-                    containerName, containerExitCode);
-            return containerExitCode;
+        if (!isExited) {
+            log.warn("Container reached timeout [name:{}]", containerName);
+            return -1;    
         }
-        log.warn("Container reached timeout [name:{}]", containerName);
-        return null;
+        int containerExitCode = getContainerExitCode(containerName);
+        log.info("Container exited by itself [name:{}, exitCode:{}]",
+                containerName, containerExitCode);
+        return containerExitCode;
     }
 
-    public Long getContainerExitCode(String containerName) {
+    public int getContainerExitCode(String containerName) {
         if (StringUtils.isBlank(containerName)) {
             // TODO throw new IllegalArgumentException("Container name cannot be blank");
             log.error("Invalid docker container name [name:{}]", containerName);
-            return null;
+            return -1;
         }
         try (InspectContainerCmd inspectContainerCmd =
                      getClient().inspectContainerCmd(containerName)) {
             return inspectContainerCmd.exec()
                     .getState()
-                    .getExitCodeLong();
+                    .getExitCodeLong().intValue();
         } catch (Exception e) {
             log.error("Error getting container exit code [name:{}]", containerName, e);
-            return null;
+            return -1;
         }
     }
 
