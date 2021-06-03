@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Configuration of TEE workflow provided from the sms to the worker.
- * It contains: pre-compute image, pre-compute heap size, post-compute
+ * It contains: las-image, pre-compute image, pre-compute heap size, post-compute
  * image, post-compute heap size.
  */
 @Data
@@ -32,6 +32,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TeeWorkflowSharedConfiguration {
 
+    private String lasImage;
     private String preComputeImage;
     private long preComputeHeapSize;
     private String postComputeImage;
