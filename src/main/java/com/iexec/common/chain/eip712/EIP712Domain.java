@@ -17,6 +17,7 @@
 package com.iexec.common.chain.eip712;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.iexec.common.utils.HashUtils;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +34,8 @@ public class EIP712Domain {
     private String name;
     private String version;
     private long chainId;
+
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private String verifyingContract;
     @JsonIgnore
     private List<TypeParam> types;
