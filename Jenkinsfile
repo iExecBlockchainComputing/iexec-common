@@ -6,9 +6,13 @@ pipeline {
 
         stage('Test') {
             steps {
-                 withCredentials([
-                 string(credentialsId: 'ADDRESS_SONAR', variable: 'address_sonar'),
-                 string(credentialsId: 'SONAR_COMMON_TOKEN', variable: 'common_token')]){
+                withCredentials([
+                string(credentialsId: 'ADDRESS_SONAR', variable: 'address_sonar'),
+                string(credentialsId: 'SONAR_COMMON_TOKEN', variable: 'common_token'),
+                [$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexus',
+                        usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD'],
+                [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub',
+                        usernameVariable: 'DOCKER_IO_USER', passwordVariable: 'DOCKER_IO_PASSWORD']]){
                     sh './gradlew clean test sonarqube -Dsonar.projectKey=iexec-common -Dsonar.host.url=$address_sonar -Dsonar.login=$common_token --no-daemon'
                  }
                  junit 'build/test-results/**/*.xml'
