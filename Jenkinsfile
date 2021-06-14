@@ -17,6 +17,14 @@ pipeline {
 
         stage('Build') {
             steps {
+                withCredentials([
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexus',
+                                usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD'],
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub',
+                                usernameVariable: 'DOCKER_IO_USER', passwordVariable: 'DOCKER_IO_PASSWORD']]) {
+                    sh 'NEXUS_REGISTRY=nexus.iex.ec NEXUS_USER=$NEXUS_USER NEXUS_PASSWORD=$NEXUS_PASSWORD DOCKER_IO_USER=$DOCKER_IO_USER DOCKER_IO_PASSWORD=$DOCKER_IO_PASSWORD ./gradlew build --no-daemon'
+                }
+
                 sh './gradlew build --no-daemon'
             }
         }
