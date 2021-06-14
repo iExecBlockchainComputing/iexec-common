@@ -36,22 +36,9 @@ public abstract class DockerClientFactory {
     }
 
     /**
-     * Get a Docker client instance that is authenticated against the default docker
-     * registry {@link AuthConfig#DEFAULT_SERVER_ADDRESS}
-     * ({@code https://index.docker.io/v1/}) using the provided credentials.
-     * 
-     * @param username
-     * @param password
-     * @throws DockerException if the authentication fails
-     */
-    public static synchronized DockerClientInstance getDockerClientInstance(
-            String username, String password) throws DockerException {
-        return createInstance("", username, password);
-    }
-
-    /**
      * Get a Docker client that is authenticated against a specific registry with the
-     * provided credentials.
+     * provided credentials. The default docker.io registry can be specified using
+     * {@link DockerClientInstance#DOCKER_IO} or  {@link AuthConfig#DEFAULT_SERVER_ADDRESS}.
      * 
      * @param registryUrl e.g. {@code https://index.docker.io/v1/, https://nexus.iex.ec,
      *                          docker.io, nexus.iex.ec}

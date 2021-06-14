@@ -49,6 +49,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("deprecation") // ExecStartResultCallback
 public class DockerClientInstance {
 
+    public static final String DOCKER_IO = "docker.io";
     public static final String CREATED_STATUS = "created";
     public static final String RUNNING_STATUS = "running";
     public static final String RESTARTING_STATUS = "restarting";
