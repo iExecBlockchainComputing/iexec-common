@@ -16,32 +16,83 @@
 
 package com.iexec.common.docker.client;
 
+import com.github.dockerjava.api.exception.DockerException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("slow")
 public class DockerClientFactoryTests {
 
-    /**
-     * Prevents regression
-     */
-    @Test
-    public void shouldCreateOnlyOneClientInstanceWithoutCredentials() {
-        assertThat(DockerClientFactory.getDockerClientInstance() == DockerClientFactory.getDockerClientInstance())
-                .isTrue();
+    private String dockerIoUsername = getEnvValue("DOCKER_IO_USER");
+    private String dockerIoPassword = getEnvValue("DOCKER_IO_PASSWORD");
+    private String nexusRegistry = getEnvValue("NEXUS_REGISTRY");
+    private String nexusUsername = getEnvValue("NEXUS_USER");
+    private String nexusPassword = getEnvValue("NEXUS_PASSWORD");
+
+    @BeforeEach
+    public void beforeEach() {
+        DockerClientFactory.purgeClients();
     }
 
     @Test
-    public void shouldCreateClientWithAuthConfigCredentials() {
-        String username = "username";
-        String password = "password";
+    public void shouldGetUnauthenticatedClient() throws Exception {
+        DockerClientInstance instance1 = DockerClientFactory.getDockerClientInstance();
+        DockerClientInstance instance2 = DockerClientFactory.getDockerClientInstance();
+        assertThat(instance1 == instance2).isTrue();
+    }
 
-        DockerClientInstance dockerClientInstance = DockerClientFactory
-                .getDockerClientInstance(username, password);
+    @Test
+    public void shouldGetAuthenticatedClientWithDefaultRegistry() throws Exception {
+        DockerClientInstance instance1 = DockerClientFactory
+                .getDockerClientInstance(dockerIoUsername, dockerIoPassword);
+        DockerClientInstance instance2 = DockerClientFactory
+                .getDockerClientInstance(dockerIoUsername, dockerIoPassword);
+        assertThat(instance1 == instance2).isTrue();
+        assertThat(instance1.getClient().authConfig().getUsername())
+                .isEqualTo(dockerIoUsername);
+        assertThat(instance1.getClient().authConfig().getPassword())
+                .isEqualTo(dockerIoPassword);
+        System.out.println(instance1.getClient().authConfig());
+    }
 
-        assertThat(dockerClientInstance.getClient().authConfig().getUsername())
-                .isEqualTo(username);
-        assertThat(dockerClientInstance.getClient().authConfig().getPassword())
-                .isEqualTo(password);
+    @Test
+    public void shouldGetAuthenticatedClientWithCustomRegistry() throws Exception {
+        DockerClientInstance instance1 = DockerClientFactory
+                .getDockerClientInstance(nexusRegistry, nexusUsername, nexusPassword);
+        DockerClientInstance instance2 = DockerClientFactory
+                .getDockerClientInstance(nexusRegistry, nexusUsername, nexusPassword);
+        assertThat(instance1 == instance2).isTrue();
+        assertThat(instance1.getClient().authConfig().getRegistryAddress())
+                .isEqualTo(nexusRegistry);
+        assertThat(instance1.getClient().authConfig().getUsername())
+                .isEqualTo(nexusUsername);
+        assertThat(instance1.getClient().authConfig().getPassword())
+                .isEqualTo(nexusPassword);
+    }
+
+    @Test
+    public void shouldFailtoAuthenticateClientWithDefaultRegistry() {
+        DockerException e = assertThrows(DockerException.class, () -> DockerClientFactory
+                .getDockerClientInstance("badUsername", "badPassword"));
+        assertThat(e.getHttpStatus()).isEqualTo(401);
+    }
+
+    @Test
+    public void shouldFailtoAuthenticateClientWithCustomRegistry() {
+        DockerException e = assertThrows(DockerException.class, () -> DockerClientFactory
+                .getDockerClientInstance(nexusRegistry, nexusUsername, "badPassword"));
+        assertThat(e.getHttpStatus()).isEqualTo(401);
+    }
+
+    private String getEnvValue(String envVarName) {
+        return System.getenv(envVarName) != null ?
+                //Intellij envvar injection
+                System.getenv(envVarName) :
+                //gradle test -DdockerhubPassword=xxx
+                System.getProperty(envVarName);
     }
 }
