@@ -6,18 +6,20 @@ pipeline {
 
         stage('Test') {
             steps {
-                 withCredentials([
-                 string(credentialsId: 'ADDRESS_SONAR', variable: 'address_sonar'),
-                 string(credentialsId: 'SONAR_COMMON_TOKEN', variable: 'common_token')]){
-                    sh './gradlew clean test sonarqube -Dsonar.projectKey=iexec-common -Dsonar.host.url=$address_sonar -Dsonar.login=$common_token --no-daemon'
-                 }
-                 junit 'build/test-results/**/*.xml'
+                withCredentials([
+                        string(credentialsId: 'ADDRESS_SONAR', variable: 'address_sonar'),
+                        string(credentialsId: 'SONAR_COMMON_TOKEN', variable: 'common_token'),
+                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub',
+                                usernameVariable: 'DOCKER_IO_USER', passwordVariable: 'DOCKER_IO_PASSWORD']]) {
+                    sh 'DOCKER_IO_USER=$DOCKER_IO_USER DOCKER_IO_PASSWORD=$DOCKER_IO_PASSWORD ./gradlew test --tests "*.DockerClientFactoryTests"'
+                }
+                junit 'build/test-results/**/*.xml'
             }
         }
 
         stage('Build') {
             steps {
-                sh './gradlew build --no-daemon'
+                sh './gradlew build -x test --no-daemon'
             }
         }
 

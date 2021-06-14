@@ -63,10 +63,9 @@ public class DockerClientInstanceTests {
     private static final String BLABLA_LATEST = "blabla:latest";
     private static final String CMD = "cmd";
     private static final List<String> ENV = List.of("FOO=bar");
-    private final static String DOCKERHUB_USERNAME_ENV_NAME = "dockerhubUsername";
-    private final static String DOCKERHUB_PASSWORD_ENV_NAME = "dockerhubPassword";
-    private final static String PRIVATE_IMAGE_NAME =
-            "sconecuratedimages/iexec:runtime-scone-3.0.0-production";
+    private final static String DOCKERHUB_USERNAME_ENV_NAME = "DOCKER_IO_USER";
+    private final static String DOCKERHUB_PASSWORD_ENV_NAME = "DOCKER_IO_PASSWORD";
+    private final static String PRIVATE_IMAGE_NAME = "iexechub/alpine-private-image:latest";
     private final static String DOCKER_NETWORK = "dockerTestsNetwork";
     private static final String DEVICE_PATH_IN_CONTAINER = "/dev/some-device-in-container";
     private static final String DEVICE_PATH_ON_HOST = "/dev/some-device-on-host";
@@ -420,7 +419,9 @@ public class DockerClientInstanceTests {
             return;
         }
         // Get an authenticated docker client
-        DockerClientInstance authClientInstance = DockerClientFactory.getDockerClientInstance(username, password);
+        DockerClientInstance authClientInstance = DockerClientFactory
+                .getDockerClientInstance(DockerClientInstance.DOCKER_IO,
+                username, password);
         // clean to avoid previous tests collisions
         authClientInstance.removeImage(PRIVATE_IMAGE_NAME);
         // pull image and check
@@ -435,14 +436,6 @@ public class DockerClientInstanceTests {
                 System.getenv(envVarName) :
                 //gradle test -DdockerhubPassword=xxx
                 System.getProperty(envVarName);
-    }
-
-    @Test
-    public void shouldFailToPullPrivateImageWithWrongCredentials() {
-        // Get an authenticated docker client
-        DockerClientInstance authClientInstance = DockerClientFactory
-                .getDockerClientInstance("dummyUsername", "dummyPassword");
-        assertThat(authClientInstance.pullImage(PRIVATE_IMAGE_NAME)).isFalse();
     }
 
     // getImageId
