@@ -437,14 +437,6 @@ public class DockerClientInstanceTests {
                 System.getProperty(envVarName);
     }
 
-    @Test
-    public void shouldFailToPullPrivateImageWithWrongCredentials() {
-        // Get an authenticated docker client
-        DockerClientInstance authClientInstance = DockerClientFactory
-                .getDockerClientInstance("dummyUsername", "dummyPassword");
-        assertThat(authClientInstance.pullImage(PRIVATE_IMAGE_NAME)).isFalse();
-    }
-
     // getImageId
 
     @Test
