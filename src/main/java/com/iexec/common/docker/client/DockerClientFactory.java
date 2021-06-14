@@ -32,26 +32,13 @@ public abstract class DockerClientFactory {
      * @return unauthenticated client
      */
     public static synchronized DockerClientInstance getDockerClientInstance() {
-        return createInstance("", "", "");
-    }
-
-    /**
-     * Get a Docker client instance that is authenticated against the default docker
-     * registry {@link AuthConfig#DEFAULT_SERVER_ADDRESS}
-     * ({@code https://index.docker.io/v1/}) using the provided credentials.
-     * 
-     * @param username
-     * @param password
-     * @throws DockerException if the authentication fails
-     */
-    public static synchronized DockerClientInstance getDockerClientInstance(
-            String username, String password) throws DockerException {
-        return createInstance("", username, password);
+        return getOrCreateInstance("", "", "");
     }
 
     /**
      * Get a Docker client that is authenticated against a specific registry with the
-     * provided credentials.
+     * provided credentials. The default docker.io registry can be specified using
+     * {@link DockerClientInstance#DOCKER_IO} or  {@link AuthConfig#DEFAULT_SERVER_ADDRESS}.
      * 
      * @param registryUrl e.g. {@code https://index.docker.io/v1/, https://nexus.iex.ec,
      *                          docker.io, nexus.iex.ec}
@@ -61,7 +48,7 @@ public abstract class DockerClientFactory {
      */
     public static synchronized DockerClientInstance getDockerClientInstance(
             String registryUrl, String username, String password) throws DockerException {
-        return createInstance(registryUrl, username, password);
+        return getOrCreateInstance(registryUrl, username, password);
     }
 
     /**
@@ -71,7 +58,7 @@ public abstract class DockerClientFactory {
         clientsMap.clear();
     }
 
-    private static DockerClientInstance createInstance(
+    private static DockerClientInstance getOrCreateInstance(
             String registryUrl, String username, String password) {
         String id = getClientIdentifier(registryUrl, username);
         if (clientsMap.get(id) == null) {
