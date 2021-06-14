@@ -27,11 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Tag("slow")
 public class DockerClientFactoryTests {
 
-    private String dockerIoUsername = getEnvValue("DOCKER_IO_USER");
-    private String dockerIoPassword = getEnvValue("DOCKER_IO_PASSWORD");
-    private String nexusRegistry = getEnvValue("NEXUS_REGISTRY");
-    private String nexusUsername = getEnvValue("NEXUS_USER");
-    private String nexusPassword = getEnvValue("NEXUS_PASSWORD");
+    private static final String DOCKER_IO_USER = "DOCKER_IO_USER";
+    private static final String DOCKER_IO_PASSWORD = "DOCKER_IO_PASSWORD";
 
     @BeforeEach
     public void beforeEach() {
@@ -46,45 +43,24 @@ public class DockerClientFactoryTests {
     }
 
     @Test
-    public void shouldGetAuthenticatedClientWithDefaultRegistry() throws Exception {
-        DockerClientInstance instance1 = DockerClientFactory
-                .getDockerClientInstance(dockerIoUsername, dockerIoPassword);
-        DockerClientInstance instance2 = DockerClientFactory
-                .getDockerClientInstance(dockerIoUsername, dockerIoPassword);
+    public void shouldGetAuthenticatedClientWithDockerIoRegistry() throws Exception {
+        String dockerIoUsername = getEnvValue(DOCKER_IO_USER);
+        String dockerIoPassword = getEnvValue(DOCKER_IO_PASSWORD);
+        DockerClientInstance instance1 = DockerClientFactory.getDockerClientInstance(
+                DockerClientInstance.DOCKER_IO, dockerIoUsername, dockerIoPassword);
+        DockerClientInstance instance2 = DockerClientFactory.getDockerClientInstance(
+                DockerClientInstance.DOCKER_IO, dockerIoUsername, dockerIoPassword);
         assertThat(instance1 == instance2).isTrue();
         assertThat(instance1.getClient().authConfig().getUsername())
                 .isEqualTo(dockerIoUsername);
         assertThat(instance1.getClient().authConfig().getPassword())
                 .isEqualTo(dockerIoPassword);
-        System.out.println(instance1.getClient().authConfig());
     }
 
     @Test
-    public void shouldGetAuthenticatedClientWithCustomRegistry() throws Exception {
-        DockerClientInstance instance1 = DockerClientFactory
-                .getDockerClientInstance(nexusRegistry, nexusUsername, nexusPassword);
-        DockerClientInstance instance2 = DockerClientFactory
-                .getDockerClientInstance(nexusRegistry, nexusUsername, nexusPassword);
-        assertThat(instance1 == instance2).isTrue();
-        assertThat(instance1.getClient().authConfig().getRegistryAddress())
-                .isEqualTo(nexusRegistry);
-        assertThat(instance1.getClient().authConfig().getUsername())
-                .isEqualTo(nexusUsername);
-        assertThat(instance1.getClient().authConfig().getPassword())
-                .isEqualTo(nexusPassword);
-    }
-
-    @Test
-    public void shouldFailtoAuthenticateClientWithDefaultRegistry() {
+    public void shouldFailtoAuthenticateClientWithDockerIoRegistry() {
         DockerException e = assertThrows(DockerException.class, () -> DockerClientFactory
-                .getDockerClientInstance("badUsername", "badPassword"));
-        assertThat(e.getHttpStatus()).isEqualTo(401);
-    }
-
-    @Test
-    public void shouldFailtoAuthenticateClientWithCustomRegistry() {
-        DockerException e = assertThrows(DockerException.class, () -> DockerClientFactory
-                .getDockerClientInstance(nexusRegistry, nexusUsername, "badPassword"));
+                .getDockerClientInstance(DockerClientInstance.DOCKER_IO, "badUsername", "badPassword"));
         assertThat(e.getHttpStatus()).isEqualTo(401);
     }
 
