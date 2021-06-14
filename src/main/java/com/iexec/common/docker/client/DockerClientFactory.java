@@ -32,7 +32,7 @@ public abstract class DockerClientFactory {
      * @return unauthenticated client
      */
     public static synchronized DockerClientInstance getDockerClientInstance() {
-        return createInstance("", "", "");
+        return getOrCreateInstance("", "", "");
     }
 
     /**
@@ -48,7 +48,7 @@ public abstract class DockerClientFactory {
      */
     public static synchronized DockerClientInstance getDockerClientInstance(
             String registryUrl, String username, String password) throws DockerException {
-        return createInstance(registryUrl, username, password);
+        return getOrCreateInstance(registryUrl, username, password);
     }
 
     /**
@@ -58,7 +58,7 @@ public abstract class DockerClientFactory {
         clientsMap.clear();
     }
 
-    private static DockerClientInstance createInstance(
+    private static DockerClientInstance getOrCreateInstance(
             String registryUrl, String username, String password) {
         String id = getClientIdentifier(registryUrl, username);
         if (clientsMap.get(id) == null) {
