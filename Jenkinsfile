@@ -13,7 +13,7 @@ pipeline {
                         usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD'],
                 [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub',
                         usernameVariable: 'DOCKER_IO_USER', passwordVariable: 'DOCKER_IO_PASSWORD']]){
-                    sh './gradlew clean test sonarqube -Dsonar.projectKey=iexec-common -Dsonar.host.url=$address_sonar -Dsonar.login=$common_token --no-daemon -i'
+                    sh ' NEXUS_REGISTRY=nexus.iex.ec NEXUS_USER=$NEXUS_USER NEXUS_PASSWORD=$NEXUS_PASSWORD DOCKER_IO_USER=$DOCKER_IO_USER DOCKER_IO_PASSWORD=$DOCKER_IO_PASSWORD ./gradlew clean test sonarqube -Dsonar.projectKey=iexec-common -Dsonar.host.url=$address_sonar -Dsonar.login=$common_token --no-daemon -i'
                 }
                 junit 'build/test-results/**/*.xml'
             }
