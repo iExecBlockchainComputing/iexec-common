@@ -9,15 +9,9 @@ pipeline {
                 withCredentials([
                         string(credentialsId: 'ADDRESS_SONAR', variable: 'address_sonar'),
                         string(credentialsId: 'SONAR_COMMON_TOKEN', variable: 'common_token'),
-                        [$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexus',
-                                usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD'],
                         [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub',
                                 usernameVariable: 'DOCKER_IO_USER', passwordVariable: 'DOCKER_IO_PASSWORD']]) {
-                    sh 'NEXUS_REGISTRY=nexus.iex.ec NEXUS_USER=$NEXUS_USER NEXUS_PASSWORD=$NEXUS_PASSWORD DOCKER_IO_USER=$DOCKER_IO_USER DOCKER_IO_PASSWORD=$DOCKER_IO_PASSWORD ./gradlew test --tests "*.DockerClientFactoryTests" -i'
-
-                    sh './gradlew test --tests "*.DockerClientInstanceTests" -i'
-
-                    sh 'NEXUS_REGISTRY=nexus.iex.ec NEXUS_USER=$NEXUS_USER NEXUS_PASSWORD=$NEXUS_PASSWORD DOCKER_IO_USER=$DOCKER_IO_USER DOCKER_IO_PASSWORD=$DOCKER_IO_PASSWORD ./gradlew clean test sonarqube -Dsonar.projectKey=iexec-common -Dsonar.host.url=$address_sonar -Dsonar.login=$common_token --no-daemon'
+                    sh 'DOCKER_IO_USER=$DOCKER_IO_USER DOCKER_IO_PASSWORD=$DOCKER_IO_PASSWORD ./gradlew test --tests "*.DockerClientFactoryTests"'
                 }
                 junit 'build/test-results/**/*.xml'
             }
