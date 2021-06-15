@@ -845,7 +845,7 @@ public class DockerClientInstance {
         DockerClient dockerClient = DockerClientImpl.getInstance(config, httpClient);
         if (authenticate) {
             dockerClient.authCmd().exec();
-            log.info("Authenticated to Docker registry [registry:{}, username:{}]",
+            log.info("Authenticated Docker client registry [registry:{}, username:{}]",
                     registryAddress, username);
         }
         return dockerClient;
