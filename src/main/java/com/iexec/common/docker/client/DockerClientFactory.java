@@ -17,7 +17,7 @@
 package com.iexec.common.docker.client;
 
 import com.github.dockerjava.api.exception.DockerException;
-import com.github.dockerjava.api.model.AuthConfig;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,18 +27,40 @@ public abstract class DockerClientFactory {
     private static Map<String, DockerClientInstance> clientsMap = new HashMap<>();
 
     /**
-     * Get an unauthenticated Docker client instance.
+     * Get an unauthenticated Docker client instance connected to the default Docker
+     * registry {@link DockerClientInstance#DEFAULT_DOCKER_REGISTRY}.
      * 
      * @return unauthenticated client
      */
     public static synchronized DockerClientInstance getDockerClientInstance() {
-        return getOrCreateInstance("", "", "");
+        try {
+            return getOrCreateInstance(DockerClientInstance.DEFAULT_DOCKER_REGISTRY, "", "");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Get an unauthenticated Docker client instance connected to the provided registry.
+     * 
+     * @return unauthenticated client
+     */
+    public static synchronized DockerClientInstance
+            getDockerClientInstance(String registryAddress) {
+        if (StringUtils.isBlank(registryAddress)) {
+            throw new IllegalArgumentException("Registry address must not be blank");
+        }
+        try {
+            return getOrCreateInstance(registryAddress, "", "");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Get a Docker client that is authenticated against a specific registry with the
      * provided credentials. The default docker.io registry can be specified using
-     * {@link DockerClientInstance#DOCKER_IO} or  {@link AuthConfig#DEFAULT_SERVER_ADDRESS}.
+     * {@link DockerClientInstance#DEFAULT_DOCKER_REGISTRY}.
      * 
      * @param registryUrl e.g. {@code https://index.docker.io/v1/, https://nexus.iex.ec,
      *                          docker.io, nexus.iex.ec}
@@ -47,7 +69,7 @@ public abstract class DockerClientFactory {
      * @throws DockerException if the authentication fails
      */
     public static synchronized DockerClientInstance getDockerClientInstance(
-            String registryUrl, String username, String password) throws DockerException {
+            String registryUrl, String username, String password) throws Exception {
         return getOrCreateInstance(registryUrl, username, password);
     }
 
@@ -59,10 +81,15 @@ public abstract class DockerClientFactory {
     }
 
     private static DockerClientInstance getOrCreateInstance(
-            String registryUrl, String username, String password) {
+            String registryUrl, String username, String password) throws Exception {
         String id = getClientIdentifier(registryUrl, username);
+        boolean isAuthenticated = StringUtils.isNotBlank(username)
+                && StringUtils.isNotBlank(password);
         if (clientsMap.get(id) == null) {
-            clientsMap.put(id, new DockerClientInstance(registryUrl, username, password));
+            DockerClientInstance instance = isAuthenticated
+                ? new DockerClientInstance(registryUrl, username, password)
+                : new DockerClientInstance(registryUrl);
+            clientsMap.put(id, instance);
         }
         return clientsMap.get(id);
     }
