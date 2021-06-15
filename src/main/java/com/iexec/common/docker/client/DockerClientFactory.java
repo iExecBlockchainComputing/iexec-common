@@ -47,9 +47,6 @@ public abstract class DockerClientFactory {
      */
     public static synchronized DockerClientInstance
             getDockerClientInstance(String registryAddress) {
-        if (StringUtils.isBlank(registryAddress)) {
-            throw new IllegalArgumentException("Registry address must not be blank");
-        }
         try {
             return getOrCreateInstance(registryAddress, "", "");
         } catch (Exception e) {
@@ -83,10 +80,10 @@ public abstract class DockerClientFactory {
     private static DockerClientInstance getOrCreateInstance(
             String registryUrl, String username, String password) throws Exception {
         String id = getClientIdentifier(registryUrl, username);
-        boolean isAuthenticated = StringUtils.isNotBlank(username)
-                && StringUtils.isNotBlank(password);
         if (clientsMap.get(id) == null) {
-            DockerClientInstance instance = isAuthenticated
+            boolean shouldAuthenticate = StringUtils.isNotBlank(username)
+                    && StringUtils.isNotBlank(password);
+            DockerClientInstance instance = shouldAuthenticate
                 ? new DockerClientInstance(registryUrl, username, password)
                 : new DockerClientInstance(registryUrl);
             clientsMap.put(id, instance);
