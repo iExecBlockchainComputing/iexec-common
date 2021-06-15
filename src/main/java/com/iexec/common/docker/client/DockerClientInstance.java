@@ -827,13 +827,13 @@ public class DockerClientInstance {
         if (StringUtils.isBlank(registryAddress)) {
             throw new IllegalArgumentException("Registry address must not be blank");
         }
-        boolean authenticate = StringUtils.isNotBlank(username)
+        boolean shouldAuthenticate = StringUtils.isNotBlank(username)
                 && StringUtils.isNotBlank(password);
         DefaultDockerClientConfig.Builder configBuilder =
                 DefaultDockerClientConfig.createDefaultConfigBuilder()
                         .withDockerTlsVerify(false)
                         .withRegistryUrl(registryAddress);
-        if (authenticate) {
+        if (shouldAuthenticate) {
             configBuilder.withRegistryUsername(username)
                     .withRegistryPassword(password);
         }
@@ -843,7 +843,7 @@ public class DockerClientInstance {
                 .sslConfig(config.getSSLConfig())
                 .build();
         DockerClient dockerClient = DockerClientImpl.getInstance(config, httpClient);
-        if (authenticate) {
+        if (shouldAuthenticate) {
             dockerClient.authCmd().exec();
             log.info("Authenticated Docker client registry [registry:{}, username:{}]",
                     registryAddress, username);
