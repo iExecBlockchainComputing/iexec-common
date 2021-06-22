@@ -1,8 +1,7 @@
 package com.iexec.common.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.web3j.crypto.Hash;
-import org.web3j.utils.Numeric;
+import org.web3j.crypto.Keys;
 
 import java.util.regex.Pattern;
 
@@ -42,41 +41,7 @@ public class EthAddress extends org.web3j.abi.datatypes.Address {
             return true;
         }
         // validate checksum address when mixed case
-        return validateChecksummed(address);
-    }
-
-    /**
-     * Checks if the given string is a checksummed address. Inspired by
-     * the web3js implementation.
-     * 
-     * @param address in hex
-     * @return true if valid checksummed address, false otherwise
-     * @see https://github.com/ChainSafe/web3.js/blob/
-     * 5d027191c5cb7ffbcd44083528bdab19b4e14744/packages/web3-utils/src/
-     * utils.js#L110
-     */
-    public static boolean validateChecksummed(String address) {
-        // check address is not empty and contains the valid
-        // number (40 without 0x) and type (alphanumeric) of characters
-        if (StringUtils.isEmpty(address) ||
-                !matchesRegex(address, IGNORE_CASE_ADDRESS_PATTERN)) {
-            return false;
-        }
-        address = Numeric.cleanHexPrefix(address);
-        String hash = Numeric.toHexStringNoPrefix(Hash.sha3(address.toLowerCase().getBytes()));
-        for (int i = 0; i < 40; i++) {
-            if (!Character.isLetter(address.charAt(i))) {
-                continue;
-            }
-            // each uppercase letter should correlate with a first bit of 1 in the hash
-            // char with the same index, and each lowercase letter with a 0 bit
-            int charInt = Integer.parseInt(Character.toString(hash.charAt(i)), 16);
-            if ((Character.isUpperCase(address.charAt(i)) && charInt <= 7)
-            || (Character.isLowerCase(address.charAt(i)) && charInt > 7)) {
-                return false;
-            }
-        }
-        return true;
+        return Keys.toChecksumAddress(address).equals(address);
     }
     
     private static boolean matchesRegex(String address, String regex) {

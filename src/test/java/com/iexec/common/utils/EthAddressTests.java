@@ -25,20 +25,4 @@ public class EthAddressTests {
         // invalid checksum address
         assertFalse(EthAddress.validate(validChecksumAddress.replace('E', 'e')));
     }
-
-    @Test
-    public void validateChecksummedAddress() {
-        String validChecksumAddress = "0x1Ec09E1782a43a770D54e813379c730E0b29aD4B";
-        // valid checksum address
-        assertTrue(EthAddress.validate(validChecksumAddress));
-
-        // invalid non-hex address
-        assertFalse(EthAddress.validateChecksummed(validChecksumAddress.replace("c", "z")));
-        // invalid non-alphanumeric address
-        assertFalse(EthAddress.validateChecksummed(validChecksumAddress.replace("c", "&")));
-        // invalid length address
-        assertFalse(EthAddress.validateChecksummed(validChecksumAddress.substring(0, 41)));
-        // invalid checksum address
-        assertFalse(EthAddress.validateChecksummed(validChecksumAddress.replace('E', 'e')));
-    }
 }
