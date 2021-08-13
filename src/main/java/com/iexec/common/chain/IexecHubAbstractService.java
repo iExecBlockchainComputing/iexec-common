@@ -36,6 +36,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tuples.generated.Tuple9;
+import org.web3j.tx.ChainIdLong;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -108,19 +109,23 @@ public abstract class IexecHubAbstractService {
      */
     public IexecHubContract getHubContract(ContractGasProvider contractGasProvider) {
         return getHubContract(contractGasProvider,
+                ChainIdLong.NONE,
                 DEFAULT_BLOCK_TIME,
                 DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH);
     }
 
+
     /**
-     * Get a IexecHubContract instance.
+     * Get an IexecHubContract instance.
      *
      * @param contractGasProvider gas provider, useful for sending txs
+     * @param chainId chain ID for EIP155 protection
      * @param watchFrequency frequency for getting tx receipt
      * @param watchAttempts number of attempts to get tx receipt
      * @return an IexecHubContract instance
      */
     public IexecHubContract getHubContract(ContractGasProvider contractGasProvider,
+                                           long chainId,
                                            int watchFrequency,
                                            int watchAttempts) {
         ExceptionInInitializerError exceptionInInitializerError =
@@ -133,6 +138,7 @@ public abstract class IexecHubAbstractService {
                         web3jAbstractService.getWeb3j(),
                         new RawTransactionManager(web3jAbstractService.getWeb3j(),
                                 credentials,
+                                chainId,
                                 watchAttempts,
                                 watchFrequency),
                         contractGasProvider);
