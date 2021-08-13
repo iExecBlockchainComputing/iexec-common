@@ -36,6 +36,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tuples.generated.Tuple9;
+import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 
@@ -52,6 +53,8 @@ import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
 import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
 import static com.iexec.common.tee.TeeEnclaveConfiguration.buildEnclaveConfigurationFromJsonString;
+import static org.web3j.protocol.core.JsonRpc2_0Web3j.DEFAULT_BLOCK_TIME;
+import static org.web3j.tx.TransactionManager.DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH;
 
 
 /*
@@ -104,6 +107,22 @@ public abstract class IexecHubAbstractService {
      * the last ContractGasProvider which depends on the gas price of the network
      */
     public IexecHubContract getHubContract(ContractGasProvider contractGasProvider) {
+        return getHubContract(contractGasProvider,
+                DEFAULT_BLOCK_TIME,
+                DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH);
+    }
+
+    /**
+     * Get a IexecHubContract instance.
+     *
+     * @param contractGasProvider gas provider, useful for sending txs
+     * @param watchFrequency frequency for getting tx receipt
+     * @param watchAttempts number of attempts to get tx receipt
+     * @return an IexecHubContract instance
+     */
+    public IexecHubContract getHubContract(ContractGasProvider contractGasProvider,
+                                           int watchFrequency,
+                                           int watchAttempts) {
         ExceptionInInitializerError exceptionInInitializerError =
                 new ExceptionInInitializerError("Failed to load IexecHub " +
                         "contract from address " + iexecHubAddress);
@@ -112,7 +131,10 @@ public abstract class IexecHubAbstractService {
             try {
                 return IexecHubContract.load(iexecHubAddress,
                         web3jAbstractService.getWeb3j(),
-                        credentials,
+                        new RawTransactionManager(web3jAbstractService.getWeb3j(),
+                                credentials,
+                                watchAttempts,
+                                watchFrequency),
                         contractGasProvider);
             } catch (EnsResolutionException e) {
                 throw exceptionInInitializerError;
