@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package com.iexec.common.chain;
+package com.iexec.common.chain.adapter;
 
-import com.iexec.common.tee.TeeEnclaveConfiguration;
-import lombok.*;
+public enum CommandStatus {
 
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Getter
-public class ChainApp {
-
-    private String chainAppId;
-    private String name;
-    private String type;
-    private String uri;
-    private String checksum;
-    private TeeEnclaveConfiguration enclaveConfiguration;
+    RECEIVED,
+    PROCESSING,
+    SUCCESS,
+    FAILURE,
 
 }

@@ -62,6 +62,12 @@ public class ChainDeal {
     BigInteger workerStake;
     BigInteger schedulerRewardRatio;
 
+    public boolean containsDataset() {
+        return getChainDataset() != null &&
+                getChainDataset().getChainDatasetId() != null &&
+                !getChainDataset().getChainDatasetId().equals(BytesUtils.EMPTY_ADDRESS);
+    }
+
     public static DealParams stringToDealParams(String params) {
         try {
             DealParams dealParams = new ObjectMapper().readValue(params, DealParams.class);

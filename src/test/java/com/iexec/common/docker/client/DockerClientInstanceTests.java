@@ -18,6 +18,7 @@ package com.iexec.common.docker.client;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerCmd;
+import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.model.Device;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
@@ -41,6 +42,7 @@ import java.time.Instant;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -63,10 +65,9 @@ public class DockerClientInstanceTests {
     private static final String BLABLA_LATEST = "blabla:latest";
     private static final String CMD = "cmd";
     private static final List<String> ENV = List.of("FOO=bar");
-    private final static String DOCKERHUB_USERNAME_ENV_NAME = "dockerhubUsername";
-    private final static String DOCKERHUB_PASSWORD_ENV_NAME = "dockerhubPassword";
-    private final static String PRIVATE_IMAGE_NAME =
-            "sconecuratedimages/iexec:runtime-scone-3.0.0-production";
+    private final static String DOCKERHUB_USERNAME_ENV_NAME = "DOCKER_IO_USER";
+    private final static String DOCKERHUB_PASSWORD_ENV_NAME = "DOCKER_IO_PASSWORD";
+    private final static String PRIVATE_IMAGE_NAME = "iexechub/private-image:alpine-3.13";
     private final static String DOCKER_NETWORK = "dockerTestsNetwork";
     private static final String DEVICE_PATH_IN_CONTAINER = "/dev/some-device-in-container";
     private static final String DEVICE_PATH_ON_HOST = "/dev/some-device-on-host";
@@ -80,7 +81,7 @@ public class DockerClientInstanceTests {
 
 
     @Spy
-    private DockerClientInstance dockerClientInstance = DockerClientFactory.getDockerClientInstance();
+    private DockerClientInstance dockerClientInstance = new DockerClientInstance();
 
     @Spy
     private DockerClient realClient = dockerClientInstance.getClient();
@@ -94,23 +95,20 @@ public class DockerClientInstanceTests {
 
     @BeforeAll
     public static void beforeAll() {
-        usedImages.forEach(imageName ->
-                DockerClientFactory.getDockerClientInstance().pullImage(imageName));
+        usedImages.forEach(imageName -> new DockerClientInstance().pullImage(imageName));
     }
 
     @AfterAll
     public static void afterAll() {
         System.out.println("Cleaning after all tests");
+        DockerClientInstance instance = new DockerClientInstance();
         // clean containers
-        usedRandomNames.forEach(name -> 
-                DockerClientFactory.getDockerClientInstance().stopAndRemoveContainer(name));
+        usedRandomNames.forEach(name -> instance.stopAndRemoveContainer(name));
         // clean networks
-        usedRandomNames.forEach(name -> 
-                DockerClientFactory.getDockerClientInstance().removeNetwork(name));
-        DockerClientFactory.getDockerClientInstance().removeNetwork(DOCKER_NETWORK);
+        usedRandomNames.forEach(name -> instance.removeNetwork(name));
+        instance.removeNetwork(DOCKER_NETWORK);
         // clean docker images
-        usedImages.forEach(imageName ->
-                DockerClientFactory.getDockerClientInstance().removeImage(imageName));
+        usedImages.forEach(imageName -> instance.removeImage(imageName));
     }
 
     public DockerRunRequest getDefaultDockerRunRequest(boolean isSgx) {
@@ -128,6 +126,49 @@ public class DockerClientInstanceTests {
                 .dockerNetwork(DOCKER_NETWORK)
                 .workingDir(SLASH_TMP)
                 .build();
+    }
+
+    /**
+     * new instance
+     */
+
+    @Test
+    public void shouldCreateUnauthenticatedClientWithDefaultRegistry() {
+        DockerClientInstance instance = new DockerClientInstance();
+        assertThat(instance.getClient().authConfig().getRegistryAddress())
+                .isEqualTo(DockerClientInstance.DEFAULT_DOCKER_REGISTRY);
+        assertThat(instance.getClient().authConfig().getPassword()).isNull();
+    }
+
+    @Test
+    public void shouldCreateUnauthenticatedClientWithCustomRegistry() {
+        String registryAddress = "registryAddress";
+        DockerClientInstance instance = new DockerClientInstance(registryAddress);
+        assertThat(instance.getClient().authConfig().getRegistryAddress())
+                .isEqualTo(registryAddress);
+        assertThat(instance.getClient().authConfig().getPassword()).isNull();
+    }
+
+    @Test
+    public void shouldGetAuthenticatedClientWithDockerIoRegistry() throws Exception {
+        String dockerIoUsername = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
+        String dockerIoPassword = getEnvValue(DOCKERHUB_PASSWORD_ENV_NAME);
+        DockerClientInstance instance = new DockerClientInstance(
+                DockerClientInstance.DEFAULT_DOCKER_REGISTRY,
+                dockerIoUsername, dockerIoPassword);
+        assertThat(instance.getClient().authConfig().getRegistryAddress())
+                .isEqualTo(DockerClientInstance.DEFAULT_DOCKER_REGISTRY);
+        assertThat(instance.getClient().authConfig().getUsername())
+                .isEqualTo(dockerIoUsername);
+        assertThat(instance.getClient().authConfig().getPassword())
+                .isEqualTo(dockerIoPassword);
+    }
+
+    @Test
+    public void shouldFailtoAuthenticateClientToRegistry() {
+        DockerException e = assertThrows(DockerException.class, () -> DockerClientFactory
+                .getDockerClientInstance(DockerClientInstance.DEFAULT_DOCKER_REGISTRY, "badUsername", "badPassword"));
+        assertThat(e.getHttpStatus()).isEqualTo(401);
     }
 
     /**
@@ -411,7 +452,7 @@ public class DockerClientInstanceTests {
      * Following test will only occur if dockerhubPassword envvar is present
      */
     @Test
-    public void shouldPullPrivateImage() {
+    public void shouldPullPrivateImage() throws Exception {
         String username = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
         String password = getEnvValue(DOCKERHUB_PASSWORD_ENV_NAME);
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
@@ -420,7 +461,9 @@ public class DockerClientInstanceTests {
             return;
         }
         // Get an authenticated docker client
-        DockerClientInstance authClientInstance = DockerClientFactory.getDockerClientInstance(username, password);
+        DockerClientInstance authClientInstance =
+                new DockerClientInstance(DockerClientInstance.DEFAULT_DOCKER_REGISTRY,
+                        username, password);
         // clean to avoid previous tests collisions
         authClientInstance.removeImage(PRIVATE_IMAGE_NAME);
         // pull image and check
@@ -435,14 +478,6 @@ public class DockerClientInstanceTests {
                 System.getenv(envVarName) :
                 //gradle test -DdockerhubPassword=xxx
                 System.getProperty(envVarName);
-    }
-
-    @Test
-    public void shouldFailToPullPrivateImageWithWrongCredentials() {
-        // Get an authenticated docker client
-        DockerClientInstance authClientInstance = DockerClientFactory
-                .getDockerClientInstance("dummyUsername", "dummyPassword");
-        assertThat(authClientInstance.pullImage(PRIVATE_IMAGE_NAME)).isFalse();
     }
 
     // getImageId

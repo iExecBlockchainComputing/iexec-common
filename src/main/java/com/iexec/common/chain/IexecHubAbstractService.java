@@ -51,6 +51,7 @@ import java.util.function.BiFunction;
 import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
 import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
+import static com.iexec.common.tee.TeeEnclaveConfiguration.buildEnclaveConfigurationFromJsonString;
 
 
 /*
@@ -68,6 +69,7 @@ public abstract class IexecHubAbstractService {
     private long maxNbOfPeriodsForConsensus;
     private final int nbBlocksToWaitPerRetry;
     private final int maxRetries;
+    // /!\ TODO remove expired task descriptions
     private final Map<String, TaskDescription> taskDescriptions = new HashMap<>();
 
     public IexecHubAbstractService(Credentials credentials,
@@ -842,22 +844,47 @@ public abstract class IexecHubAbstractService {
     }
 
     public Optional<ChainApp> getChainApp(App app) {
-        if (app != null && !app.getContractAddress().equals(BytesUtils.EMPTY_ADDRESS)) {
-            try {
-                return Optional.of(ChainApp.builder()
-                        .chainAppId(app.getContractAddress())
-                        .name(app.m_appName().send())
-                        .type(app.m_appType().send())
-                        .uri(BytesUtils.bytesToString(app.m_appMultiaddr().send()))
-                        .checksum(BytesUtils.bytesToString(app.m_appChecksum().send()))
-                        .fingerprint(BytesUtils.hexStringToAscii(BytesUtils.bytesToString(app.m_appMREnclave().send())))
-                        .build());
-            } catch (Exception e) {
-                log.error("Failed to get ChainApp [chainAppId:{}]",
-                        app.getContractAddress(), e);
-            }
+        if (app == null ||
+                StringUtils.isEmpty(app.getContractAddress()) ||
+                app.getContractAddress().equals(BytesUtils.EMPTY_ADDRESS)) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        ChainApp chainApp;
+        try {
+            chainApp = ChainApp.builder()
+                    .chainAppId(app.getContractAddress())
+                    .name(app.m_appName().send())
+                    .type(app.m_appType().send())
+                    .uri(BytesUtils.bytesToString(app.m_appMultiaddr().send()))
+                    .checksum(BytesUtils.bytesToString(app.m_appChecksum().send()))
+                    .build();
+        } catch (Exception e) {
+            log.error("Failed to get chain app [chainAppId:{}]",
+                    app.getContractAddress(), e);
+            return Optional.empty();
+        }
+        String mrEnclave = "";
+        try {
+            mrEnclave = new String(app.m_appMREnclave().send());
+        } catch (Exception e) {
+            log.error("Failed to get chain app mrenclave [chainAppId:{}]",
+                    app.getContractAddress(), e);
+            return Optional.empty();
+        }
+        if (StringUtils.isEmpty(mrEnclave)) {
+            // Standard application
+            return Optional.of(chainApp);
+        }
+        try {
+            chainApp.setEnclaveConfiguration(
+                    buildEnclaveConfigurationFromJsonString(mrEnclave));
+        } catch (Exception e) {
+            log.error("Failed to get tee chain app enclave configuration " +
+                    "[chainAppId:{}, mrEnclave:{}]", app.getContractAddress(),
+                    mrEnclave, e);
+            return Optional.empty();
+        }
+        return Optional.of(chainApp);
     }
 
     public Optional<ChainDataset> getChainDataset(Dataset dataset) {

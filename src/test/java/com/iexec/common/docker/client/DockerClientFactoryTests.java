@@ -16,32 +16,54 @@
 
 package com.iexec.common.docker.client;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("slow")
 public class DockerClientFactoryTests {
 
-    /**
-     * Prevents regression
-     */
-    @Test
-    public void shouldCreateOnlyOneClientInstanceWithoutCredentials() {
-        assertThat(DockerClientFactory.getDockerClientInstance() == DockerClientFactory.getDockerClientInstance())
-                .isTrue();
+    private static final String DOCKER_IO_USER = "DOCKER_IO_USER";
+    private static final String DOCKER_IO_PASSWORD = "DOCKER_IO_PASSWORD";
+
+    @BeforeEach
+    public void beforeEach() {
+        DockerClientFactory.purgeClients();
     }
 
     @Test
-    public void shouldCreateClientWithAuthConfigCredentials() {
-        String username = "username";
-        String password = "password";
+    public void shouldGetTheSameUnauthenticatedClientInstanceWithDefaultRegistry() throws Exception {
+        DockerClientInstance instance1 = DockerClientFactory.getDockerClientInstance();
+        DockerClientInstance instance2 = DockerClientFactory.getDockerClientInstance();
+        assertThat(instance1 == instance2).isTrue();
+    }
 
-        DockerClientInstance dockerClientInstance = DockerClientFactory
-                .getDockerClientInstance(username, password);
+    @Test
+    public void shouldGetTheSameUnauthenticatedClientInstanceWithCustomRegistry() throws Exception {
+        String registryAddress = "registryAddress";
+        DockerClientInstance instance1 = DockerClientFactory.getDockerClientInstance(registryAddress);
+        DockerClientInstance instance2 = DockerClientFactory.getDockerClientInstance(registryAddress);
+        assertThat(instance1 == instance2).isTrue();
+    }
 
-        assertThat(dockerClientInstance.getClient().authConfig().getUsername())
-                .isEqualTo(username);
-        assertThat(dockerClientInstance.getClient().authConfig().getPassword())
-                .isEqualTo(password);
+    @Test
+    public void shouldGetTheSameAuthenticatedClient() throws Exception {
+        String dockerIoUsername = getEnvValue(DOCKER_IO_USER);
+        String dockerIoPassword = getEnvValue(DOCKER_IO_PASSWORD);
+        DockerClientInstance instance1 = DockerClientFactory.getDockerClientInstance(
+                DockerClientInstance.DEFAULT_DOCKER_REGISTRY, dockerIoUsername, dockerIoPassword);
+        DockerClientInstance instance2 = DockerClientFactory.getDockerClientInstance(
+                DockerClientInstance.DEFAULT_DOCKER_REGISTRY, dockerIoUsername, dockerIoPassword);
+        assertThat(instance1 == instance2).isTrue();
+    }
+
+    private String getEnvValue(String envVarName) {
+        return System.getenv(envVarName) != null ?
+                //Intellij envvar injection
+                System.getenv(envVarName) :
+                //gradle test -DdockerhubPassword=xxx
+                System.getProperty(envVarName);
     }
 }

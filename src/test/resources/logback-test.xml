@@ -15,15 +15,21 @@
   ~ limitations under the License.
 -->
 
-<!-- deactivate DEBUG logging of the docker java -->
+
+
+<!--
+    To deactivate DEBUG logging for docker java lib
+-->
+
+
 <configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
         </encoder>
     </appender>
 
     <root level="info">
-        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

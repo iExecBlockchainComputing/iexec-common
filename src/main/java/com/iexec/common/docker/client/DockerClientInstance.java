@@ -18,6 +18,7 @@ package com.iexec.common.docker.client;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.*;
+import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -48,6 +49,9 @@ import java.util.stream.Collectors;
 @SuppressWarnings("deprecation") // ExecStartResultCallback
 public class DockerClientInstance {
 
+    // default docker registry address
+    public static final String DEFAULT_DOCKER_REGISTRY = "docker.io";
+
     public static final String CREATED_STATUS = "created";
     public static final String RUNNING_STATUS = "running";
     public static final String RESTARTING_STATUS = "restarting";
@@ -55,12 +59,53 @@ public class DockerClientInstance {
 
     private DockerClient client;
 
+    /**
+     * Create a new unauthenticated Docker client instance with the default Docker registry
+     * {@link DockerClientInstance#DEFAULT_DOCKER_REGISTRY}.
+     * 
+     * @param registryAddress
+     * @throws Exception if registry address is blank
+     */
     DockerClientInstance() {
-        this.client = createClient("", "");
+        this.client = createClient(DEFAULT_DOCKER_REGISTRY, "", "");
     }
 
-    DockerClientInstance(String username, String password) {
-        this.client = createClient(username, password);
+    /**
+     * Create a new unauthenticated Docker client instance with the specified Docker registry
+     * address.
+     * 
+     * @param registryAddress
+     * @throws IllegalArgumentException if registry address is blank
+     */
+    DockerClientInstance(String registryAddress) {
+        if (StringUtils.isBlank(registryAddress)) {
+            throw new IllegalArgumentException("Docker registry address must not be blank");
+        }
+        this.client = createClient(registryAddress, "", "");
+    }
+
+    /**
+     * Create a new authenticated Docker client instance. The created client will be
+     * authenticated against the provided registry.
+     * 
+     * @param registryAddress e.g. {@code https://index.docker.io/v1/, https://nexus.iex.ec,
+     *                          docker.io, nexus.iex.ec}
+     * @param username
+     * @param password
+     * @throws Exception if one of the arguments is blank or authentication failure
+     */
+    DockerClientInstance(String registryAddress, String username, String password)
+            throws Exception {
+        if (StringUtils.isBlank(registryAddress)) {
+            throw new IllegalArgumentException("Docker registry address must not be blank");
+        }
+        if (StringUtils.isBlank(username)) {
+            throw new IllegalArgumentException("Docker registry username must not be blank");
+        }
+        if (StringUtils.isBlank(password)) {
+            throw new IllegalArgumentException("Docker registry password must not be blank");
+        }
+        this.client = createClient(registryAddress, username, password);
     }
 
     public DockerClient getClient() {
@@ -765,22 +810,44 @@ public class DockerClientInstance {
      * Docker client
      * 
      */
-    private DockerClient createClient(String username, String password) {
+
+    /**
+     * Build a new docker client instance. If credentials are provided, an authentication
+     * attempt is made to the specified registry.
+     * 
+     * @param registryAddress
+     * @param username
+     * @param password
+     * @return an authenticated docker client if credentials are provided
+     * @throws IllegalArgumentException if registry address is blank
+     * @throws DockerException if authentication fails
+     */
+    private static DockerClient createClient(String registryAddress, String username,
+            String password) throws DockerException, IllegalArgumentException {
+        if (StringUtils.isBlank(registryAddress)) {
+            throw new IllegalArgumentException("Registry address must not be blank");
+        }
+        boolean shouldAuthenticate = StringUtils.isNotBlank(username)
+                && StringUtils.isNotBlank(password);
         DefaultDockerClientConfig.Builder configBuilder =
                 DefaultDockerClientConfig.createDefaultConfigBuilder()
-                        .withDockerTlsVerify(false);
-
-        if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
+                        .withDockerTlsVerify(false)
+                        .withRegistryUrl(registryAddress);
+        if (shouldAuthenticate) {
             configBuilder.withRegistryUsername(username)
                     .withRegistryPassword(password);
         }
-
         DefaultDockerClientConfig config = configBuilder.build();
-
         DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
                 .dockerHost(config.getDockerHost())
                 .sslConfig(config.getSSLConfig())
                 .build();
-        return DockerClientImpl.getInstance(config, httpClient);
+        DockerClient dockerClient = DockerClientImpl.getInstance(config, httpClient);
+        if (shouldAuthenticate) {
+            dockerClient.authCmd().exec();
+            log.info("Authenticated Docker client registry [registry:{}, username:{}]",
+                    registryAddress, username);
+        }
+        return dockerClient;
     }
 }
