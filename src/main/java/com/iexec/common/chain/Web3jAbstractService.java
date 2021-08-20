@@ -34,8 +34,10 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static com.iexec.common.chain.ChainUtils.weiToEth;
+import static com.iexec.common.contract.generated.AppRegistry.FUNC_CREATEAPP;
 import static com.iexec.common.contract.generated.DatasetRegistry.FUNC_CREATEDATASET;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
+import static com.iexec.common.contract.generated.WorkerpoolRegistry.FUNC_CREATEWORKERPOOL;
 
 @Slf4j
 public abstract class Web3jAbstractService {
@@ -304,6 +306,12 @@ public abstract class Web3jAbstractService {
                 break;
             case FUNC_REOPEN:
                 gasLimit = 500000;//seen 43721
+                break;
+            case FUNC_CREATEAPP:
+                gasLimit = 700000;
+                break;
+            case FUNC_CREATEWORKERPOOL:
+                gasLimit = 700000;
                 break;
             case FUNC_CREATEDATASET:
                 gasLimit = 700000;//seen 608878
