@@ -114,6 +114,13 @@ public abstract class IexecHubAbstractService {
                 DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH);
     }
 
+    public IexecHubContract getHubContract(ContractGasProvider contractGasProvider,
+                                           long chainId) {
+        return getHubContract(contractGasProvider,
+                chainId,
+                DEFAULT_BLOCK_TIME,
+                DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH);
+    }
 
     /**
      * Get an IexecHubContract instance.

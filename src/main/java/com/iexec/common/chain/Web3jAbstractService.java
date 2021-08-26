@@ -214,19 +214,31 @@ public abstract class Web3jAbstractService {
         }
     }
 
+    /**
+     * Request current gas price on the network.
+     *
+     * Note: Some nodes on particular Ethereum networks might reply with
+     * versatile gas price values, like 8000000000@t then 0@t+1.
+     *
+     * @return gas price if greater than zero, else empty
+     */
     public Optional<BigInteger> getNetworkGasPrice() {
         try {
             BigInteger gasPrice = getWeb3j().ethGasPrice().send().getGasPrice();
-            return Optional.of(gasPrice);
+            if (gasPrice != null && gasPrice.signum() > 0){
+                return Optional.of(gasPrice);
+            }
         } catch (IOException e) {
-            log.error("getNetworkGasPrice failed");
-            return Optional.empty();
+            log.error("Failed to get gas price", e);
         }
+        return Optional.empty();
     }
 
     public BigInteger getUserGasPrice(float gasPriceMultiplier, long gasPriceCap) {
         Optional<BigInteger> networkGasPrice = getNetworkGasPrice();
-        if (!networkGasPrice.isPresent()) {
+        if (networkGasPrice.isEmpty()) {
+            log.warn("Undefined network gas price (will use default) " +
+                    "[userGasPriceCap:{}]", gasPriceCap);
             return BigInteger.valueOf(gasPriceCap);
         }
         long wishedGasPrice = (long) (networkGasPrice.get().floatValue() * gasPriceMultiplier);
