@@ -34,8 +34,10 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static com.iexec.common.chain.ChainUtils.weiToEth;
+import static com.iexec.common.contract.generated.AppRegistry.FUNC_CREATEAPP;
 import static com.iexec.common.contract.generated.DatasetRegistry.FUNC_CREATEDATASET;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
+import static com.iexec.common.contract.generated.WorkerpoolRegistry.FUNC_CREATEWORKERPOOL;
 
 @Slf4j
 public abstract class Web3jAbstractService {
@@ -212,19 +214,31 @@ public abstract class Web3jAbstractService {
         }
     }
 
+    /**
+     * Request current gas price on the network.
+     *
+     * Note: Some nodes on particular Ethereum networks might reply with
+     * versatile gas price values, like 8000000000@t then 0@t+1.
+     *
+     * @return gas price if greater than zero, else empty
+     */
     public Optional<BigInteger> getNetworkGasPrice() {
         try {
             BigInteger gasPrice = getWeb3j().ethGasPrice().send().getGasPrice();
-            return Optional.of(gasPrice);
+            if (gasPrice != null && gasPrice.signum() > 0){
+                return Optional.of(gasPrice);
+            }
         } catch (IOException e) {
-            log.error("getNetworkGasPrice failed");
-            return Optional.empty();
+            log.error("Failed to get gas price", e);
         }
+        return Optional.empty();
     }
 
     public BigInteger getUserGasPrice(float gasPriceMultiplier, long gasPriceCap) {
         Optional<BigInteger> networkGasPrice = getNetworkGasPrice();
-        if (!networkGasPrice.isPresent()) {
+        if (networkGasPrice.isEmpty()) {
+            log.warn("Undefined network gas price (will use default) " +
+                    "[userGasPriceCap:{}]", gasPriceCap);
             return BigInteger.valueOf(gasPriceCap);
         }
         long wishedGasPrice = (long) (networkGasPrice.get().floatValue() * gasPriceMultiplier);
@@ -304,6 +318,12 @@ public abstract class Web3jAbstractService {
                 break;
             case FUNC_REOPEN:
                 gasLimit = 500000;//seen 43721
+                break;
+            case FUNC_CREATEAPP:
+                gasLimit = 800000;//700000 might not be enough
+                break;
+            case FUNC_CREATEWORKERPOOL:
+                gasLimit = 700000;
                 break;
             case FUNC_CREATEDATASET:
                 gasLimit = 700000;//seen 608878
