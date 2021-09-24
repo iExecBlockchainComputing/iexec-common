@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.iexec.common.replicate.ReplicateStatus.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ReplicateStatusTests {
@@ -58,4 +58,45 @@ public class ReplicateStatusTests {
         assertEquals(missingStatuses.size(), 0);
     }
 
+    @Test
+    void shouldBeRunningFailures() {
+        final List<ReplicateStatus> runningFailures = List.of(
+                START_FAILED,
+                APP_DOWNLOAD_FAILED,
+                DATA_DOWNLOAD_FAILED,
+                COMPUTE_FAILED
+        );
+        final List<ReplicateStatus> notRunningFailures = List.of(
+                CREATED,
+                STARTING,
+                STARTED,
+                APP_DOWNLOADING,
+                APP_DOWNLOADED,
+                DATA_DOWNLOADING,
+                DATA_DOWNLOADED,
+                COMPUTING,
+                COMPUTED,
+                CONTRIBUTING,
+                CONTRIBUTE_FAILED,
+                CONTRIBUTED,
+                REVEALING,
+                REVEAL_FAILED,
+                REVEALED,
+                RESULT_UPLOAD_REQUESTED,
+                RESULT_UPLOAD_REQUEST_FAILED,
+                RESULT_UPLOADING,
+                RESULT_UPLOAD_FAILED,
+                RESULT_UPLOADED,
+                COMPLETING,
+                COMPLETE_FAILED,
+                COMPLETED,
+                FAILED,
+                ABORTED,
+                RECOVERING,
+                WORKER_LOST
+        );
+
+        runningFailures   .forEach(status -> assertTrue (ReplicateStatus.isRunningFailure(status)));
+        notRunningFailures.forEach(status -> assertFalse(ReplicateStatus.isRunningFailure(status)));
+    }
 }
