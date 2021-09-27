@@ -59,7 +59,7 @@ public class ReplicateStatusTests {
     }
 
     @Test
-    void shouldBeRunningFailures() {
+    void shouldBeFailedBeforeComputed() {
         final List<ReplicateStatus> runningFailures = List.of(
                 START_FAILED,
                 APP_DOWNLOAD_FAILED,
@@ -96,7 +96,7 @@ public class ReplicateStatusTests {
                 WORKER_LOST
         );
 
-        runningFailures   .forEach(status -> assertTrue (ReplicateStatus.isRunningFailure(status)));
-        notRunningFailures.forEach(status -> assertFalse(ReplicateStatus.isRunningFailure(status)));
+        runningFailures   .forEach(status -> assertTrue (ReplicateStatus.isFailedBeforeComputed(status)));
+        notRunningFailures.forEach(status -> assertFalse(ReplicateStatus.isFailedBeforeComputed(status)));
     }
 }

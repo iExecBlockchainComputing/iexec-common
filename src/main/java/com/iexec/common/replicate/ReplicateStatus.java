@@ -67,7 +67,7 @@ public enum ReplicateStatus {
         return getFailureStatuses().contains(status);
     }
 
-    public static boolean isRunningFailure(ReplicateStatus status) {
+    public static boolean isFailedBeforeComputed(ReplicateStatus status) {
         return status.ordinal() < COMPUTED.ordinal() && getFailureStatuses().contains(status);
     }
 
