@@ -67,6 +67,10 @@ public enum ReplicateStatus {
         return getFailureStatuses().contains(status);
     }
 
+    public static boolean isFailedBeforeComputed(ReplicateStatus status) {
+        return status.ordinal() < COMPUTED.ordinal() && getFailureStatuses().contains(status);
+    }
+
     public static boolean isCompletable(ReplicateStatus status) {
         return getCompletableStatuses().contains(status);
     }
