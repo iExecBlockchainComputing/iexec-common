@@ -65,6 +65,14 @@ public abstract class Web3jAbstractService {
         return BigInteger.valueOf(GAS_LIMIT_CAP * gasPriceCap);
     }
 
+    /**
+     * Get (or create once) a web3j instance connected to a remote blockchain
+     * node. Reusing a web3j instance is important to avoid spawning new sockets
+     * for each call of this method.
+     * @param shouldCheckConnection recursively checks at boot-time if the
+     *                              targeted remote blockchain node is up
+     * @return a web3j instance
+     */
     public Web3j getWeb3j(boolean shouldCheckConnection) {
         if (web3j == null){
             web3j = Web3j.build(new HttpService(chainNodeAddress));
