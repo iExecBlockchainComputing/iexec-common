@@ -66,7 +66,9 @@ public abstract class Web3jAbstractService {
     }
 
     public Web3j getWeb3j(boolean shouldCheckConnection) {
-        web3j = Web3j.build(new HttpService(chainNodeAddress));
+        if (web3j == null){
+            web3j = Web3j.build(new HttpService(chainNodeAddress));
+        }
         if (shouldCheckConnection) {
             try {
                 if (web3j.web3ClientVersion().send().getWeb3ClientVersion() != null) {
