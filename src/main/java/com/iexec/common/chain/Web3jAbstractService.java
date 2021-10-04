@@ -46,9 +46,25 @@ public abstract class Web3jAbstractService {
     private final float gasPriceMultiplier;
     private final long gasPriceCap;
     private final boolean isSidechain;
-    private String chainNodeAddress;
-    private Web3j web3j;
+    private final String chainNodeAddress;
+    private final Web3j web3j;
 
+    /**
+     * Apart from initializing usual business entities, it initializes a single
+     * and shared web3j instance. This inner web3j instance allows to connect to
+     * a remote blockchain node.
+     *
+     * If reusing a whole web3j instance between calls might be overkilled, it
+     * is important to use a single and shared HttpService.
+     * The usage of a single HttpService ensures the creation of a single
+     * OkHttpClient which ensures a proper connection pool management
+     * guaranteeing sockets are properly reused.
+     *
+     * @param chainNodeAddress address of the blockchain node
+     * @param gasPriceMultiplier gas price multiplier
+     * @param gasPriceCap gas price cap
+     * @param isSidechain true if iExec native chain, false if iExec token chain
+     */
     public Web3jAbstractService(String chainNodeAddress,
                                 float gasPriceMultiplier,
                                 long gasPriceCap,
@@ -57,7 +73,7 @@ public abstract class Web3jAbstractService {
         this.gasPriceMultiplier = gasPriceMultiplier;
         this.gasPriceCap = gasPriceCap;
         this.isSidechain = isSidechain;
-
+        this.web3j = Web3j.build(new HttpService(chainNodeAddress));
         this.getWeb3j(true); //let's check eth node connection at boot
     }
 
@@ -65,18 +81,7 @@ public abstract class Web3jAbstractService {
         return BigInteger.valueOf(GAS_LIMIT_CAP * gasPriceCap);
     }
 
-    /**
-     * Get (or create once) a web3j instance connected to a remote blockchain
-     * node. Reusing a web3j instance is important to avoid spawning new sockets
-     * for each call of this method.
-     * @param shouldCheckConnection recursively checks at boot-time if the
-     *                              targeted remote blockchain node is up
-     * @return a web3j instance
-     */
     public Web3j getWeb3j(boolean shouldCheckConnection) {
-        if (web3j == null){
-            web3j = Web3j.build(new HttpService(chainNodeAddress));
-        }
         if (shouldCheckConnection) {
             try {
                 if (web3j.web3ClientVersion().send().getWeb3ClientVersion() != null) {
