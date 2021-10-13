@@ -905,8 +905,6 @@ public abstract class IexecHubAbstractService {
         return Optional.empty();
     }
 
-
-
     public Optional<ChainAccount> getChainAccount(String walletAddress) {
         try {
             return Optional.of(ChainAccount.tuple2Account(getHubContract(new DefaultGasProvider())

@@ -23,9 +23,10 @@ import com.iexec.common.utils.BytesUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.web3j.protocol.core.RemoteFunctionCall;
 import org.web3j.tuples.generated.Tuple12;
-import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -41,24 +42,19 @@ class IexecHubAbstractServiceTest {
     public static final int MAX_RETRY = 3;
     private final static String CHAIN_DEAL_ID = TeeUtils.TEE_TAG;
     private static String CHAIN_TASK_ID;
+
+    @Mock
     private IexecHubAbstractService iexecHubAbstractService;
 
     @BeforeEach
     public void beforeEach() {
-        iexecHubAbstractService = mock(IexecHubAbstractService.class);
+        MockitoAnnotations.openMocks(this);
         CHAIN_TASK_ID = generateChainTaskId(CHAIN_DEAL_ID, 0);
     }
 
     @Test
     void shouldGetChainTask() throws Exception {
-        IexecHubContract iexecHubContract = mock(IexecHubContract.class);
-        when(iexecHubAbstractService.getHubContract())
-                .thenReturn(iexecHubContract);
-        RemoteFunctionCall getTaskRemoteFunctionCall = mock(RemoteFunctionCall.class);
-        when(iexecHubContract.viewTaskABILegacy(BytesUtils.stringToBytes(CHAIN_TASK_ID)))
-                .thenReturn(getTaskRemoteFunctionCall);
-        Tuple12 taskTuple = getMockTaskTuple(CHAIN_DEAL_ID); // requires mock-maker-inline
-        when(getTaskRemoteFunctionCall.send()).thenReturn(taskTuple);
+        whenViewTaskReturnTaskTuple(CHAIN_TASK_ID, CHAIN_DEAL_ID);
 
         when(iexecHubAbstractService.getChainTask(CHAIN_TASK_ID))
                 .thenCallRealMethod();
@@ -71,14 +67,7 @@ class IexecHubAbstractServiceTest {
 
     @Test
     void shouldNotGetChainTaskSinceEmptyHexStringDealIdFieldProvesInConsistency() throws Exception {
-        IexecHubContract iexecHubContract = mock(IexecHubContract.class);
-        when(iexecHubAbstractService.getHubContract())
-                .thenReturn(iexecHubContract);
-        RemoteFunctionCall getTaskRemoteFunctionCall = mock(RemoteFunctionCall.class);
-        when(iexecHubContract.viewTaskABILegacy(BytesUtils.stringToBytes(CHAIN_TASK_ID)))
-                .thenReturn(getTaskRemoteFunctionCall);
-        Tuple12 taskTuple = getMockTaskTuple(BytesUtils.EMPTY_HEXASTRING_64);
-        when(getTaskRemoteFunctionCall.send()).thenReturn(taskTuple);
+        whenViewTaskReturnTaskTuple(CHAIN_TASK_ID, BytesUtils.EMPTY_HEXASTRING_64);
 
         when(iexecHubAbstractService.getChainTask(CHAIN_TASK_ID))
                 .thenCallRealMethod();
@@ -89,14 +78,7 @@ class IexecHubAbstractServiceTest {
 
     @Test
     void shouldNotGetChainTaskSinceEmptyDealIdFieldProvesInConsistency() throws Exception {
-        IexecHubContract iexecHubContract = mock(IexecHubContract.class);
-        when(iexecHubAbstractService.getHubContract())
-                .thenReturn(iexecHubContract);
-        RemoteFunctionCall getTaskRemoteFunctionCall = mock(RemoteFunctionCall.class);
-        when(iexecHubContract.viewTaskABILegacy(BytesUtils.stringToBytes(CHAIN_TASK_ID)))
-                .thenReturn(getTaskRemoteFunctionCall);
-        Tuple12 taskTuple = getMockTaskTuple("");
-        when(getTaskRemoteFunctionCall.send()).thenReturn(taskTuple);
+        whenViewTaskReturnTaskTuple(CHAIN_TASK_ID, "");
 
         when(iexecHubAbstractService.getChainTask(CHAIN_TASK_ID))
                 .thenCallRealMethod();
@@ -107,14 +89,7 @@ class IexecHubAbstractServiceTest {
 
     @Test
     void shouldNotGetChainTaskSinceWrongDealIdFieldProvesInConsistency() throws Exception {
-        IexecHubContract iexecHubContract = mock(IexecHubContract.class);
-        when(iexecHubAbstractService.getHubContract())
-                .thenReturn(iexecHubContract);
-        RemoteFunctionCall getTaskRemoteFunctionCall = mock(RemoteFunctionCall.class);
-        when(iexecHubContract.viewTaskABILegacy(BytesUtils.stringToBytes(CHAIN_TASK_ID)))
-                .thenReturn(getTaskRemoteFunctionCall);
-        Tuple12 taskTuple = getMockTaskTuple("0x123");
-        when(getTaskRemoteFunctionCall.send()).thenReturn(taskTuple);
+        whenViewTaskReturnTaskTuple(CHAIN_TASK_ID, "0x123");
 
         when(iexecHubAbstractService.getChainTask(CHAIN_TASK_ID))
                 .thenCallRealMethod();
@@ -247,6 +222,16 @@ class IexecHubAbstractServiceTest {
         Assertions.assertTrue(taskDescription.isEmpty());
     }
 
+    private void whenViewTaskReturnTaskTuple(String chainTaskId, String chainDealId) throws Exception {
+        IexecHubContract iexecHubContract = mock(IexecHubContract.class);
+        when(iexecHubAbstractService.getHubContract())
+                .thenReturn(iexecHubContract);
+        RemoteFunctionCall getTaskRemoteFunctionCall = mock(RemoteFunctionCall.class);
+        when(iexecHubContract.viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)))
+                .thenReturn(getTaskRemoteFunctionCall);
+        Tuple12 taskTuple = getMockTaskTuple(chainDealId); // requires mock-maker-inline
+        when(getTaskRemoteFunctionCall.send()).thenReturn(taskTuple);
+    }
 
     private ChainTask getMockTask() {
         return ChainTask.builder()
