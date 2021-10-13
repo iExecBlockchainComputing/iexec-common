@@ -36,10 +36,9 @@ public class Retryer<T> {
      * @param retryDelay       delay in ms between two tries
      * @param maxRetry         number of maximum retries
      * @param logContext       human readable content to be display
-     * @param <T>              return type of the supplying method
      * @return an object that the supplying method provides
      */
-    public <T> T repeatCall(CheckedSupplier<T> supplier,
+    public T repeatCall(CheckedSupplier<T> supplier,
                             Predicate<T> retryIfPredicate,
                             int retryDelay,
                             int maxRetry,
