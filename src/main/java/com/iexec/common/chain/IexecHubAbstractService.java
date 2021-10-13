@@ -19,7 +19,10 @@ package com.iexec.common.chain;
 import com.iexec.common.contract.generated.*;
 import com.iexec.common.task.TaskDescription;
 import com.iexec.common.utils.BytesUtils;
+import com.iexec.common.utils.Retryer;
 import lombok.extern.slf4j.Slf4j;
+import net.jodah.failsafe.Failsafe;
+import net.jodah.failsafe.RetryPolicy;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
@@ -43,6 +46,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -72,6 +76,7 @@ public abstract class IexecHubAbstractService {
     private final Web3jAbstractService web3jAbstractService;
     private long maxNbOfPeriodsForConsensus;
     private final int nbBlocksToWaitPerRetry;
+    private final int retryDelay;// ms
     private final int maxRetries;
     // /!\ TODO remove expired task descriptions
     private final Map<String, TaskDescription> taskDescriptions = new HashMap<>();
@@ -79,18 +84,38 @@ public abstract class IexecHubAbstractService {
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress) {
-        this(credentials, web3jAbstractService, iexecHubAddress, 6, 3);
+        this(credentials, web3jAbstractService, iexecHubAddress, DEFAULT_BLOCK_TIME, 6, 3);
     }
 
+    @Deprecated
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress,
+                                   int nbBlocksToWaitPerRetry,
+                                   int maxRetries) {
+        this(credentials, web3jAbstractService, iexecHubAddress, DEFAULT_BLOCK_TIME, nbBlocksToWaitPerRetry, maxRetries);
+    }
+
+    /**
+     * Base constructor for the IexecHubAbstractService
+     * @param credentials credentials for sending transaction
+     * @param web3jAbstractService custom web3j service
+     * @param iexecHubAddress address of the iExec Hub contract
+     * @param blockTime block time in ms
+     * @param nbBlocksToWaitPerRetry nb block to wait per retry
+     * @param maxRetries maximum reties
+     */
+    public IexecHubAbstractService(Credentials credentials,
+                                   Web3jAbstractService web3jAbstractService,
+                                   String iexecHubAddress,
+                                   int blockTime,
                                    int nbBlocksToWaitPerRetry,
                                    int maxRetries) {
         this.credentials = credentials;
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
         this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
+        this.retryDelay = nbBlocksToWaitPerRetry * blockTime;
         this.maxRetries = maxRetries;
 
         String hubAddress = getHubContract().getContractAddress();
@@ -739,6 +764,25 @@ public abstract class IexecHubAbstractService {
     }
 
     /**
+     * Retrieves on-chain deal with a retryer
+     *
+     * @param chainDealId deal ID
+     * @param retryDelay delay between retries in ms
+     * @param maxRetry number of maximum retry
+     * @return optional ChainDeal
+     */
+    public Optional<ChainDeal> repeatGetChainDeal(String chainDealId,
+                                                  int retryDelay,
+                                                  int maxRetry) {
+        return new Retryer<Optional<ChainDeal>>()
+                .repeatCall(() -> getChainDeal(chainDealId),
+                        Optional::isEmpty,
+                        retryDelay, maxRetry,
+                        String.format("getChainDeal(chainDealId) " +
+                                "[chainDealId:%s]", chainDealId));
+    }
+
+    /**
      * Retrieves on-chain deal with its blockchain ID
      *
      * Note:
@@ -796,10 +840,38 @@ public abstract class IexecHubAbstractService {
         return Optional.empty();
     }
 
+    /**
+     * Retrieve on-chain task with a retryer
+     *
+     * @param chainTaskId task ID
+     * @param retryDelay delay between retries in ms
+     * @param maxRetry number of maximum retry
+     * @return optional ChainTask
+     */
+    public Optional<ChainTask> repeatGetChainTask(String chainTaskId,
+                                                  int retryDelay,
+                                                  int maxRetry) {
+        return new Retryer<Optional<ChainTask>>()
+                .repeatCall(() -> getChainTask(chainTaskId),
+                        Optional::isEmpty,
+                        retryDelay, maxRetry,
+                        String.format("getChainTask(chainTaskId) " +
+                                "[chainTaskId:%s]", chainTaskId));
+    }
+
     public Optional<ChainTask> getChainTask(String chainTaskId) {
         try {
-            return Optional.of(ChainTask.tuple2ChainTask(getHubContract()
-                    .viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send()));
+            ChainTask chainTask = ChainTask.tuple2ChainTask(getHubContract()
+                    .viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send());
+            String chainDealId = chainTask.getDealid();
+            if (!StringUtils.isEmpty(chainDealId)
+                    && BytesUtils.isBytes32(BytesUtils.stringToBytes(chainDealId))
+                    && !BytesUtils.EMPTY_HEXASTRING_64.equals(chainDealId)){
+                return Optional.of(chainTask);
+            } else {
+                log.error("Failed to get consistent ChainTask [chainTaskId:{}]",
+                        chainTaskId);
+            }
         } catch (Exception e) {
             log.error("Failed to get ChainTask [chainTaskId:{}]", chainTaskId, e);
         }
@@ -1057,39 +1129,40 @@ public abstract class IexecHubAbstractService {
      *
      */
     public TaskDescription getTaskDescription(String chainTaskId) {
-        if (taskDescriptions.get(chainTaskId) == null) {
-            Optional<TaskDescription> taskDescriptionFromChain =
-                    this.getTaskDescriptionFromChain(chainTaskId);
-            taskDescriptionFromChain.ifPresent(taskDescription -> {
-                if (taskDescription.getChainTaskId() != null) {
-                    taskDescriptions.putIfAbsent(taskDescription.getChainTaskId(), taskDescription);
-                } else {
-                    log.error("Cant putTaskDescription [taskDescription:{}]",
-                            taskDescription);
-                }
-            });
+        if(!taskDescriptions.containsKey(chainTaskId)) {
+            repeatGetTaskDescriptionFromChain(chainTaskId, retryDelay, maxRetries)
+                    .ifPresent(taskDescription ->
+                            taskDescriptions.putIfAbsent(chainTaskId, taskDescription));
         }
         return taskDescriptions.get(chainTaskId);
     }
 
     public Optional<TaskDescription> getTaskDescriptionFromChain(String chainTaskId) {
+        return repeatGetTaskDescriptionFromChain(chainTaskId, retryDelay, 0);
+    }
 
-        Optional<ChainTask> optionalChainTask = getChainTask(chainTaskId);
+    public Optional<TaskDescription> repeatGetTaskDescriptionFromChain(String chainTaskId,
+                                                                     int retryDelay,
+                                                                     int maxRetry) {
+        if (retryDelay == 0){
+            return Optional.empty();
+        }
+        Optional<ChainTask> optionalChainTask =
+                repeatGetChainTask(chainTaskId, retryDelay, maxRetry);
         if (optionalChainTask.isEmpty()) {
             log.info("Failed to get TaskDescription, ChainTask error " +
                     "[chainTaskId:{}]", chainTaskId);
             return Optional.empty();
         }
-
         ChainTask chainTask = optionalChainTask.get();
 
-        Optional<ChainDeal> optionalChainDeal = getChainDeal(chainTask.getDealid());
+        Optional<ChainDeal> optionalChainDeal =
+                repeatGetChainDeal(chainTask.getDealid(), retryDelay, maxRetry);
         if (optionalChainDeal.isEmpty()) {
             log.info("Failed to get TaskDescription, ChainDeal error " +
                     "[chainTaskId:{}]", chainTaskId);
             return Optional.empty();
         }
-
         ChainDeal chainDeal = optionalChainDeal.get();
 
         TaskDescription taskDescription =
