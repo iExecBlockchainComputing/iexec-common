@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.web3j.protocol.core.RemoteFunctionCall;
 import org.web3j.tuples.generated.Tuple12;
+import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -69,7 +70,7 @@ class IexecHubAbstractServiceTest {
     }
 
     @Test
-    void shouldNotGetChainTaskSinceEmptyDealIdFieldProvesInConsistency() throws Exception {
+    void shouldNotGetChainTaskSinceEmptyHexStringDealIdFieldProvesInConsistency() throws Exception {
         IexecHubContract iexecHubContract = mock(IexecHubContract.class);
         when(iexecHubAbstractService.getHubContract())
                 .thenReturn(iexecHubContract);
@@ -77,6 +78,42 @@ class IexecHubAbstractServiceTest {
         when(iexecHubContract.viewTaskABILegacy(BytesUtils.stringToBytes(CHAIN_TASK_ID)))
                 .thenReturn(getTaskRemoteFunctionCall);
         Tuple12 taskTuple = getMockTaskTuple(BytesUtils.EMPTY_HEXASTRING_64);
+        when(getTaskRemoteFunctionCall.send()).thenReturn(taskTuple);
+
+        when(iexecHubAbstractService.getChainTask(CHAIN_TASK_ID))
+                .thenCallRealMethod();
+        Optional<ChainTask> foundTask = iexecHubAbstractService.getChainTask(CHAIN_TASK_ID);
+
+        Assertions.assertTrue(foundTask.isEmpty());
+    }
+
+    @Test
+    void shouldNotGetChainTaskSinceEmptyDealIdFieldProvesInConsistency() throws Exception {
+        IexecHubContract iexecHubContract = mock(IexecHubContract.class);
+        when(iexecHubAbstractService.getHubContract())
+                .thenReturn(iexecHubContract);
+        RemoteFunctionCall getTaskRemoteFunctionCall = mock(RemoteFunctionCall.class);
+        when(iexecHubContract.viewTaskABILegacy(BytesUtils.stringToBytes(CHAIN_TASK_ID)))
+                .thenReturn(getTaskRemoteFunctionCall);
+        Tuple12 taskTuple = getMockTaskTuple("");
+        when(getTaskRemoteFunctionCall.send()).thenReturn(taskTuple);
+
+        when(iexecHubAbstractService.getChainTask(CHAIN_TASK_ID))
+                .thenCallRealMethod();
+        Optional<ChainTask> foundTask = iexecHubAbstractService.getChainTask(CHAIN_TASK_ID);
+
+        Assertions.assertTrue(foundTask.isEmpty());
+    }
+
+    @Test
+    void shouldNotGetChainTaskSinceWrongDealIdFieldProvesInConsistency() throws Exception {
+        IexecHubContract iexecHubContract = mock(IexecHubContract.class);
+        when(iexecHubAbstractService.getHubContract())
+                .thenReturn(iexecHubContract);
+        RemoteFunctionCall getTaskRemoteFunctionCall = mock(RemoteFunctionCall.class);
+        when(iexecHubContract.viewTaskABILegacy(BytesUtils.stringToBytes(CHAIN_TASK_ID)))
+                .thenReturn(getTaskRemoteFunctionCall);
+        Tuple12 taskTuple = getMockTaskTuple("0x123");
         when(getTaskRemoteFunctionCall.send()).thenReturn(taskTuple);
 
         when(iexecHubAbstractService.getChainTask(CHAIN_TASK_ID))

@@ -890,7 +890,10 @@ public abstract class IexecHubAbstractService {
         try {
             ChainTask chainTask = ChainTask.tuple2ChainTask(getHubContract()
                     .viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send());
-            if (!BytesUtils.EMPTY_HEXASTRING_64.equals(chainTask.getDealid())){
+            String chainDealId = chainTask.getDealid();
+            if (!StringUtils.isEmpty(chainDealId)
+                    && BytesUtils.isBytes32(BytesUtils.stringToBytes(chainDealId))
+                    && !BytesUtils.EMPTY_HEXASTRING_64.equals(chainDealId)){
                 return Optional.of(chainTask);
             } else {
                 log.error("Failed to get consistent ChainTask [chainTaskId:{}]",
