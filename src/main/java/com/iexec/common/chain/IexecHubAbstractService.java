@@ -19,6 +19,7 @@ package com.iexec.common.chain;
 import com.iexec.common.contract.generated.*;
 import com.iexec.common.task.TaskDescription;
 import com.iexec.common.utils.BytesUtils;
+import com.iexec.common.utils.Retryer;
 import lombok.extern.slf4j.Slf4j;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
@@ -773,31 +774,12 @@ public abstract class IexecHubAbstractService {
     public Optional<ChainDeal> repeatGetChainDeal(String chainDealId,
                                                   int retryDelay,
                                                   int maxRetry) {
-        if (retryDelay == 0){
-            return Optional.empty();
-        }
-        String context = "getChainDeal";
-        RetryPolicy<Optional<ChainDeal>> retryPolicy =
-                new RetryPolicy<Optional<ChainDeal>>()
-                    .handleResultIf(Optional::isEmpty) //retry if empty
-                    .withDelay(Duration.ofMillis(retryDelay))
-                    .withMaxRetries(maxRetry)
-                    .onRetry(e -> logWarnRetry(context,
-                            retryDelay, maxRetry, e.getAttemptCount()))
-                    .onRetriesExceeded(e -> logErrorOnMaxRetry(context,
-                            retryDelay, maxRetry));
-        return Failsafe.with(retryPolicy)
-                .get(() -> getChainDeal(chainDealId));
-    }
-
-    private void logWarnRetry(String context, int retryDelay, int maxRetry, int attempt) {
-        log.warn("Failed to {}, about to retry [retryDelay:{}ms, maxRetry:{}" +
-                ", attempt:{}]", context, retryDelay, maxRetry, attempt);
-    }
-
-    private void logErrorOnMaxRetry(String context, int retryDelay, int maxRetry) {
-        log.error("Failed to {} after max retry [retryDelay:{}ms, maxRetry:{}]",
-                context, retryDelay, maxRetry);
+        return new Retryer<Optional<ChainDeal>>()
+                .repeatCall(() -> getChainDeal(chainDealId),
+                        Optional::isEmpty,
+                        retryDelay, maxRetry,
+                        String.format("getChainDeal(chainDealId) " +
+                                "[chainDealId:%s]", chainDealId));
     }
 
     /**
@@ -869,21 +851,12 @@ public abstract class IexecHubAbstractService {
     public Optional<ChainTask> repeatGetChainTask(String chainTaskId,
                                                   int retryDelay,
                                                   int maxRetry) {
-        if (retryDelay == 0){
-            return Optional.empty();
-        }
-        String context = "getChainTask";
-        RetryPolicy<Optional<ChainTask>> retryPolicy =
-                    new RetryPolicy<Optional<ChainTask>>()
-                    .handleResultIf(Optional::isEmpty) //retry if empty
-                    .withDelay(Duration.ofMillis(retryDelay))
-                    .withMaxRetries(maxRetry)
-                    .onRetry(e -> logWarnRetry(context,
-                            retryDelay, maxRetry, e.getAttemptCount()))
-                    .onRetriesExceeded(e -> logErrorOnMaxRetry(context,
-                            retryDelay, maxRetry));
-        return Failsafe.with(retryPolicy)
-                .get(() -> getChainTask(chainTaskId));
+        return new Retryer<Optional<ChainTask>>()
+                .repeatCall(() -> getChainTask(chainTaskId),
+                        Optional::isEmpty,
+                        retryDelay, maxRetry,
+                        String.format("getChainTask(chainTaskId) " +
+                                "[chainTaskId:%s]", chainTaskId));
     }
 
     public Optional<ChainTask> getChainTask(String chainTaskId) {
