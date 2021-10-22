@@ -23,7 +23,7 @@ public class VersionUtils {
     }
 
     public static boolean isSnapshot(String version) {
-        return version.contains("SNAPSHOT");
+        return version.contains("NEXT");
     }
 
 }
