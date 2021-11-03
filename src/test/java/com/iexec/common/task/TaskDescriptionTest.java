@@ -40,7 +40,7 @@ class TaskDescriptionTest {
     public static final String CALLBACK = "callback";
     public static final DappType APP_TYPE = DappType.DOCKER;
     public static final String APP_URI = "https://uri";
-    public static final String APP_ID = "appId";
+    public static final String APP_ADDRESS = "appAddress";
     public static final TeeEnclaveConfiguration enclaveConfig = new TeeEnclaveConfiguration();
     public static final String CMD = "cmd";
     public static final int MAX_EXECUTION_TIME = 1;
@@ -70,7 +70,7 @@ class TaskDescriptionTest {
                 .callback(CALLBACK)
                 .appType(APP_TYPE)
                 .appUri(APP_URI)
-                .appId(APP_ID)
+                .appAddress(APP_ADDRESS)
                 .appEnclaveConfiguration(enclaveConfig)
                 .cmd(CMD)
                 .maxExecutionTime(MAX_EXECUTION_TIME)
@@ -102,8 +102,8 @@ class TaskDescriptionTest {
                 task.getAppType());
         Assertions.assertEquals(APP_URI,
                 task.getAppUri());
-        Assertions.assertEquals(APP_ID,
-                task.getAppId());
+        Assertions.assertEquals(APP_ADDRESS,
+                task.getAppAddress());
         Assertions.assertEquals(enclaveConfig,
                 task.getAppEnclaveConfiguration());
         Assertions.assertEquals(CMD,
@@ -150,7 +150,7 @@ class TaskDescriptionTest {
                 .beneficiary(BENEFICIARY)
                 .callback(CALLBACK)
                 .chainApp(ChainApp.builder()
-                        .chainAppId(APP_ID)
+                        .chainAppId(APP_ADDRESS)
                         .type(APP_TYPE.toString())
                         .uri(BytesUtils.bytesToString(APP_URI.getBytes(StandardCharsets.UTF_8)))
                         .build())
@@ -192,8 +192,8 @@ class TaskDescriptionTest {
                 task.getAppType());
         Assertions.assertEquals(APP_URI,
                 task.getAppUri());
-        Assertions.assertEquals(APP_ID,
-                task.getAppId());
+        Assertions.assertEquals(APP_ADDRESS,
+                task.getAppAddress());
         Assertions.assertEquals(CMD,
                 task.getCmd());
         Assertions.assertEquals(MAX_EXECUTION_TIME,
