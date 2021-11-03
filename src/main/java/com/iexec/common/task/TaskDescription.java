@@ -42,6 +42,7 @@ public class TaskDescription {
     private String callback;
     private DappType appType;
     private String appUri;
+    private String appId;
     private TeeEnclaveConfiguration appEnclaveConfiguration;
     private String cmd;
     private long maxExecutionTime;
@@ -152,6 +153,7 @@ public class TaskDescription {
                 .appType(DappType.DOCKER)
                 .appUri(BytesUtils.hexStringToAscii(chainDeal.getChainApp()
                         .getUri()))
+                .appId(chainDeal.getChainApp().getChainAppId())
                 .appEnclaveConfiguration(chainDeal.getChainApp()
                         .getEnclaveConfiguration())
                 .cmd(chainDeal.getParams()
