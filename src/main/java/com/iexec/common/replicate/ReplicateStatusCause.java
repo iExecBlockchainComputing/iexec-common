@@ -16,6 +16,8 @@
 
 package com.iexec.common.replicate;
 
+import com.iexec.common.task.TaskAbortCause;
+
 public enum ReplicateStatusCause {
 
     // chain
@@ -56,4 +58,16 @@ public enum ReplicateStatusCause {
 
     ABORTED_BY_WORKER,
     CANNOT_REVEAL,
+    UNKNOWN;
+
+    public static ReplicateStatusCause getReplicateAbortCause(TaskAbortCause cause) {
+        switch (cause) {
+            case CONSENSUS_REACHED:
+                return CONSENSUS_REACHED;
+            case CONTRIBUTION_TIMEOUT:
+                return CONTRIBUTION_TIMEOUT;
+            default:
+                return UNKNOWN;
+        }
+    }
 }
