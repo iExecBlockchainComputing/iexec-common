@@ -11,7 +11,7 @@ pipeline {
                         string(credentialsId: 'SONAR_COMMON_TOKEN', variable: 'common_token'),
                         [$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub',
                                 usernameVariable: 'DOCKER_IO_USER', passwordVariable: 'DOCKER_IO_PASSWORD']]) {
-                    sh 'DOCKER_IO_USER=$DOCKER_IO_USER DOCKER_IO_PASSWORD=$DOCKER_IO_PASSWORD ./gradlew clean test sonarqube -Dsonar.projectKey=iexec-common -Dsonar.host.url=$address_sonar -Dsonar.login=$common_token --no-daemon'
+                    sh 'DOCKER_IO_USER=$DOCKER_IO_USER DOCKER_IO_PASSWORD=$DOCKER_IO_PASSWORD ./gradlew clean test sonarqube -Dsonar.projectKey=iexec-common -Dsonar.host.url=$address_sonar -Dsonar.login=$common_token --no-daemon -i'
                 }
                 junit 'build/test-results/**/*.xml'
             }
