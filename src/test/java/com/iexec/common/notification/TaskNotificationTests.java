@@ -19,32 +19,24 @@ package com.iexec.common.notification;
 import com.iexec.common.task.TaskAbortCause;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TaskNotificationTests {
 
     @Test
-    public void shouldCreateAbortNotificationWithCause() {
-        TaskAbortCause taskAbortCause = TaskAbortCause.CONTRIBUTION_TIMEOUT;
-        TaskNotification notification = TaskNotification.abortBuilder()
-                        .chainTaskId("chainTaskId")
-                        .workersAddress(List.of())
-                        .taskAbortCause(taskAbortCause)
-                        .build();
-        assertEquals(notification.getTaskNotificationType(), TaskNotificationType.PLEASE_ABORT);
-        assertEquals(notification.getTaskNotificationExtra().getTaskAbortCause(), taskAbortCause);
-    }
+    public void shouldGetAbortNotificationCause() {
+        TaskNotification notif1 = TaskNotification.builder()
+                .chainTaskId("chainTaskId")
+                .taskNotificationExtra(TaskNotificationExtra.builder()
+                        .taskAbortCause(TaskAbortCause.CONTRIBUTION_TIMEOUT)
+                        .build())
+                .build();
+        assertEquals(TaskAbortCause.CONTRIBUTION_TIMEOUT, notif1.getTaskAbortCause());
 
-    @Test
-    public void shouldNotCreateAbortNotificationWithoutCause() {
-        NullPointerException e = assertThrows(NullPointerException.class,
-                () -> TaskNotification.abortBuilder()
-                        .chainTaskId("chainTaskId")
-                        .workersAddress(List.of())
-                        // .taskAbortCause()
-                        .build());
-        assertTrue(e.getMessage().contains("Task abort cause must not be null"));
+        TaskNotification notif2 = TaskNotification.builder()
+                .chainTaskId("chainTaskId")
+                // Reason not specified
+                .build();
+        assertEquals(TaskAbortCause.UNKNOWN, notif2.getTaskAbortCause());
     }
 }

@@ -17,11 +17,12 @@
 package com.iexec.common.notification;
 
 import com.iexec.common.task.TaskAbortCause;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 @Data
 @AllArgsConstructor
@@ -42,38 +43,14 @@ public class TaskNotification {
     TaskNotificationExtra taskNotificationExtra;
 
     /**
-     * Builder method used only to create "Abort" task notification.
-     * This will fail if the reason behind abort is not specified.
-     * In all other cases, use the default "builder()" method.
+     * Get the abort cause of this task. If the cause is not defined by
+     * the notification sender, {@code TaskAbortCause#UNKNOWN} is returned.
      * 
-     * @param chainTaskId
-     * @param workersAddress
-     * @param taskNotificationType
-     * @param taskAbortCause
+     * @return
      */
-    @Builder(builderMethodName = "abortBuilder", builderClassName = "TaskNotificationAbortBuilder")
-    private TaskNotification(
-            String chainTaskId,
-            List<String> workersAddress,
-            TaskAbortCause taskAbortCause) {
-        requireNonNull(taskAbortCause, "Task abort cause must not be null");
-        this.chainTaskId = chainTaskId;
-        this.workersAddress = workersAddress;
-        this.taskNotificationType = TaskNotificationType.PLEASE_ABORT;
-        this.taskNotificationExtra = TaskNotificationExtra.builder()
-                .taskAbortCause(taskAbortCause)
-                .build();
-    }
-
-    /**
-     * Check if the current notification is of type ABORT.
-     * 
-     * @return true if taskNotificationType is PLEASE_ABORT
-     *         and abort cause is not null, false otherwise.
-     */
-    public boolean isAbortNotification() {
-        return TaskNotificationType.PLEASE_ABORT.equals(taskNotificationType)
-                && taskNotificationExtra != null
-                && taskNotificationExtra.getTaskAbortCause() != null;
+    public TaskAbortCause getTaskAbortCause() {
+        return taskNotificationExtra != null && taskNotificationExtra.getTaskAbortCause() != null
+                ? taskNotificationExtra.getTaskAbortCause()
+                : TaskAbortCause.UNKNOWN;
     }
 }
