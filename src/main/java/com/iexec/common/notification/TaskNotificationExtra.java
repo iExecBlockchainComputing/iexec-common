@@ -30,13 +30,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TaskNotificationExtra {
 
-    WorkerpoolAuthorization workerpoolAuthorization;
+    private WorkerpoolAuthorization workerpoolAuthorization;
 
     // block number from which this notification makes sense
     // (it is not used for all notification types)
-    long blockNumber;
+    private long blockNumber;
 
     // The reason behind an "Abort" notification. Used only for
     // Abort notifications.
-    TaskAbortCause taskAbortCause;
+    private TaskAbortCause taskAbortCause;
 }
