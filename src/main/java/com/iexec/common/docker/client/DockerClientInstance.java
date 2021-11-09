@@ -572,6 +572,19 @@ public class DockerClientInstance {
         return !getContainerId(containerName).isEmpty();
     }
 
+    /**
+     * Check if a container is active. The container is considered active
+     * it is in one of the statuses {@code running} or {@code restarting}.
+     * 
+     * @param containerName
+     * @return true if the container is in one of the active statuses,
+     *         false otherwise.
+     */
+    public boolean isContainerActive(String containerName) {
+        String currentContainerStatus = getContainerStatus(containerName);
+        return getContainerActiveStatuses().contains(currentContainerStatus);
+    }
+
     public String getContainerName(String containerId) {
         if (StringUtils.isBlank(containerId)) {
             // TODO throw IllegalArgumentException
@@ -727,8 +740,15 @@ public class DockerClientInstance {
                 .build());
     }
 
+    /**
+     * Stop a running docker container.
+     * 
+     * @param containerName name of the container to stop
+     * @return true if the container was successfully stopped or its status
+     * is not "running" or "restarting", false otherwise.
+     */
     public synchronized boolean stopContainer(String containerName) {
-        if (StringUtils.isBlank(containerName)) {
+        if (StringUtils.isEmpty(containerName)) {
             log.info("Invalid docker container name [name:{}]", containerName);
             return false;
         }
@@ -736,8 +756,7 @@ public class DockerClientInstance {
             log.error("No docker container to stop [name:{}]", containerName);
             return false;
         }
-        List<String> statusesToStop = Arrays.asList(RESTARTING_STATUS, RUNNING_STATUS);
-        if (!statusesToStop.contains(getContainerStatus(containerName))) {
+        if (!isContainerActive(containerName)) {
             return true;
         }
         try (StopContainerCmd stopContainerCmd =
@@ -849,5 +868,14 @@ public class DockerClientInstance {
                     registryAddress, username);
         }
         return dockerClient;
+    }
+
+    /**
+     * Get the list of statuses where a container is considered active.
+     * 
+     * @return List.of("running", "restarting")
+     */
+    private List<String> getContainerActiveStatuses() {
+        return List.of(RESTARTING_STATUS, RUNNING_STATUS);
     }
 }

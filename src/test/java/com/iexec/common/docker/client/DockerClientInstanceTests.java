@@ -84,7 +84,7 @@ public class DockerClientInstanceTests {
     private DockerClientInstance dockerClientInstance = new DockerClientInstance();
 
     @Spy
-    private DockerClient realClient = dockerClientInstance.getClient();
+    private DockerClient spiedClient = dockerClientInstance.getClient();
 
     private DockerClient corruptedClient = getCorruptedDockerClient();
 
@@ -1040,6 +1040,54 @@ public class DockerClientInstanceTests {
         assertThat(actualCreateContainerCmd).isEmpty();
     }
 
+    //#region isContainerPresent()
+
+    @Test
+    public void shouldIsContainerPresentBeTrue() {
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        dockerClientInstance.createContainer(request);
+
+        boolean isPresent = dockerClientInstance
+                .isContainerPresent(request.getContainerName());
+        assertThat(isPresent).isTrue();
+        // cleaning
+        dockerClientInstance.removeContainer(request.getContainerName());
+    }
+
+    //#endregion
+
+    //#region isContainerActive()
+
+    @Test
+    public void shouldIsContainerActiveBeTrue() {
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
+        dockerClientInstance.createContainer(request);
+        boolean isStarted = dockerClientInstance.startContainer(request.getContainerName());
+        assertThat(isStarted).isTrue();
+
+        boolean isActive = dockerClientInstance
+                .isContainerActive(request.getContainerName());
+        assertThat(isActive).isTrue();
+        // cleaning
+        dockerClientInstance.stopAndRemoveContainer(request.getContainerName());
+    }
+
+    @Test
+    public void shouldIsContainerActiveBeFalseSinceContainerIsNotRunning() {
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        dockerClientInstance.createContainer(request);
+        // Container is not running or restarting
+
+        boolean isActive = dockerClientInstance
+                .isContainerActive(request.getContainerName());
+        assertThat(isActive).isFalse();
+        // cleaning
+        dockerClientInstance.removeContainer(request.getContainerName());
+    }
+
+    //#endregion
+
     // getContainerName
 
     @Test
@@ -1300,13 +1348,36 @@ public class DockerClientInstanceTests {
         pullImageIfNecessary();
         dockerClientInstance.createContainer(request);
         dockerClientInstance.startContainer(containerName);
-
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        assertThat(dockerClientInstance.stopContainer(containerName)).isTrue();
+
+        boolean isStopped = dockerClientInstance.stopContainer(containerName);
+        assertThat(isStopped).isTrue();
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.EXITED_STATUS);
+        verify(dockerClientInstance, atLeastOnce()).isContainerPresent(containerName);
+        verify(dockerClientInstance).isContainerActive(containerName);
+        // cleaning
+        dockerClientInstance.removeContainer(containerName);
+    }
 
+    @Test
+    public void shouldReturnTrueWhenContainerIsNotActive() {
+        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        String containerName = request.getContainerName();
+        request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
+        pullImageIfNecessary();
+        dockerClientInstance.createContainer(request);
+        assertThat(dockerClientInstance.getContainerStatus(containerName))
+                .isEqualTo(DockerClientInstance.CREATED_STATUS);
+        // Use spied client to verify method calls
+        when(dockerClientInstance.getClient()).thenReturn(spiedClient);
+
+        boolean isStopped = dockerClientInstance.stopContainer(containerName);
+        assertThat(isStopped).isTrue();
+        verify(dockerClientInstance, atLeastOnce()).isContainerPresent(containerName);
+        verify(dockerClientInstance).isContainerActive(containerName);
+        verify(spiedClient, never()).stopContainerCmd(anyString());
         // cleaning
         dockerClientInstance.removeContainer(containerName);
     }
@@ -1314,6 +1385,15 @@ public class DockerClientInstanceTests {
     @Test
     public void shouldNotStopContainerSinceEmptyId() {
         assertThat(dockerClientInstance.stopContainer("")).isFalse();
+    }
+
+    @Test
+    public void shouldNotStopContainerSinceNotFound() {
+        String containerName = "not-found";
+        boolean isStopped = dockerClientInstance.stopContainer(containerName);
+        assertThat(isStopped).isFalse();
+        verify(dockerClientInstance, atLeastOnce()).isContainerPresent(containerName);
+        verify(dockerClientInstance, never()).isContainerActive(containerName);
     }
 
     @Test
