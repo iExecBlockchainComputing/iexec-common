@@ -455,6 +455,7 @@ public class DockerClientInstanceTests {
     public void shouldPullPrivateImage() throws Exception {
         String username = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
         String password = getEnvValue(DOCKERHUB_PASSWORD_ENV_NAME);
+        System.out.println("Username: " + username);
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             System.out.println("No dockerhub username or password found, will" +
                     " abort shouldPullPrivateImage test");
