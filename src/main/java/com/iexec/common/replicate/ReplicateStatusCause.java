@@ -60,14 +60,14 @@ public enum ReplicateStatusCause {
     CANNOT_REVEAL,
     UNKNOWN;
 
-    public static ReplicateStatusCause getReplicateAbortCause(TaskAbortCause cause) {
-        switch (cause) {
+    public static ReplicateStatusCause getReplicateAbortCause(TaskAbortCause taskAbortCause) {
+        switch (taskAbortCause) {
             case CONSENSUS_REACHED:
-                return CONSENSUS_REACHED;
+                return ReplicateStatusCause.CONSENSUS_REACHED;
             case CONTRIBUTION_TIMEOUT:
-                return CONTRIBUTION_TIMEOUT;
+                return ReplicateStatusCause.CONTRIBUTION_TIMEOUT;
             default:
-                return UNKNOWN;
+                return ReplicateStatusCause.UNKNOWN;
         }
     }
 }
