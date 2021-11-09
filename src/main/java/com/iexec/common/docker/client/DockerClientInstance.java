@@ -582,7 +582,8 @@ public class DockerClientInstance {
      */
     public boolean isContainerActive(String containerName) {
         String currentContainerStatus = getContainerStatus(containerName);
-        return getContainerActiveStatuses().contains(currentContainerStatus);
+        return List.of(RUNNING_STATUS, RESTARTING_STATUS)
+                .contains(currentContainerStatus);
     }
 
     public String getContainerName(String containerId) {
@@ -868,14 +869,5 @@ public class DockerClientInstance {
                     registryAddress, username);
         }
         return dockerClient;
-    }
-
-    /**
-     * Get the list of statuses where a container is considered active.
-     * 
-     * @return List.of("running", "restarting")
-     */
-    private List<String> getContainerActiveStatuses() {
-        return List.of(RESTARTING_STATUS, RUNNING_STATUS);
     }
 }
