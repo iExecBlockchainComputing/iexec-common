@@ -16,7 +16,11 @@
 
 package com.iexec.common.notification;
 
-import lombok.*;
+import com.iexec.common.task.TaskAbortCause;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -26,14 +30,27 @@ import java.util.List;
 @Builder
 public class TaskNotification {
 
-    // chain task Id concerned by the notification
+    // Id of the task concerned by the notification.
     String chainTaskId;
 
-    // list of workers to which this notification should be sent to
+    // List of workers targeted by the notification.
     List<String> workersAddress;
 
-    // type of the notification
+    // Type of the notification.
     TaskNotificationType taskNotificationType;
 
+    // Optional extra metadata provided with the notification    
     TaskNotificationExtra taskNotificationExtra;
+
+    /**
+     * Get the abort cause of this task. If the cause is not defined by
+     * the notification sender, {@code TaskAbortCause#UNKNOWN} is returned.
+     * 
+     * @return
+     */
+    public TaskAbortCause getTaskAbortCause() {
+        return taskNotificationExtra != null && taskNotificationExtra.getTaskAbortCause() != null
+                ? taskNotificationExtra.getTaskAbortCause()
+                : TaskAbortCause.UNKNOWN;
+    }
 }
