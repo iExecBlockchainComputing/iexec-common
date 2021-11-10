@@ -75,6 +75,7 @@ public abstract class IexecHubAbstractService {
     private final String iexecHubAddress;
     private final Web3jAbstractService web3jAbstractService;
     private long maxNbOfPeriodsForConsensus;
+    private final int blockTime;
     private final int nbBlocksToWaitPerRetry;
     private final int retryDelay;// ms
     private final int maxRetries;
@@ -115,6 +116,7 @@ public abstract class IexecHubAbstractService {
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
         this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
+        this.blockTime = blockTime;
         this.retryDelay = nbBlocksToWaitPerRetry * blockTime;
         this.maxRetries = maxRetries;
 
@@ -135,7 +137,7 @@ public abstract class IexecHubAbstractService {
     public IexecHubContract getHubContract(ContractGasProvider contractGasProvider) {
         return getHubContract(contractGasProvider,
                 ChainIdLong.NONE,
-                DEFAULT_BLOCK_TIME,
+                blockTime,
                 DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH);
     }
 
@@ -143,7 +145,7 @@ public abstract class IexecHubAbstractService {
                                            long chainId) {
         return getHubContract(contractGasProvider,
                 chainId,
-                DEFAULT_BLOCK_TIME,
+                blockTime,
                 DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH);
     }
 
