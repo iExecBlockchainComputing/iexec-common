@@ -35,6 +35,9 @@ public class PublicConfiguration {
     private String schedulerPublicAddress;
     private boolean isSidechain;
 
+    // blockchain adapter
+    private String blockchainAdapterUrl;
+
     // repos URLs
     private String resultRepositoryURL;
 
