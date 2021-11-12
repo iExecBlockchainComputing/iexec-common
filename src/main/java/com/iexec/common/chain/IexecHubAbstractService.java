@@ -113,7 +113,7 @@ public abstract class IexecHubAbstractService {
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
         this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
-        this.blockTime = blockTime;
+        this.blockTime = blockTime > 0 ? blockTime : DEFAULT_BLOCK_TIME;
         this.retryDelay = nbBlocksToWaitPerRetry * blockTime;
         this.maxRetries = maxRetries;
 
