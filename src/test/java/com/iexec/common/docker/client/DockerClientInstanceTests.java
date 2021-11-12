@@ -451,9 +451,7 @@ public class DockerClientInstanceTests {
     /**
      * Following test will only occur if dockerhubPassword envvar is present
      */
-    // TODO fix this test
     @Test
-    @Disabled
     public void shouldPullPrivateImage() throws Exception {
         String username = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
         String password = getEnvValue(DOCKERHUB_PASSWORD_ENV_NAME);
@@ -469,9 +467,9 @@ public class DockerClientInstanceTests {
         // clean to avoid previous tests collisions
         authClientInstance.removeImage(PRIVATE_IMAGE_NAME);
         // pull image and check
-        assertThat(dockerClientInstance.pullImage(PRIVATE_IMAGE_NAME)).isTrue();
+        assertThat(authClientInstance.pullImage(PRIVATE_IMAGE_NAME)).isTrue();
         // clean
-        dockerClientInstance.removeImage(PRIVATE_IMAGE_NAME);
+        authClientInstance.removeImage(PRIVATE_IMAGE_NAME);
     }
 
     private String getEnvValue(String envVarName) {
