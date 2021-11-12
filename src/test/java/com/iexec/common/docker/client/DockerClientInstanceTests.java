@@ -33,7 +33,6 @@ import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.IexecFileHelper;
 import com.iexec.common.utils.SgxUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.*;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
