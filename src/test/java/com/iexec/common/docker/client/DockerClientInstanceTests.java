@@ -449,17 +449,13 @@ public class DockerClientInstanceTests {
     }
 
     /**
-     * Following test will only occur if dockerhubPassword envvar is present
+     * Try to pull a private image from iexechub, require valid login and permissions.
+     * The test will fail if Docker Hub credentials are missing or invalid.
      */
     @Test
     public void shouldPullPrivateImage() throws Exception {
         String username = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
         String password = getEnvValue(DOCKERHUB_PASSWORD_ENV_NAME);
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            System.out.println("No dockerhub username or password found, will" +
-                    " abort shouldPullPrivateImage test");
-            return;
-        }
         // Get an authenticated docker client
         DockerClientInstance authClientInstance =
                 new DockerClientInstance(DockerClientInstance.DEFAULT_DOCKER_REGISTRY,
