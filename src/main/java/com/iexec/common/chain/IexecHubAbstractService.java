@@ -21,8 +21,6 @@ import com.iexec.common.task.TaskDescription;
 import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.Retryer;
 import lombok.extern.slf4j.Slf4j;
-import net.jodah.failsafe.Failsafe;
-import net.jodah.failsafe.RetryPolicy;
 import org.apache.commons.lang3.StringUtils;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
@@ -75,6 +73,7 @@ public abstract class IexecHubAbstractService {
     private final String iexecHubAddress;
     private final Web3jAbstractService web3jAbstractService;
     private long maxNbOfPeriodsForConsensus;
+    private final Duration blockTime;
     private final int nbBlocksToWaitPerRetry;
     private final int retryDelay;// ms
     private final int maxRetries;
@@ -97,7 +96,6 @@ public abstract class IexecHubAbstractService {
     }
 
     /**
-     * Base constructor for the IexecHubAbstractService
      * @param credentials credentials for sending transaction
      * @param web3jAbstractService custom web3j service
      * @param iexecHubAddress address of the iExec Hub contract
@@ -105,17 +103,51 @@ public abstract class IexecHubAbstractService {
      * @param nbBlocksToWaitPerRetry nb block to wait per retry
      * @param maxRetries maximum reties
      */
+    @Deprecated
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress,
                                    int blockTime,
                                    int nbBlocksToWaitPerRetry,
                                    int maxRetries) {
+        this(
+                credentials,
+                web3jAbstractService,
+                iexecHubAddress,
+                Duration.ofMillis(blockTime),
+                nbBlocksToWaitPerRetry,
+                maxRetries
+        );
+    }
+
+    /**
+     * Base constructor for the IexecHubAbstractService
+     * @param credentials credentials for sending transaction
+     * @param web3jAbstractService custom web3j service
+     * @param iexecHubAddress address of the iExec Hub contract
+     * @param blockTime block time as a duration
+     * @param nbBlocksToWaitPerRetry nb block to wait per retry
+     * @param maxRetries maximum reties
+     */
+    public IexecHubAbstractService(Credentials credentials,
+                                   Web3jAbstractService web3jAbstractService,
+                                   String iexecHubAddress,
+                                   Duration blockTime,
+                                   int nbBlocksToWaitPerRetry,
+                                   int maxRetries) {
         this.credentials = credentials;
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
         this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
-        this.retryDelay = nbBlocksToWaitPerRetry * blockTime;
+        if (blockTime == null || blockTime.toMillis() <= 0) {
+            log.warn("Block time value is incorrect, using default value "
+                            + "[blockTime:{}, DEFAULT_BLOCK_TIME:{}]",
+                    blockTime, DEFAULT_BLOCK_TIME);
+            this.blockTime = Duration.ofMillis(DEFAULT_BLOCK_TIME);
+        } else {
+            this.blockTime = blockTime;
+        }
+        this.retryDelay = nbBlocksToWaitPerRetry * (int)this.blockTime.toMillis();
         this.maxRetries = maxRetries;
 
         String hubAddress = getHubContract().getContractAddress();
@@ -135,7 +167,7 @@ public abstract class IexecHubAbstractService {
     public IexecHubContract getHubContract(ContractGasProvider contractGasProvider) {
         return getHubContract(contractGasProvider,
                 ChainIdLong.NONE,
-                DEFAULT_BLOCK_TIME,
+                (int)blockTime.toMillis(),
                 DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH);
     }
 
@@ -143,7 +175,7 @@ public abstract class IexecHubAbstractService {
                                            long chainId) {
         return getHubContract(contractGasProvider,
                 chainId,
-                DEFAULT_BLOCK_TIME,
+                (int)blockTime.toMillis(),
                 DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH);
     }
 

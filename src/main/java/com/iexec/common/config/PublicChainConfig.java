@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2021 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,30 +21,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
+
+/**
+ * Represents public data related to the blockchain configuration.
+ */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class PublicConfiguration {
-
-    // blockchain
-    private Integer chainId;
-    private String blockchainURL;
-    private String iexecHubAddress;
-    private String workerPoolAddress;
-    private String schedulerPublicAddress;
-    private boolean isSidechain;
-
-    // blockchain adapter
-    private String blockchainAdapterUrl;
-
-    // repos URLs
-    private String resultRepositoryURL;
-
-    // address of the SMS
-    private String smsURL;
-
-    private long askForReplicatePeriod;
-    private String requiredWorkerVersion;
+public class PublicChainConfig {
+    private Duration blockTime;
 }
-
