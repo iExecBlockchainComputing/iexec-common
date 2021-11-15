@@ -139,9 +139,13 @@ public abstract class IexecHubAbstractService {
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
         this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
-        this.blockTime = blockTime != null && blockTime.toMillis() > 0
-                ? blockTime
-                : Duration.ofMillis(DEFAULT_BLOCK_TIME);
+        if (blockTime == null || blockTime.toMillis() <= 0) {
+            log.warn("Blocktime value is incorrect, using default value [blockTime:{}, DEFAULT_BLOCK_TIME:{}]",
+                    blockTime == null ? "null" : blockTime, DEFAULT_BLOCK_TIME);
+            this.blockTime = Duration.ofMillis(DEFAULT_BLOCK_TIME);
+        } else {
+            this.blockTime = blockTime;
+        }
         this.retryDelay = nbBlocksToWaitPerRetry * (int)this.blockTime.toMillis();
         this.maxRetries = maxRetries;
 
