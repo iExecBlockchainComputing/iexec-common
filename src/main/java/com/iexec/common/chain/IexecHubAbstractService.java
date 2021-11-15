@@ -139,8 +139,10 @@ public abstract class IexecHubAbstractService {
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
         this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
-        this.blockTime = blockTime.toMillis() > 0 ? blockTime : Duration.ofMillis(DEFAULT_BLOCK_TIME);
-        this.retryDelay = nbBlocksToWaitPerRetry * (int)blockTime.toMillis();
+        this.blockTime = blockTime != null && blockTime.toMillis() > 0
+                ? blockTime
+                : Duration.ofMillis(DEFAULT_BLOCK_TIME);
+        this.retryDelay = nbBlocksToWaitPerRetry * (int)this.blockTime.toMillis();
         this.maxRetries = maxRetries;
 
         String hubAddress = getHubContract().getContractAddress();
