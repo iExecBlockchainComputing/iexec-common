@@ -96,7 +96,6 @@ public abstract class IexecHubAbstractService {
     }
 
     /**
-     * Base constructor for the IexecHubAbstractService
      * @param credentials credentials for sending transaction
      * @param web3jAbstractService custom web3j service
      * @param iexecHubAddress address of the iExec Hub contract
@@ -104,6 +103,7 @@ public abstract class IexecHubAbstractService {
      * @param nbBlocksToWaitPerRetry nb block to wait per retry
      * @param maxRetries maximum reties
      */
+    @Deprecated
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress,
@@ -114,7 +114,7 @@ public abstract class IexecHubAbstractService {
                 credentials,
                 web3jAbstractService,
                 iexecHubAddress,
-                Duration.ofMillis(blockTime > 0 ? blockTime : DEFAULT_BLOCK_TIME),
+                Duration.ofMillis(blockTime),
                 nbBlocksToWaitPerRetry,
                 maxRetries
         );
