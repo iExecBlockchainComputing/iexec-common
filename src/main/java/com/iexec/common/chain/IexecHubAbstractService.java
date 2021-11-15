@@ -44,6 +44,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -72,7 +73,7 @@ public abstract class IexecHubAbstractService {
     private final String iexecHubAddress;
     private final Web3jAbstractService web3jAbstractService;
     private long maxNbOfPeriodsForConsensus;
-    private final int blockTime;
+    private final Duration blockTime;
     private final int nbBlocksToWaitPerRetry;
     private final int retryDelay;// ms
     private final int maxRetries;
@@ -109,12 +110,37 @@ public abstract class IexecHubAbstractService {
                                    int blockTime,
                                    int nbBlocksToWaitPerRetry,
                                    int maxRetries) {
+        this(
+                credentials,
+                web3jAbstractService,
+                iexecHubAddress,
+                Duration.ofMillis(blockTime > 0 ? blockTime : DEFAULT_BLOCK_TIME),
+                nbBlocksToWaitPerRetry,
+                maxRetries
+        );
+    }
+
+    /**
+     * Base constructor for the IexecHubAbstractService
+     * @param credentials credentials for sending transaction
+     * @param web3jAbstractService custom web3j service
+     * @param iexecHubAddress address of the iExec Hub contract
+     * @param blockTime block time as a duration
+     * @param nbBlocksToWaitPerRetry nb block to wait per retry
+     * @param maxRetries maximum reties
+     */
+    public IexecHubAbstractService(Credentials credentials,
+                                   Web3jAbstractService web3jAbstractService,
+                                   String iexecHubAddress,
+                                   Duration blockTime,
+                                   int nbBlocksToWaitPerRetry,
+                                   int maxRetries) {
         this.credentials = credentials;
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
         this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
-        this.blockTime = blockTime > 0 ? blockTime : DEFAULT_BLOCK_TIME;
-        this.retryDelay = nbBlocksToWaitPerRetry * blockTime;
+        this.blockTime = blockTime.toMillis() > 0 ? blockTime : Duration.ofMillis(DEFAULT_BLOCK_TIME);
+        this.retryDelay = nbBlocksToWaitPerRetry * (int)blockTime.toMillis();
         this.maxRetries = maxRetries;
 
         String hubAddress = getHubContract().getContractAddress();
@@ -134,7 +160,7 @@ public abstract class IexecHubAbstractService {
     public IexecHubContract getHubContract(ContractGasProvider contractGasProvider) {
         return getHubContract(contractGasProvider,
                 ChainIdLong.NONE,
-                blockTime,
+                (int)blockTime.toMillis(),
                 DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH);
     }
 
@@ -142,7 +168,7 @@ public abstract class IexecHubAbstractService {
                                            long chainId) {
         return getHubContract(contractGasProvider,
                 chainId,
-                blockTime,
+                (int)blockTime.toMillis(),
                 DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH);
     }
 
