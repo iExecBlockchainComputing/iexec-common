@@ -140,7 +140,8 @@ public abstract class IexecHubAbstractService {
         this.iexecHubAddress = iexecHubAddress;
         this.nbBlocksToWaitPerRetry = nbBlocksToWaitPerRetry;
         if (blockTime == null || blockTime.toMillis() <= 0) {
-            log.warn("Blocktime value is incorrect, using default value [blockTime:{}, DEFAULT_BLOCK_TIME:{}]",
+            log.warn("Block time value is incorrect, using default value "
+                            + "[blockTime:{}, DEFAULT_BLOCK_TIME:{}]",
                     blockTime, DEFAULT_BLOCK_TIME);
             this.blockTime = Duration.ofMillis(DEFAULT_BLOCK_TIME);
         } else {
