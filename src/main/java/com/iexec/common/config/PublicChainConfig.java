@@ -36,7 +36,4 @@ public class PublicChainConfig {
     private String nodeAddress;
     private String hubAddress;
     private Duration blockTime;
-    private long startBlockNumber;
-    private float gasPriceMultiplier;
-    private long gasPriceCap;
 }
