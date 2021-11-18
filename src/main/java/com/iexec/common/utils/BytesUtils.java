@@ -50,7 +50,7 @@ public class BytesUtils {
     }
 
     /**
-     * Validate hexadecimal string and verifies its length.
+     * Validates hexadecimal string input and verifies its length.
      * Hexadecimal string input must be lowercase and must contain 0x prefix.
      *
      * @param hexString        hexadecimal input
