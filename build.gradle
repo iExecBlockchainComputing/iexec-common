@@ -95,11 +95,18 @@ build.dependsOn jacocoTestReport
 jar {
     // include source code in the jar
     from sourceSets.main.allSource
+    // avoid duplicate application.properties import from jar and sources
+    duplicatesStrategy = 'exclude'
 }
 
-shadowJar { //required if we want to embed web3j dependency inside
+// required if we want to embed web3j dependency inside
+shadowJar {
+    // classifier to produce 2 identified jar files
     archiveClassifier.set('all')
+    // include source code in the jar
     from sourceSets.main.allSource
+    // avoid duplicate application.properties import from jar and sources
+    duplicatesStrategy = 'exclude'
 }
 build.dependsOn(shadowJar)
 
