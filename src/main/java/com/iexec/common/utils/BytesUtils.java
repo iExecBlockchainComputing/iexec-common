@@ -46,39 +46,40 @@ public class BytesUtils {
     }
 
     public static boolean isHexaString(String hexaString) {
-        return !StringUtils.isEmpty(hexaString)
+        return StringUtils.isNotEmpty(hexaString)
                 && Numeric.cleanHexPrefix(hexaString).matches("\\p{XDigit}+"); // \\p{XDigit} matches any hexadecimal character
     }
 
     /**
      * Validates hexadecimal string input and verifies its length.
-     * Hexadecimal string input must be lowercase and must contain 0x prefix.
+     * Hexadecimal string input must contain 0x prefix.
      *
      * @param hexString        hexadecimal input
      * @param expectedByteSize expected byte size
      * @return true if
      */
-    public static boolean isHexStringWithProperByteSize(String hexString,
+    public static boolean isHexStringWithProperBytesSize(String hexString,
                                                         int expectedByteSize) {
         return expectedByteSize > 0
-                && !StringUtils.isEmpty(hexString)
+                && StringUtils.isNotEmpty(hexString)
                 && Numeric.containsHexPrefix(hexString)
                 && isHexaString(hexString)
-                && BytesUtils.stringToBytes(hexString).length == expectedByteSize;
+                && Numeric.hexStringToByteArray(hexString).length == new byte[expectedByteSize].length;
     }
 
-    public static boolean isHexStringWithNonEmptyProperByteSize(String hexString,
+    public static boolean isHexStringWithNonEmptyProperBytesSize(String hexString,
                                                         int expectedByteSize) {
-        return isHexStringWithProperByteSize(hexString, expectedByteSize)
-                && !Arrays.equals(BytesUtils.stringToBytes(hexString), new byte[32]);
+        return isHexStringWithProperBytesSize(hexString, expectedByteSize)
+                && !Arrays.equals(Numeric.hexStringToByteArray(hexString),
+                new byte[expectedByteSize]);
     }
 
     public static boolean isBytes32(String hexString) {
-        return isHexStringWithProperByteSize(hexString, 32);
+        return isHexStringWithProperBytesSize(hexString, 32);
     }
 
     public static boolean isNonEmptyBytes32(String hexString) {
-        return isHexStringWithNonEmptyProperByteSize(hexString, 32);
+        return isHexStringWithNonEmptyProperBytesSize(hexString, 32);
     }
 
     @Deprecated

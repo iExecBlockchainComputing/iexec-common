@@ -61,48 +61,43 @@ public class BytesUtilsTests {
         assertFalse(isHexaString(""));
     }
 
-    // isHexStringWithProperByteSize(..) tests
+    // isHexStringWithProperBytesSize(..) tests
 
     @Test
     void shouldBeHexStringWithProperByteSize() {
-        assertTrue(isHexStringWithProperByteSize("0xabc123", 6));
+        assertTrue(isHexStringWithProperBytesSize("0xabc123", 3));
     }
 
     @Test
     void shouldNotBeHexStringWithProperByteSizeSinceExpectedSizeTooSmall() {
-        assertFalse(isHexStringWithProperByteSize("0xabc123", 0));
+        assertFalse(isHexStringWithProperBytesSize("0xabc123", 0));
     }
 
     @Test
     void shouldNotBeHexStringWithProperByteSizeSinceEmptyInput() {
-        assertFalse(isHexStringWithProperByteSize("", 6));
+        assertFalse(isHexStringWithProperBytesSize("", 3));
     }
 
     @Test
     void shouldNotBeHexStringWithProperByteSizeSinceNoPrefix() {
-        assertFalse(isHexStringWithProperByteSize("abc123", 6));
-    }
-
-    @Test
-    void shouldNotBeHexStringWithProperByteSizeSinceNotLowerCase() {
-        assertFalse(isHexStringWithProperByteSize("0xaBc123", 6));
+        assertFalse(isHexStringWithProperBytesSize("abc123", 3));
     }
 
     @Test
     void shouldNotBeHexStringWithProperByteSizeSinceWrongSize() {
-        assertFalse(isHexStringWithProperByteSize("0xabc123", 2));
+        assertFalse(isHexStringWithProperBytesSize("0xabc123", 2));
     }
 
-    // isHexStringWithNonEmptyProperByteSize(..) tests
+    // isHexStringWithNonEmptyProperBytesSize(..) tests
 
     @Test
     void shouldBeHexStringWithNonEmptyProperByteSize() {
-        assertTrue(isHexStringWithProperByteSize("0xabc123", 6));
+        assertTrue(isHexStringWithNonEmptyProperBytesSize("0xabc123", 3));
     }
 
     @Test
     void shouldNotBeHexStringWithNonEmptyProperByteSizeSinceEmpty() {
-        assertFalse(isHexStringWithProperByteSize("0x000000", 6));
+        assertFalse(isHexStringWithNonEmptyProperBytesSize("0x000000", 3));
     }
 
     @Test

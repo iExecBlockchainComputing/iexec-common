@@ -35,7 +35,7 @@ public class SignatureUtils {
     }
 
     public static boolean isSignature(String hexString) {
-        return isHexStringWithNonEmptyProperByteSize(hexString, 65); //32 + 32 + 1
+        return isHexStringWithNonEmptyProperBytesSize(hexString, 65); //32 + 32 + 1
     }
 
     public static boolean doesSignatureMatchesAddress(byte[] signatureR,
