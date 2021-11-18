@@ -93,6 +93,18 @@ public class BytesUtilsTests {
         assertFalse(isHexStringWithProperByteSize("0xabc123", 2));
     }
 
+    // isHexStringWithNonEmptyProperByteSize(..) tests
+
+    @Test
+    void shouldBeHexStringWithNonEmptyProperByteSize() {
+        assertTrue(isHexStringWithProperByteSize("0xabc123", 6));
+    }
+
+    @Test
+    void shouldNotBeHexStringWithNonEmptyProperByteSizeSinceEmpty() {
+        assertFalse(isHexStringWithProperByteSize("0x000000", 6));
+    }
+
     @Test
     public void shouldBeABytes32() {
         assertTrue(isBytes32(bytes));

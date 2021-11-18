@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.web3j.utils.Numeric;
 
 import javax.xml.bind.DatatypeConverter;
+import java.util.Arrays;
 
 public class BytesUtils {
 
@@ -66,8 +67,18 @@ public class BytesUtils {
                 && BytesUtils.stringToBytes(hexString).length == expectedByteSize;
     }
 
-    public static boolean isByte32(String hexString) {
+    public static boolean isHexStringWithNonEmptyProperByteSize(String hexString,
+                                                        int expectedByteSize) {
+        return isHexStringWithProperByteSize(hexString, expectedByteSize)
+                && !Arrays.equals(BytesUtils.stringToBytes(hexString), new byte[32]);
+    }
+
+    public static boolean isBytes32(String hexString) {
         return isHexStringWithProperByteSize(hexString, 32);
+    }
+
+    public static boolean isNonEmptyBytes32(String hexString) {
+        return isHexStringWithNonEmptyProperByteSize(hexString, 32);
     }
 
     @Deprecated
