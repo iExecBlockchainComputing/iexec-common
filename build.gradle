@@ -105,9 +105,8 @@ jar {
 }
 
 shadowJar { //required if we want to embed web3j dependency inside
-    baseName = rootProject.name
+    archiveClassifier.set('all')
     from sourceSets.main.allSource
-    version = version
 }
 build.dependsOn(shadowJar)
 
