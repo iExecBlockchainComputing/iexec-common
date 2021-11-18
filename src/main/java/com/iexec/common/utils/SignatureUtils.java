@@ -24,6 +24,7 @@ import java.security.SignatureException;
 
 import com.iexec.common.security.Signature;
 
+import static com.iexec.common.utils.BytesUtils.isHexStringWithProperByteSize;
 import static com.iexec.common.utils.BytesUtils.stringToBytes;
 
 public class SignatureUtils {
@@ -32,6 +33,10 @@ public class SignatureUtils {
 
     private SignatureUtils() {
         throw new UnsupportedOperationException();
+    }
+
+    public static boolean isSignature(String hexString) {
+        return isHexStringWithProperByteSize(hexString, 65); //32 + 32 + 1
     }
 
     public static boolean doesSignatureMatchesAddress(byte[] signatureR,

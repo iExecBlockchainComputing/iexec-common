@@ -16,6 +16,7 @@
 
 package com.iexec.common.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.web3j.utils.Numeric;
 
 import javax.xml.bind.DatatypeConverter;
@@ -44,9 +45,32 @@ public class BytesUtils {
     }
 
     public static boolean isHexaString(String hexaString) {
-        return Numeric.cleanHexPrefix(hexaString).matches("\\p{XDigit}+"); // \\p{XDigit} matches any hexadecimal character
+        return !StringUtils.isEmpty(hexaString)
+                && Numeric.cleanHexPrefix(hexaString).matches("\\p{XDigit}+"); // \\p{XDigit} matches any hexadecimal character
     }
 
+    /**
+     * Validate hexadecimal string and verifies its length.
+     * Hexadecimal string input must be lowercase and must contain 0x prefix.
+     *
+     * @param hexString        hexadecimal input
+     * @param expectedByteSize expected byte size
+     * @return true if
+     */
+    public static boolean isHexStringWithProperByteSize(String hexString,
+                                                        int expectedByteSize) {
+        return expectedByteSize > 0
+                && !StringUtils.isEmpty(hexString)
+                && Numeric.containsHexPrefix(hexString)
+                && isHexaString(hexString)
+                && BytesUtils.stringToBytes(hexString).length == expectedByteSize;
+    }
+
+    public static boolean isByte32(String hexString) {
+        return isHexStringWithProperByteSize(hexString, 32);
+    }
+
+    @Deprecated
     public static boolean isBytes32(byte[] bytes){
         return bytes != null && bytes.length == 32;
     }

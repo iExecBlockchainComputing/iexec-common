@@ -61,6 +61,38 @@ public class BytesUtilsTests {
         assertFalse(isHexaString(""));
     }
 
+    // isHexStringWithProperByteSize(..) tests
+
+    @Test
+    void shouldBeHexStringWithProperByteSize() {
+        assertTrue(isHexStringWithProperByteSize("0xabc123", 6));
+    }
+
+    @Test
+    void shouldNotBeHexStringWithProperByteSizeSinceExpectedSizeTooSmall() {
+        assertFalse(isHexStringWithProperByteSize("0xabc123", 0));
+    }
+
+    @Test
+    void shouldNotBeHexStringWithProperByteSizeSinceEmptyInput() {
+        assertFalse(isHexStringWithProperByteSize("", 6));
+    }
+
+    @Test
+    void shouldNotBeHexStringWithProperByteSizeSinceNoPrefix() {
+        assertFalse(isHexStringWithProperByteSize("abc123", 6));
+    }
+
+    @Test
+    void shouldNotBeHexStringWithProperByteSizeSinceNotLowerCase() {
+        assertFalse(isHexStringWithProperByteSize("0xaBc123", 6));
+    }
+
+    @Test
+    void shouldNotBeHexStringWithProperByteSizeSinceWrongSize() {
+        assertFalse(isHexStringWithProperByteSize("0xabc123", 2));
+    }
+
     @Test
     public void shouldBeABytes32() {
         assertTrue(isBytes32(bytes));
