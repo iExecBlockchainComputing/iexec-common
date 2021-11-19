@@ -16,6 +16,7 @@
 
 package com.iexec.common.chain;
 
+import com.iexec.common.contract.IexecSmartContractConnectionPolicy;
 import com.iexec.common.contract.generated.*;
 import com.iexec.common.task.TaskDescription;
 import com.iexec.common.utils.BytesUtils;
@@ -81,7 +82,7 @@ public abstract class IexecHubAbstractService {
     // /!\ TODO remove expired task descriptions
     private final Map<String, TaskDescription> taskDescriptions = new HashMap<>();
 
-    private final Integer expectedFinalDeadlineRatio;
+    private final IexecSmartContractConnectionPolicy iexecSmartContractConnectionPolicy;
 
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
@@ -92,7 +93,7 @@ public abstract class IexecHubAbstractService {
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress,
-                                   Integer expectedFinalDeadlineRatio) {
+                                   IexecSmartContractConnectionPolicy iexecSmartContractConnectionPolicy) {
         this(
                 credentials,
                 web3jAbstractService,
@@ -100,7 +101,7 @@ public abstract class IexecHubAbstractService {
                 Duration.ofMillis(DEFAULT_BLOCK_TIME),
                 6,
                 3,
-                expectedFinalDeadlineRatio
+                iexecSmartContractConnectionPolicy
         );
     }
 
@@ -147,8 +148,8 @@ public abstract class IexecHubAbstractService {
      * @param blockTime block time as a duration
      * @param nbBlocksToWaitPerRetry nb block to wait per retry
      * @param maxRetries maximum reties
-     * @param expectedFinalDeadlineRatio final deadline ratio expected in smart
-     *                                   contract
+     * @param iexecSmartContractConnectionPolicy Smart contract connection
+     *                                           validation
      */
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
@@ -156,7 +157,7 @@ public abstract class IexecHubAbstractService {
                                    Duration blockTime,
                                    int nbBlocksToWaitPerRetry,
                                    int maxRetries,
-                                   Integer expectedFinalDeadlineRatio) {
+                                   IexecSmartContractConnectionPolicy iexecSmartContractConnectionPolicy) {
         this.credentials = credentials;
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
@@ -171,7 +172,7 @@ public abstract class IexecHubAbstractService {
         }
         this.retryDelay = nbBlocksToWaitPerRetry * (int)this.blockTime.toMillis();
         this.maxRetries = maxRetries;
-        this.expectedFinalDeadlineRatio = expectedFinalDeadlineRatio;
+        this.iexecSmartContractConnectionPolicy = iexecSmartContractConnectionPolicy;
 
         String hubAddress = getHubContract().getContractAddress();
         log.info("Abstract IexecHubService initialized (iexec proxy address) " +
@@ -180,35 +181,10 @@ public abstract class IexecHubAbstractService {
     }
 
     @PostConstruct
-    private void validateChainConfiguration() {
-        final BigInteger finalDeadlineRatio;
-        final String errorMessage =
-                "Something went wrong with the chain configuration. "
-                        + "Please check your configuration values.";
-        try {
-            finalDeadlineRatio = getHubContract()
-                    .final_deadline_ratio()
-                    .send();
-        } catch (Exception e) {
-            throw new IllegalArgumentException(errorMessage);
-        }
-
-        if (expectedFinalDeadlineRatio == null) {
-            log.warn("Can't check final deadline ratio " +
-                    "as no expected value is provided." +
-                    "[actualValue: {}]", finalDeadlineRatio);
-            return;
-        }
-
-        if (!finalDeadlineRatio.equals(BigInteger.valueOf(expectedFinalDeadlineRatio))) {
-            log.error(errorMessage
-                            + " [expectedFinalDeadlineRatio:{}, actual: {}]",
-                    expectedFinalDeadlineRatio, finalDeadlineRatio
-            );
-            throw new IllegalArgumentException(errorMessage);
-        } else {
-            log.info("Chain connection has been established.");
-        }
+    private void checkSmartContractConnection() {
+        iexecSmartContractConnectionPolicy.checkSmartContractConnection(
+                getHubContract()
+        );
     }
 
 
