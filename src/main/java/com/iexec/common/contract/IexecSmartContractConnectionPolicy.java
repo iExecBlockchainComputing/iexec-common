@@ -56,7 +56,7 @@ public class IexecSmartContractConnectionPolicy {
             );
             throw new IllegalArgumentException(errorMessage);
         } else {
-            log.info("Chain connection has been established.");
+            log.info("Connection to iExec smart contract has been established.");
         }
     }
 }
