@@ -64,11 +64,11 @@ public class BytesUtils {
                 && StringUtils.isNotEmpty(hexString)
                 && Numeric.containsHexPrefix(hexString)
                 && isHexaString(hexString)
-                && Numeric.hexStringToByteArray(hexString).length == new byte[expectedByteSize].length;
+                && Numeric.hexStringToByteArray(hexString).length == expectedByteSize;
     }
 
-    public static boolean isHexStringWithNonEmptyProperBytesSize(String hexString,
-                                                        int expectedByteSize) {
+    public static boolean isNonZeroedHexStringWithProperBytesSize(String hexString,
+                                                                  int expectedByteSize) {
         return isHexStringWithProperBytesSize(hexString, expectedByteSize)
                 && !Arrays.equals(Numeric.hexStringToByteArray(hexString),
                 new byte[expectedByteSize]);
@@ -78,8 +78,8 @@ public class BytesUtils {
         return isHexStringWithProperBytesSize(hexString, 32);
     }
 
-    public static boolean isNonEmptyBytes32(String hexString) {
-        return isHexStringWithNonEmptyProperBytesSize(hexString, 32);
+    public static boolean isNonZeroedBytes32(String hexString) {
+        return isNonZeroedHexStringWithProperBytesSize(hexString, 32);
     }
 
     @Deprecated

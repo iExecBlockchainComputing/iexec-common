@@ -69,6 +69,11 @@ public class BytesUtilsTests {
     }
 
     @Test
+    void shouldBeHexStringWithProperByteSizeEvenWithZeroedArray() {
+        assertTrue(isHexStringWithProperBytesSize("0x000000", 3));
+    }
+
+    @Test
     void shouldNotBeHexStringWithProperByteSizeSinceExpectedSizeTooSmall() {
         assertFalse(isHexStringWithProperBytesSize("0xabc123", 0));
     }
@@ -88,16 +93,16 @@ public class BytesUtilsTests {
         assertFalse(isHexStringWithProperBytesSize("0xabc123", 2));
     }
 
-    // isHexStringWithNonEmptyProperBytesSize(..) tests
+    // isNonZeroedHexStringWithProperBytesSize(..) tests
 
     @Test
-    void shouldBeHexStringWithNonEmptyProperByteSize() {
-        assertTrue(isHexStringWithNonEmptyProperBytesSize("0xabc123", 3));
+    void shouldBeNonZeroedHexStringWithProperBytesSize() {
+        assertTrue(isNonZeroedHexStringWithProperBytesSize("0xabc123", 3));
     }
 
     @Test
-    void shouldNotBeHexStringWithNonEmptyProperByteSizeSinceEmpty() {
-        assertFalse(isHexStringWithNonEmptyProperBytesSize("0x000000", 3));
+    void shouldNotBeNonZeroedHexStringWithProperBytesSizeSinceZeroed() {
+        assertFalse(isNonZeroedHexStringWithProperBytesSize("0x000000", 3));
     }
 
     @Test
