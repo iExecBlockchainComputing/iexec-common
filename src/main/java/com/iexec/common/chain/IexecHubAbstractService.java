@@ -42,6 +42,7 @@ import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 
+import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -80,10 +81,27 @@ public abstract class IexecHubAbstractService {
     // /!\ TODO remove expired task descriptions
     private final Map<String, TaskDescription> taskDescriptions = new HashMap<>();
 
+    private final Integer expectedFinalDeadlineRatio;
+
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress) {
         this(credentials, web3jAbstractService, iexecHubAddress, DEFAULT_BLOCK_TIME, 6, 3);
+    }
+
+    public IexecHubAbstractService(Credentials credentials,
+                                   Web3jAbstractService web3jAbstractService,
+                                   String iexecHubAddress,
+                                   Integer expectedFinalDeadlineRatio) {
+        this(
+                credentials,
+                web3jAbstractService,
+                iexecHubAddress,
+                Duration.ofMillis(DEFAULT_BLOCK_TIME),
+                6,
+                3,
+                expectedFinalDeadlineRatio
+        );
     }
 
     @Deprecated
@@ -116,7 +134,8 @@ public abstract class IexecHubAbstractService {
                 iexecHubAddress,
                 Duration.ofMillis(blockTime),
                 nbBlocksToWaitPerRetry,
-                maxRetries
+                maxRetries,
+                null
         );
     }
 
@@ -128,13 +147,16 @@ public abstract class IexecHubAbstractService {
      * @param blockTime block time as a duration
      * @param nbBlocksToWaitPerRetry nb block to wait per retry
      * @param maxRetries maximum reties
+     * @param expectedFinalDeadlineRatio final deadline ratio expected in smart
+     *                                   contract
      */
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress,
                                    Duration blockTime,
                                    int nbBlocksToWaitPerRetry,
-                                   int maxRetries) {
+                                   int maxRetries,
+                                   Integer expectedFinalDeadlineRatio) {
         this.credentials = credentials;
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
@@ -149,12 +171,46 @@ public abstract class IexecHubAbstractService {
         }
         this.retryDelay = nbBlocksToWaitPerRetry * (int)this.blockTime.toMillis();
         this.maxRetries = maxRetries;
+        this.expectedFinalDeadlineRatio = expectedFinalDeadlineRatio;
 
         String hubAddress = getHubContract().getContractAddress();
         log.info("Abstract IexecHubService initialized (iexec proxy address) " +
                 "[hubAddress:{}]", hubAddress);
         setMaxNbOfPeriodsForConsensus();
     }
+
+    @PostConstruct
+    private void validateChainConfiguration() {
+        final BigInteger finalDeadlineRatio;
+        final String errorMessage =
+                "Something went wrong with the chain configuration. "
+                        + "Please check your configuration values.";
+        try {
+            finalDeadlineRatio = getHubContract()
+                    .final_deadline_ratio()
+                    .send();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(errorMessage);
+        }
+
+        if (expectedFinalDeadlineRatio == null) {
+            log.warn("Can't check final deadline ratio " +
+                    "as no expected value is provided." +
+                    "[actualValue: {}]", finalDeadlineRatio);
+            return;
+        }
+
+        if (!finalDeadlineRatio.equals(BigInteger.valueOf(expectedFinalDeadlineRatio))) {
+            log.error(errorMessage
+                            + " [expectedFinalDeadlineRatio:{}, actual: {}]",
+                    expectedFinalDeadlineRatio, finalDeadlineRatio
+            );
+            throw new IllegalArgumentException(errorMessage);
+        } else {
+            log.info("Chain connection has been established.");
+        }
+    }
+
 
     private static int scoreToWeight(int workerScore) {
         return Math.max(workerScore / 3, 3) - 1;
