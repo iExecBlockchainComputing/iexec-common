@@ -54,7 +54,7 @@ public class EIP712Utils {
     }
 
     static String encodeHexString(String hexString) {
-        if (!BytesUtils.isHexaString(hexString)) {
+        if (!BytesUtils.isHexString(hexString)) {
             return "";
         }
         if (BytesUtils.stringToBytes(hexString).length > 32) {

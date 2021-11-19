@@ -16,19 +16,26 @@
 
 package com.iexec.common.utils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.web3j.utils.Numeric;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class BytesUtils {
 
     // "0x0000000000000000000000000000000000000000"
     public final static String EMPTY_ADDRESS = BytesUtils.bytesToString(new byte[20]);
 
+    private static final int BYTES_32_SIZE = 32;
     //"0x0000000000000000000000000000000000000000000000000000000000000000"
-    public final static String EMPTY_HEXASTRING_64 = BytesUtils.bytesToString(new byte[32]);
+    public final static String EMPTY_HEX_STRING_32 = BytesUtils.bytesToString(new byte[BYTES_32_SIZE]);
+    @Deprecated
+    public final static String EMPTY_HEXASTRING_64 = BytesUtils.bytesToString(new byte[BYTES_32_SIZE]);
+    private static final String HEX_REGEX = "\\p{XDigit}+$";
+    private static final Pattern HEX_PATTERN = Pattern.compile("(?i)^(0x)?" + HEX_REGEX);
+    private static final Pattern HEX_WITH_PREFIX_PATTERN = Pattern.compile("^0x" + HEX_REGEX);
+
     private BytesUtils() {
         throw new UnsupportedOperationException();
     }
@@ -45,9 +52,19 @@ public class BytesUtils {
         return new String(DatatypeConverter.parseHexBinary(Numeric.cleanHexPrefix(hexString)));
     }
 
-    public static boolean isHexaString(String hexaString) {
-        return StringUtils.isNotEmpty(hexaString)
-                && Numeric.cleanHexPrefix(hexaString).matches("\\p{XDigit}+"); // \\p{XDigit} matches any hexadecimal character
+    public static boolean isHexStringWithPrefix(String hexString) {
+        return hexString != null
+                && HEX_WITH_PREFIX_PATTERN.matcher(hexString).matches();
+    }
+
+    public static boolean isHexString(String hexString) {
+        return isHexaString(hexString);
+    }
+
+    @Deprecated
+    public static boolean isHexaString(String hexString) {
+        return hexString != null
+                && HEX_PATTERN.matcher(hexString).matches();
     }
 
     /**
@@ -58,33 +75,31 @@ public class BytesUtils {
      * @param expectedByteSize expected byte size
      * @return true if
      */
-    public static boolean isHexStringWithProperBytesSize(String hexString,
-                                                        int expectedByteSize) {
+    public static boolean isHexStringWithPrefixAndProperBytesSize(String hexString,
+                                                                  int expectedByteSize) {
         return expectedByteSize > 0
-                && StringUtils.isNotEmpty(hexString)
-                && Numeric.containsHexPrefix(hexString)
-                && isHexaString(hexString)
+                && isHexStringWithPrefix(hexString)
                 && Numeric.hexStringToByteArray(hexString).length == expectedByteSize;
     }
 
-    public static boolean isNonZeroedHexStringWithProperBytesSize(String hexString,
-                                                                  int expectedByteSize) {
-        return isHexStringWithProperBytesSize(hexString, expectedByteSize)
+    public static boolean isNonZeroedHexStringWithPrefixAndProperBytesSize(String hexString,
+                                                                           int expectedByteSize) {
+        return isHexStringWithPrefixAndProperBytesSize(hexString, expectedByteSize)
                 && !Arrays.equals(Numeric.hexStringToByteArray(hexString),
                 new byte[expectedByteSize]);
     }
 
     public static boolean isBytes32(String hexString) {
-        return isHexStringWithProperBytesSize(hexString, 32);
+        return isHexStringWithPrefixAndProperBytesSize(hexString, BYTES_32_SIZE);
     }
 
     public static boolean isNonZeroedBytes32(String hexString) {
-        return isNonZeroedHexStringWithProperBytesSize(hexString, 32);
+        return isNonZeroedHexStringWithPrefixAndProperBytesSize(hexString, BYTES_32_SIZE);
     }
 
     @Deprecated
     public static boolean isBytes32(byte[] bytes){
-        return bytes != null && bytes.length == 32;
+        return bytes != null && bytes.length == BYTES_32_SIZE;
     }
 
     // this adds zeros to the left of the hex string to make it bytes32
