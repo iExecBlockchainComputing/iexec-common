@@ -33,7 +33,7 @@ import java.time.Duration;
 public class PublicChainConfig {
     private Integer chainId;
     private boolean isSidechain;
-    private String nodeAddress;
-    private String hubAddress;
+    private String chainNodeUrl;
+    private String iExecHubContractAddress;
     private Duration blockTime;
 }
