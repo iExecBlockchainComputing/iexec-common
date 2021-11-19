@@ -31,5 +31,9 @@ import java.time.Duration;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PublicChainConfig {
+    private Integer chainId;
+    private boolean isSidechain;
+    private String nodeAddress;
+    private String hubAddress;
     private Duration blockTime;
 }

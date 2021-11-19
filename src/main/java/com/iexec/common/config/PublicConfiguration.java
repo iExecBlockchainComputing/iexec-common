@@ -28,12 +28,8 @@ import lombok.NoArgsConstructor;
 public class PublicConfiguration {
 
     // blockchain
-    private Integer chainId;
-    private String blockchainURL;
-    private String iexecHubAddress;
     private String workerPoolAddress;
     private String schedulerPublicAddress;
-    private boolean isSidechain;
 
     // blockchain adapter
     private String blockchainAdapterUrl;
