@@ -16,7 +16,7 @@
 
 package com.iexec.common.chain;
 
-import com.iexec.common.contract.IexecSmartContractConnectionPolicy;
+import com.iexec.common.contract.IexecSmartContractValidator;
 import com.iexec.common.contract.generated.*;
 import com.iexec.common.task.TaskDescription;
 import com.iexec.common.utils.BytesUtils;
@@ -82,7 +82,7 @@ public abstract class IexecHubAbstractService {
     // /!\ TODO remove expired task descriptions
     private final Map<String, TaskDescription> taskDescriptions = new HashMap<>();
 
-    private final IexecSmartContractConnectionPolicy iexecSmartContractConnectionPolicy;
+    private final IexecSmartContractValidator iexecSmartContractValidator;
 
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
@@ -93,15 +93,14 @@ public abstract class IexecHubAbstractService {
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress,
-                                   IexecSmartContractConnectionPolicy iexecSmartContractConnectionPolicy) {
+                                   IexecSmartContractValidator iexecSmartContractValidator) {
         this(
                 credentials,
                 web3jAbstractService,
                 iexecHubAddress,
                 Duration.ofMillis(DEFAULT_BLOCK_TIME),
                 6,
-                3,
-                iexecSmartContractConnectionPolicy
+                3, iexecSmartContractValidator
         );
     }
 
@@ -148,7 +147,7 @@ public abstract class IexecHubAbstractService {
      * @param blockTime block time as a duration
      * @param nbBlocksToWaitPerRetry nb block to wait per retry
      * @param maxRetries maximum reties
-     * @param iexecSmartContractConnectionPolicy Smart contract connection
+     * @param iexecSmartContractValidator Smart contract connection
      *                                           validation
      */
     public IexecHubAbstractService(Credentials credentials,
@@ -157,7 +156,7 @@ public abstract class IexecHubAbstractService {
                                    Duration blockTime,
                                    int nbBlocksToWaitPerRetry,
                                    int maxRetries,
-                                   IexecSmartContractConnectionPolicy iexecSmartContractConnectionPolicy) {
+                                   IexecSmartContractValidator iexecSmartContractValidator) {
         this.credentials = credentials;
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
@@ -172,7 +171,7 @@ public abstract class IexecHubAbstractService {
         }
         this.retryDelay = nbBlocksToWaitPerRetry * (int)this.blockTime.toMillis();
         this.maxRetries = maxRetries;
-        this.iexecSmartContractConnectionPolicy = iexecSmartContractConnectionPolicy;
+        this.iexecSmartContractValidator = iexecSmartContractValidator;
 
         String hubAddress = getHubContract().getContractAddress();
         log.info("Abstract IexecHubService initialized (iexec proxy address) " +
@@ -182,7 +181,7 @@ public abstract class IexecHubAbstractService {
 
     @PostConstruct
     private void checkSmartContractConnection() {
-        iexecSmartContractConnectionPolicy.checkSmartContractConnection(
+        iexecSmartContractValidator.checkSmartContractConnection(
                 getHubContract()
         );
     }
