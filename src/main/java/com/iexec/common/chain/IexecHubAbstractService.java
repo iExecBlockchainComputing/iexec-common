@@ -82,26 +82,10 @@ public abstract class IexecHubAbstractService {
     // /!\ TODO remove expired task descriptions
     private final Map<String, TaskDescription> taskDescriptions = new HashMap<>();
 
-    private final IexecHubSmartContractValidator iexecHubSmartContractValidator;
-
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress) {
         this(credentials, web3jAbstractService, iexecHubAddress, DEFAULT_BLOCK_TIME, 6, 3);
-    }
-
-    public IexecHubAbstractService(Credentials credentials,
-                                   Web3jAbstractService web3jAbstractService,
-                                   String iexecHubAddress,
-                                   IexecHubSmartContractValidator iexecHubSmartContractValidator) {
-        this(
-                credentials,
-                web3jAbstractService,
-                iexecHubAddress,
-                Duration.ofMillis(DEFAULT_BLOCK_TIME),
-                6,
-                3, iexecHubSmartContractValidator
-        );
     }
 
     @Deprecated
@@ -134,8 +118,7 @@ public abstract class IexecHubAbstractService {
                 iexecHubAddress,
                 Duration.ofMillis(blockTime),
                 nbBlocksToWaitPerRetry,
-                maxRetries,
-                null
+                maxRetries
         );
     }
 
@@ -147,16 +130,13 @@ public abstract class IexecHubAbstractService {
      * @param blockTime block time as a duration
      * @param nbBlocksToWaitPerRetry nb block to wait per retry
      * @param maxRetries maximum reties
-     * @param iexecHubSmartContractValidator Smart contract connection
-     *                                           validation
      */
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress,
                                    Duration blockTime,
                                    int nbBlocksToWaitPerRetry,
-                                   int maxRetries,
-                                   IexecHubSmartContractValidator iexecHubSmartContractValidator) {
+                                   int maxRetries) {
         this.credentials = credentials;
         this.web3jAbstractService = web3jAbstractService;
         this.iexecHubAddress = iexecHubAddress;
@@ -171,7 +151,6 @@ public abstract class IexecHubAbstractService {
         }
         this.retryDelay = nbBlocksToWaitPerRetry * (int)this.blockTime.toMillis();
         this.maxRetries = maxRetries;
-        this.iexecHubSmartContractValidator = iexecHubSmartContractValidator;
 
         String hubAddress = getHubContract().getContractAddress();
         log.info("Abstract IexecHubService initialized (iexec proxy address) " +
@@ -181,7 +160,7 @@ public abstract class IexecHubAbstractService {
 
     @PostConstruct
     private void checkSmartContractConnection() {
-        if (!iexecHubSmartContractValidator.validate(getHubContract())) {
+        if (!new IexecHubSmartContractValidator().validate(getHubContract())) {
             throw new IllegalArgumentException(
                     "Can't validate iExec Smart Contract."
             );

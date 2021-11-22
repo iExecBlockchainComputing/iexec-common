@@ -23,17 +23,11 @@ import java.math.BigInteger;
 
 @Slf4j
 public class IexecHubSmartContractValidator {
-    private final Integer expectedFinalDeadlineRatio;
-
-    public IexecHubSmartContractValidator(Integer expectedFinalDeadlineRatio) {
-        this.expectedFinalDeadlineRatio = expectedFinalDeadlineRatio;
-    }
-
     public boolean validate(IexecHubContract contract) {
         final BigInteger finalDeadlineRatio;
         final String errorMessage =
                 "Something went wrong with the chain configuration. "
-                        + "Please check your configuration values.";
+                        + "Please check your configuration.";
         try {
             finalDeadlineRatio = contract
                     .final_deadline_ratio()
@@ -43,26 +37,14 @@ public class IexecHubSmartContractValidator {
             return false;
         }
 
-        if (expectedFinalDeadlineRatio == null) {
-            log.warn("Can't check final deadline ratio " +
-                    "as no expected value is provided." +
-                    "[actualValue: {}]", finalDeadlineRatio);
-            // We don't have any value to check against,
-            // so we assume the connection is enough.
-            return true;
-        }
-
         if (finalDeadlineRatio == null) {
-            log.error(errorMessage + " Can't retrieve final deadline ratio"
-            + " [expectedFinalDeadlineRatio:{}]", expectedFinalDeadlineRatio);
+            log.error(errorMessage + " Can't retrieve final deadline ratio");
             return false;
         }
 
-        if (!finalDeadlineRatio.equals(BigInteger.valueOf(expectedFinalDeadlineRatio))) {
-            log.error(errorMessage
-                            + " [expectedFinalDeadlineRatio:{}, actual: {}]",
-                    expectedFinalDeadlineRatio, finalDeadlineRatio
-            );
+        if (finalDeadlineRatio.compareTo(BigInteger.ZERO) <= 0) {
+            log.error(errorMessage + " Final deadline ratio should be positive"
+                    + " [finalDeadlineRatio: {}]", finalDeadlineRatio);
             return false;
         }
 
