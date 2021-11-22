@@ -34,6 +34,6 @@ public class PublicChainConfig {
     private Integer chainId;
     private boolean isSidechain;
     private String chainNodeUrl;
-    private String iExecHubContractAddress;
+    private String iexecHubContractAddress;
     private Duration blockTime;
 }
