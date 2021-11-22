@@ -159,10 +159,10 @@ public abstract class IexecHubAbstractService {
     }
 
     @PostConstruct
-    private void checkSmartContractConnection() {
+    private void validateRemoteIexecHubSmartContract() {
         if (!new IexecHubSmartContractValidator().validate(getHubContract())) {
             throw new IllegalArgumentException(
-                    "Can't validate iExec Smart Contract."
+                    "IexecHub smart contract validation failed."
             );
         }
     }

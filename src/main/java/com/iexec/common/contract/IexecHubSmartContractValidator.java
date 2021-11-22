@@ -26,14 +26,14 @@ public class IexecHubSmartContractValidator {
     public boolean validate(IexecHubContract contract) {
         final BigInteger finalDeadlineRatio;
         final String errorMessage =
-                "Something went wrong with the chain configuration. "
+                "Something went wrong with IexecHub smart contract configuration. "
                         + "Please check your configuration.";
         try {
             finalDeadlineRatio = contract
                     .final_deadline_ratio()
                     .send();
         } catch (Exception e) {
-            log.error(errorMessage);
+            log.error(errorMessage, e);
             return false;
         }
 
@@ -48,7 +48,7 @@ public class IexecHubSmartContractValidator {
             return false;
         }
 
-        log.info("Connection to iExec smart contract has been established.");
+        log.info("IexecHub smart contract is reachable.");
         return true;
     }
 }
