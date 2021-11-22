@@ -181,9 +181,11 @@ public abstract class IexecHubAbstractService {
 
     @PostConstruct
     private void checkSmartContractConnection() {
-        iexecSmartContractValidator.checkSmartContractConnection(
-                getHubContract()
-        );
+        if (!iexecSmartContractValidator.validate(getHubContract())) {
+            throw new IllegalArgumentException(
+                    "Can't validate iExec Smart Contract."
+            );
+        }
     }
 
 

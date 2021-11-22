@@ -29,7 +29,7 @@ public class IexecSmartContractValidator {
         this.expectedFinalDeadlineRatio = expectedFinalDeadlineRatio;
     }
 
-    public void checkSmartContractConnection(IexecHubContract contract) {
+    public boolean validate(IexecHubContract contract) {
         final BigInteger finalDeadlineRatio;
         final String errorMessage =
                 "Something went wrong with the chain configuration. "
@@ -39,14 +39,23 @@ public class IexecSmartContractValidator {
                     .final_deadline_ratio()
                     .send();
         } catch (Exception e) {
-            throw new IllegalArgumentException(errorMessage);
+            log.error(errorMessage);
+            return false;
         }
 
         if (expectedFinalDeadlineRatio == null) {
             log.warn("Can't check final deadline ratio " +
                     "as no expected value is provided." +
                     "[actualValue: {}]", finalDeadlineRatio);
-            return;
+            // We don't have any value to check against,
+            // so we assume the connection is enough.
+            return true;
+        }
+
+        if (finalDeadlineRatio == null) {
+            log.error(errorMessage + " Can't retrieve final deadline ratio"
+            + " [expectedFinalDeadlineRatio:{}]", expectedFinalDeadlineRatio);
+            return false;
         }
 
         if (!finalDeadlineRatio.equals(BigInteger.valueOf(expectedFinalDeadlineRatio))) {
@@ -54,9 +63,10 @@ public class IexecSmartContractValidator {
                             + " [expectedFinalDeadlineRatio:{}, actual: {}]",
                     expectedFinalDeadlineRatio, finalDeadlineRatio
             );
-            throw new IllegalArgumentException(errorMessage);
-        } else {
-            log.info("Connection to iExec smart contract has been established.");
+            return false;
         }
+
+        log.info("Connection to iExec smart contract has been established.");
+        return true;
     }
 }
