@@ -22,10 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigInteger;
 
 @Slf4j
-public class IexecSmartContractValidator {
+public class IexecHubSmartContractValidator {
     private final Integer expectedFinalDeadlineRatio;
 
-    public IexecSmartContractValidator(Integer expectedFinalDeadlineRatio) {
+    public IexecHubSmartContractValidator(Integer expectedFinalDeadlineRatio) {
         this.expectedFinalDeadlineRatio = expectedFinalDeadlineRatio;
     }
 
