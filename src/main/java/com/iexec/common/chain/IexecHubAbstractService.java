@@ -16,6 +16,7 @@
 
 package com.iexec.common.chain;
 
+import com.iexec.common.contract.IexecHubSmartContractValidator;
 import com.iexec.common.contract.generated.*;
 import com.iexec.common.task.TaskDescription;
 import com.iexec.common.utils.BytesUtils;
@@ -42,6 +43,7 @@ import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 
+import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -155,6 +157,16 @@ public abstract class IexecHubAbstractService {
                 "[hubAddress:{}]", hubAddress);
         setMaxNbOfPeriodsForConsensus();
     }
+
+    @PostConstruct
+    private void validateRemoteIexecHubSmartContract() {
+        if (!new IexecHubSmartContractValidator().validate(getHubContract())) {
+            throw new IllegalArgumentException(
+                    "IexecHub smart contract validation failed."
+            );
+        }
+    }
+
 
     private static int scoreToWeight(int workerScore) {
         return Math.max(workerScore / 3, 3) - 1;
