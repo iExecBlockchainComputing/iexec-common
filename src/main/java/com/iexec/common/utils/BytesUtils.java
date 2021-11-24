@@ -27,7 +27,7 @@ public class BytesUtils {
     // "0x0000000000000000000000000000000000000000"
     public final static String EMPTY_ADDRESS = BytesUtils.bytesToString(new byte[20]);
 
-    private static final int BYTES_32_SIZE = 32;
+    public static final int BYTES_32_SIZE = 32;
     //"0x0000000000000000000000000000000000000000000000000000000000000000"
     public final static String EMPTY_HEX_STRING_32 = BytesUtils.bytesToString(new byte[BYTES_32_SIZE]);
     @Deprecated

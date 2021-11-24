@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2021 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,23 @@
 
 package com.iexec.common.utils;
 
-import org.web3j.crypto.Credentials;
+import org.junit.jupiter.api.Test;
 
-public class CredentialsUtils {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    private CredentialsUtils() {
-        throw new UnsupportedOperationException();
+class CredentialsUtilsTest {
+
+    @Test
+    void shouldGetAddress() {
+        String privateKey = "0x0000000000000000000000000000000000000000000000000000000000000001";
+        assertEquals("0x7e5f4552091a69125d5dfcb7b8c2659029395bdf",
+                CredentialsUtils.getAddress(privateKey));
     }
 
-    public static String getAddress(String privateKey) {
-        if (BytesUtils.isNonZeroedHexStringWithPrefixAndProperBytesSize(privateKey,
-                BytesUtils.BYTES_32_SIZE)) {
-            return Credentials.create(privateKey).getAddress();
-        }
-        return "";
+    @Test
+    void shouldNotGetAddressSinceWrongLength() {
+        assertTrue(CredentialsUtils.getAddress("0x1").isEmpty());
     }
 
 }
