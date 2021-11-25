@@ -14,6 +14,7 @@ pipeline {
                     sh 'DOCKER_IO_USER=$DOCKER_IO_USER DOCKER_IO_PASSWORD=$DOCKER_IO_PASSWORD ./gradlew clean test sonarqube -Dsonar.projectKey=iexec-common -Dsonar.host.url=$address_sonar -Dsonar.login=$common_token --no-daemon -i'
                 }
                 junit 'build/test-results/**/*.xml'
+                jacoco()
             }
         }
 
@@ -32,7 +33,7 @@ pipeline {
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'nexus', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD']]) {
-                    sh './gradlew uploadArchives -PnexusUser=$NEXUS_USER -PnexusPassword=$NEXUS_PASSWORD --no-daemon'
+                    sh './gradlew publish -PnexusUser=$NEXUS_USER -PnexusPassword=$NEXUS_PASSWORD --no-daemon'
                 }
                 archiveArtifacts artifacts: 'build/libs/*.jar'
             }

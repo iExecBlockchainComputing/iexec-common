@@ -33,7 +33,6 @@ import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.IexecFileHelper;
 import com.iexec.common.utils.SgxUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.*;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
@@ -449,19 +448,13 @@ public class DockerClientInstanceTests {
     }
 
     /**
-     * Following test will only occur if dockerhubPassword envvar is present
+     * Try to pull a private image from iexechub, require valid login and permissions.
+     * The test will fail if Docker Hub credentials are missing or invalid.
      */
-    // TODO fix this test
     @Test
-    @Disabled
     public void shouldPullPrivateImage() throws Exception {
         String username = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
         String password = getEnvValue(DOCKERHUB_PASSWORD_ENV_NAME);
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            System.out.println("No dockerhub username or password found, will" +
-                    " abort shouldPullPrivateImage test");
-            return;
-        }
         // Get an authenticated docker client
         DockerClientInstance authClientInstance =
                 new DockerClientInstance(DockerClientInstance.DEFAULT_DOCKER_REGISTRY,
@@ -469,9 +462,9 @@ public class DockerClientInstanceTests {
         // clean to avoid previous tests collisions
         authClientInstance.removeImage(PRIVATE_IMAGE_NAME);
         // pull image and check
-        assertThat(dockerClientInstance.pullImage(PRIVATE_IMAGE_NAME)).isTrue();
+        assertThat(authClientInstance.pullImage(PRIVATE_IMAGE_NAME)).isTrue();
         // clean
-        dockerClientInstance.removeImage(PRIVATE_IMAGE_NAME);
+        authClientInstance.removeImage(PRIVATE_IMAGE_NAME);
     }
 
     private String getEnvValue(String envVarName) {
