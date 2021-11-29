@@ -16,8 +16,11 @@
 
 package com.iexec.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.web3j.crypto.Credentials;
 
+@Slf4j
 public class CredentialsUtils {
 
     private CredentialsUtils() {
@@ -29,6 +32,8 @@ public class CredentialsUtils {
                 BytesUtils.BYTES_32_SIZE)) {
             return Credentials.create(privateKey).getAddress();
         }
+        log.error("Cannot get address from private key [privateKeyLength:{}]",
+                StringUtils.isNotEmpty(privateKey) ? privateKey.length() : 0);
         return "";
     }
 
