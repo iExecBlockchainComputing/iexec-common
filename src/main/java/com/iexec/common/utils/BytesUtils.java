@@ -98,23 +98,25 @@ public class BytesUtils {
     }
 
     @Deprecated
-    public static boolean isBytes32(byte[] bytes){
+    public static boolean isBytes32(byte[] bytes) {
         return bytes != null && bytes.length == BYTES_32_SIZE;
     }
 
-    // this adds zeros to the left of the hex string to make it bytes32
+    /**
+     * Convert any hex string input into a bytes32 (full 32 length).
+     * Eventually pad with zeros on the left to ensure 32 length.
+     *
+     * @param hexString hexadecimal string
+     * @return bytes32
+     */
     public static byte[] stringToBytes32(String hexString) {
-        byte[] stringBytes = stringToBytes(hexString);
-        if (isBytes32(stringBytes)) return stringBytes;
-
-        String cleanString = Numeric.cleanHexPrefix(hexString);
-        String padded = padRight(cleanString, 64 - cleanString.length());
-        return Numeric.hexStringToByteArray(padded);
-    }
-
-    public static String padRight(String s, int n) {
-        if (n <= 0) return s;
-        String zeros = new String(new char[n]).replace('\0', '0');
-        return s + zeros;
+        if (!isHexStringWithPrefix(hexString)) {
+            return new byte[0];
+        }
+        if (isBytes32(hexString)) {
+            return Numeric.hexStringToByteArray(hexString);
+        }
+        return Numeric.hexStringToByteArray(Numeric.toHexStringWithPrefixZeroPadded(
+                Numeric.toBigInt(hexString), 64));
     }
 }

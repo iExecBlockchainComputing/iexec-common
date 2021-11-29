@@ -25,8 +25,8 @@ class CredentialsUtilsTest {
 
     @Test
     void shouldGetAddress() {
-        String privateKey = "0x0000000000000000000000000000000000000000000000000000000000000001";
-        assertEquals("0x7e5f4552091a69125d5dfcb7b8c2659029395bdf",
+        String privateKey = "0x0010000000000000000000000000000000000000000000000000000000000001";
+        assertEquals("0xae2e9def8b48ba414fc57614f4683f008572226c",
                 CredentialsUtils.getAddress(privateKey));
     }
 
