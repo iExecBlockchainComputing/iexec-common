@@ -32,6 +32,8 @@ public class BytesUtils {
     public final static String EMPTY_HEX_STRING_32 = BytesUtils.bytesToString(new byte[BYTES_32_SIZE]);
     @Deprecated
     public final static String EMPTY_HEXASTRING_64 = BytesUtils.bytesToString(new byte[BYTES_32_SIZE]);
+    private static final int BYTES_32_HEX_STRING_SIZE = BYTES_32_SIZE * 2; // 64
+    private static final int BYTES_32_HEX_STRING_WITH_PREFIX_SIZE = 2 + BYTES_32_HEX_STRING_SIZE;// 2 + 64
     private static final String HEX_REGEX = "\\p{XDigit}+$";
     private static final Pattern HEX_PATTERN = Pattern.compile("(?i)^(0x)?" + HEX_REGEX);
     private static final Pattern HEX_WITH_PREFIX_PATTERN = Pattern.compile("^0x" + HEX_REGEX);
@@ -102,6 +104,11 @@ public class BytesUtils {
         return bytes != null && bytes.length == BYTES_32_SIZE;
     }
 
+    @Deprecated
+    public static byte[] stringToBytes32(String hexString) {
+        return hexStringToBytes32(hexString);
+    }
+
     /**
      * Convert any hex string input into a bytes32 (full 32 length).
      * Eventually pad with zeros on the left to ensure 32 length.
@@ -109,9 +116,12 @@ public class BytesUtils {
      * @param hexString hexadecimal string
      * @return bytes32
      */
-    public static byte[] stringToBytes32(String hexString) {
-        if (!isHexStringWithPrefix(hexString)) {
-            return new byte[0];
+    public static byte[] hexStringToBytes32(String hexString) {
+        if (!isHexStringWithPrefix(hexString)
+                || hexString.length() > BYTES_32_HEX_STRING_WITH_PREFIX_SIZE) {
+            throw new IllegalArgumentException(String.format("Input string " +
+                    "should be an hexadecimal string with 0x prefix and 66 " +
+                    "length [input:%s]", hexString));
         }
         if (isBytes32(hexString)) {
             return Numeric.hexStringToByteArray(hexString);

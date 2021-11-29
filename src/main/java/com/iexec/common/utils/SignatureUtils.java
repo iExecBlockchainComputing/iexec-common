@@ -125,7 +125,7 @@ public class SignatureUtils {
      * web3j signMessageHash(..) returns Sign.SignatureData [built on EthereumMessageHash]
      * */
     public static Sign.SignatureData signMessageHashAndGetSignatureData(String messageHash, String privateKey) {
-        ECKeyPair ecKeyPair = ECKeyPair.create(BytesUtils.stringToBytes32(privateKey));
+        ECKeyPair ecKeyPair = ECKeyPair.create(BytesUtils.hexStringToBytes32(privateKey));
         return signMessageHash(messageHash, ecKeyPair);
     }
 

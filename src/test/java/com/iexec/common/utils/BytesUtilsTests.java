@@ -160,7 +160,7 @@ public class BytesUtilsTests {
 
     @Test
     void shouldConvertHexStringToBytes32() {
-        byte[] bytes32 = stringToBytes32(hexaString);
+        byte[] bytes32 = hexStringToBytes32(hexaString);
         assertEquals(32, bytes32.length);
         assertArrayEquals(this.bytes, bytes32);
         assertEquals(hexaString, bytesToString(bytes32));
@@ -169,19 +169,21 @@ public class BytesUtilsTests {
     @Test
     void shouldConvertShortHexStringToFullBytes32() {
         String shortHexString = "0x916a7d68e0ed8714fde137ed60de0e586e75467ae6ca0b090950f772ca9ac8"; //short version for 0x0091[...]c8
-        byte[] bytes32 = stringToBytes32(shortHexString);
+        byte[] bytes32 = hexStringToBytes32(shortHexString);
         assertEquals(32, bytes32.length);
         assertArrayEquals(this.bytes, bytes32);
         assertEquals(hexaString, bytesToString(bytes32)); //0x91[...]c8 becomes 0x0091[...]c8
     }
 
     @Test
-    void shouldConvertNullHexStringToEmptyBytes32() {
-        String hexString = null;
-        byte[] bytes32 = stringToBytes32(hexString);
-        assertEquals(0, bytes32.length);
-        assertArrayEquals(new byte[0], bytes32);
-        assertEquals("0x", bytesToString(bytes32));
+    void shouldThrowOnConvertHexStringToBytes32SinceNullInput() {
+        assertThrows(IllegalArgumentException.class, () -> hexStringToBytes32(null));
+    }
+
+    @Test
+    void shouldThrowOnConvertHexStringToBytes32SinceTooLong() {
+        String longHexString = "0x10010000000000000000000000000000000000000000000000000000000000001"; //2 + 1 + 64
+        assertThrows(IllegalArgumentException.class, () -> hexStringToBytes32(longHexString));
     }
 
 }
