@@ -104,11 +104,6 @@ public class BytesUtils {
         return bytes != null && bytes.length == BYTES_32_SIZE;
     }
 
-    @Deprecated
-    public static byte[] stringToBytes32(String hexString) {
-        return hexStringToBytes32(hexString);
-    }
-
     /**
      * Convert any hex string input into a bytes32 (full 32 length).
      * Eventually pad with zeros on the left to ensure 32 length.
