@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BytesUtilsTests {
 
-    private String hexaString = "0x9e916a7d68e0ed8714fde137ed60de0e586e75467ae6ca0b090950f772ca9ac8";
-    private byte[] bytes = new byte[]{-98, -111, 106, 125, 104, -32, -19, -121, 20, -3, -31, 55, -19, 96, -34, 14, 88, 110,
+    private String hexaString = "0x00916a7d68e0ed8714fde137ed60de0e586e75467ae6ca0b090950f772ca9ac8";
+    private byte[] bytes = new byte[]{0, -111, 106, 125, 104, -32, -19, -121, 20, -3, -31, 55, -19, 96, -34, 14, 88, 110,
             117, 70, 122, -26, -54, 11, 9, 9, 80, -9, 114, -54, -102, -56};
 
     @Test
@@ -159,21 +159,31 @@ public class BytesUtilsTests {
     }
 
     @Test
-    public void shouldReturnSameStringSinceAlreadyBytes32() {
-        byte[] bytes32 = stringToBytes32(hexaString);
-        assertEquals(bytes32.length, 32);
-        assertArrayEquals(bytes32, bytes);
-        assertEquals(bytesToString(bytes32), hexaString);
+    void shouldConvertHexStringToBytes32() {
+        byte[] bytes32 = hexStringToBytes32(hexaString);
+        assertEquals(32, bytes32.length);
+        assertArrayEquals(this.bytes, bytes32);
+        assertEquals(hexaString, bytesToString(bytes32));
     }
 
     @Test
-    public void shouldPadStringToBeBytes32() {
-        String notBytes32String = "0xabc";
-        String bytes32String = "0xabc0000000000000000000000000000000000000000000000000000000000000";
-
-        byte[] returnedBytes = stringToBytes32(notBytes32String);
-
-        assertEquals(returnedBytes.length, 32);
-        assertEquals(bytesToString(returnedBytes), bytes32String);
+    void shouldConvertShortHexStringToFullBytes32() {
+        String shortHexString = "0x916a7d68e0ed8714fde137ed60de0e586e75467ae6ca0b090950f772ca9ac8"; //short version for 0x0091[...]c8
+        byte[] bytes32 = hexStringToBytes32(shortHexString);
+        assertEquals(32, bytes32.length);
+        assertArrayEquals(this.bytes, bytes32);
+        assertEquals(hexaString, bytesToString(bytes32)); //0x91[...]c8 becomes 0x0091[...]c8
     }
+
+    @Test
+    void shouldThrowOnConvertHexStringToBytes32SinceNullInput() {
+        assertThrows(IllegalArgumentException.class, () -> hexStringToBytes32(null));
+    }
+
+    @Test
+    void shouldThrowOnConvertHexStringToBytes32SinceTooLong() {
+        String longHexString = "0x10010000000000000000000000000000000000000000000000000000000000001"; //2 + 1 + 64
+        assertThrows(IllegalArgumentException.class, () -> hexStringToBytes32(longHexString));
+    }
+
 }

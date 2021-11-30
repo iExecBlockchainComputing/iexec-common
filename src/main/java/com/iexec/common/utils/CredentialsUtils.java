@@ -16,10 +16,11 @@
 
 package com.iexec.common.utils;
 
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Keys;
-import org.web3j.utils.Numeric;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.web3j.crypto.Credentials;
 
+@Slf4j
 public class CredentialsUtils {
 
     private CredentialsUtils() {
@@ -27,8 +28,13 @@ public class CredentialsUtils {
     }
 
     public static String getAddress(String privateKey) {
-        ECKeyPair ecKeyPair = ECKeyPair.create(BytesUtils.stringToBytes32(privateKey));
-        return Numeric.prependHexPrefix(Keys.getAddress(ecKeyPair));
+        if (BytesUtils.isNonZeroedHexStringWithPrefixAndProperBytesSize(privateKey,
+                BytesUtils.BYTES_32_SIZE)) {
+            return Credentials.create(privateKey).getAddress();
+        }
+        log.error("Cannot get address from private key [privateKeyLength:{}]",
+                StringUtils.isNotEmpty(privateKey) ? privateKey.length() : 0);
+        return "";
     }
 
 }

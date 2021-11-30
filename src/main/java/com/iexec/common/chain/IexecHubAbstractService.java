@@ -481,7 +481,7 @@ public abstract class IexecHubAbstractService {
         RemoteCall<TransactionReceipt> createAppCall = appRegistry
                 .createApp(owner, name, type,
                         multiAddress.getBytes(StandardCharsets.UTF_8),
-                        BytesUtils.stringToBytes32(checksum),
+                        BytesUtils.hexStringToBytes32(checksum),
                         mrEnclave.getBytes(StandardCharsets.UTF_8));
 
         TransactionReceipt createAppReceipt;
@@ -578,7 +578,7 @@ public abstract class IexecHubAbstractService {
 
         RemoteFunctionCall<String> call = appRegistry.predictApp(owner, name, type,
                 multiAddress.getBytes(StandardCharsets.UTF_8),
-                BytesUtils.stringToBytes32(checksum),
+                BytesUtils.hexStringToBytes32(checksum),
                 mrEnclave.getBytes(StandardCharsets.UTF_8));
         String address = "";
         try {
@@ -674,7 +674,7 @@ public abstract class IexecHubAbstractService {
                         owner,
                         name,
                         multiAddress.getBytes(StandardCharsets.UTF_8),
-                        BytesUtils.stringToBytes32(checksum));
+                        BytesUtils.hexStringToBytes32(checksum));
 
         TransactionReceipt createDatasetReceipt;
         try {
@@ -769,7 +769,7 @@ public abstract class IexecHubAbstractService {
                 .predictDataset(owner,
                         name,
                         multiAddress.getBytes(StandardCharsets.UTF_8),
-                        BytesUtils.stringToBytes32(checksum));
+                        BytesUtils.hexStringToBytes32(checksum));
         String address = "";
         try {
             address = call.send();
