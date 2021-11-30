@@ -121,7 +121,7 @@ public class BytesUtils {
                 || hexString.length() > BYTES_32_HEX_STRING_WITH_PREFIX_SIZE) {
             throw new IllegalArgumentException(String.format("Input string " +
                     "should be an hexadecimal string with 0x prefix and 66 " +
-                    "length [input:%s]", hexString));
+                    "as maximum length [input:%s]", hexString));
         }
         if (isBytes32(hexString)) {
             return Numeric.hexStringToByteArray(hexString);
