@@ -127,6 +127,6 @@ public class BytesUtils {
             return Numeric.hexStringToByteArray(hexString);
         }
         return Numeric.hexStringToByteArray(Numeric.toHexStringWithPrefixZeroPadded(
-                Numeric.toBigInt(hexString), 64));
+                Numeric.toBigInt(hexString), BYTES_32_HEX_STRING_SIZE));
     }
 }
