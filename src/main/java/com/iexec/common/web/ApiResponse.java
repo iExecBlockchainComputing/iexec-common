@@ -30,8 +30,4 @@ import java.util.List;
 public class ApiResponse<T> {
     private final List<String> errors;
     private final T data;
-
-    public T getData() {
-        return data;
-    }
 }
