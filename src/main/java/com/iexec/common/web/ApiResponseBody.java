@@ -17,17 +17,13 @@
 package com.iexec.common.web;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
+@Data
 @Builder
-@EqualsAndHashCode
-@ToString
-public class ApiResponse<T> {
+public class ApiResponseBody<T> {
     private final List<String> errors;
     private final T data;
 }
