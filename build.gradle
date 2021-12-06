@@ -75,7 +75,7 @@ ext {
     isMasterBranch = gitBranch == "master"
     isDevelopBranch = gitBranch == "develop"
     canUploadArchives = isMasterBranch || isDevelopBranch
-    isSnapshotVersion = project.version.contains("NEXT")
+    isSnapshotVersion = project.version.endsWith('-SNAPSHOT')
 }
 
 test {
