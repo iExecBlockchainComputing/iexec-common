@@ -71,10 +71,6 @@ dependencies {
 ext {
     // ./gradlew build -Pdev
     isDev = project.hasProperty('dev')
-    gitBranch = 'git name-rev --name-only HEAD'.execute().text.trim()
-    isMasterBranch = gitBranch == "master"
-    isDevelopBranch = gitBranch == "develop"
-    canUploadArchives = isMasterBranch || isDevelopBranch
 }
 
 test {
@@ -140,5 +136,3 @@ publishing {
         }
     }
 }
-
-publish.enabled = canUploadArchives
