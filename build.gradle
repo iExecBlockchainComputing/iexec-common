@@ -75,7 +75,6 @@ ext {
     isMasterBranch = gitBranch == "master"
     isDevelopBranch = gitBranch == "develop"
     canUploadArchives = isMasterBranch || isDevelopBranch
-    isSnapshotVersion = project.version.endsWith('-SNAPSHOT')
 }
 
 test {
@@ -125,15 +124,6 @@ shadowJar {
 }
 build.dependsOn(shadowJar)
 
-project.ext.getNexusMaven = {
-    def nexusMavenBase = "https://nexus.iex.ec/repository"
-    if (isSnapshotVersion) {
-        return nexusMavenBase + "/maven-snapshots/"
-    } else {
-        return nexusMavenBase + "/maven-releases/"
-    }
-}
-
 publishing {
     publications {
         maven(MavenPublication) {
@@ -143,10 +133,10 @@ publishing {
     repositories {
         maven {
             credentials {
-                username nexusUser
-                password nexusPassword
+                username project.hasProperty('nexusUser') ? nexusUser : ''
+                password project.hasProperty('nexusPassword') ? nexusPassword : ''
             }
-            url = getNexusMaven
+            url = project.hasProperty('nexusUrl') ? nexusUrl : ''
         }
     }
 }
