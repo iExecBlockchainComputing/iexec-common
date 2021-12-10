@@ -167,7 +167,6 @@ public class DockerClientInstanceTests {
      * This test is temporarily disabled because of this error:
      * toomanyrequests: too many failed login attempts for
      * username or IP address.
-     * It runs only on wednesday night.
      */
     @Test
     @Disabled("toomanyrequests: too many failed login attempts for username or IP address")
