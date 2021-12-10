@@ -163,7 +163,14 @@ public class DockerClientInstanceTests {
                 .isEqualTo(dockerIoPassword);
     }
 
+    /**
+     * This test is temporarily disabled because of this error:
+     * toomanyrequests: too many failed login attempts for
+     * username or IP address.
+     * It runs only on wednesday night.
+     */
     @Test
+    @EnabledOnlyOnWednesdayNight // TODO clean this
     public void shouldFailtoAuthenticateClientToRegistry() {
         DockerException e = assertThrows(DockerException.class, () -> DockerClientFactory
                 .getDockerClientInstance(DockerClientInstance.DEFAULT_DOCKER_REGISTRY, "badUsername", "badPassword"));
