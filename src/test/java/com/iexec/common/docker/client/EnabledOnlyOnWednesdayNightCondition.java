@@ -34,11 +34,4 @@ public class EnabledOnlyOnWednesdayNightCondition implements ExecutionCondition 
         }
         return ConditionEvaluationResult.enabled("It's wednesday!");
     }
-
-    public static void main(String[] args) {
-        System.out.println(LocalDateTime.now().getDayOfWeek().equals(DayOfWeek.WEDNESDAY) // wednesday == 3
-        && LocalDateTime.now().getHour() >= 18);
-        System.out.println();
-    }
-    
 }
