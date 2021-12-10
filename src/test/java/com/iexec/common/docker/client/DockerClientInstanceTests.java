@@ -170,7 +170,7 @@ public class DockerClientInstanceTests {
      * It runs only on wednesday night.
      */
     @Test
-    @EnabledOnlyOnWednesdayNight // TODO clean this
+    @Disabled("toomanyrequests: too many failed login attempts for username or IP address")
     public void shouldFailtoAuthenticateClientToRegistry() {
         DockerException e = assertThrows(DockerException.class, () -> DockerClientFactory
                 .getDockerClientInstance(DockerClientInstance.DEFAULT_DOCKER_REGISTRY, "badUsername", "badPassword"));
