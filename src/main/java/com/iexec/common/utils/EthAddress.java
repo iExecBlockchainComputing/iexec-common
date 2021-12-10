@@ -24,9 +24,8 @@ public class EthAddress extends org.web3j.abi.datatypes.Address {
      * 
      * @param address in hex
      * @return true if address is valid, false otherwise
-     * @see https://github.com/ChainSafe/web3.js/blob/
-     * 5d027191c5cb7ffbcd44083528bdab19b4e14744/packages/web3-utils/src/
-     * utils.js#L88
+     * @see <a href="https://github.com/ChainSafe/web3.js/blob/5d027191c5cb7ffbcd44083528bdab19b4e14744/packages/web3-utils/src/utils.js#L88">
+     * web3.js isAddress implementation</a>
      */
     public static boolean validate(String address) {
         // check address is not empty and contains the valid

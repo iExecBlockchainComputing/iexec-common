@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
  * To avoid confusion with exit codes of the chroot standard
  * (followed also by docker), we use exit codes between
  * 64 and 113 which is also conform with the C/C++ standard.
- * @see https://tldp.org/LDP/abs/html/exitcodes.html
- * @see https://docs.docker.com/engine/reference/run/#exit-status
+ * @see <a href="https://tldp.org/LDP/abs/html/exitcodes.html">Reserved Exit Codes</a>
+ * @see <a href="https://docs.docker.com/engine/reference/run/#exit-status">Docker run Exit Status</a>
  */
 public enum PreComputeExitCode {
 
