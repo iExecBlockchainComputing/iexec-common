@@ -23,6 +23,8 @@ import java.lang.annotation.*;
 /**
  * Add this annotation to a test method to run it only if triggered
  * on wednesday after 6pm.
+ * Wednesday was chosen to run the test so we are not blocked at the
+ * beginning of the week or just before the weekend.
  */
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
