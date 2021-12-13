@@ -73,6 +73,11 @@ ext {
     isDev = project.hasProperty('dev')
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 test {
     useJUnitPlatform {
         if (isDev) {
@@ -101,13 +106,6 @@ jacocoTestReport {
 }
 tasks.test.finalizedBy    tasks.jacocoTestReport
 tasks.sonarqube.dependsOn tasks.jacocoTestReport
-
-jar {
-    // include source code in the jar
-    from sourceSets.main.allSource
-    // avoid duplicate application.properties import from jar and sources
-    duplicatesStrategy = 'exclude'
-}
 
 // required if we want to embed web3j dependency inside
 shadowJar {

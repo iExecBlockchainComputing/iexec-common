@@ -149,7 +149,7 @@ public class CipherUtils {
      * @return encrypted data prepended with the IV.
      * @throws GeneralSecurityException
      * 
-     * @see https://stackoverflow.com/a/34004582 for large files
+     * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
     public static byte[] aesEncrypt(byte[] plainData, byte[] base64Key)
             throws GeneralSecurityException, IOException {
@@ -174,7 +174,7 @@ public class CipherUtils {
      * @return Encrypted data
      * @throws GeneralSecurityException
      * 
-     * @see https://stackoverflow.com/a/34004582 for large files
+     * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
     public static byte[] aesEncrypt(
             @Nonnull byte[] plainData, 
@@ -207,7 +207,7 @@ public class CipherUtils {
      * @throws IllegalArgumentException if the data's length
      * is less than 16 bytes.
      * 
-     * @see https://stackoverflow.com/a/34004582 for large files
+     * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
     public static byte[] aesDecrypt(byte[] ivAndEncryptedData, byte[] base64Key)
             throws GeneralSecurityException {
