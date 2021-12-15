@@ -25,12 +25,18 @@ import lombok.NoArgsConstructor;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @since 5.9.1
+ * @deprecated Such {@link Eip712Challenge} class should extend
+ * {@link com.iexec.common.chain.eip712.EIP712Entity}.
+ * Upgrade (and move) this class to get this behaviour (PR TODO)
+ * or build your own implementation.
+ */
+@Deprecated(forRemoval = true)
 @Data
 @Getter
 @NoArgsConstructor
 public class Eip712Challenge {
-
-    //TODO Use generic tooling @com.iexec.common.chain.eip712 for Eip712Challenge
 
     private static final String DOMAIN_NAME = "iExec Result Repository";
     private static final String DOMAIN_VERSION = "1";
