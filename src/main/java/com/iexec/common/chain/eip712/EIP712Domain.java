@@ -41,7 +41,7 @@ public class EIP712Domain {
     private List<TypeParam> types;
 
     public EIP712Domain() {
-        this("", "", 0L, "");
+        this("", "", 0L, null);
     }
 
     public EIP712Domain(long chainId, String verifyingContract) {
