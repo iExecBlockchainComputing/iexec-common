@@ -62,7 +62,7 @@ public class Eip712Challenge {
 
         Types types = new Types(domainTypeParams, messageTypeParams);
 
-        EIP712Domain domain = new EIP712Domain(domainName, domainVersion, chainId, "");
+        EIP712Domain domain = new EIP712Domain(domainName, domainVersion, chainId, null);
 
         Message message = Message.builder()
                 .challenge(challenge)
