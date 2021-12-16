@@ -16,6 +16,8 @@
 
 package com.iexec.common.result.eip712;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +30,21 @@ public class Eip712ChallengeUtilsTests {
     @BeforeEach
     public void init() {
         eip712Challenge = new Eip712Challenge("0x10ff103511e3e233033628dbd641136d4670c16c33a4ce11950ab316ef18bce9", 17);
+    }
+
+    @Test
+    void shouldGetChallengeAsJson() throws JsonProcessingException {
+        assertEquals("{" +
+                "\"types\":{\"EIP712Domain\":[" +
+                    "{\"name\":\"name\",\"type\":\"string\"}," +
+                    "{\"name\":\"version\",\"type\":\"string\"}," +
+                    "{\"name\":\"chainId\",\"type\":\"uint256\"}" +
+                    "]," +
+                "\"Challenge\":[{\"name\":\"challenge\",\"type\":\"string\"}]}," +
+                "\"domain\":{\"name\":\"iExec Result Repository\",\"version\":\"1\",\"chainId\":17}," +
+                "\"primaryType\":\"Challenge\"," +
+                "\"message\":{\"challenge\":\"0x10ff103511e3e233033628dbd641136d4670c16c33a4ce11950ab316ef18bce9\"}" +
+                "}", new ObjectMapper().writeValueAsString(eip712Challenge));
     }
 
     @Test
