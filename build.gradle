@@ -60,6 +60,9 @@ dependencies {
     // failsafe
     implementation 'net.jodah:failsafe:2.4.4'
 
+    // expiring map
+    implementation 'net.jodah:expiringmap:0.5.8'
+
     // test
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
