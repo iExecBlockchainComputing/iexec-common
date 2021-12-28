@@ -24,7 +24,7 @@ import java.util.Map;
 
 public abstract class DockerClientFactory {
 
-    private static Map<String, DockerClientInstance> clientsMap = new HashMap<>();
+    private static final Map<String, DockerClientInstance> clientsMap = new HashMap<>();
 
     /**
      * Get an unauthenticated Docker client instance connected to the default Docker
@@ -66,7 +66,7 @@ public abstract class DockerClientFactory {
      * @throws DockerException if the authentication fails
      */
     public static synchronized DockerClientInstance getDockerClientInstance(
-            String registryUrl, String username, String password) throws Exception {
+            String registryUrl, String username, String password) {
         return getOrCreateInstance(registryUrl, username, password);
     }
 
@@ -78,7 +78,7 @@ public abstract class DockerClientFactory {
     }
 
     private static DockerClientInstance getOrCreateInstance(
-            String registryUrl, String username, String password) throws Exception {
+            String registryUrl, String username, String password) {
         String id = getClientIdentifier(registryUrl, username);
         if (clientsMap.get(id) == null) {
             boolean shouldAuthenticate = StringUtils.isNotBlank(username)

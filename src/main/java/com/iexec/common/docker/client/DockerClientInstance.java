@@ -57,14 +57,11 @@ public class DockerClientInstance {
     public static final String RESTARTING_STATUS = "restarting";
     public static final String EXITED_STATUS = "exited";
 
-    private DockerClient client;
+    private final DockerClient client;
 
     /**
      * Create a new unauthenticated Docker client instance with the default Docker registry
      * {@link DockerClientInstance#DEFAULT_DOCKER_REGISTRY}.
-     * 
-     * @param registryAddress
-     * @throws Exception if registry address is blank
      */
     DockerClientInstance() {
         this.client = createClient(DEFAULT_DOCKER_REGISTRY, "", "");
@@ -92,10 +89,8 @@ public class DockerClientInstance {
      *                          docker.io, nexus.iex.ec}
      * @param username
      * @param password
-     * @throws Exception if one of the arguments is blank or authentication failure
      */
-    DockerClientInstance(String registryAddress, String username, String password)
-            throws Exception {
+    DockerClientInstance(String registryAddress, String username, String password) {
         if (StringUtils.isBlank(registryAddress)) {
             throw new IllegalArgumentException("Docker registry address must not be blank");
         }
