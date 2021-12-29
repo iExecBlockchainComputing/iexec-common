@@ -87,4 +87,22 @@ public class DockerRunRequestTests {
         assertThat(request.getDevices().get(2).getPathOnHost())
                 .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
     }
+
+    @Test
+    void shouldReturnEmptyDeviceList() {
+        DockerRunRequest request = DockerRunRequest.builder()
+                .containerName("containerName")
+                .devices(new ArrayList<>())
+                .build();
+        assertThat(request.getDevices()).isNotNull();
+        assertThat(request.getDevices()).isEmpty();
+    }
+
+    @Test
+    void shouldReturnNullDeviceList() {
+        DockerRunRequest request = DockerRunRequest.builder().build();
+        assertThat(request.isSgx()).isFalse();
+        assertThat(request.getDevices()).isNull();
+    }
+
 }
