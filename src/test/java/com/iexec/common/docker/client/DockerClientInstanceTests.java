@@ -64,16 +64,16 @@ public class DockerClientInstanceTests {
     private static final String BLABLA_LATEST = "blabla:latest";
     private static final String CMD = "cmd";
     private static final List<String> ENV = List.of("FOO=bar");
-    private final static String DOCKERHUB_USERNAME_ENV_NAME = "DOCKER_IO_USER";
-    private final static String DOCKERHUB_PASSWORD_ENV_NAME = "DOCKER_IO_PASSWORD";
-    private final static String PRIVATE_IMAGE_NAME = "iexechub/private-image:alpine-3.13";
-    private final static String DOCKER_NETWORK = "dockerTestsNetwork";
+    private static final String DOCKERHUB_USERNAME_ENV_NAME = "DOCKER_IO_USER";
+    private static final String DOCKERHUB_PASSWORD_ENV_NAME = "DOCKER_IO_PASSWORD";
+    private static final String PRIVATE_IMAGE_NAME = "iexechub/private-image:alpine-3.13";
+    private static final String DOCKER_NETWORK = "dockerTestsNetwork";
     private static final String DEVICE_PATH_IN_CONTAINER = "/dev/some-device-in-container";
     private static final String DEVICE_PATH_ON_HOST = "/dev/some-device-on-host";
     private static final String SLASH_TMP = "/tmp";
 
-    private static List<String> usedRandomNames = new ArrayList<>();
-    private static List<String> usedImages = List.of(
+    private static final List<String> usedRandomNames = new ArrayList<>();
+    private static final List<String> usedImages = List.of(
             DOCKER_IO_CLASSIC_IMAGE, SHORT_CLASSIC_IMAGE, DOCKER_IO_LIBRARY_IMAGE,
             SHORT_LIBRARY_IMAGE, VERY_SHORT_LIBRARY_IMAGE, DOCKER_COM_CLASSIC_IMAGE,
             ALPINE_LATEST);
@@ -102,12 +102,12 @@ public class DockerClientInstanceTests {
         System.out.println("Cleaning after all tests");
         DockerClientInstance instance = new DockerClientInstance();
         // clean containers
-        usedRandomNames.forEach(name -> instance.stopAndRemoveContainer(name));
+        usedRandomNames.forEach(instance::stopAndRemoveContainer);
         // clean networks
-        usedRandomNames.forEach(name -> instance.removeNetwork(name));
+        usedRandomNames.forEach(instance::removeNetwork);
         instance.removeNetwork(DOCKER_NETWORK);
         // clean docker images
-        usedImages.forEach(imageName -> instance.removeImage(imageName));
+        usedImages.forEach(instance::removeImage);
     }
 
     public DockerRunRequest getDefaultDockerRunRequest(boolean isSgx) {
@@ -170,7 +170,7 @@ public class DockerClientInstanceTests {
      */
     @Test
     @Disabled("toomanyrequests: too many failed login attempts for username or IP address")
-    public void shouldFailtoAuthenticateClientToRegistry() {
+    public void shouldFailToAuthenticateClientToRegistry() {
         DockerException e = assertThrows(DockerException.class, () -> DockerClientFactory
                 .getDockerClientInstance(DockerClientInstance.DEFAULT_DOCKER_REGISTRY, "badUsername", "badPassword"));
         assertThat(e.getHttpStatus()).isEqualTo(401);
@@ -334,13 +334,13 @@ public class DockerClientInstanceTests {
     }
 
     @Test
-    public void shouldNotFineNetworkPresentSinceEmptyName() {
+    public void shouldNotFindNetworkPresentSinceEmptyName() {
         assertThat(dockerClientInstance.isNetworkPresent("")).isFalse();
         
     }
 
     @Test
-    public void shouldNotFineNetworkPresentSinceDockerCmdException() {
+    public void shouldNotFindNetworkPresentSinceDockerCmdException() {
         useCorruptedDockerClient();
         assertThat(dockerClientInstance.isNetworkPresent(getRandomString())).isFalse();
         
@@ -458,7 +458,7 @@ public class DockerClientInstanceTests {
      * The test will fail if Docker Hub credentials are missing or invalid.
      */
     @Test
-    public void shouldPullPrivateImage() throws Exception {
+    public void shouldPullPrivateImage() {
         String username = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
         String password = getEnvValue(DOCKERHUB_PASSWORD_ENV_NAME);
         // Get an authenticated docker client
@@ -966,14 +966,14 @@ public class DockerClientInstanceTests {
     }
 
     @Test
-    public void shouldNotbuildHostConfigFromRunRequestSinceNoRequest() {
+    public void shouldNotBuildHostConfigFromRunRequestSinceNoRequest() {
         HostConfig hostConfig =
                 dockerClientInstance.buildHostConfigFromRunRequest(null);
         assertThat(hostConfig).isNull();
     }
 
     @Test
-    public void shouldbuildCreateContainerCmdFromRunRequest() {
+    public void shouldBuildCreateContainerCmdFromRunRequest() {
         CreateContainerCmd createContainerCmd = dockerClientInstance.getClient()
                 .createContainerCmd("repo/image:tag");
         DockerRunRequest request = getDefaultDockerRunRequest(false);
@@ -996,7 +996,7 @@ public class DockerClientInstanceTests {
     }
 
     @Test
-    public void shouldbuildCreateContainerCmdFromRunRequestWithFullParams() {
+    public void shouldBuildCreateContainerCmdFromRunRequestWithFullParams() {
         CreateContainerCmd createContainerCmd = dockerClientInstance.getClient()
                 .createContainerCmd("repo/image:tag");
         DockerRunRequest request = getDefaultDockerRunRequest(false);
@@ -1022,7 +1022,7 @@ public class DockerClientInstanceTests {
     }
 
     @Test
-    public void shouldNotbuildCreateContainerCmdFromRunRequestSinceNoRequest() {
+    public void shouldNotBuildCreateContainerCmdFromRunRequestSinceNoRequest() {
         Optional<CreateContainerCmd> actualCreateContainerCmd =
                 dockerClientInstance.buildCreateContainerCmdFromRunRequest(
                         getDefaultDockerRunRequest(false),
@@ -1031,7 +1031,7 @@ public class DockerClientInstanceTests {
     }
 
     @Test
-    public void shouldNotbuildCreateContainerCmdFromRunRequestSinceNoCreateContainerCmd() {
+    public void shouldNotBuildCreateContainerCmdFromRunRequestSinceNoCreateContainerCmd() {
         Optional<CreateContainerCmd> actualCreateContainerCmd =
                 dockerClientInstance.buildCreateContainerCmdFromRunRequest(
                         null,
@@ -1481,6 +1481,7 @@ public class DockerClientInstanceTests {
 
         Optional<DockerLogs> logs = 
                 dockerClientInstance.exec(containerName, "sh", "-c", cmd);
+        assertThat(logs.isPresent()).isTrue();
         assertThat(logs.get().getStdout().trim()).isEqualTo(msg);
         // clean
         dockerClientInstance.stopAndRemoveContainer(containerName);
