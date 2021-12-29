@@ -56,6 +56,10 @@ public class DockerRunRequest {
         return ArgsUtils.stringArgsToArrayArgs(this.cmd);
     }
 
+    public List<Device> getDevices() {
+        return this.devices == null ? List.of() : new ArrayList<>(devices);
+    }
+
     // override builder's isSgx() & devices() methods
     public static class DockerRunRequestBuilder { 
         private boolean isSgx;

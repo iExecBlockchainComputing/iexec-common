@@ -89,7 +89,7 @@ public class DockerRunRequestTests {
     }
 
     @Test
-    void shouldReturnEmptyDeviceList() {
+    void shouldReturnEmptyDeviceListWhenEmptyDeviceList() {
         DockerRunRequest request = DockerRunRequest.builder()
                 .containerName("containerName")
                 .devices(new ArrayList<>())
@@ -99,10 +99,11 @@ public class DockerRunRequestTests {
     }
 
     @Test
-    void shouldReturnNullDeviceList() {
+    void shouldReturnEmptyDeviceListWhenNoDevices() {
         DockerRunRequest request = DockerRunRequest.builder().build();
         assertThat(request.isSgx()).isFalse();
-        assertThat(request.getDevices()).isNull();
+        assertThat(request.getDevices()).isNotNull();
+        assertThat(request.getDevices()).isEmpty();
     }
 
 }

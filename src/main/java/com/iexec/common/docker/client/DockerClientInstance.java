@@ -554,12 +554,8 @@ public class DockerClientInstance {
             hostConfig.withBinds(Binds.fromPrimitive(
                     dockerRunRequest.getBinds().toArray(new String[0])));
         }
-        try {
-            List<Device> devices = new ArrayList<>(dockerRunRequest.getDevices());
-            hostConfig.withDevices(devices);
-        } catch (NullPointerException e) {
-            log.info("No devices defined in docker run request.");
-        }
+        List<Device> devices = dockerRunRequest.getDevices();
+        hostConfig.withDevices(devices);
         return hostConfig;
     }
 

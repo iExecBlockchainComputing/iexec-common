@@ -921,14 +921,13 @@ public class DockerClientInstanceTests {
                 .isEqualTo(IexecFileHelper.SLASH_IEXEC_IN);
         assertThat((hostConfig.getBinds()[0].getVolume().getPath()))
                 .isEqualTo(IexecFileHelper.SLASH_IEXEC_OUT);
-        assertThat(hostConfig.getDevices()).isNull();
+        assertThat(hostConfig.getDevices()).isEmpty();
     }
 
     @Test
     public void shouldBuildHostConfigWithDeviceFromRunRequest() {
         DockerRunRequest request = getDefaultDockerRunRequest(false);
-        request.setDevices(new ArrayList<>());
-        request.getDevices().add(new Device("", DEVICE_PATH_IN_CONTAINER, DEVICE_PATH_ON_HOST));
+        request.setDevices(List.of(new Device("", DEVICE_PATH_IN_CONTAINER, DEVICE_PATH_ON_HOST)));
 
         HostConfig hostConfig =
                 dockerClientInstance.buildHostConfigFromRunRequest(request);
