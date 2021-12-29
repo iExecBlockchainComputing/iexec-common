@@ -36,10 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -557,8 +554,11 @@ public class DockerClientInstance {
             hostConfig.withBinds(Binds.fromPrimitive(
                     dockerRunRequest.getBinds().toArray(new String[0])));
         }
-        if (dockerRunRequest.getDevices() != null) {
-            hostConfig.withDevices(dockerRunRequest.getDevices());
+        try {
+            List<Device> devices = new ArrayList<>(dockerRunRequest.getDevices());
+            hostConfig.withDevices(devices);
+        } catch (NullPointerException e) {
+            log.info("No devices defined in docker run request.");
         }
         return hostConfig;
     }
