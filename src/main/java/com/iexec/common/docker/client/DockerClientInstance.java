@@ -98,15 +98,16 @@ public class DockerClientInstance {
             throw new IllegalArgumentException("Docker registry password must not be blank");
         }
         this.client = createClient(registryAddress, username, password);
+        log.info("Created authenticated {} docker client {} for {}", registryAddress, client, this);
     }
 
     public DockerClient getClient() {
+        log.info("Use docker client {} for {}", client, this);
         return this.client;
     }
 
-    /**
+    /*
      * Docker volume
-     * 
      */
 
     public synchronized boolean createVolume(String volumeName) {
@@ -175,9 +176,8 @@ public class DockerClientInstance {
         }
     }
 
-    /**
+    /*
      * Docker network
-     * 
      */
 
     public synchronized String createNetwork(String networkName) {
@@ -251,9 +251,8 @@ public class DockerClientInstance {
         }
     }
 
-    /**
+    /*
      * Docker image
-     * 
      */
 
     /**
@@ -359,9 +358,8 @@ public class DockerClientInstance {
         }
     }
 
-    /**
+    /*
      * Docker container
-     * 
      */
 
     /**
@@ -817,9 +815,8 @@ public class DockerClientInstance {
                 .build());
     }
 
-    /**
+    /*
      * Docker client
-     * 
      */
 
     /**
