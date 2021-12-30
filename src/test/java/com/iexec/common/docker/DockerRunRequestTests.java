@@ -9,10 +9,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DockerRunRequestTests {
+class DockerRunRequestTests {
 
     @Test
-    public void shouldAddDevices() {
+    void shouldAddDevices() {
         Device device1 = new Device("", "/dev/path1", "/dev/path1");
         Device device2 = new Device("", "/dev/path2", "/dev/path2");
         List<Device> devices = new ArrayList<>();
@@ -28,7 +28,7 @@ public class DockerRunRequestTests {
     }
 
     @Test
-    public void shouldAddSgxDevice() {
+    void shouldAddSgxDevice() {
         DockerRunRequest request = DockerRunRequest.builder()
                 .containerName("containerName")
                 .isSgx(true)
@@ -43,7 +43,7 @@ public class DockerRunRequestTests {
     }
 
     @Test
-    public void shouldAddSgxDeviceThenAddDevices() {
+    void shouldAddSgxDeviceThenAddDevices() {
         Device device1 = new Device("", "/dev/path1", "/dev/path1");
         Device device2 = new Device("", "/dev/path2", "/dev/path2");
         List<Device> devices = new ArrayList<>();
@@ -66,7 +66,7 @@ public class DockerRunRequestTests {
     }
 
     @Test
-    public void shouldAddDeviceThenAddSgxDevice() {
+    void shouldAddDeviceThenAddSgxDevice() {
         Device device1 = new Device("", "/dev/path1", "/dev/path1");
         Device device2 = new Device("", "/dev/path2", "/dev/path2");
         List<Device> devices = new ArrayList<>();
