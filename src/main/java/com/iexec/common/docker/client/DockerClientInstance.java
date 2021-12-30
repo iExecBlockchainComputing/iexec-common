@@ -545,14 +545,15 @@ public class DockerClientInstance {
             return null;
         }
         HostConfig hostConfig = HostConfig.newHostConfig();
-        if (StringUtils.isNotBlank(dockerRunRequest.getDockerNetwork())) {
-            hostConfig.withNetworkMode(dockerRunRequest.getDockerNetwork());
+        final String dockerNetworkName = dockerRunRequest.getDockerNetwork();
+        if (StringUtils.isNotBlank(dockerNetworkName)) {
+            hostConfig.withNetworkMode(dockerNetworkName);
         }
-        if (dockerRunRequest.getBinds() != null && !dockerRunRequest.getBinds().isEmpty()) {
-            hostConfig.withBinds(Binds.fromPrimitive(
-                    dockerRunRequest.getBinds().toArray(new String[0])));
+        final List<String> binds = dockerRunRequest.getBinds();
+        if (!binds.isEmpty()) {
+            hostConfig.withBinds(Binds.fromPrimitive(binds.toArray(new String[0])));
         }
-        List<Device> devices = dockerRunRequest.getDevices();
+        final List<Device> devices = dockerRunRequest.getDevices();
         hostConfig.withDevices(devices);
         return hostConfig;
     }

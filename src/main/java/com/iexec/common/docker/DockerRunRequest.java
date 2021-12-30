@@ -56,8 +56,20 @@ public class DockerRunRequest {
         return ArgsUtils.stringArgsToArrayArgs(this.cmd);
     }
 
+    /**
+     * Gets a copy of the binds list.
+     * @return A copy of defined binds or an empty list
+     */
+    public List<String> getBinds() {
+        return binds != null ? new ArrayList<>(binds) : List.of();
+    }
+
+    /**
+     * Gets a copy of the devices list.
+     * @return A copy of defined devices or an empty list
+     */
     public List<Device> getDevices() {
-        return this.devices == null ? List.of() : new ArrayList<>(devices);
+        return devices != null ? new ArrayList<>(devices) : List.of();
     }
 
     // override builder's isSgx() & devices() methods
