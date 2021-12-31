@@ -36,10 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,14 +54,11 @@ public class DockerClientInstance {
     public static final String RESTARTING_STATUS = "restarting";
     public static final String EXITED_STATUS = "exited";
 
-    private DockerClient client;
+    private final DockerClient client;
 
     /**
      * Create a new unauthenticated Docker client instance with the default Docker registry
      * {@link DockerClientInstance#DEFAULT_DOCKER_REGISTRY}.
-     * 
-     * @param registryAddress
-     * @throws Exception if registry address is blank
      */
     DockerClientInstance() {
         this.client = createClient(DEFAULT_DOCKER_REGISTRY, "", "");
@@ -92,10 +86,8 @@ public class DockerClientInstance {
      *                          docker.io, nexus.iex.ec}
      * @param username
      * @param password
-     * @throws Exception if one of the arguments is blank or authentication failure
      */
-    DockerClientInstance(String registryAddress, String username, String password)
-            throws Exception {
+    DockerClientInstance(String registryAddress, String username, String password) {
         if (StringUtils.isBlank(registryAddress)) {
             throw new IllegalArgumentException("Docker registry address must not be blank");
         }
@@ -112,9 +104,8 @@ public class DockerClientInstance {
         return this.client;
     }
 
-    /**
+    /*
      * Docker volume
-     * 
      */
 
     public synchronized boolean createVolume(String volumeName) {
@@ -183,9 +174,8 @@ public class DockerClientInstance {
         }
     }
 
-    /**
+    /*
      * Docker network
-     * 
      */
 
     public synchronized String createNetwork(String networkName) {
@@ -259,9 +249,8 @@ public class DockerClientInstance {
         }
     }
 
-    /**
+    /*
      * Docker image
-     * 
      */
 
     /**
@@ -367,9 +356,8 @@ public class DockerClientInstance {
         }
     }
 
-    /**
+    /*
      * Docker container
-     * 
      */
 
     /**
@@ -555,16 +543,16 @@ public class DockerClientInstance {
             return null;
         }
         HostConfig hostConfig = HostConfig.newHostConfig();
-        if (StringUtils.isNotBlank(dockerRunRequest.getDockerNetwork())) {
-            hostConfig.withNetworkMode(dockerRunRequest.getDockerNetwork());
+        final String dockerNetworkName = dockerRunRequest.getDockerNetwork();
+        if (StringUtils.isNotBlank(dockerNetworkName)) {
+            hostConfig.withNetworkMode(dockerNetworkName);
         }
-        if (dockerRunRequest.getBinds() != null && !dockerRunRequest.getBinds().isEmpty()) {
-            hostConfig.withBinds(Binds.fromPrimitive(
-                    dockerRunRequest.getBinds().toArray(new String[0])));
+        final List<String> binds = dockerRunRequest.getBinds();
+        if (!binds.isEmpty()) {
+            hostConfig.withBinds(Binds.fromPrimitive(binds.toArray(new String[0])));
         }
-        if (dockerRunRequest.getDevices() != null) {
-            dockerRunRequest.getDevices().forEach(device -> hostConfig.withDevices(device));
-        }
+        final List<Device> devices = dockerRunRequest.getDevices();
+        hostConfig.withDevices(devices);
         return hostConfig;
     }
 
@@ -826,9 +814,8 @@ public class DockerClientInstance {
                 .build());
     }
 
-    /**
+    /*
      * Docker client
-     * 
      */
 
     /**
