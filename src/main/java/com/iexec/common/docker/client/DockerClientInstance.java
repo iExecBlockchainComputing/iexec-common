@@ -98,11 +98,9 @@ public class DockerClientInstance {
             throw new IllegalArgumentException("Docker registry password must not be blank");
         }
         this.client = createClient(registryAddress, username, password);
-        log.info("Created authenticated {} docker client {} for {}", registryAddress, client, this);
     }
 
     public DockerClient getClient() {
-        log.info("Use docker client {} for {}", client, this);
         return this.client;
     }
 
