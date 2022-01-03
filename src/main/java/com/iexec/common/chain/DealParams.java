@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -50,6 +51,10 @@ public class DealParams {
     @JsonProperty("iexec_result_storage_proxy")
     private String iexecResultStorageProxy;
 
+    // Keys are app secrets indices, values are requester secrets indices
+    @JsonProperty("iexec_secrets")
+    private Map<String, String> iexecSecrets;
+
     //Should be set by SDK
     @JsonProperty("iexec_tee_post_compute_image")
     private String iexecTeePostComputeImage;
@@ -57,6 +62,5 @@ public class DealParams {
     //Should be set by SDK
     @JsonProperty("iexec_tee_post_compute_fingerprint")
     private String iexecTeePostComputeFingerprint;
-
 
 }
