@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.chain.DealParams;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 import static com.iexec.common.sdk.order.OrderUtils.toLowerCase;
 
 @Data
+@Slf4j
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @NoArgsConstructor
@@ -70,7 +72,7 @@ public class RequestOrder extends Order {
         try {
             return mapper.writeValueAsString(params);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("Deal parameters serialization failed.", e);
         }
         return "";
     }
