@@ -54,8 +54,8 @@ dependencies {
     implementation 'io.github.openfeign:feign-slf4j:11.0'
 
     // docker
-    implementation 'com.github.docker-java:docker-java:3.2.6'
-    implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.6'
+    implementation 'com.github.docker-java:docker-java:3.2.5'
+    implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.5'
 
     // failsafe
     implementation 'net.jodah:failsafe:2.4.4'
