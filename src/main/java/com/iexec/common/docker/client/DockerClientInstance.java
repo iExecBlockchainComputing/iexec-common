@@ -24,7 +24,7 @@ import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.core.NameParser;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
-import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
+import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.iexec.common.docker.DockerLogs;
 import com.iexec.common.docker.DockerRunRequest;
@@ -845,7 +845,7 @@ public class DockerClientInstance {
                     .withRegistryPassword(password);
         }
         DefaultDockerClientConfig config = configBuilder.build();
-        DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
+        DockerHttpClient httpClient = new ZerodepDockerHttpClient.Builder()
                 .dockerHost(config.getDockerHost())
                 .sslConfig(config.getSSLConfig())
                 .build();
