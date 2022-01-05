@@ -62,7 +62,7 @@ dependencies {
     // failsafe
     implementation 'net.jodah:failsafe:2.4.4'
     //TODO Migrate from Awaitility to Failsafe everywhere
-    implementation group: 'org.awaitility', name: 'awaitility', version: '4.1.1'
+    implementation 'org.awaitility:awaitility:4.1.1'
 
     // test
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
