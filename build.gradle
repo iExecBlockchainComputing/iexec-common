@@ -12,6 +12,13 @@ group = 'com.iexec.common'
 sourceCompatibility = 11
 targetCompatibility = 11
 
+ext {
+    // ./gradlew build -Pdev
+    isDev = project.hasProperty('dev')
+    // versions
+    dockerJavaVersion = '3.2.12'
+}
+
 repositories {
     mavenCentral()
     jcenter()
@@ -54,10 +61,10 @@ dependencies {
     implementation 'io.github.openfeign:feign-slf4j:11.0'
 
     // docker
-    implementation 'com.github.docker-java:docker-java:3.2.12'
+    implementation "com.github.docker-java:docker-java:${dockerJavaVersion}"
     // Using zerodep until docker client stops blocking after having called
     // listContainersCmd() over httpclient5
-    implementation group: 'com.github.docker-java', name: 'docker-java-transport-zerodep', version: '3.2.12'
+    implementation "com.github.docker-java:docker-java-transport-zerodep:${dockerJavaVersion}"
 
     // failsafe
     implementation 'net.jodah:failsafe:2.4.4'
@@ -72,10 +79,6 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.18.1'
 }
 
-ext {
-    // ./gradlew build -Pdev
-    isDev = project.hasProperty('dev')
-}
 
 java {
     withJavadocJar()
