@@ -857,4 +857,29 @@ public class DockerClientInstance {
         }
         return dockerClient;
     }
+
+    /**
+     * Parse Docker image name and its registry address. If no registry is specified
+     * the default Docker registry {@link DockerClientInstance#DEFAULT_DOCKER_REGISTRY}
+     * is returned.
+     * <p>
+     * e.g.:
+     * host.xyz/image:tag           - host.xyz
+     * username/image:tag           - docker.io
+     * docker.io/username/image:tag - docker.io
+     *
+     * @param imageName name of the docker image
+     * @return registry address
+     */
+    public static String parseRegistryAddress(String imageName) {
+        NameParser.ReposTag reposTag = NameParser.parseRepositoryTag(imageName);
+        NameParser.HostnameReposName hostnameReposName = NameParser.resolveRepositoryName(reposTag.repos);
+        String registry = hostnameReposName.hostname;
+        return AuthConfig.DEFAULT_SERVER_ADDRESS.equals(registry)
+                // to be consistent, we use common default address
+                // everywhere for the default DockerHub registry
+                ? DockerClientInstance.DEFAULT_DOCKER_REGISTRY
+                : registry;
+    }
+
 }
