@@ -783,6 +783,8 @@ public abstract class IexecHubAbstractService {
     public Optional<String> getTaskBeneficiary(String chainTaskId, Integer chainId) {
         Optional<ChainTask> chainTask = getChainTask(chainTaskId);
         if (chainTask.isEmpty()) {
+            log.error("Failed to get Task Beneficiary as ChainTask not found" +
+                    " [chainTaskId:{}]", chainTaskId);
             return Optional.empty();
         }
         Optional<ChainDeal> optionalChainDeal = getChainDeal(chainTask.get().getDealid());
@@ -802,6 +804,8 @@ public abstract class IexecHubAbstractService {
     public String getTaskResults(String chainTaskId, Integer chainId) {
         Optional<ChainTask> chainTask = getChainTask(chainTaskId);
         if (chainTask.isEmpty()) {
+            log.error("Failed to get Task Results as ChainTask not found" +
+                    " [chainTaskId:{}]", chainTaskId);
             return "";
         }
         return chainTask.get().getResults();
@@ -913,7 +917,7 @@ public abstract class IexecHubAbstractService {
                     && !BytesUtils.EMPTY_HEXASTRING_64.equals(chainDealId)){
                 return Optional.of(chainTask);
             } else {
-                log.error("Failed to get consistent ChainTask [chainTaskId:{}]",
+                log.debug("Failed to get consistent ChainTask [chainTaskId:{}]",
                         chainTaskId);
             }
         } catch (Exception e) {
