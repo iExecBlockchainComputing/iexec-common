@@ -24,8 +24,7 @@ import org.web3j.tuples.generated.Tuple9;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
+import java.util.Collections;
 
 @Data
 @NoArgsConstructor
@@ -73,19 +72,19 @@ public class ChainDeal {
         try {
             DealParams dealParams = new ObjectMapper().readValue(params, DealParams.class);
             if (dealParams.getIexecInputFiles() == null) {
-                dealParams.setIexecInputFiles(List.of());
+                dealParams.setIexecInputFiles(Collections.emptyList());
             }
             if (dealParams.getIexecSecrets() == null) {
-                dealParams.setIexecSecrets(Map.of());
+                dealParams.setIexecSecrets(Collections.emptyMap());
             }
             return dealParams;
         } catch (IOException e) {
             //the requester want to execute one task with the whole string
             return DealParams.builder()
                     .iexecArgs(params)
-                    .iexecInputFiles(List.of())
+                    .iexecInputFiles(Collections.emptyList())
                     .iexecDeveloperLoggerEnabled(false)
-                    .iexecSecrets(Map.of())
+                    .iexecSecrets(Collections.emptyMap())
                     .build();
         }
     }
