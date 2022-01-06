@@ -17,6 +17,7 @@
 package com.iexec.common.chain;
 
 import com.iexec.common.utils.BytesUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tuples.generated.Tuple9;
@@ -63,10 +64,39 @@ class ChainDealTest {
     private static final String FILE3 = "http://test.com/image3.png";
 
     @Test
+    void testEmptyConstructor() {
+        ChainDeal deal = new ChainDeal();
+        Assertions.assertNull(deal.getBeneficiary());
+        Assertions.assertNull(deal.getBotFirst());
+        Assertions.assertNull(deal.getBotSize());
+        Assertions.assertNull(deal.getCallback());
+        Assertions.assertNull(deal.getChainApp());
+        Assertions.assertNull(deal.getChainCategory());
+        Assertions.assertNull(deal.getChainDataset());
+        Assertions.assertNull(deal.getChainDealId());
+        Assertions.assertNull(deal.getDappOwner());
+        Assertions.assertNull(deal.getDappPrice());
+        Assertions.assertNull(deal.getDataOwner());
+        Assertions.assertNull(deal.getDataPointer());
+        Assertions.assertNull(deal.getDataPrice());
+        Assertions.assertNull(deal.getParams());
+        Assertions.assertNull(deal.getPoolOwner());
+        Assertions.assertNull(deal.getPoolPointer());
+        Assertions.assertNull(deal.getPoolPrice());
+        Assertions.assertNull(deal.getRequester());
+        Assertions.assertNull(deal.getSchedulerRewardRatio());
+        Assertions.assertNull(deal.getStartTime());
+        Assertions.assertNull(deal.getTag());
+        Assertions.assertNull(deal.getTrust());
+        Assertions.assertNull(deal.getWorkerStake());
+    }
+
+    @Test
     void shouldReadArgsWithoutJson() {
         DealParams params = stringToDealParams(ARGS);
         assertEquals(ARGS, params.getIexecArgs());
         assertEquals(0, params.getIexecInputFiles().size());
+        assertEquals(0,params.getIexecSecrets().size());
     }
 
     @Test
@@ -74,14 +104,16 @@ class ChainDealTest {
         DealParams params = stringToDealParams("{\"iexec_args\":\"" + ARGS + "\"}");
         assertEquals(ARGS, params.getIexecArgs());
         assertEquals(0, params.getIexecInputFiles().size());
+        assertEquals(0, params.getIexecSecrets().size());
     }
 
     @Test
-    void shouldReadArgsInJsonAndEmptyInputFiles() {
+    void shouldReadArgsInJsonAndEmptyInputFilesAndEmptySecrets() {
         DealParams params = stringToDealParams("{\"iexec_args\":\"" + ARGS + "\"," +
-                "\"iexec_input_files\":[]}");
+                "\"iexec_input_files\":[],\"iexec_secrets\":{}}");
         assertEquals(ARGS, params.getIexecArgs());
         assertEquals(0, params.getIexecInputFiles().size());
+        assertEquals(0, params.getIexecSecrets().size());
     }
 
 
@@ -103,6 +135,32 @@ class ChainDealTest {
         assertEquals(FILE1, params.getIexecInputFiles().get(0));
         assertEquals(FILE2, params.getIexecInputFiles().get(1));
         assertEquals(FILE3, params.getIexecInputFiles().get(2));
+    }
+
+    @Test
+    void shouldReadArgsAndMultipleSecrets() {
+        DealParams params = stringToDealParams("{\"iexec_args\":\"" + ARGS + "\"," +
+                "\"iexec_secrets\":{\"1\":\"secretK\",\"2\":\"secretX\"}}");
+        assertEquals(ARGS, params.getIexecArgs());
+        assertEquals(0, params.getIexecInputFiles().size());
+        assertEquals(2, params.getIexecSecrets().size());
+        assertEquals("secretK", params.getIexecSecrets().get("1"));
+        assertEquals("secretX", params.getIexecSecrets().get("2"));
+    }
+
+    @Test
+    void shouldReadArgsAndMultipleFilesAndMultipleSecrets() {
+        DealParams params = stringToDealParams("{\"iexec_args\":\"" + ARGS + "\"," +
+                "\"iexec_input_files\":[\"" + FILE3 + "\",\"" + FILE2 + "\",\"" + FILE1 + "\"]," +
+                "\"iexec_secrets\":{\"1\":\"secretX\",\"2\":\"secretK\"}}");
+        assertEquals(ARGS, params.getIexecArgs());
+        assertEquals(3, params.getIexecInputFiles().size());
+        assertEquals(FILE3, params.getIexecInputFiles().get(0));
+        assertEquals(FILE2, params.getIexecInputFiles().get(1));
+        assertEquals(FILE1, params.getIexecInputFiles().get(2));
+        assertEquals(2, params.getIexecSecrets().size());
+        assertEquals("secretX", params.getIexecSecrets().get("1"));
+        assertEquals("secretK", params.getIexecSecrets().get("2"));
     }
 
     @Test

@@ -139,16 +139,6 @@ public class TaskDescription {
             datasetName = chainDeal.getChainDataset().getName();
             datasetChecksum = chainDeal.getChainDataset().getChecksum();
         }
-        List<String> inputFiles = List.of();
-        if (chainDeal.getParams() != null &&
-                chainDeal.getParams().getIexecInputFiles() != null) {
-            inputFiles = chainDeal.getParams().getIexecInputFiles();
-        }
-        Map<String, String> secrets = Map.of();
-        if (chainDeal.getParams() != null &&
-                chainDeal.getParams().getIexecSecrets() != null) {
-            secrets = chainDeal.getParams().getIexecSecrets();
-        }
         return TaskDescription.builder()
                 .chainTaskId(chainTaskId)
                 .requester(chainDeal
@@ -165,7 +155,8 @@ public class TaskDescription {
                         .getEnclaveConfiguration())
                 .cmd(chainDeal.getParams()
                         .getIexecArgs())
-                .inputFiles(inputFiles)
+                .inputFiles(chainDeal.getParams()
+                        .getIexecInputFiles())
                 .maxExecutionTime(chainDeal.getChainCategory()
                         .getMaxExecutionTime())
                 .isTeeTask(TeeUtils
@@ -178,7 +169,8 @@ public class TaskDescription {
                         .getIexecResultStorageProvider())
                 .resultStorageProxy(chainDeal.getParams()
                         .getIexecResultStorageProxy())
-                .secrets(secrets)
+                .secrets(chainDeal.getParams()
+                        .getIexecSecrets())
                 .teePostComputeImage(chainDeal.getParams()
                         .getIexecTeePostComputeImage())
                 .teePostComputeFingerprint(chainDeal.getParams()
