@@ -24,7 +24,7 @@ import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.core.NameParser;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
-import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
+import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.iexec.common.docker.DockerLogs;
 import com.iexec.common.docker.DockerRunRequest;
@@ -845,7 +845,7 @@ public class DockerClientInstance {
                     .withRegistryPassword(password);
         }
         DefaultDockerClientConfig config = configBuilder.build();
-        DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
+        DockerHttpClient httpClient = new ZerodepDockerHttpClient.Builder()
                 .dockerHost(config.getDockerHost())
                 .sslConfig(config.getSSLConfig())
                 .build();
@@ -857,4 +857,29 @@ public class DockerClientInstance {
         }
         return dockerClient;
     }
+
+    /**
+     * Parse Docker image name and its registry address. If no registry is specified
+     * the default Docker registry {@link DockerClientInstance#DEFAULT_DOCKER_REGISTRY}
+     * is returned.
+     * <p>
+     * e.g.:
+     * host.xyz/image:tag           - host.xyz
+     * username/image:tag           - docker.io
+     * docker.io/username/image:tag - docker.io
+     *
+     * @param imageName name of the docker image
+     * @return registry address
+     */
+    public static String parseRegistryAddress(String imageName) {
+        NameParser.ReposTag reposTag = NameParser.parseRepositoryTag(imageName);
+        NameParser.HostnameReposName hostnameReposName = NameParser.resolveRepositoryName(reposTag.repos);
+        String registry = hostnameReposName.hostname;
+        return AuthConfig.DEFAULT_SERVER_ADDRESS.equals(registry)
+                // to be consistent, we use common default address
+                // everywhere for the default DockerHub registry
+                ? DockerClientInstance.DEFAULT_DOCKER_REGISTRY
+                : registry;
+    }
+
 }

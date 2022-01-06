@@ -12,6 +12,13 @@ group = 'com.iexec.common'
 sourceCompatibility = 11
 targetCompatibility = 11
 
+ext {
+    // ./gradlew build -Pdev
+    isDev = project.hasProperty('dev')
+    // versions
+    dockerJavaVersion = '3.2.12'
+}
+
 repositories {
     mavenCentral()
     jcenter()
@@ -54,11 +61,15 @@ dependencies {
     implementation 'io.github.openfeign:feign-slf4j:11.0'
 
     // docker
-    implementation 'com.github.docker-java:docker-java:3.2.5'
-    implementation 'com.github.docker-java:docker-java-transport-httpclient5:3.2.5'
+    implementation "com.github.docker-java:docker-java:${dockerJavaVersion}"
+    // Using zerodep until docker client stops blocking after having called
+    // listContainersCmd() over httpclient5
+    implementation "com.github.docker-java:docker-java-transport-zerodep:${dockerJavaVersion}"
 
     // failsafe
     implementation 'net.jodah:failsafe:2.4.4'
+    //TODO Migrate from Awaitility to Failsafe everywhere
+    implementation 'org.awaitility:awaitility:4.1.1'
 
     // test
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
@@ -68,10 +79,6 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.18.1'
 }
 
-ext {
-    // ./gradlew build -Pdev
-    isDev = project.hasProperty('dev')
-}
 
 java {
     withJavadocJar()
