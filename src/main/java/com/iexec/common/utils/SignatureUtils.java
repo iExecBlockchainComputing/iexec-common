@@ -100,8 +100,8 @@ public class SignatureUtils {
 
     public static Signature emptySignature() {
         return new Signature (
-            BytesUtils.stringToBytes(BytesUtils.EMPTY_HEXASTRING_64),
-            BytesUtils.stringToBytes(BytesUtils.EMPTY_HEXASTRING_64),
+            BytesUtils.stringToBytes(EMPTY_HEX_STRING_32),
+            BytesUtils.stringToBytes(EMPTY_HEX_STRING_32),
             new byte[1]
         );
 

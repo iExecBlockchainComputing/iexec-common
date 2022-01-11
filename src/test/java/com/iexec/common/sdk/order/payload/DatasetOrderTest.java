@@ -37,7 +37,7 @@ public class DatasetOrderTest {
                 .apprestrict(BytesUtils.EMPTY_ADDRESS)
                 .workerpoolrestrict(BytesUtils.EMPTY_ADDRESS)
                 .requesterrestrict(BytesUtils.EMPTY_ADDRESS)
-                .salt(BytesUtils.EMPTY_HEXASTRING_64)
+                .salt(BytesUtils.EMPTY_HEX_STRING_32)
                 .build();
 
         IexecLibOrders_v5.DatasetOrder generatedDatasetOrder = new IexecLibOrders_v5.DatasetOrder(
@@ -48,7 +48,7 @@ public class DatasetOrderTest {
                 BytesUtils.EMPTY_ADDRESS,
                 BytesUtils.EMPTY_ADDRESS,
                 BytesUtils.EMPTY_ADDRESS,
-                BytesUtils.stringToBytes(BytesUtils.EMPTY_HEXASTRING_64),
+                BytesUtils.stringToBytes(BytesUtils.EMPTY_HEX_STRING_32),
                 null);
 
         Assertions.assertThat(datasetOrder.getDataset())

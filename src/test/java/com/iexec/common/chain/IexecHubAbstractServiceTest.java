@@ -67,7 +67,7 @@ class IexecHubAbstractServiceTest {
 
     @Test
     void shouldNotGetChainTaskSinceEmptyHexStringDealIdFieldProvesInConsistency() throws Exception {
-        whenViewTaskReturnTaskTuple(CHAIN_TASK_ID, BytesUtils.EMPTY_HEXASTRING_64);
+        whenViewTaskReturnTaskTuple(CHAIN_TASK_ID, BytesUtils.EMPTY_HEX_STRING_32);
 
         when(iexecHubAbstractService.getChainTask(CHAIN_TASK_ID))
                 .thenCallRealMethod();

@@ -142,23 +142,6 @@ public class BytesUtilsTests {
     }
 
     @Test
-    public void shouldBeABytes32() {
-        assertTrue(isBytes32(bytes));
-        assertTrue(isBytes32(stringToBytes(hexaString)));
-    }
-
-    @Test
-    public void shouldNotBeAByte32() {
-        assertFalse(isBytes32(stringToBytes("0xabc123defg")));
-    }
-
-    @Test
-    public void shouldNotBeAByte32Null() {
-        assertFalse(isBytes32(new byte[0]));
-        assertFalse(isBytes32(new byte[128]));
-    }
-
-    @Test
     void shouldConvertHexStringToBytes32() {
         byte[] bytes32 = hexStringToBytes32(hexaString);
         assertEquals(32, bytes32.length);

@@ -85,7 +85,7 @@ public abstract class IexecHubAbstractService {
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress) {
-        this(credentials, web3jAbstractService, iexecHubAddress, DEFAULT_BLOCK_TIME, 6, 3);
+        this(credentials, web3jAbstractService, iexecHubAddress, Duration.ofMillis(DEFAULT_BLOCK_TIME), 6, 3);
     }
 
     @Deprecated
@@ -94,32 +94,7 @@ public abstract class IexecHubAbstractService {
                                    String iexecHubAddress,
                                    int nbBlocksToWaitPerRetry,
                                    int maxRetries) {
-        this(credentials, web3jAbstractService, iexecHubAddress, DEFAULT_BLOCK_TIME, nbBlocksToWaitPerRetry, maxRetries);
-    }
-
-    /**
-     * @param credentials credentials for sending transaction
-     * @param web3jAbstractService custom web3j service
-     * @param iexecHubAddress address of the iExec Hub contract
-     * @param blockTime block time in ms
-     * @param nbBlocksToWaitPerRetry nb block to wait per retry
-     * @param maxRetries maximum reties
-     */
-    @Deprecated
-    public IexecHubAbstractService(Credentials credentials,
-                                   Web3jAbstractService web3jAbstractService,
-                                   String iexecHubAddress,
-                                   int blockTime,
-                                   int nbBlocksToWaitPerRetry,
-                                   int maxRetries) {
-        this(
-                credentials,
-                web3jAbstractService,
-                iexecHubAddress,
-                Duration.ofMillis(blockTime),
-                nbBlocksToWaitPerRetry,
-                maxRetries
-        );
+        this(credentials, web3jAbstractService, iexecHubAddress, Duration.ofMillis(DEFAULT_BLOCK_TIME), nbBlocksToWaitPerRetry, maxRetries);
     }
 
     /**
@@ -913,8 +888,8 @@ public abstract class IexecHubAbstractService {
                     .viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send());
             String chainDealId = chainTask.getDealid();
             if (!StringUtils.isEmpty(chainDealId)
-                    && BytesUtils.isBytes32(BytesUtils.stringToBytes(chainDealId))
-                    && !BytesUtils.EMPTY_HEXASTRING_64.equals(chainDealId)){
+                    && BytesUtils.isBytes32(chainDealId)
+                    && !BytesUtils.EMPTY_HEX_STRING_32.equals(chainDealId)){
                 return Optional.of(chainTask);
             } else {
                 log.debug("Failed to get consistent ChainTask [chainTaskId:{}]",

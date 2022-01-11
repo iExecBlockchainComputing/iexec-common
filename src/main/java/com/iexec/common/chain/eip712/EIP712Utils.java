@@ -72,7 +72,7 @@ public class EIP712Utils {
     }
 
     static String encodeByteArray(byte[] byteArray) {
-        if (!BytesUtils.isBytes32(byteArray)) {
+        if (!BytesUtils.isBytes32(BytesUtils.bytesToString(byteArray))) {
             return "";
         }
         return Numeric.toHexString(byteArray);

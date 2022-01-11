@@ -97,7 +97,7 @@ public class HashUtils {
         }
         //fileTree is a leaf, a single file
         if (!fileTree.isDirectory()) {
-            return getFileSha256(fileTreePath);
+            return sha256(fileTree);
         }
         //fileTree is a tree, with multiple files
         File[] files = fileTree.listFiles();
@@ -105,24 +105,10 @@ public class HashUtils {
             List<String> hashes = new ArrayList<>();
             java.util.Arrays.sort(files); // /!\ files MUST be sorted to ensure final concatenateAndHash(..) is always the same (order matters)
             for (File file : files) {
-                hashes.add(getFileSha256(file.getAbsolutePath()));
+                hashes.add(sha256(file));
             }
             return HashUtils.concatenateAndHash(hashes.toArray(new String[0]));
         }
         return "";
-    }
-
-    /**
-     * Generates SHA-256 digest of a given file content.
-     * <p>
-     * Deprecated: please use {@link HashUtils#sha256(File)}
-     *
-     * @param filepath path of the file
-     * @return SHA-256 digest in hex string format,
-     * e.g: 0x66daf4e6810d83d4859846a5df1afabf88c9fda135bc732ea977f25348d98ede
-     */
-    @Deprecated(forRemoval = true)
-    public static String getFileSha256(String filepath) {
-        return sha256(new File(filepath));
     }
 }
