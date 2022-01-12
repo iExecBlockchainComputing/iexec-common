@@ -106,19 +106,15 @@ public class AppRegistry extends Contract {
 
     public static final Event APPROVAL_EVENT = new Event("Approval", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
-    ;
 
     public static final Event APPROVALFORALL_EVENT = new Event("ApprovalForAll", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Bool>() {}));
-    ;
 
     public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
-    ;
 
     public static final Event TRANSFER_EVENT = new Event("Transfer", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
-    ;
 
     protected static final HashMap<String, String> _addresses;
 

@@ -59,7 +59,6 @@ public class Workerpool extends Contract {
 
     public static final Event POLICYUPDATE_EVENT = new Event("PolicyUpdate", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-    ;
 
     protected static final HashMap<String, String> _addresses;
 

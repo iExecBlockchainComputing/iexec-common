@@ -63,7 +63,6 @@ public class Ownable extends Contract {
 
     public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
-    ;
 
     protected static final HashMap<String, String> _addresses;
 

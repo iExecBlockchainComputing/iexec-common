@@ -209,111 +209,84 @@ public class IexecHubContract extends Contract {
 
     public static final Event ACCURATECONTRIBUTION_EVENT = new Event("AccurateContribution", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Bytes32>(true) {}));
-    ;
 
     public static final Event APPROVAL_EVENT = new Event("Approval", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>() {}));
-    ;
 
     public static final Event CLOSEDAPPORDER_EVENT = new Event("ClosedAppOrder", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event CLOSEDDATASETORDER_EVENT = new Event("ClosedDatasetOrder", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event CLOSEDREQUESTORDER_EVENT = new Event("ClosedRequestOrder", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event CLOSEDWORKERPOOLORDER_EVENT = new Event("ClosedWorkerpoolOrder", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event CREATECATEGORY_EVENT = new Event("CreateCategory", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Uint256>() {}));
-    ;
 
     public static final Event FAULTYCONTRIBUTION_EVENT = new Event("FaultyContribution", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Bytes32>(true) {}));
-    ;
 
     public static final Event LOCK_EVENT = new Event("Lock", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
-    ;
 
     public static final Event ORDERSMATCHED_EVENT = new Event("OrdersMatched", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}));
-    ;
 
     public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
-    ;
 
     public static final Event REWARD_EVENT = new Event("Reward", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event SCHEDULERNOTICE_EVENT = new Event("SchedulerNotice", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event SEIZE_EVENT = new Event("Seize", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event SIGNEDAPPORDER_EVENT = new Event("SignedAppOrder", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event SIGNEDDATASETORDER_EVENT = new Event("SignedDatasetOrder", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event SIGNEDREQUESTORDER_EVENT = new Event("SignedRequestOrder", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event SIGNEDWORKERPOOLORDER_EVENT = new Event("SignedWorkerpoolOrder", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event TASKCLAIMED_EVENT = new Event("TaskClaimed", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {}));
-    ;
 
     public static final Event TASKCONSENSUS_EVENT = new Event("TaskConsensus", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {}, new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event TASKCONTRIBUTE_EVENT = new Event("TaskContribute", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event TASKFINALIZE_EVENT = new Event("TaskFinalize", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {}, new TypeReference<DynamicBytes>() {}));
-    ;
 
     public static final Event TASKINITIALIZE_EVENT = new Event("TaskInitialize", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {}, new TypeReference<Address>(true) {}));
-    ;
 
     public static final Event TASKREOPEN_EVENT = new Event("TaskReopen", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {}));
-    ;
 
     public static final Event TASKREVEAL_EVENT = new Event("TaskReveal", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Bytes32>() {}));
-    ;
 
     public static final Event TRANSFER_EVENT = new Event("Transfer", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>() {}));
-    ;
 
     public static final Event UNLOCK_EVENT = new Event("Unlock", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
-    ;
 
     protected static final HashMap<String, String> _addresses;
 
