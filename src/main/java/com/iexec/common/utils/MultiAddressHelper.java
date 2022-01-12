@@ -32,7 +32,7 @@ public class MultiAddressHelper {
         // if the MultiAddress object can't be constructed, it means it is an HTTP address.
         try {
             MultiAddress address = new MultiAddress(Numeric.hexStringToByteArray(hexaString));
-            return IPFS_GATEWAY_URI + address.toString();
+            return IPFS_GATEWAY_URI + address;
         } catch (Exception e) {
             return BytesUtils.hexStringToAscii(hexaString);
         }

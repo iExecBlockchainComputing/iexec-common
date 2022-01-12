@@ -259,7 +259,7 @@ public class FileHelper {
             Files.walkFileTree(sourceFolderPath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    log.debug("Adding file to zip [file:{}, zip:{}]", file.toAbsolutePath().toString(), zipFilePath);
+                    log.debug("Adding file to zip [file:{}, zip:{}]", file.toAbsolutePath(), zipFilePath);
                     zos.putNextEntry(new ZipEntry(sourceFolderPath.relativize(file).toString()));
                     if (!Files.isSymbolicLink(file)) {
                         Files.copy(file, zos);
