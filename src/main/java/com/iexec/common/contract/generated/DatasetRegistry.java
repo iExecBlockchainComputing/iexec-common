@@ -104,16 +104,16 @@ public class DatasetRegistry extends Contract {
     public static final String FUNC_PREDICTDATASET = "predictDataset";
 
     public static final Event APPROVAL_EVENT = new Event("Approval", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
+            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
 
     public static final Event APPROVALFORALL_EVENT = new Event("ApprovalForAll", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Bool>() {}));
+            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Bool>() {}));
 
     public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
+            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
 
     public static final Event TRANSFER_EVENT = new Event("Transfer", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
+            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
 
     @Deprecated
     protected DatasetRegistry(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
@@ -274,9 +274,9 @@ public class DatasetRegistry extends Contract {
     public RemoteFunctionCall<TransactionReceipt> approve(String to, BigInteger tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_APPROVE, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, to), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(160, to),
                 new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
@@ -308,7 +308,7 @@ public class DatasetRegistry extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_INITIALIZE,
                 List.<Type>of(new Address(160, _previous)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
@@ -322,7 +322,7 @@ public class DatasetRegistry extends Contract {
 
     public RemoteFunctionCall<Boolean> isApprovedForAll(String owner, String operator) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ISAPPROVEDFORALL, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, owner), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(160, owner),
                 new org.web3j.abi.datatypes.Address(160, operator)),
                 List.<TypeReference<?>>of(new TypeReference<Bool>() {
                 }));
@@ -397,37 +397,37 @@ public class DatasetRegistry extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_RENOUNCEOWNERSHIP,
                 List.<Type>of(),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> safeTransferFrom(String from, String to, BigInteger tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_safeTransferFrom, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, from), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(160, from),
                 new org.web3j.abi.datatypes.Address(160, to), 
                 new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> safeTransferFrom(String from, String to, BigInteger tokenId, byte[] _data) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_safeTransferFrom, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, from), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(160, from),
                 new org.web3j.abi.datatypes.Address(160, to), 
                 new org.web3j.abi.datatypes.generated.Uint256(tokenId), 
                 new org.web3j.abi.datatypes.DynamicBytes(_data)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setApprovalForAll(String operator, Boolean approved) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETAPPROVALFORALL, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, operator), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(160, operator),
                 new org.web3j.abi.datatypes.Bool(approved)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
@@ -435,16 +435,16 @@ public class DatasetRegistry extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETBASEURI,
                 List.<Type>of(new Utf8String(_baseURI)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setName(String _ens, String _name) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETNAME, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, _ens), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(160, _ens),
                 new org.web3j.abi.datatypes.Utf8String(_name)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
@@ -474,7 +474,7 @@ public class DatasetRegistry extends Contract {
 
     public RemoteFunctionCall<BigInteger> tokenOfOwnerByIndex(String owner, BigInteger index) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKENOFOWNERBYINDEX, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, owner), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(160, owner),
                 new org.web3j.abi.datatypes.generated.Uint256(index)),
                 List.<TypeReference<?>>of(new TypeReference<Uint256>() {
                 }));
@@ -500,10 +500,10 @@ public class DatasetRegistry extends Contract {
     public RemoteFunctionCall<TransactionReceipt> transferFrom(String from, String to, BigInteger tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_TRANSFERFROM, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, from), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(160, from),
                 new org.web3j.abi.datatypes.Address(160, to), 
                 new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
@@ -511,24 +511,24 @@ public class DatasetRegistry extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_TRANSFEROWNERSHIP,
                 List.<Type>of(new Address(160, newOwner)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> createDataset(String _datasetOwner, String _datasetName, byte[] _datasetMultiaddr, byte[] _datasetChecksum) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_CREATEDATASET, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, _datasetOwner), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(160, _datasetOwner),
                 new org.web3j.abi.datatypes.Utf8String(_datasetName), 
                 new org.web3j.abi.datatypes.DynamicBytes(_datasetMultiaddr), 
                 new org.web3j.abi.datatypes.generated.Bytes32(_datasetChecksum)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<String> predictDataset(String _datasetOwner, String _datasetName, byte[] _datasetMultiaddr, byte[] _datasetChecksum) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_PREDICTDATASET, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, _datasetOwner), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(160, _datasetOwner),
                 new org.web3j.abi.datatypes.Utf8String(_datasetName), 
                 new org.web3j.abi.datatypes.DynamicBytes(_datasetMultiaddr), 
                 new org.web3j.abi.datatypes.generated.Bytes32(_datasetChecksum)),

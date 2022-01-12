@@ -58,7 +58,7 @@ public class Workerpool extends Contract {
     public static final String FUNC_CHANGEPOLICY = "changePolicy";
 
     public static final Event POLICYUPDATE_EVENT = new Event("PolicyUpdate", 
-            Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
+            Arrays.asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
 
     protected static final HashMap<String, String> _addresses;
 
@@ -164,9 +164,9 @@ public class Workerpool extends Contract {
     public RemoteFunctionCall<TransactionReceipt> setName(String _ens, String _name) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETNAME, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_ens), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_ens),
                 new org.web3j.abi.datatypes.Utf8String(_name)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
@@ -174,16 +174,16 @@ public class Workerpool extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_INITIALIZE,
                 List.<Type>of(new Utf8String(_workerpoolDescription)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> changePolicy(BigInteger _newWorkerStakeRatioPolicy, BigInteger _newSchedulerRewardRatioPolicy) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_CHANGEPOLICY, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_newWorkerStakeRatioPolicy), 
+                Arrays.asList(new org.web3j.abi.datatypes.generated.Uint256(_newWorkerStakeRatioPolicy),
                 new org.web3j.abi.datatypes.generated.Uint256(_newSchedulerRewardRatioPolicy)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 

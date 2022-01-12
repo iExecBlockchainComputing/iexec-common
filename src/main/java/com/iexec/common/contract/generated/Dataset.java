@@ -132,19 +132,19 @@ public class Dataset extends Contract {
     public RemoteFunctionCall<TransactionReceipt> setName(String _ens, String _name) {
         final Function function = new Function(
                 FUNC_SETNAME, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_ens), 
+                Arrays.asList(new org.web3j.abi.datatypes.Address(_ens),
                 new org.web3j.abi.datatypes.Utf8String(_name)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> initialize(String _datasetName, byte[] _datasetMultiaddr, byte[] _datasetChecksum) {
         final Function function = new Function(
                 FUNC_INITIALIZE, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(_datasetName), 
+                Arrays.asList(new org.web3j.abi.datatypes.Utf8String(_datasetName),
                 new org.web3j.abi.datatypes.DynamicBytes(_datasetMultiaddr), 
                 new org.web3j.abi.datatypes.generated.Bytes32(_datasetChecksum)), 
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
