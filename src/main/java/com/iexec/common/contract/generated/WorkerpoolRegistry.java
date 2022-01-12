@@ -120,7 +120,7 @@ public class WorkerpoolRegistry extends Contract {
     protected static final HashMap<String, String> _addresses;
 
     static {
-        _addresses = new HashMap<String, String>();
+        _addresses = new HashMap<>();
         _addresses.put("1", "0xC76A18c78B7e530A165c5683CB1aB134E21938B4");
         _addresses.put("3", "0xC76A18c78B7e530A165c5683CB1aB134E21938B4");
         _addresses.put("4", "0xC76A18c78B7e530A165c5683CB1aB134E21938B4");
@@ -148,7 +148,7 @@ public class WorkerpoolRegistry extends Contract {
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
-        ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
+        ArrayList<ApprovalEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -161,7 +161,7 @@ public class WorkerpoolRegistry extends Contract {
     }
 
     public Flowable<ApprovalEventResponse> approvalEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, ApprovalEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public ApprovalEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
@@ -183,7 +183,7 @@ public class WorkerpoolRegistry extends Contract {
 
     public List<ApprovalForAllEventResponse> getApprovalForAllEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVALFORALL_EVENT, transactionReceipt);
-        ArrayList<ApprovalForAllEventResponse> responses = new ArrayList<ApprovalForAllEventResponse>(valueList.size());
+        ArrayList<ApprovalForAllEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ApprovalForAllEventResponse typedResponse = new ApprovalForAllEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -196,7 +196,7 @@ public class WorkerpoolRegistry extends Contract {
     }
 
     public Flowable<ApprovalForAllEventResponse> approvalForAllEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, ApprovalForAllEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public ApprovalForAllEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, log);
@@ -218,7 +218,7 @@ public class WorkerpoolRegistry extends Contract {
 
     public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
-        ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
+        ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -230,7 +230,7 @@ public class WorkerpoolRegistry extends Contract {
     }
 
     public Flowable<OwnershipTransferredEventResponse> ownershipTransferredEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, OwnershipTransferredEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public OwnershipTransferredEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
@@ -251,7 +251,7 @@ public class WorkerpoolRegistry extends Contract {
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
-        ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
+        ArrayList<TransferEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -264,7 +264,7 @@ public class WorkerpoolRegistry extends Contract {
     }
 
     public Flowable<TransferEventResponse> transferEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, TransferEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public TransferEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);

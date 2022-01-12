@@ -302,7 +302,7 @@ public class IexecHubContract extends Contract {
     protected static final HashMap<String, String> _addresses;
 
     static {
-        _addresses = new HashMap<String, String>();
+        _addresses = new HashMap<>();
     }
 
     @Deprecated
@@ -325,7 +325,7 @@ public class IexecHubContract extends Contract {
 
     public List<AccurateContributionEventResponse> getAccurateContributionEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ACCURATECONTRIBUTION_EVENT, transactionReceipt);
-        ArrayList<AccurateContributionEventResponse> responses = new ArrayList<AccurateContributionEventResponse>(valueList.size());
+        ArrayList<AccurateContributionEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             AccurateContributionEventResponse typedResponse = new AccurateContributionEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -337,7 +337,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<AccurateContributionEventResponse> accurateContributionEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, AccurateContributionEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public AccurateContributionEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ACCURATECONTRIBUTION_EVENT, log);
@@ -358,7 +358,7 @@ public class IexecHubContract extends Contract {
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
-        ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
+        ArrayList<ApprovalEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -371,7 +371,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<ApprovalEventResponse> approvalEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, ApprovalEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public ApprovalEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
@@ -393,7 +393,7 @@ public class IexecHubContract extends Contract {
 
     public List<ClosedAppOrderEventResponse> getClosedAppOrderEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(CLOSEDAPPORDER_EVENT, transactionReceipt);
-        ArrayList<ClosedAppOrderEventResponse> responses = new ArrayList<ClosedAppOrderEventResponse>(valueList.size());
+        ArrayList<ClosedAppOrderEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ClosedAppOrderEventResponse typedResponse = new ClosedAppOrderEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -404,7 +404,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<ClosedAppOrderEventResponse> closedAppOrderEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, ClosedAppOrderEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public ClosedAppOrderEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(CLOSEDAPPORDER_EVENT, log);
@@ -424,7 +424,7 @@ public class IexecHubContract extends Contract {
 
     public List<ClosedDatasetOrderEventResponse> getClosedDatasetOrderEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(CLOSEDDATASETORDER_EVENT, transactionReceipt);
-        ArrayList<ClosedDatasetOrderEventResponse> responses = new ArrayList<ClosedDatasetOrderEventResponse>(valueList.size());
+        ArrayList<ClosedDatasetOrderEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ClosedDatasetOrderEventResponse typedResponse = new ClosedDatasetOrderEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -435,7 +435,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<ClosedDatasetOrderEventResponse> closedDatasetOrderEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, ClosedDatasetOrderEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public ClosedDatasetOrderEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(CLOSEDDATASETORDER_EVENT, log);
@@ -455,7 +455,7 @@ public class IexecHubContract extends Contract {
 
     public List<ClosedRequestOrderEventResponse> getClosedRequestOrderEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(CLOSEDREQUESTORDER_EVENT, transactionReceipt);
-        ArrayList<ClosedRequestOrderEventResponse> responses = new ArrayList<ClosedRequestOrderEventResponse>(valueList.size());
+        ArrayList<ClosedRequestOrderEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ClosedRequestOrderEventResponse typedResponse = new ClosedRequestOrderEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -466,7 +466,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<ClosedRequestOrderEventResponse> closedRequestOrderEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, ClosedRequestOrderEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public ClosedRequestOrderEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(CLOSEDREQUESTORDER_EVENT, log);
@@ -486,7 +486,7 @@ public class IexecHubContract extends Contract {
 
     public List<ClosedWorkerpoolOrderEventResponse> getClosedWorkerpoolOrderEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(CLOSEDWORKERPOOLORDER_EVENT, transactionReceipt);
-        ArrayList<ClosedWorkerpoolOrderEventResponse> responses = new ArrayList<ClosedWorkerpoolOrderEventResponse>(valueList.size());
+        ArrayList<ClosedWorkerpoolOrderEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ClosedWorkerpoolOrderEventResponse typedResponse = new ClosedWorkerpoolOrderEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -497,7 +497,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<ClosedWorkerpoolOrderEventResponse> closedWorkerpoolOrderEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, ClosedWorkerpoolOrderEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public ClosedWorkerpoolOrderEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(CLOSEDWORKERPOOLORDER_EVENT, log);
@@ -517,7 +517,7 @@ public class IexecHubContract extends Contract {
 
     public List<CreateCategoryEventResponse> getCreateCategoryEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(CREATECATEGORY_EVENT, transactionReceipt);
-        ArrayList<CreateCategoryEventResponse> responses = new ArrayList<CreateCategoryEventResponse>(valueList.size());
+        ArrayList<CreateCategoryEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             CreateCategoryEventResponse typedResponse = new CreateCategoryEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -531,7 +531,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<CreateCategoryEventResponse> createCategoryEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, CreateCategoryEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public CreateCategoryEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(CREATECATEGORY_EVENT, log);
@@ -554,7 +554,7 @@ public class IexecHubContract extends Contract {
 
     public List<FaultyContributionEventResponse> getFaultyContributionEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(FAULTYCONTRIBUTION_EVENT, transactionReceipt);
-        ArrayList<FaultyContributionEventResponse> responses = new ArrayList<FaultyContributionEventResponse>(valueList.size());
+        ArrayList<FaultyContributionEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             FaultyContributionEventResponse typedResponse = new FaultyContributionEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -566,7 +566,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<FaultyContributionEventResponse> faultyContributionEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, FaultyContributionEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public FaultyContributionEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(FAULTYCONTRIBUTION_EVENT, log);
@@ -587,7 +587,7 @@ public class IexecHubContract extends Contract {
 
     public List<LockEventResponse> getLockEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(LOCK_EVENT, transactionReceipt);
-        ArrayList<LockEventResponse> responses = new ArrayList<LockEventResponse>(valueList.size());
+        ArrayList<LockEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             LockEventResponse typedResponse = new LockEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -599,7 +599,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<LockEventResponse> lockEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, LockEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public LockEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(LOCK_EVENT, log);
@@ -620,7 +620,7 @@ public class IexecHubContract extends Contract {
 
     public List<OrdersMatchedEventResponse> getOrdersMatchedEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ORDERSMATCHED_EVENT, transactionReceipt);
-        ArrayList<OrdersMatchedEventResponse> responses = new ArrayList<OrdersMatchedEventResponse>(valueList.size());
+        ArrayList<OrdersMatchedEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             OrdersMatchedEventResponse typedResponse = new OrdersMatchedEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -636,7 +636,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<OrdersMatchedEventResponse> ordersMatchedEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, OrdersMatchedEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public OrdersMatchedEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ORDERSMATCHED_EVENT, log);
@@ -661,7 +661,7 @@ public class IexecHubContract extends Contract {
 
     public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
-        ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
+        ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -673,7 +673,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<OwnershipTransferredEventResponse> ownershipTransferredEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, OwnershipTransferredEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public OwnershipTransferredEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
@@ -694,7 +694,7 @@ public class IexecHubContract extends Contract {
 
     public List<RewardEventResponse> getRewardEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(REWARD_EVENT, transactionReceipt);
-        ArrayList<RewardEventResponse> responses = new ArrayList<RewardEventResponse>(valueList.size());
+        ArrayList<RewardEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             RewardEventResponse typedResponse = new RewardEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -707,7 +707,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<RewardEventResponse> rewardEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, RewardEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public RewardEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(REWARD_EVENT, log);
@@ -729,7 +729,7 @@ public class IexecHubContract extends Contract {
 
     public List<SchedulerNoticeEventResponse> getSchedulerNoticeEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SCHEDULERNOTICE_EVENT, transactionReceipt);
-        ArrayList<SchedulerNoticeEventResponse> responses = new ArrayList<SchedulerNoticeEventResponse>(valueList.size());
+        ArrayList<SchedulerNoticeEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             SchedulerNoticeEventResponse typedResponse = new SchedulerNoticeEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -741,7 +741,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<SchedulerNoticeEventResponse> schedulerNoticeEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, SchedulerNoticeEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public SchedulerNoticeEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SCHEDULERNOTICE_EVENT, log);
@@ -762,7 +762,7 @@ public class IexecHubContract extends Contract {
 
     public List<SeizeEventResponse> getSeizeEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SEIZE_EVENT, transactionReceipt);
-        ArrayList<SeizeEventResponse> responses = new ArrayList<SeizeEventResponse>(valueList.size());
+        ArrayList<SeizeEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             SeizeEventResponse typedResponse = new SeizeEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -775,7 +775,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<SeizeEventResponse> seizeEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, SeizeEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public SeizeEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SEIZE_EVENT, log);
@@ -797,7 +797,7 @@ public class IexecHubContract extends Contract {
 
     public List<SignedAppOrderEventResponse> getSignedAppOrderEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SIGNEDAPPORDER_EVENT, transactionReceipt);
-        ArrayList<SignedAppOrderEventResponse> responses = new ArrayList<SignedAppOrderEventResponse>(valueList.size());
+        ArrayList<SignedAppOrderEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             SignedAppOrderEventResponse typedResponse = new SignedAppOrderEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -808,7 +808,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<SignedAppOrderEventResponse> signedAppOrderEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, SignedAppOrderEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public SignedAppOrderEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SIGNEDAPPORDER_EVENT, log);
@@ -828,7 +828,7 @@ public class IexecHubContract extends Contract {
 
     public List<SignedDatasetOrderEventResponse> getSignedDatasetOrderEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SIGNEDDATASETORDER_EVENT, transactionReceipt);
-        ArrayList<SignedDatasetOrderEventResponse> responses = new ArrayList<SignedDatasetOrderEventResponse>(valueList.size());
+        ArrayList<SignedDatasetOrderEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             SignedDatasetOrderEventResponse typedResponse = new SignedDatasetOrderEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -839,7 +839,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<SignedDatasetOrderEventResponse> signedDatasetOrderEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, SignedDatasetOrderEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public SignedDatasetOrderEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SIGNEDDATASETORDER_EVENT, log);
@@ -859,7 +859,7 @@ public class IexecHubContract extends Contract {
 
     public List<SignedRequestOrderEventResponse> getSignedRequestOrderEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SIGNEDREQUESTORDER_EVENT, transactionReceipt);
-        ArrayList<SignedRequestOrderEventResponse> responses = new ArrayList<SignedRequestOrderEventResponse>(valueList.size());
+        ArrayList<SignedRequestOrderEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             SignedRequestOrderEventResponse typedResponse = new SignedRequestOrderEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -870,7 +870,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<SignedRequestOrderEventResponse> signedRequestOrderEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, SignedRequestOrderEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public SignedRequestOrderEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SIGNEDREQUESTORDER_EVENT, log);
@@ -890,7 +890,7 @@ public class IexecHubContract extends Contract {
 
     public List<SignedWorkerpoolOrderEventResponse> getSignedWorkerpoolOrderEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(SIGNEDWORKERPOOLORDER_EVENT, transactionReceipt);
-        ArrayList<SignedWorkerpoolOrderEventResponse> responses = new ArrayList<SignedWorkerpoolOrderEventResponse>(valueList.size());
+        ArrayList<SignedWorkerpoolOrderEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             SignedWorkerpoolOrderEventResponse typedResponse = new SignedWorkerpoolOrderEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -901,7 +901,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<SignedWorkerpoolOrderEventResponse> signedWorkerpoolOrderEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, SignedWorkerpoolOrderEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public SignedWorkerpoolOrderEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(SIGNEDWORKERPOOLORDER_EVENT, log);
@@ -921,7 +921,7 @@ public class IexecHubContract extends Contract {
 
     public List<TaskClaimedEventResponse> getTaskClaimedEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TASKCLAIMED_EVENT, transactionReceipt);
-        ArrayList<TaskClaimedEventResponse> responses = new ArrayList<TaskClaimedEventResponse>(valueList.size());
+        ArrayList<TaskClaimedEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TaskClaimedEventResponse typedResponse = new TaskClaimedEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -932,7 +932,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<TaskClaimedEventResponse> taskClaimedEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, TaskClaimedEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public TaskClaimedEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKCLAIMED_EVENT, log);
@@ -952,7 +952,7 @@ public class IexecHubContract extends Contract {
 
     public List<TaskConsensusEventResponse> getTaskConsensusEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TASKCONSENSUS_EVENT, transactionReceipt);
-        ArrayList<TaskConsensusEventResponse> responses = new ArrayList<TaskConsensusEventResponse>(valueList.size());
+        ArrayList<TaskConsensusEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TaskConsensusEventResponse typedResponse = new TaskConsensusEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -964,7 +964,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<TaskConsensusEventResponse> taskConsensusEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, TaskConsensusEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public TaskConsensusEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKCONSENSUS_EVENT, log);
@@ -985,7 +985,7 @@ public class IexecHubContract extends Contract {
 
     public List<TaskContributeEventResponse> getTaskContributeEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TASKCONTRIBUTE_EVENT, transactionReceipt);
-        ArrayList<TaskContributeEventResponse> responses = new ArrayList<TaskContributeEventResponse>(valueList.size());
+        ArrayList<TaskContributeEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TaskContributeEventResponse typedResponse = new TaskContributeEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -998,7 +998,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<TaskContributeEventResponse> taskContributeEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, TaskContributeEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public TaskContributeEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKCONTRIBUTE_EVENT, log);
@@ -1020,7 +1020,7 @@ public class IexecHubContract extends Contract {
 
     public List<TaskFinalizeEventResponse> getTaskFinalizeEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TASKFINALIZE_EVENT, transactionReceipt);
-        ArrayList<TaskFinalizeEventResponse> responses = new ArrayList<TaskFinalizeEventResponse>(valueList.size());
+        ArrayList<TaskFinalizeEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TaskFinalizeEventResponse typedResponse = new TaskFinalizeEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -1032,7 +1032,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<TaskFinalizeEventResponse> taskFinalizeEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, TaskFinalizeEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public TaskFinalizeEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKFINALIZE_EVENT, log);
@@ -1053,7 +1053,7 @@ public class IexecHubContract extends Contract {
 
     public List<TaskInitializeEventResponse> getTaskInitializeEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TASKINITIALIZE_EVENT, transactionReceipt);
-        ArrayList<TaskInitializeEventResponse> responses = new ArrayList<TaskInitializeEventResponse>(valueList.size());
+        ArrayList<TaskInitializeEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TaskInitializeEventResponse typedResponse = new TaskInitializeEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -1065,7 +1065,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<TaskInitializeEventResponse> taskInitializeEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, TaskInitializeEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public TaskInitializeEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKINITIALIZE_EVENT, log);
@@ -1086,7 +1086,7 @@ public class IexecHubContract extends Contract {
 
     public List<TaskReopenEventResponse> getTaskReopenEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TASKREOPEN_EVENT, transactionReceipt);
-        ArrayList<TaskReopenEventResponse> responses = new ArrayList<TaskReopenEventResponse>(valueList.size());
+        ArrayList<TaskReopenEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TaskReopenEventResponse typedResponse = new TaskReopenEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -1097,7 +1097,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<TaskReopenEventResponse> taskReopenEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, TaskReopenEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public TaskReopenEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKREOPEN_EVENT, log);
@@ -1117,7 +1117,7 @@ public class IexecHubContract extends Contract {
 
     public List<TaskRevealEventResponse> getTaskRevealEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TASKREVEAL_EVENT, transactionReceipt);
-        ArrayList<TaskRevealEventResponse> responses = new ArrayList<TaskRevealEventResponse>(valueList.size());
+        ArrayList<TaskRevealEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TaskRevealEventResponse typedResponse = new TaskRevealEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -1130,7 +1130,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<TaskRevealEventResponse> taskRevealEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, TaskRevealEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public TaskRevealEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TASKREVEAL_EVENT, log);
@@ -1152,7 +1152,7 @@ public class IexecHubContract extends Contract {
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
-        ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
+        ArrayList<TransferEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -1165,7 +1165,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<TransferEventResponse> transferEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, TransferEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public TransferEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
@@ -1187,7 +1187,7 @@ public class IexecHubContract extends Contract {
 
     public List<UnlockEventResponse> getUnlockEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(UNLOCK_EVENT, transactionReceipt);
-        ArrayList<UnlockEventResponse> responses = new ArrayList<UnlockEventResponse>(valueList.size());
+        ArrayList<UnlockEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             UnlockEventResponse typedResponse = new UnlockEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -1199,7 +1199,7 @@ public class IexecHubContract extends Contract {
     }
 
     public Flowable<UnlockEventResponse> unlockEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, UnlockEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public UnlockEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(UNLOCK_EVENT, log);
@@ -1281,7 +1281,7 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> claimArray(List<byte[]> param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_CLAIMARRAY,
-                List.<Type>of(new DynamicArray<Bytes32>(
+                List.<Type>of(new DynamicArray<>(
                         Bytes32.class,
                         Utils.typeMap(param0, Bytes32.class))),
                 Collections.emptyList());
@@ -1401,12 +1401,12 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> depositForArray(List<BigInteger> param0, List<String> param1) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_DEPOSITFORARRAY, 
-                Arrays.asList(new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
-                        org.web3j.abi.datatypes.generated.Uint256.class,
-                        org.web3j.abi.Utils.typeMap(param0, org.web3j.abi.datatypes.generated.Uint256.class)), 
-                new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.Address>(
-                        org.web3j.abi.datatypes.Address.class,
-                        org.web3j.abi.Utils.typeMap(param1, org.web3j.abi.datatypes.Address.class))), 
+                Arrays.asList(new org.web3j.abi.datatypes.DynamicArray<>(
+                                org.web3j.abi.datatypes.generated.Uint256.class,
+                                org.web3j.abi.Utils.typeMap(param0, org.web3j.abi.datatypes.generated.Uint256.class)),
+                        new org.web3j.abi.datatypes.DynamicArray<>(
+                                org.web3j.abi.datatypes.Address.class,
+                                org.web3j.abi.Utils.typeMap(param1, org.web3j.abi.datatypes.Address.class))),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1482,12 +1482,12 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> initializeAndClaimArray(List<byte[]> param0, List<BigInteger> param1) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_INITIALIZEANDCLAIMARRAY, 
-                Arrays.asList(new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Bytes32>(
-                        org.web3j.abi.datatypes.generated.Bytes32.class,
-                        org.web3j.abi.Utils.typeMap(param0, org.web3j.abi.datatypes.generated.Bytes32.class)), 
-                new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
-                        org.web3j.abi.datatypes.generated.Uint256.class,
-                        org.web3j.abi.Utils.typeMap(param1, org.web3j.abi.datatypes.generated.Uint256.class))), 
+                Arrays.asList(new org.web3j.abi.datatypes.DynamicArray<>(
+                                org.web3j.abi.datatypes.generated.Bytes32.class,
+                                org.web3j.abi.Utils.typeMap(param0, org.web3j.abi.datatypes.generated.Bytes32.class)),
+                        new org.web3j.abi.datatypes.DynamicArray<>(
+                                org.web3j.abi.datatypes.generated.Uint256.class,
+                                org.web3j.abi.Utils.typeMap(param1, org.web3j.abi.datatypes.generated.Uint256.class))),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1495,12 +1495,12 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> initializeArray(List<byte[]> param0, List<BigInteger> param1) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_INITIALIZEARRAY, 
-                Arrays.asList(new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Bytes32>(
-                        org.web3j.abi.datatypes.generated.Bytes32.class,
-                        org.web3j.abi.Utils.typeMap(param0, org.web3j.abi.datatypes.generated.Bytes32.class)), 
-                new org.web3j.abi.datatypes.DynamicArray<org.web3j.abi.datatypes.generated.Uint256>(
-                        org.web3j.abi.datatypes.generated.Uint256.class,
-                        org.web3j.abi.Utils.typeMap(param1, org.web3j.abi.datatypes.generated.Uint256.class))), 
+                Arrays.asList(new org.web3j.abi.datatypes.DynamicArray<>(
+                                org.web3j.abi.datatypes.generated.Bytes32.class,
+                                org.web3j.abi.Utils.typeMap(param0, org.web3j.abi.datatypes.generated.Bytes32.class)),
+                        new org.web3j.abi.datatypes.DynamicArray<>(
+                                org.web3j.abi.datatypes.generated.Uint256.class,
+                                org.web3j.abi.Utils.typeMap(param1, org.web3j.abi.datatypes.generated.Uint256.class))),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1730,13 +1730,13 @@ public class IexecHubContract extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWACCOUNTABILEGACY,
                 List.<Type>of(new Address(_user)),
                 Arrays.asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        return new RemoteFunctionCall<Tuple2<BigInteger, BigInteger>>(function,
-                new Callable<Tuple2<BigInteger, BigInteger>>() {
+        return new RemoteFunctionCall<>(function,
+                new Callable<>() {
                     @Override
                     public Tuple2<BigInteger, BigInteger> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
-                        return new Tuple2<BigInteger, BigInteger>(
-                                (BigInteger) results.get(0).getValue(), 
+                        return new Tuple2<>(
+                                (BigInteger) results.get(0).getValue(),
                                 (BigInteger) results.get(1).getValue());
                     }
                 });
@@ -1746,14 +1746,14 @@ public class IexecHubContract extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWCATEGORYABILEGACY,
                 List.<Type>of(new Uint256(_catid)),
                 Arrays.asList(new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Uint256>() {}));
-        return new RemoteFunctionCall<Tuple3<String, String, BigInteger>>(function,
-                new Callable<Tuple3<String, String, BigInteger>>() {
+        return new RemoteFunctionCall<>(function,
+                new Callable<>() {
                     @Override
                     public Tuple3<String, String, BigInteger> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
-                        return new Tuple3<String, String, BigInteger>(
-                                (String) results.get(0).getValue(), 
-                                (String) results.get(1).getValue(), 
+                        return new Tuple3<>(
+                                (String) results.get(0).getValue(),
+                                (String) results.get(1).getValue(),
                                 (BigInteger) results.get(2).getValue());
                     }
                 });
@@ -1763,17 +1763,17 @@ public class IexecHubContract extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWCONFIGABILEGACY,
                 List.<Type>of(new Bytes32(_id)),
                 Arrays.asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
-        return new RemoteFunctionCall<Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>>(function,
-                new Callable<Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>>() {
+        return new RemoteFunctionCall<>(function,
+                new Callable<>() {
                     @Override
                     public Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
-                        return new Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>(
-                                (BigInteger) results.get(0).getValue(), 
-                                (BigInteger) results.get(1).getValue(), 
-                                (BigInteger) results.get(2).getValue(), 
-                                (BigInteger) results.get(3).getValue(), 
-                                (BigInteger) results.get(4).getValue(), 
+                        return new Tuple6<>(
+                                (BigInteger) results.get(0).getValue(),
+                                (BigInteger) results.get(1).getValue(),
+                                (BigInteger) results.get(2).getValue(),
+                                (BigInteger) results.get(3).getValue(),
+                                (BigInteger) results.get(4).getValue(),
                                 (BigInteger) results.get(5).getValue());
                     }
                 });
@@ -1792,15 +1792,15 @@ public class IexecHubContract extends Contract {
                 Arrays.asList(new org.web3j.abi.datatypes.generated.Bytes32(_taskid),
                 new org.web3j.abi.datatypes.Address(_worker)), 
                 Arrays.asList(new TypeReference<Uint8>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}));
-        return new RemoteFunctionCall<Tuple4<BigInteger, byte[], byte[], String>>(function,
-                new Callable<Tuple4<BigInteger, byte[], byte[], String>>() {
+        return new RemoteFunctionCall<>(function,
+                new Callable<>() {
                     @Override
                     public Tuple4<BigInteger, byte[], byte[], String> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
-                        return new Tuple4<BigInteger, byte[], byte[], String>(
-                                (BigInteger) results.get(0).getValue(), 
-                                (byte[]) results.get(1).getValue(), 
-                                (byte[]) results.get(2).getValue(), 
+                        return new Tuple4<>(
+                                (BigInteger) results.get(0).getValue(),
+                                (byte[]) results.get(1).getValue(),
+                                (byte[]) results.get(2).getValue(),
                                 (String) results.get(3).getValue());
                     }
                 });
@@ -1810,20 +1810,20 @@ public class IexecHubContract extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWDEALABILEGACY_PT1,
                 List.<Type>of(new Bytes32(_id)),
                 Arrays.asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
-        return new RemoteFunctionCall<Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger>>(function,
-                new Callable<Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger>>() {
+        return new RemoteFunctionCall<>(function,
+                new Callable<>() {
                     @Override
                     public Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
-                        return new Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger>(
-                                (String) results.get(0).getValue(), 
-                                (String) results.get(1).getValue(), 
-                                (BigInteger) results.get(2).getValue(), 
-                                (String) results.get(3).getValue(), 
-                                (String) results.get(4).getValue(), 
-                                (BigInteger) results.get(5).getValue(), 
-                                (String) results.get(6).getValue(), 
-                                (String) results.get(7).getValue(), 
+                        return new Tuple9<>(
+                                (String) results.get(0).getValue(),
+                                (String) results.get(1).getValue(),
+                                (BigInteger) results.get(2).getValue(),
+                                (String) results.get(3).getValue(),
+                                (String) results.get(4).getValue(),
+                                (BigInteger) results.get(5).getValue(),
+                                (String) results.get(6).getValue(),
+                                (String) results.get(7).getValue(),
                                 (BigInteger) results.get(8).getValue());
                     }
                 });
@@ -1833,17 +1833,17 @@ public class IexecHubContract extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWDEALABILEGACY_PT2,
                 List.<Type>of(new Bytes32(_id)),
                 Arrays.asList(new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Utf8String>() {}));
-        return new RemoteFunctionCall<Tuple6<BigInteger, byte[], String, String, String, String>>(function,
-                new Callable<Tuple6<BigInteger, byte[], String, String, String, String>>() {
+        return new RemoteFunctionCall<>(function,
+                new Callable<>() {
                     @Override
                     public Tuple6<BigInteger, byte[], String, String, String, String> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
-                        return new Tuple6<BigInteger, byte[], String, String, String, String>(
-                                (BigInteger) results.get(0).getValue(), 
-                                (byte[]) results.get(1).getValue(), 
-                                (String) results.get(2).getValue(), 
-                                (String) results.get(3).getValue(), 
-                                (String) results.get(4).getValue(), 
+                        return new Tuple6<>(
+                                (BigInteger) results.get(0).getValue(),
+                                (byte[]) results.get(1).getValue(),
+                                (String) results.get(2).getValue(),
+                                (String) results.get(3).getValue(),
+                                (String) results.get(4).getValue(),
                                 (String) results.get(5).getValue());
                     }
                 });
@@ -1870,23 +1870,23 @@ public class IexecHubContract extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWTASKABILEGACY,
                 List.<Type>of(new Bytes32(_taskid)),
                 Arrays.asList(new TypeReference<Uint8>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<DynamicArray<Address>>() {}, new TypeReference<DynamicBytes>() {}));
-        return new RemoteFunctionCall<Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]>>(function,
-                new Callable<Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]>>() {
+        return new RemoteFunctionCall<>(function,
+                new Callable<>() {
                     @Override
                     public Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]> call() throws Exception {
                         List<Type> results = executeCallMultipleValueReturn(function);
-                        return new Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]>(
-                                (BigInteger) results.get(0).getValue(), 
-                                (byte[]) results.get(1).getValue(), 
-                                (BigInteger) results.get(2).getValue(), 
-                                (BigInteger) results.get(3).getValue(), 
-                                (BigInteger) results.get(4).getValue(), 
-                                (BigInteger) results.get(5).getValue(), 
-                                (BigInteger) results.get(6).getValue(), 
-                                (byte[]) results.get(7).getValue(), 
-                                (BigInteger) results.get(8).getValue(), 
-                                (BigInteger) results.get(9).getValue(), 
-                                convertToNative((List<Address>) results.get(10).getValue()), 
+                        return new Tuple12<>(
+                                (BigInteger) results.get(0).getValue(),
+                                (byte[]) results.get(1).getValue(),
+                                (BigInteger) results.get(2).getValue(),
+                                (BigInteger) results.get(3).getValue(),
+                                (BigInteger) results.get(4).getValue(),
+                                (BigInteger) results.get(5).getValue(),
+                                (BigInteger) results.get(6).getValue(),
+                                (byte[]) results.get(7).getValue(),
+                                (BigInteger) results.get(8).getValue(),
+                                (BigInteger) results.get(9).getValue(),
+                                convertToNative((List<Address>) results.get(10).getValue()),
                                 (byte[]) results.get(11).getValue());
                     }
                 });

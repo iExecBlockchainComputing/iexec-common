@@ -68,7 +68,7 @@ public class Dataset extends Contract {
     protected static final HashMap<String, String> _addresses;
 
     static {
-        _addresses = new HashMap<String, String>();
+        _addresses = new HashMap<>();
     }
 
     @Deprecated

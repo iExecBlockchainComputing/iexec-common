@@ -88,7 +88,7 @@ public class IexecEnvUtils {
      * @return
      */
     public static Map<String, String> getComputeStageEnvMap(TaskDescription taskDescription) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put(IEXEC_TASK_ID, taskDescription.getChainTaskId());
         map.put(IEXEC_IN, IexecFileHelper.SLASH_IEXEC_IN);
         map.put(IEXEC_OUT, IexecFileHelper.SLASH_IEXEC_OUT);

@@ -256,7 +256,7 @@ public class FileHelper {
         Path sourceFolderPath = Paths.get(folderPath);
 
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFilePath))) {
-            Files.walkFileTree(sourceFolderPath, new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(sourceFolderPath, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     log.debug("Adding file to zip [file:{}, zip:{}]", file.toAbsolutePath(), zipFilePath);

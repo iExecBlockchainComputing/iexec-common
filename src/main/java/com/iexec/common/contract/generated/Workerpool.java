@@ -63,7 +63,7 @@ public class Workerpool extends Contract {
     protected static final HashMap<String, String> _addresses;
 
     static {
-        _addresses = new HashMap<String, String>();
+        _addresses = new HashMap<>();
     }
 
     @Deprecated
@@ -86,7 +86,7 @@ public class Workerpool extends Contract {
 
     public List<PolicyUpdateEventResponse> getPolicyUpdateEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(POLICYUPDATE_EVENT, transactionReceipt);
-        ArrayList<PolicyUpdateEventResponse> responses = new ArrayList<PolicyUpdateEventResponse>(valueList.size());
+        ArrayList<PolicyUpdateEventResponse> responses = new ArrayList<>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             PolicyUpdateEventResponse typedResponse = new PolicyUpdateEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -100,7 +100,7 @@ public class Workerpool extends Contract {
     }
 
     public Flowable<PolicyUpdateEventResponse> policyUpdateEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<Log, PolicyUpdateEventResponse>() {
+        return web3j.ethLogFlowable(filter).map(new Function<>() {
             @Override
             public PolicyUpdateEventResponse apply(Log log) {
                 Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(POLICYUPDATE_EVENT, log);
