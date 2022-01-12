@@ -1,7 +1,6 @@
 package com.iexec.common.contract.generated;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.List;
 
 import org.web3j.abi.TypeReference;
