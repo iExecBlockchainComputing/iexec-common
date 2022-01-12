@@ -37,7 +37,7 @@ class CredentialsAbstractServiceTests {
 
     public static final String WALLET_PASS = "wallet-pass";
 
-    class CredentialsServiceStub extends CredentialsAbstractService {
+    static class CredentialsServiceStub extends CredentialsAbstractService {
         public CredentialsServiceStub(String walletPassword, String walletPath) throws Exception {
             super(walletPassword, walletPath);
         }
