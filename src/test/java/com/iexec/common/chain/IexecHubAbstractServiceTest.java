@@ -47,7 +47,7 @@ class IexecHubAbstractServiceTest {
     private IexecHubAbstractService iexecHubAbstractService;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         MockitoAnnotations.openMocks(this);
         CHAIN_TASK_ID = generateChainTaskId(CHAIN_DEAL_ID, 0);
     }

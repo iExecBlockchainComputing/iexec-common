@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EthAddressTests {
+class EthAddressTests {
     @Test
-    public void validateAddress() {
+    void validateAddress() {
         String validChecksumAddress = "0x1Ec09E1782a43a770D54e813379c730E0b29aD4B";
         // valid lowercase address
         assertTrue(EthAddress.validate(validChecksumAddress.toLowerCase()));

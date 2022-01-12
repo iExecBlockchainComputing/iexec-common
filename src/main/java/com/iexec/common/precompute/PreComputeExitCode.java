@@ -46,7 +46,7 @@ public enum PreComputeExitCode {
 
     private final int value;
 
-    private PreComputeExitCode(int n) {
+    PreComputeExitCode(int n) {
         this.value = n;
     }
 

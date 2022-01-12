@@ -28,7 +28,7 @@ class Eip712ChallengeUtilsTests {
     private Eip712Challenge eip712Challenge;
 
     @BeforeEach
-    public void init() {
+    void init() {
         eip712Challenge = new Eip712Challenge("0x10ff103511e3e233033628dbd641136d4670c16c33a4ce11950ab316ef18bce9", 17);
     }
 

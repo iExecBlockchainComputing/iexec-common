@@ -231,7 +231,7 @@ class TaskDescriptionTest {
     }
 
     @Test
-    public void shouldContainDataset() {
+    void shouldContainDataset() {
         Assertions.assertTrue(TaskDescription.builder()
                 .datasetAddress(DATASET_ADDRESS)
                 .datasetUri(DATASET_URI)
@@ -242,7 +242,7 @@ class TaskDescriptionTest {
     }
 
     @Test
-    public void shouldNotContainDataset() {
+    void shouldNotContainDataset() {
         Assertions.assertFalse(TaskDescription.builder()
                 // .datasetAddress(DATASET_ADDRESS)
                 .datasetUri(DATASET_URI)
@@ -277,7 +277,7 @@ class TaskDescriptionTest {
     }
 
     @Test
-    public void shouldContainCallback() {
+    void shouldContainCallback() {
         Assertions.assertTrue(TaskDescription.builder()
                 .callback(CALLBACK)
                 .build()
@@ -285,7 +285,7 @@ class TaskDescriptionTest {
     }
 
     @Test
-    public void shouldNotContainCallback() {
+    void shouldNotContainCallback() {
         Assertions.assertFalse(TaskDescription.builder()
                 .callback(BytesUtils.EMPTY_ADDRESS)
                 .build()
@@ -297,7 +297,7 @@ class TaskDescriptionTest {
     }
 
     @Test
-    public void shouldContainInputFiles() {
+    void shouldContainInputFiles() {
         Assertions.assertTrue(TaskDescription.builder()
                 .chainTaskId(CHAIN_TASK_ID)
                 .inputFiles(List.of("http://file1", "http://file2"))
@@ -306,7 +306,7 @@ class TaskDescriptionTest {
     }
 
     @Test
-    public void shouldNotContainInputFiles() {
+    void shouldNotContainInputFiles() {
         Assertions.assertFalse(TaskDescription.builder()
                 .chainTaskId(CHAIN_TASK_ID)
                 // .inputFiles(List.of("http://file1", "http://file2"))
@@ -315,7 +315,7 @@ class TaskDescriptionTest {
     }
 
     @Test
-    public void shouldContainPostCompute() {
+    void shouldContainPostCompute() {
         Assertions.assertTrue(TaskDescription.builder()
                 .chainTaskId(CHAIN_TASK_ID)
                 .teePostComputeImage(TEE_POST_COMPUTE_IMAGE)
@@ -325,7 +325,7 @@ class TaskDescriptionTest {
     }
 
     @Test
-    public void shouldNotContainPostComputeIfMissingImage() {
+    void shouldNotContainPostComputeIfMissingImage() {
         Assertions.assertFalse(TaskDescription.builder()
                 .chainTaskId(CHAIN_TASK_ID)
                 // .teePostComputeImage(TEE_POST_COMPUTE_IMAGE)
@@ -335,7 +335,7 @@ class TaskDescriptionTest {
     }
 
     @Test
-    public void shouldNotContainPostComputeIfMissingFingerprint() {
+    void shouldNotContainPostComputeIfMissingFingerprint() {
         Assertions.assertFalse(TaskDescription.builder()
                 .chainTaskId(CHAIN_TASK_ID)
                 .teePostComputeImage(TEE_POST_COMPUTE_IMAGE)
@@ -345,7 +345,7 @@ class TaskDescriptionTest {
     }
 
     @Test
-    public void shouldNotContainPostComputeIfMissingBothImageAndFingerprint() {
+    void shouldNotContainPostComputeIfMissingBothImageAndFingerprint() {
         Assertions.assertFalse(TaskDescription.builder()
                 .chainTaskId(CHAIN_TASK_ID)
                 // .teePostComputeImage(TEE_POST_COMPUTE_IMAGE)

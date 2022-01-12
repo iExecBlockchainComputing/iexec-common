@@ -28,7 +28,7 @@ import org.web3j.crypto.WalletUtils;
 import java.io.IOException;
 import java.math.BigInteger;
 
-public class EIP712WorkerpoolOrderTest {
+class EIP712WorkerpoolOrderTest {
 
     public static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
     public static final String POOL_ADDRESS = "0x53Ef1328a96E40E125bca15b9a4da045C5e63E1A";
@@ -43,7 +43,7 @@ public class EIP712WorkerpoolOrderTest {
      * Note: Don't forget to update salt
      */
     @Test
-    public void signWorkerpoolOrderEIP712() {
+    void signWorkerpoolOrderEIP712() {
         EIP712WorkerpoolOrder eip712WorkerpoolOrder = new EIP712WorkerpoolOrder(
                 DOMAIN,
                 WorkerpoolOrder.builder()

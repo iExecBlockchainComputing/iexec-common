@@ -21,14 +21,14 @@ import org.junit.jupiter.api.Test;
 import static com.iexec.common.utils.BytesUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class BytesUtilsTests {
+class BytesUtilsTests {
 
     private String hexaString = "0x00916a7d68e0ed8714fde137ed60de0e586e75467ae6ca0b090950f772ca9ac8";
     private byte[] bytes = new byte[]{0, -111, 106, 125, 104, -32, -19, -121, 20, -3, -31, 55, -19, 96, -34, 14, 88, 110,
             117, 70, 122, -26, -54, 11, 9, 9, 80, -9, 114, -54, -102, -56};
 
     @Test
-    public void shouldBeValid() {
+    void shouldBeValid() {
         assertEquals(hexaString, bytesToString(bytes));
         assertArrayEquals(stringToBytes(hexaString), bytes);
 
@@ -37,63 +37,63 @@ public class BytesUtilsTests {
     }
 
     @Test
-    public void shouldBeHexStringWithPrefix() {
+    void shouldBeHexStringWithPrefix() {
         assertTrue(isHexStringWithPrefix("0xabc123"));
     }
 
     @Test
-    public void shouldNotBeHexStringWithPrefixSinceNoPrefix() {
+    void shouldNotBeHexStringWithPrefixSinceNoPrefix() {
         assertFalse(isHexStringWithPrefix("abc123"));
     }
 
     @Test
-    public void shouldNotBeHexStringWithPrefixSinceNotHex() {
+    void shouldNotBeHexStringWithPrefixSinceNotHex() {
         assertFalse(isHexStringWithPrefix("0xabc123defg"));
     }
 
     @Test
-    public void shouldNotBeHexStringWithPrefixSinceMissing() {
+    void shouldNotBeHexStringWithPrefixSinceMissing() {
         assertFalse(isHexStringWithPrefix("0x"));
     }
 
     @Test
-    public void shouldNotBeHexStringWithPrefixSinceEmpty() {
+    void shouldNotBeHexStringWithPrefixSinceEmpty() {
         assertFalse(isHexStringWithPrefix(""));
     }
 
     @Test
-    public void shouldNotBeHexStringWithPrefixSinceNull() {
+    void shouldNotBeHexStringWithPrefixSinceNull() {
         assertFalse(isHexStringWithPrefix(null));
     }
 
 
     @Test
-    public void shouldBeHexString() {
+    void shouldBeHexString() {
         assertTrue(isHexString("0xabc123"));
     }
 
     @Test
-    public void shouldBeHexStringWithoutPrefix() {
+    void shouldBeHexStringWithoutPrefix() {
         assertTrue(isHexString("abc123"));
     }
 
     @Test
-    public void shouldNotBeHexStringSinceNotHexa() {
+    void shouldNotBeHexStringSinceNotHexa() {
         assertFalse(isHexString("0xabc123defg"));
     }
 
     @Test
-    public void shouldNotBeHexStringSinceEmptyWithPrefix() {
+    void shouldNotBeHexStringSinceEmptyWithPrefix() {
         assertFalse(isHexString("0x"));
     }
 
     @Test
-    public void shouldNotBeHexStringSinceEmpty() {
+    void shouldNotBeHexStringSinceEmpty() {
         assertFalse(isHexString(""));
     }
 
     @Test
-    public void shouldNotBeHexStringSinceNull() {
+    void shouldNotBeHexStringSinceNull() {
         assertFalse(isHexString(null));
     }
 

@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 
-public class DatasetOrderTest {
+class DatasetOrderTest {
 
     @Test
-    public void getDatasetOrder() throws JsonProcessingException {
+    void getDatasetOrder() throws JsonProcessingException {
         DatasetOrder datasetOrder = DatasetOrder.builder()
                 .dataset(BytesUtils.EMPTY_ADDRESS)
                 .price(BigInteger.valueOf(0))

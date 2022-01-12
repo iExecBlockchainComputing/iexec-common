@@ -20,12 +20,12 @@ import com.iexec.common.result.ComputedFile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class IexecFileHelperTest {
+class IexecFileHelperTest {
 
     private static final String CHAIN_TASK_ID = "CHAIN_TASK_ID";
 
     @Test
-    public void shouldReadComputedFile() {
+    void shouldReadComputedFile() {
         String computedFileDirPath = "src/test/resources/result/valid/";
 
         ComputedFile computedFile = IexecFileHelper.readComputedFile(CHAIN_TASK_ID, computedFileDirPath);
@@ -33,7 +33,7 @@ public class IexecFileHelperTest {
     }
 
     @Test
-    public void shouldReadComputedFileWithoutTrailingSlash() {
+    void shouldReadComputedFileWithoutTrailingSlash() {
         String computedFileDirPath = "src/test/resources/result/valid";
 
         ComputedFile computedFile = IexecFileHelper.readComputedFile(CHAIN_TASK_ID, computedFileDirPath);
@@ -41,7 +41,7 @@ public class IexecFileHelperTest {
     }
 
     @Test
-    public void shouldNotReadComputedFileEmptyPath() {
+    void shouldNotReadComputedFileEmptyPath() {
         String computedFileDirPath = "";
 
         ComputedFile computedFile = IexecFileHelper.readComputedFile(CHAIN_TASK_ID, computedFileDirPath);
@@ -49,7 +49,7 @@ public class IexecFileHelperTest {
     }
 
     @Test
-    public void shouldNotReadComputedFileSinceInvalidPath() {
+    void shouldNotReadComputedFileSinceInvalidPath() {
         String computedFileDirPath = "/nowhere/nowhere/";
 
         ComputedFile computedFile = IexecFileHelper.readComputedFile(CHAIN_TASK_ID, computedFileDirPath);

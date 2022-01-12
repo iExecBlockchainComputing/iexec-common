@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 
-public class EIP712UtilsTest {
+class EIP712UtilsTest {
 
     @Test
-    public void encodeUTF8String() {
+    void encodeUTF8String() {
         String someText = "some text";
         Assertions.assertThat(EIP712Utils.encodeData(someText))
                 .isEqualTo(EIP712Utils.encodeUTF8String(someText))
@@ -33,7 +33,7 @@ public class EIP712UtilsTest {
     }
 
     @Test
-    public void encodeHexString() {
+    void encodeHexString() {
         String param = "0x000000000000000000000000000000000000000000000000000000000000000a";
         Assertions.assertThat(EIP712Utils.encodeData(param))
                 .isEqualTo(EIP712Utils.encodeHexString(param))
@@ -41,7 +41,7 @@ public class EIP712UtilsTest {
     }
 
     @Test
-    public void encodeHexStringIfLowerThanBytes32() {
+    void encodeHexStringIfLowerThanBytes32() {
         String param = "0x0a";
         Assertions.assertThat(EIP712Utils.encodeData(param))
                 .isEqualTo(EIP712Utils.encodeHexString(param))
@@ -49,19 +49,19 @@ public class EIP712UtilsTest {
     }
 
     @Test
-    public void shouldNotEncodeHexStringSinceNotHex() {
+    void shouldNotEncodeHexStringSinceNotHex() {
         String param = "xyz";
         Assertions.assertThat(EIP712Utils.encodeHexString(param)).isEmpty();
     }
 
     @Test
-    public void shouldNotEncodeHexStringSinceMoreThanBytes32() {
+    void shouldNotEncodeHexStringSinceMoreThanBytes32() {
         String param = "0x000000000000000000000000000000000000000000000000000000000000000a" + "0b";
         Assertions.assertThat(EIP712Utils.encodeHexString(param)).isEmpty();
     }
 
     @Test
-    public void encodeLong() {
+    void encodeLong() {
         Long param = 11L;
         Assertions.assertThat(EIP712Utils.encodeData(param))
                 .isEqualTo(EIP712Utils.encodeLong(param))
@@ -69,7 +69,7 @@ public class EIP712UtilsTest {
     }
 
     @Test
-    public void encodeBigInteger() {
+    void encodeBigInteger() {
         BigInteger param = BigInteger.valueOf(12);
         Assertions.assertThat(EIP712Utils.encodeData(param))
                 .isEqualTo(EIP712Utils.encodeBigInteger(param))
@@ -77,7 +77,7 @@ public class EIP712UtilsTest {
     }
 
     @Test
-    public void encodeByteArray() {
+    void encodeByteArray() {
         String param = "0x000000000000000000000000000000000000000000000000000000000000000d";
         Assertions.assertThat(EIP712Utils.encodeData(BytesUtils.stringToBytes(param)))
                 .isEqualTo(EIP712Utils.encodeByteArray(BytesUtils.stringToBytes(param)))
@@ -85,7 +85,7 @@ public class EIP712UtilsTest {
     }
 
     @Test
-    public void shouldNotEncodeByteArraySinceNotBytes32() {
+    void shouldNotEncodeByteArraySinceNotBytes32() {
         String param = "0x0a";
         Assertions.assertThat(EIP712Utils.encodeByteArray(BytesUtils.stringToBytes(param))).isEmpty();
     }

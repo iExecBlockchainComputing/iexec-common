@@ -23,7 +23,7 @@ public enum OrderTag {
 
     private final String value;
 
-    private OrderTag(String value) {
+    OrderTag(String value) {
         this.value = value;
     }
 
