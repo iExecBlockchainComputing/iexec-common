@@ -72,136 +72,136 @@ public class IexecLibOrders_v5 extends Contract {
 
     public RemoteFunctionCall<byte[]> APPORDEROPERATION_TYPEHASH() {
         final Function function = new Function(FUNC_APPORDEROPERATION_TYPEHASH,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> APPORDER_TYPEHASH() {
         final Function function = new Function(FUNC_APPORDER_TYPEHASH,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> DATASETORDEROPERATION_TYPEHASH() {
         final Function function = new Function(FUNC_DATASETORDEROPERATION_TYPEHASH,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> DATASETORDER_TYPEHASH() {
         final Function function = new Function(FUNC_DATASETORDER_TYPEHASH,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> EIP712DOMAIN_TYPEHASH() {
         final Function function = new Function(FUNC_EIP712DOMAIN_TYPEHASH,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> REQUESTORDEROPERATION_TYPEHASH() {
         final Function function = new Function(FUNC_REQUESTORDEROPERATION_TYPEHASH,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> REQUESTORDER_TYPEHASH() {
         final Function function = new Function(FUNC_REQUESTORDER_TYPEHASH,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> WORKERPOOLORDEROPERATION_TYPEHASH() {
         final Function function = new Function(FUNC_WORKERPOOLORDEROPERATION_TYPEHASH,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> WORKERPOOLORDER_TYPEHASH() {
         final Function function = new Function(FUNC_WORKERPOOLORDER_TYPEHASH,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> hash(DatasetOrder _datasetorder) {
         final Function function = new Function(FUNC_hash,
-                List.<Type>of(_datasetorder),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(_datasetorder),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> hash(DatasetOrderOperation _datasetorderoperation) {
         final Function function = new Function(FUNC_hash,
-                List.<Type>of(_datasetorderoperation),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(_datasetorderoperation),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> hash(WorkerpoolOrderOperation _workerpoolorderoperation) {
         final Function function = new Function(FUNC_hash,
-                List.<Type>of(_workerpoolorderoperation),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(_workerpoolorderoperation),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> hash(AppOrderOperation _apporderoperation) {
         final Function function = new Function(FUNC_hash,
-                List.<Type>of(_apporderoperation),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(_apporderoperation),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> hash(EIP712Domain _domain) {
         final Function function = new Function(FUNC_hash,
-                List.<Type>of(_domain),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(_domain),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> hash(AppOrder _apporder) {
         final Function function = new Function(FUNC_hash,
-                List.<Type>of(_apporder),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(_apporder),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> hash(RequestOrder _requestorder) {
         final Function function = new Function(FUNC_hash,
-                List.<Type>of(_requestorder),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(_requestorder),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> hash(WorkerpoolOrder _workerpoolorder) {
         final Function function = new Function(FUNC_hash,
-                List.<Type>of(_workerpoolorder),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(_workerpoolorder),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }

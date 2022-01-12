@@ -214,19 +214,19 @@ public class IexecHubContract extends Contract {
             Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>() {}));
 
     public static final Event CLOSEDAPPORDER_EVENT = new Event("ClosedAppOrder",
-            List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+            List.of(new TypeReference<Bytes32>() {
             }));
 
     public static final Event CLOSEDDATASETORDER_EVENT = new Event("ClosedDatasetOrder",
-            List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+            List.of(new TypeReference<Bytes32>() {
             }));
 
     public static final Event CLOSEDREQUESTORDER_EVENT = new Event("ClosedRequestOrder",
-            List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+            List.of(new TypeReference<Bytes32>() {
             }));
 
     public static final Event CLOSEDWORKERPOOLORDER_EVENT = new Event("ClosedWorkerpoolOrder",
-            List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+            List.of(new TypeReference<Bytes32>() {
             }));
 
     public static final Event CREATECATEGORY_EVENT = new Event("CreateCategory", 
@@ -254,23 +254,23 @@ public class IexecHubContract extends Contract {
             Arrays.asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}));
 
     public static final Event SIGNEDAPPORDER_EVENT = new Event("SignedAppOrder",
-            List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+            List.of(new TypeReference<Bytes32>() {
             }));
 
     public static final Event SIGNEDDATASETORDER_EVENT = new Event("SignedDatasetOrder",
-            List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+            List.of(new TypeReference<Bytes32>() {
             }));
 
     public static final Event SIGNEDREQUESTORDER_EVENT = new Event("SignedRequestOrder",
-            List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+            List.of(new TypeReference<Bytes32>() {
             }));
 
     public static final Event SIGNEDWORKERPOOLORDER_EVENT = new Event("SignedWorkerpoolOrder",
-            List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+            List.of(new TypeReference<Bytes32>() {
             }));
 
     public static final Event TASKCLAIMED_EVENT = new Event("TaskClaimed",
-            List.<TypeReference<?>>of(new TypeReference<Bytes32>(true) {
+            List.of(new TypeReference<Bytes32>(true) {
             }));
 
     public static final Event TASKCONSENSUS_EVENT = new Event("TaskConsensus", 
@@ -286,7 +286,7 @@ public class IexecHubContract extends Contract {
             Arrays.asList(new TypeReference<Bytes32>(true) {}, new TypeReference<Address>(true) {}));
 
     public static final Event TASKREOPEN_EVENT = new Event("TaskReopen",
-            List.<TypeReference<?>>of(new TypeReference<Bytes32>(true) {
+            List.of(new TypeReference<Bytes32>(true) {
             }));
 
     public static final Event TASKREVEAL_EVENT = new Event("TaskReveal", 
@@ -1140,15 +1140,15 @@ public class IexecHubContract extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ALLOWANCE, 
                 Arrays.asList(new org.web3j.abi.datatypes.Address(param0),
                 new org.web3j.abi.datatypes.Address(param1)),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<String> appregistry() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_APPREGISTRY,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
@@ -1174,16 +1174,16 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<BigInteger> balanceOf(String param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_BALANCEOF,
-                List.<Type>of(new Address(param0)),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(new Address(param0)),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<BigInteger> callbackgas() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_CALLBACKGAS,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -1191,7 +1191,7 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> claim(byte[] param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_CLAIM,
-                List.<Type>of(new Bytes32(param0)),
+                List.of(new Bytes32(param0)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1199,7 +1199,7 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> claimArray(List<byte[]> param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_CLAIMARRAY,
-                List.<Type>of(new DynamicArray<>(
+                List.of(new DynamicArray<>(
                         Bytes32.class,
                         Utils.typeMap(param0, Bytes32.class))),
                 Collections.emptyList());
@@ -1250,16 +1250,16 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<BigInteger> contribution_deadline_ratio() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_CONTRIBUTION_DEADLINE_RATIO,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<BigInteger> countCategory() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_COUNTCATEGORY,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -1276,16 +1276,16 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<String> datasetregistry() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_DATASETREGISTRY,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<BigInteger> decimals() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_DECIMALS,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint8>() {
+                List.of(),
+                List.of(new TypeReference<Uint8>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -1302,7 +1302,7 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> deposit(BigInteger param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_DEPOSIT,
-                List.<Type>of(new Uint256(param0)),
+                List.of(new Uint256(param0)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1331,16 +1331,16 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<byte[]> eip712domain_separator() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_EIP712DOMAIN_SEPARATOR,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<BigInteger> final_deadline_ratio() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FINAL_DEADLINE_RATIO,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -1357,16 +1357,16 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<BigInteger> frozenOf(String param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FROZENOF,
-                List.<Type>of(new Address(param0)),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(new Address(param0)),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<BigInteger> groupmember_purpose() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GROUPMEMBER_PURPOSE,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -1374,7 +1374,7 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> importScore(String param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_IMPORTSCORE,
-                List.<Type>of(new Address(param0)),
+                List.of(new Address(param0)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1425,40 +1425,40 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<String> kitty_address() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_KITTY_ADDRESS,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<BigInteger> kitty_min() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_KITTY_MIN,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<BigInteger> kitty_ratio() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_KITTY_RATIO,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<String> name() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_NAME,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Utf8String>() {
+                List.of(),
+                List.of(new TypeReference<Utf8String>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> owner() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNER,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
@@ -1477,7 +1477,7 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> recover() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_RECOVER,
-                List.<Type>of(),
+                List.of(),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1485,7 +1485,7 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> renounceOwnership() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_RENOUNCEOWNERSHIP,
-                List.<Type>of(),
+                List.of(),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1493,15 +1493,15 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> reopen(byte[] param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_REOPEN,
-                List.<Type>of(new Bytes32(param0)),
+                List.of(new Bytes32(param0)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<byte[]> resultFor(byte[] param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_RESULTFOR,
-                List.<Type>of(new Bytes32(param0)),
-                List.<TypeReference<?>>of(new TypeReference<DynamicBytes>() {
+                List.of(new Bytes32(param0)),
+                List.of(new TypeReference<DynamicBytes>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
@@ -1517,8 +1517,8 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<BigInteger> reveal_deadline_ratio() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_REVEAL_DEADLINE_RATIO,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -1526,7 +1526,7 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> setCallbackGas(BigInteger param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETCALLBACKGAS,
-                List.<Type>of(new Uint256(param0)),
+                List.of(new Uint256(param0)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1543,39 +1543,39 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> setTeeBroker(String param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETTEEBROKER,
-                List.<Type>of(new Address(param0)),
+                List.of(new Address(param0)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<String> symbol() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_SYMBOL,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Utf8String>() {
+                List.of(),
+                List.of(new TypeReference<Utf8String>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> teebroker() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TEEBROKER,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> token() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKEN,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<BigInteger> totalSupply() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOTALSUPPLY,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -1602,7 +1602,7 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> transferOwnership(String param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_TRANSFEROWNERSHIP,
-                List.<Type>of(new Address(param0)),
+                List.of(new Address(param0)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1610,7 +1610,7 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> updateDomainSeparator() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_UPDATEDOMAINSEPARATOR,
-                List.<Type>of(),
+                List.of(),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -1619,7 +1619,7 @@ public class IexecHubContract extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VERIFYPRESIGNATURE, 
                 Arrays.asList(new org.web3j.abi.datatypes.Address(param0),
                 new org.web3j.abi.datatypes.generated.Bytes32(param1)),
-                List.<TypeReference<?>>of(new TypeReference<Bool>() {
+                List.of(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
@@ -1629,7 +1629,7 @@ public class IexecHubContract extends Contract {
                 Arrays.asList(new org.web3j.abi.datatypes.Address(param0),
                 new org.web3j.abi.datatypes.generated.Bytes32(param1), 
                 new org.web3j.abi.datatypes.DynamicBytes(param2)),
-                List.<TypeReference<?>>of(new TypeReference<Bool>() {
+                List.of(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
@@ -1639,14 +1639,14 @@ public class IexecHubContract extends Contract {
                 Arrays.asList(new org.web3j.abi.datatypes.Address(param0),
                 new org.web3j.abi.datatypes.generated.Bytes32(param1), 
                 new org.web3j.abi.datatypes.DynamicBytes(param2)),
-                List.<TypeReference<?>>of(new TypeReference<Bool>() {
+                List.of(new TypeReference<Bool>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
     public RemoteFunctionCall<Tuple2<BigInteger, BigInteger>> viewAccountABILegacy(String _user) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWACCOUNTABILEGACY,
-                List.<Type>of(new Address(_user)),
+                List.of(new Address(_user)),
                 Arrays.asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
         return new RemoteFunctionCall<>(function,
                 () -> {
@@ -1659,7 +1659,7 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<Tuple3<String, String, BigInteger>> viewCategoryABILegacy(BigInteger _catid) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWCATEGORYABILEGACY,
-                List.<Type>of(new Uint256(_catid)),
+                List.of(new Uint256(_catid)),
                 Arrays.asList(new TypeReference<Utf8String>() {}, new TypeReference<Utf8String>() {}, new TypeReference<Uint256>() {}));
         return new RemoteFunctionCall<>(function,
                 () -> {
@@ -1673,7 +1673,7 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger>> viewConfigABILegacy(byte[] _id) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWCONFIGABILEGACY,
-                List.<Type>of(new Bytes32(_id)),
+                List.of(new Bytes32(_id)),
                 Arrays.asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
         return new RemoteFunctionCall<>(function,
                 () -> {
@@ -1690,8 +1690,8 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<BigInteger> viewConsumed(byte[] param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWCONSUMED,
-                List.<Type>of(new Bytes32(param0)),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(new Bytes32(param0)),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -1714,7 +1714,7 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger>> viewDealABILegacy_pt1(byte[] _id) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWDEALABILEGACY_PT1,
-                List.<Type>of(new Bytes32(_id)),
+                List.of(new Bytes32(_id)),
                 Arrays.asList(new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
         return new RemoteFunctionCall<>(function,
                 () -> {
@@ -1734,7 +1734,7 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<Tuple6<BigInteger, byte[], String, String, String, String>> viewDealABILegacy_pt2(byte[] _id) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWDEALABILEGACY_PT2,
-                List.<Type>of(new Bytes32(_id)),
+                List.of(new Bytes32(_id)),
                 Arrays.asList(new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Address>() {}, new TypeReference<Utf8String>() {}));
         return new RemoteFunctionCall<>(function,
                 () -> {
@@ -1751,16 +1751,16 @@ public class IexecHubContract extends Contract {
 
     public RemoteFunctionCall<String> viewPresigned(byte[] param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWPRESIGNED,
-                List.<Type>of(new Bytes32(param0)),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(new Bytes32(param0)),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<BigInteger> viewScore(String param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWSCORE,
-                List.<Type>of(new Address(param0)),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(new Address(param0)),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -1768,7 +1768,7 @@ public class IexecHubContract extends Contract {
     @SuppressWarnings("unchecked")
     public RemoteFunctionCall<Tuple12<BigInteger, byte[], BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, byte[], BigInteger, BigInteger, List<String>, byte[]>> viewTaskABILegacy(byte[] _taskid) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_VIEWTASKABILEGACY,
-                List.<Type>of(new Bytes32(_taskid)),
+                List.of(new Bytes32(_taskid)),
                 Arrays.asList(new TypeReference<Uint8>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Bytes32>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<DynamicArray<Address>>() {}, new TypeReference<DynamicBytes>() {}));
         return new RemoteFunctionCall<>(function,
                 () -> {
@@ -1792,23 +1792,23 @@ public class IexecHubContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> withdraw(BigInteger param0) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_WITHDRAW,
-                List.<Type>of(new Uint256(param0)),
+                List.of(new Uint256(param0)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<BigInteger> workerpool_stake_ratio() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_WORKERPOOL_STAKE_RATIO,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<String> workerpoolregistry() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_WORKERPOOLREGISTRY,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }

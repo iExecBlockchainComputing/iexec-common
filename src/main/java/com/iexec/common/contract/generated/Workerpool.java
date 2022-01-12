@@ -119,40 +119,40 @@ public class Workerpool extends Contract {
 
     public RemoteFunctionCall<BigInteger> m_schedulerRewardRatioPolicy() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_M_SCHEDULERREWARDRATIOPOLICY,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<BigInteger> m_workerStakeRatioPolicy() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_M_WORKERSTAKERATIOPOLICY,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Uint256>() {
+                List.of(),
+                List.of(new TypeReference<Uint256>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<String> m_workerpoolDescription() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_M_WORKERPOOLDESCRIPTION,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Utf8String>() {
+                List.of(),
+                List.of(new TypeReference<Utf8String>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> owner() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNER,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> registry() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_REGISTRY,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
@@ -169,7 +169,7 @@ public class Workerpool extends Contract {
     public RemoteFunctionCall<TransactionReceipt> initialize(String _workerpoolDescription) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_INITIALIZE,
-                List.<Type>of(new Utf8String(_workerpoolDescription)),
+                List.of(new Utf8String(_workerpoolDescription)),
                 Collections.emptyList());
         return executeRemoteCallTransaction(function);
     }

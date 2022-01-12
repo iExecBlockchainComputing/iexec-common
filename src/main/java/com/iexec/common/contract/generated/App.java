@@ -95,56 +95,56 @@ public class App extends Contract {
 
     public RemoteFunctionCall<byte[]> m_appChecksum() {
         final Function function = new Function(FUNC_M_APPCHECKSUM,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> m_appMREnclave() {
         final Function function = new Function(FUNC_M_APPMRENCLAVE,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<DynamicBytes>() {
+                List.of(),
+                List.of(new TypeReference<DynamicBytes>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> m_appMultiaddr() {
         final Function function = new Function(FUNC_M_APPMULTIADDR,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<DynamicBytes>() {
+                List.of(),
+                List.of(new TypeReference<DynamicBytes>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<String> m_appName() {
         final Function function = new Function(FUNC_M_APPNAME,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Utf8String>() {
+                List.of(),
+                List.of(new TypeReference<Utf8String>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> m_appType() {
         final Function function = new Function(FUNC_M_APPTYPE,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Utf8String>() {
+                List.of(),
+                List.of(new TypeReference<Utf8String>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> owner() {
         final Function function = new Function(FUNC_OWNER,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> registry() {
         final Function function = new Function(FUNC_REGISTRY,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }

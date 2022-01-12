@@ -91,40 +91,40 @@ public class Dataset extends Contract {
 
     public RemoteFunctionCall<byte[]> m_datasetChecksum() {
         final Function function = new Function(FUNC_M_DATASETCHECKSUM,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                List.of(),
+                List.of(new TypeReference<Bytes32>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> m_datasetMultiaddr() {
         final Function function = new Function(FUNC_M_DATASETMULTIADDR,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<DynamicBytes>() {
+                List.of(),
+                List.of(new TypeReference<DynamicBytes>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<String> m_datasetName() {
         final Function function = new Function(FUNC_M_DATASETNAME,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Utf8String>() {
+                List.of(),
+                List.of(new TypeReference<Utf8String>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> owner() {
         final Function function = new Function(FUNC_OWNER,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> registry() {
         final Function function = new Function(FUNC_REGISTRY,
-                List.<Type>of(),
-                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                List.of(),
+                List.of(new TypeReference<Address>() {
                 }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
