@@ -63,7 +63,7 @@ public class SignatureUtils {
     }
 
     public static boolean isSignatureValid(byte[] message, Signature sign, String signerAddress) {
-        BigInteger publicKey = null;
+        BigInteger publicKey;
         Sign.SignatureData signatureData = new Sign.SignatureData(sign.getV(), sign.getR(), sign.getS());
 
         try {

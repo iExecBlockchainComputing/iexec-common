@@ -993,7 +993,7 @@ public abstract class IexecHubAbstractService {
                     app.getContractAddress(), e);
             return Optional.empty();
         }
-        String mrEnclave = "";
+        String mrEnclave;
         try {
             mrEnclave = new String(app.m_appMREnclave().send());
         } catch (Exception e) {
