@@ -18,8 +18,8 @@ package com.iexec.common.precompute;
 
 import javax.annotation.CheckForNull;
 
-import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // TODO merge PreComputeExitCode and ReplicateStatusCause.
 
@@ -55,8 +55,7 @@ public enum PreComputeExitCode {
     }
 
     public static boolean contains(int n) {
-        return List.of(values())
-                .stream()
+        return Stream.of(values())
                 .map(PreComputeExitCode::value)
                 .collect(Collectors.toList())
                 .contains(n);
@@ -73,8 +72,7 @@ public enum PreComputeExitCode {
      */
     @CheckForNull
     public static PreComputeExitCode nameOf(int n) {
-        return List.of(values())
-                .stream()
+        return Stream.of(values())
                 .filter(code -> code.value() == n)
                 .findFirst()
                 .orElse(null);
