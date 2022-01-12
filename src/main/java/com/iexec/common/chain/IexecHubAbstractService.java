@@ -58,6 +58,7 @@ import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
 import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
 import static com.iexec.common.tee.TeeEnclaveConfiguration.buildEnclaveConfigurationFromJsonString;
+import static com.iexec.common.utils.BytesUtils.isNonZeroedBytes32;
 import static org.web3j.protocol.core.JsonRpc2_0Web3j.DEFAULT_BLOCK_TIME;
 import static org.web3j.tx.TransactionManager.DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH;
 
@@ -887,9 +888,7 @@ public abstract class IexecHubAbstractService {
             ChainTask chainTask = ChainTask.tuple2ChainTask(getHubContract()
                     .viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send());
             String chainDealId = chainTask.getDealid();
-            if (!StringUtils.isEmpty(chainDealId)
-                    && BytesUtils.isBytes32(chainDealId)
-                    && !BytesUtils.EMPTY_HEX_STRING_32.equals(chainDealId)){
+            if (isNonZeroedBytes32(chainDealId)){
                 return Optional.of(chainTask);
             } else {
                 log.debug("Failed to get consistent ChainTask [chainTaskId:{}]",
