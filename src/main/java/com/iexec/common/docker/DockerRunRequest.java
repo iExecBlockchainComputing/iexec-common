@@ -79,9 +79,6 @@ public class DockerRunRequest {
 
         /**
          * Add an SGX device when isSgx is true.
-         * 
-         * @param isSgx
-         * @return
          */
         public DockerRunRequestBuilder isSgx(boolean isSgx) {
             this.isSgx = isSgx;
@@ -102,9 +99,6 @@ public class DockerRunRequest {
         /**
          * Add new elements without replacing
          * the existing list.
-         * 
-         * @param devices
-         * @return
          */
         public DockerRunRequestBuilder devices(List<Device> devices) {
             if (this.devices == null) {

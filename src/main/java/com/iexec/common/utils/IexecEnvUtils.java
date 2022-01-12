@@ -59,9 +59,6 @@ public class IexecEnvUtils {
      * Get compute stage environment variables plus other additional ones
      * used by the pre-compute stage (e.g. IEXEC_DATASET_URL,
      * IEXEC_DATASET_CHECKSUM, IEXEC_INPUT_FILE_URL_1, ...etc).
-     * 
-     * @param taskDescription
-     * @return
      */
     public static Map<String, String> getAllIexecEnv(TaskDescription taskDescription) {
         Map<String, String> envMap = new HashMap<>();
@@ -83,9 +80,6 @@ public class IexecEnvUtils {
      * Get environment variables available for the compute stage
      * (e.g. IEXEC_TASK_ID, IEXEC_IN, IEXEC_OUT,
      * IEXEC_DATASET_FILENAME, IEXEC_INPUT_FILE_NAME_1, ...etc).
-     * 
-     * @param taskDescription
-     * @return
      */
     public static Map<String, String> getComputeStageEnvMap(TaskDescription taskDescription) {
         Map<String, String> map = new HashMap<>();

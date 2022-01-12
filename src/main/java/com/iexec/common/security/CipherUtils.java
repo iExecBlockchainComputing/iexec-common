@@ -58,7 +58,6 @@ public class CipherUtils {
      * Generate an AES symmetric key with the
      * given size.
      * 
-     * @param size
      * @return Generated AES key if success,
      * empty byte array otherwise.
      */
@@ -85,7 +84,6 @@ public class CipherUtils {
     /**
      * Generate an initialization vector with
      * the given size.
-     * @param size
      * @return generated binary IV.
      */
     public static byte[] generateIv(int size) {
@@ -99,7 +97,6 @@ public class CipherUtils {
      * encrypted data. The IV occupies the first
      * 16 bytes of the data.
      * 
-     * @param dataWithIv
      * @return Extracted 16 bytes IV
      */
     public static byte[] getIvFromEncryptedData(byte[] dataWithIv) {
@@ -110,7 +107,6 @@ public class CipherUtils {
      * Remove prepended IV (initialization vector)
      * from the encrypted data.
      * 
-     * @param dataWithIv
      * @return a new array without the IV.
      */
     public static byte[] stripIvFromEncryptedData(byte[] dataWithIv) {
@@ -120,11 +116,6 @@ public class CipherUtils {
     /**
      * Concatenate IV (initialization vector) to the
      * beginning of the encrypted data.
-     * 
-     * @param iv
-     * @param encryptedData
-     * @return
-     * @throws IOException
      */
     public static byte[] prependIvToEncryptedData(byte[] iv, byte[] encryptedData)
             throws IOException {
@@ -147,8 +138,6 @@ public class CipherUtils {
      * @param plainData to encrypt
      * @param base64Key Base64 encoded AES key
      * @return encrypted data prepended with the IV.
-     * @throws GeneralSecurityException
-     * 
      * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
     public static byte[] aesEncrypt(byte[] plainData, byte[] base64Key)
@@ -169,11 +158,8 @@ public class CipherUtils {
      * Ref: https://stackoverflow.com/a/10194082/7631879
      * 
      * @param plainData to encrypt
-     * @param key
      * @param iv initialization vector
      * @return Encrypted data
-     * @throws GeneralSecurityException
-     * 
      * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
     public static byte[] aesEncrypt(
@@ -203,7 +189,6 @@ public class CipherUtils {
      * @param ivAndEncryptedData to decrypt
      * @param base64Key Base64 encoded AES key
      * @return Decrypted data
-     * @throws GeneralSecurityException
      * @throws IllegalArgumentException if the data's length
      * is less than 16 bytes.
      * 
@@ -228,12 +213,6 @@ public class CipherUtils {
      * Note: PKCS5Padding is equivalent to PKCS7Padding
      * <p>
      * Ref: https://stackoverflow.com/a/10194082/7631879
-     * 
-     * @param plainData
-     * @param key
-     * @param iv
-     * @return
-     * @throws GeneralSecurityException
      */
     public static byte[] aesDecrypt(
             @Nonnull byte[] plainData,
@@ -286,9 +265,7 @@ public class CipherUtils {
      * RSA-Encrypt data with the public key.
      * 
      * @param plainData to encrypt
-     * @param publicKey
      * @return encrypted data
-     * @throws GeneralSecurityException
      */
    public static byte[] rsaEncrypt(
             @Nonnull byte[] plainData, 
@@ -301,10 +278,6 @@ public class CipherUtils {
    /**
     * RSA-Decrypt data with the private key.
     *
-    * @param encryptedData
-    * @param privateKey
-    * @return
-    * @throws GeneralSecurityException
     */
     public static byte[] rsaDecrypt(
             @Nonnull byte[] encryptedData,
@@ -317,8 +290,6 @@ public class CipherUtils {
     /**
      * Read RSA key pair from files.
      * 
-     * @param publicKeyFilepath
-     * @param privateKeyFilepath
      * @return Optional of keyPair if success,
      * empty optional otherwise.
      */
@@ -340,7 +311,6 @@ public class CipherUtils {
     /**
      * Get RSA public key from Base64 string.
      * 
-     * @param base64RsaPublicKey
      * @return Optional of publicKey is success,
      * empty optional otherwise.
      */
@@ -362,7 +332,6 @@ public class CipherUtils {
 
     /**
      * Get RSA private key from Base64 text.
-     * @param base64RsaPrivateKey
      * @return Optional of privateKey if success,
      * empty optional otherwise.
      */

@@ -68,7 +68,6 @@ public class DockerClientInstance {
      * Create a new unauthenticated Docker client instance with the specified Docker registry
      * address.
      * 
-     * @param registryAddress
      * @throws IllegalArgumentException if registry address is blank
      */
     DockerClientInstance(String registryAddress) {
@@ -84,8 +83,6 @@ public class DockerClientInstance {
      * 
      * @param registryAddress e.g. {@code https://index.docker.io/v1/, https://nexus.iex.ec,
      *                          docker.io, nexus.iex.ec}
-     * @param username
-     * @param password
      */
     DockerClientInstance(String registryAddress, String username, String password) {
         if (StringUtils.isBlank(registryAddress)) {
@@ -256,7 +253,6 @@ public class DockerClientInstance {
     /**
      * Pull docker image and timeout after 1 minute.
      * 
-     * @param imageName
      * @return true if image is pulled successfully,
      * false otherwise.
      */
@@ -313,8 +309,6 @@ public class DockerClientInstance {
 
     /**
      * Remove "docker.io" and "library" from image name.
-     * @param image
-     * @return
      */
     public String sanitizeImageName(String image) {
         List<String> regexList = Arrays.asList( // order matters
@@ -425,7 +419,6 @@ public class DockerClientInstance {
      * Create docker container and remove existing
      * duplicate if found.
      * 
-     * @param dockerRunRequest
      * @return created container id or an empty
      * string if a problem occurs
      */
@@ -438,8 +431,6 @@ public class DockerClientInstance {
      * remove existing duplicate container (if found)
      * or not.
      * 
-     * @param dockerRunRequest
-     * @param removeDuplicate
      * @return newly created container id if removeDuplicate is
      * true, otherwise an empty string.
      */
@@ -562,7 +553,6 @@ public class DockerClientInstance {
      * Check if a container is active. The container is considered active
      * it is in one of the statuses {@code running} or {@code restarting}.
      * 
-     * @param containerName
      * @return true if the container is in one of the active statuses,
      *         false otherwise.
      */
@@ -820,9 +810,6 @@ public class DockerClientInstance {
      * Build a new docker client instance. If credentials are provided, an authentication
      * attempt is made to the specified registry.
      * 
-     * @param registryAddress
-     * @param username
-     * @param password
      * @return an authenticated docker client if credentials are provided
      * @throws IllegalArgumentException if registry address is blank
      * @throws DockerException if authentication fails

@@ -47,12 +47,6 @@ public class IexecCli {
      * container is connected to 
      * 
      * /!\ WARN using iexec-cli infurwhatever key
-     * 
-     * @param chainId
-     * @param brokerOrder
-     * @param walletContent
-     * @param walletPassword
-     * @return
      */
     public static synchronized String runIexecFillCommand(
             int chainId,
