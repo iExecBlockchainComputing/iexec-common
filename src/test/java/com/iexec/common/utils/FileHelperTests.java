@@ -81,7 +81,7 @@ class FileHelperTests {
         assertThat(file).isNotNull();
         assertThat(file).exists();
         assertThat(file).isFile();
-        String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8);
+        String content = Files.readString(Paths.get(file.getAbsolutePath()));
         assertThat(content).isEqualTo(data);
     }
 
