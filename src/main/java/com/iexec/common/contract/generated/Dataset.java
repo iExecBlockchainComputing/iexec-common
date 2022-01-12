@@ -20,6 +20,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.DynamicBytes;
@@ -88,37 +90,42 @@ public class Dataset extends Contract {
     }
 
     public RemoteFunctionCall<byte[]> m_datasetChecksum() {
-        final Function function = new Function(FUNC_M_DATASETCHECKSUM, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
+        final Function function = new Function(FUNC_M_DATASETCHECKSUM,
+                List.<Type>of(),
+                List.<TypeReference<?>>of(new TypeReference<Bytes32>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> m_datasetMultiaddr() {
-        final Function function = new Function(FUNC_M_DATASETMULTIADDR, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicBytes>() {}));
+        final Function function = new Function(FUNC_M_DATASETMULTIADDR,
+                List.<Type>of(),
+                List.<TypeReference<?>>of(new TypeReference<DynamicBytes>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<String> m_datasetName() {
-        final Function function = new Function(FUNC_M_DATASETNAME, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+        final Function function = new Function(FUNC_M_DATASETNAME,
+                List.<Type>of(),
+                List.<TypeReference<?>>of(new TypeReference<Utf8String>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> owner() {
-        final Function function = new Function(FUNC_OWNER, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+        final Function function = new Function(FUNC_OWNER,
+                List.<Type>of(),
+                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> registry() {
-        final Function function = new Function(FUNC_REGISTRY, 
-                Arrays.<Type>asList(), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+        final Function function = new Function(FUNC_REGISTRY,
+                List.<Type>of(),
+                List.<TypeReference<?>>of(new TypeReference<Address>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
