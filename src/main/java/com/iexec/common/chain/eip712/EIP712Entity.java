@@ -16,11 +16,13 @@
 
 package com.iexec.common.chain.eip712;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ObjectArrays;
 import com.iexec.common.utils.HashUtils;
 import com.iexec.common.utils.SignatureUtils;
 import org.web3j.crypto.ECKeyPair;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +45,7 @@ public abstract class EIP712Entity<M> implements EIP712<M> {
 
     @Override
     public HashMap<String, List<TypeParam>> getTypes() {
-        return types;
+        return new HashMap<>(types);
     }
 
     @Override
@@ -76,4 +78,13 @@ public abstract class EIP712Entity<M> implements EIP712<M> {
         return SignatureUtils.signAsString(this.getHash(), ecKeyPair);
     }
 
+    @JsonIgnore
+    public List<TypeParam> getDomainTypeParams() {
+        return new ArrayList<>(types.get(EIP712Domain.primaryType));
+    }
+
+    @JsonIgnore
+    public List<TypeParam> getMessageTypeParams() {
+        return new ArrayList<>(types.get(getPrimaryType()));
+    }
 }

@@ -20,11 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class TypesTests {
+class TypesTests {
 
     @Test
-    public void typeParamsToString() {
+    void typeParamsToString() {
         Eip712Challenge eip712Challenge = new Eip712Challenge("abcd", 1);
-        assertEquals(Types.typeParamsToString(eip712Challenge.getTypes().getDomainTypeParams()), "string name,string version,uint256 chainId");
+        assertEquals("string name,string version,uint256 chainId", Types.typeParamsToString(eip712Challenge.getDomainTypeParams()));
     }
 }
