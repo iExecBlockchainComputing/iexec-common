@@ -1,7 +1,7 @@
 package com.iexec.common.contract.generated;
 
 import io.reactivex.Flowable;
-import io.reactivex.functions.Function;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,6 @@ import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.RemoteFunctionCall;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.BaseEventResponse;
-import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;

@@ -17,14 +17,14 @@
 package com.iexec.common.contract.generated;
 
 import io.reactivex.Flowable;
-import io.reactivex.functions.Function;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
+
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.Utils;
@@ -45,7 +45,6 @@ import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.RemoteFunctionCall;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.BaseEventResponse;
-import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tuples.generated.Tuple12;
 import org.web3j.tuples.generated.Tuple2;
