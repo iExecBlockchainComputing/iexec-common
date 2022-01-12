@@ -161,17 +161,14 @@ public class WorkerpoolRegistry extends Contract {
     }
 
     public Flowable<ApprovalEventResponse> approvalEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<>() {
-            @Override
-            public ApprovalEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
-                ApprovalEventResponse typedResponse = new ApprovalEventResponse();
-                typedResponse.log = log;
-                typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
-                typedResponse.approved = (String) eventValues.getIndexedValues().get(1).getValue();
-                typedResponse.tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).map(log -> {
+            EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+            ApprovalEventResponse typedResponse = new ApprovalEventResponse();
+            typedResponse.log = log;
+            typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.approved = (String) eventValues.getIndexedValues().get(1).getValue();
+            typedResponse.tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
+            return typedResponse;
         });
     }
 
@@ -196,17 +193,14 @@ public class WorkerpoolRegistry extends Contract {
     }
 
     public Flowable<ApprovalForAllEventResponse> approvalForAllEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<>() {
-            @Override
-            public ApprovalForAllEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, log);
-                ApprovalForAllEventResponse typedResponse = new ApprovalForAllEventResponse();
-                typedResponse.log = log;
-                typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
-                typedResponse.operator = (String) eventValues.getIndexedValues().get(1).getValue();
-                typedResponse.approved = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).map(log -> {
+            EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, log);
+            ApprovalForAllEventResponse typedResponse = new ApprovalForAllEventResponse();
+            typedResponse.log = log;
+            typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.operator = (String) eventValues.getIndexedValues().get(1).getValue();
+            typedResponse.approved = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
+            return typedResponse;
         });
     }
 
@@ -230,16 +224,13 @@ public class WorkerpoolRegistry extends Contract {
     }
 
     public Flowable<OwnershipTransferredEventResponse> ownershipTransferredEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<>() {
-            @Override
-            public OwnershipTransferredEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
-                OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
-                typedResponse.log = log;
-                typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
-                typedResponse.newOwner = (String) eventValues.getIndexedValues().get(1).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).map(log -> {
+            EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
+            OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
+            typedResponse.log = log;
+            typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.newOwner = (String) eventValues.getIndexedValues().get(1).getValue();
+            return typedResponse;
         });
     }
 
@@ -264,17 +255,14 @@ public class WorkerpoolRegistry extends Contract {
     }
 
     public Flowable<TransferEventResponse> transferEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<>() {
-            @Override
-            public TransferEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
-                TransferEventResponse typedResponse = new TransferEventResponse();
-                typedResponse.log = log;
-                typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
-                typedResponse.to = (String) eventValues.getIndexedValues().get(1).getValue();
-                typedResponse.tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).map(log -> {
+            EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
+            TransferEventResponse typedResponse = new TransferEventResponse();
+            typedResponse.log = log;
+            typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.to = (String) eventValues.getIndexedValues().get(1).getValue();
+            typedResponse.tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
+            return typedResponse;
         });
     }
 

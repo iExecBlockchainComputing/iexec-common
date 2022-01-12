@@ -405,9 +405,7 @@ public class DockerClientInstance {
             log.error("Failed to force-stop container after timeout [name:{}]", containerName);
             return dockerRunResponse;
         }
-        getContainerLogs(containerName).ifPresent(containerLogs -> {
-            dockerRunResponse.setDockerLogs(containerLogs);
-        });
+        getContainerLogs(containerName).ifPresent(dockerRunResponse::setDockerLogs);
         if (!removeContainer(containerName)) {
             log.error("Failed to remove container after run [name:{}]", containerName);
             return dockerRunResponse;

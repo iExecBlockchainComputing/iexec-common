@@ -70,7 +70,7 @@ class FileHelperTests {
         Constructor<FileHelper> clazz = FileHelper.class.getDeclaredConstructor();
         clazz.setAccessible(true);
         // calling the private constructor
-        assertThrows(Exception.class, () -> clazz.newInstance());
+        assertThrows(Exception.class, clazz::newInstance);
     }
 
 

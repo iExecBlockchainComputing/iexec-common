@@ -100,18 +100,15 @@ public class Workerpool extends Contract {
     }
 
     public Flowable<PolicyUpdateEventResponse> policyUpdateEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(new Function<>() {
-            @Override
-            public PolicyUpdateEventResponse apply(Log log) {
-                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(POLICYUPDATE_EVENT, log);
-                PolicyUpdateEventResponse typedResponse = new PolicyUpdateEventResponse();
-                typedResponse.log = log;
-                typedResponse.oldWorkerStakeRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
-                typedResponse.newWorkerStakeRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
-                typedResponse.oldSchedulerRewardRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(2).getValue();
-                typedResponse.newSchedulerRewardRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(3).getValue();
-                return typedResponse;
-            }
+        return web3j.ethLogFlowable(filter).map(log -> {
+            EventValuesWithLog eventValues = extractEventParametersWithLog(POLICYUPDATE_EVENT, log);
+            PolicyUpdateEventResponse typedResponse = new PolicyUpdateEventResponse();
+            typedResponse.log = log;
+            typedResponse.oldWorkerStakeRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
+            typedResponse.newWorkerStakeRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
+            typedResponse.oldSchedulerRewardRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(2).getValue();
+            typedResponse.newSchedulerRewardRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(3).getValue();
+            return typedResponse;
         });
     }
 
