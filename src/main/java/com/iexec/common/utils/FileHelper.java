@@ -255,7 +255,7 @@ public class FileHelper {
         String zipFilePath = Path.of(saveIn, folderName + ".zip").toAbsolutePath().toString();
         Path sourceFolderPath = Paths.get(folderPath);
 
-        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(new File(zipFilePath)))) {
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFilePath))) {
             Files.walkFileTree(sourceFolderPath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
