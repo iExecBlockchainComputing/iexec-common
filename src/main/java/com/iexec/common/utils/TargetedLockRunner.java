@@ -30,18 +30,18 @@ import java.util.function.Supplier;
  * but two actions with different keys can be run at the same time.
  * <br>
  * To avoid memory-leaks, entries expire after a given time.
- * Default is 1 hour, but it can be set at {@link TargetedLock} object creation.
+ * Default is 1 hour, but it can be set at {@link TargetedLockRunner} object creation.
  *
  * @param <K> Type of the key.
  */
-public class TargetedLock<K> {
+public class TargetedLockRunner<K> {
     private final ConcurrentMap<K, Object> locks;
 
-    public TargetedLock() {
+    public TargetedLockRunner() {
         this(1, TimeUnit.HOURS);
     }
 
-    public TargetedLock(long expirationDuration, TimeUnit unit) {
+    public TargetedLockRunner(long expirationDuration, TimeUnit unit) {
         this.locks = ExpiringMap.builder()
                 .expiration(expirationDuration, unit)
                 .build();

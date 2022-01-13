@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-class TargetedLockTest {
+class TargetedLockRunnerTest {
     /**
      * Run an action {@code numberOfRunsPerGroup * numberOfActions} times.
      * <br>
@@ -23,7 +23,7 @@ class TargetedLockTest {
     private <K> void runWithLock(int numberOfRunsPerGroup,
                                  int numberOfActions,
                                  Function<Integer, K> keyProvider) {
-        final TargetedLock<K> locks = new TargetedLock<>();
+        final TargetedLockRunner<K> locks = new TargetedLockRunner<>();
 
         final ConcurrentLinkedQueue<Integer> actionsOrder = new ConcurrentLinkedQueue<>();
         // Run the given action a bunch of times.
