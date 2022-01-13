@@ -5,10 +5,8 @@ import lombok.Data;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -69,94 +67,89 @@ class TargetedLockRunnerTest {
 
     // region Check synchronization works
     /**
-     * Run an action {@code numberOfRunsPerGroup * numberOfActions} times.
+     * Runs an action a bunch of times
+     * and checks it doesn't interfere with other runs of similar key.
      * <br>
-     * There are {@code numberOfActions} groups of actions, every action in a group having the same input.
-     * Every group is run {@code numberOfRunsPerGroup} times.
+     * It is known an action should be run {@code numberOfCalls} times
+     * before the next action with a same key can be run.
+     * So each action decrements {@code numberOfCalls} times the counter relative to its key.
+     * If at the end of the run of an action, its counter is not 0,
+     * that means the counter has been reset by another thread
+     * - which shouldn't occur as there is a lock on the key.
      *
      * @param <K> Type of the lock key.
      */
-    private <K> void runWithLock(int numberOfRunsPerGroup,
-                                 int numberOfActions,
+    private <K> void runWithLock(int numberOfThreads,
+                                 int numberOfCalls,
                                  Function<Integer, K> keyProvider) {
         final TargetedLockRunner<K> locks = new TargetedLockRunner<>();
+        final Map<K, Integer> remainingCallsPerKey = new ConcurrentHashMap<>();
 
-        // Represents the order the actions will have been run.
-        final ConcurrentLinkedQueue<Integer> actionsOrder = new ConcurrentLinkedQueue<>();
-
-        // Just a simple consumer that runs an action a bunch of times
-        // and logs each time in `actionsOrder` list.
-        // If this consumer is run a few times at the same time,
-        // it should mix the values when there's no sync mechanism.
-        final Consumer<Integer> runActionAndGetOrder = (i) -> {
-            for (int j = 0; j < numberOfRunsPerGroup; j++) {
-                actionsOrder.add(i);
+        Consumer<Integer> action = threadPosition -> {
+            final K key = keyProvider.apply(threadPosition);
+            remainingCallsPerKey.put(key, numberOfCalls);
+            for (int i = 0; i < numberOfCalls; i++) {
+                remainingCallsPerKey.computeIfPresent(key, (k, v) -> v - 1);
             }
+            // If we don't reach 0, the `remainingCalls` have been reset.
+            Assertions.assertThat(remainingCallsPerKey.get(key))
+                    .withFailMessage("Synchronization failed.")
+                    .isZero();
         };
 
-        // Run the action a bunch of times with different inputs
-        // and potentially different keys each time.
-        IntStream.range(0, numberOfActions)
+        IntStream.range(0, numberOfThreads)
                 .parallel()
-                .forEach(i -> locks.runWithLock(keyProvider.apply(i), () -> runActionAndGetOrder.accept(i)));
+                .forEach(i -> locks.runWithLock(keyProvider.apply(i), () -> action.accept(i)));
 
-        assertOrderIsCorrect(actionsOrder, numberOfRunsPerGroup, keyProvider);
+        for (Integer remainingCalls : remainingCallsPerKey.values()) {
+            // If we don't reach 0, the `remainingCalls` have been reset at some point.
+            Assertions.assertThat(remainingCalls).isZero();
+        }
     }
 
     /**
-     * Run an action {@code numberOfRunsPerGroup * numberOfActions} times.
+     * Runs an action a bunch of times
+     * and checks it doesn't interfere with other runs of similar key.
      * <br>
-     * There are {@code numberOfActions} groups of actions, every action in a group having the same input.
-     * Every group is run {@code numberOfRunsPerGroup} times.
+     * It is known an action should be run {@code numberOfCalls} times
+     * before the next action with a same key can be run.
+     * So each action decrements {@code numberOfCalls} times the counter relative to its key.
+     * If at the end of the run of an action, its counter is not 0,
+     * that means the counter has been reset by another thread
+     * - which should occur as there is no lock on key.
      * <br>
      * That's the same as {@link TargetedLockRunnerTest#runWithLock(int, int, Function)}
      * but there's no lock so synchronization should fail.
      *
      * @param <K> Type of the lock key.
      */
-    private <K> void runWithoutLock(int numberOfRunsPerGroup,
-                                    int numberOfActions,
+    private <K> void runWithoutLock(int numberOfThreads,
+                                    int numberOfCalls,
                                     Function<Integer, K> keyProvider) {
-        // Represents the order the actions will have been run.
-        final ConcurrentLinkedQueue<Integer> actionsOrder = new ConcurrentLinkedQueue<>();
+        final Map<K, Integer> remainingCallsPerKey = new ConcurrentHashMap<>();
 
-        // Just a simple consumer that runs an action a bunch of times
-        // and logs each time in `actionsOrder` list.
-        // If this consumer is run a few times at the same time,
-        // it should mix the values when there's no sync mechanism.
-        final Consumer<Integer> runActionAndGetOrder = (i) -> {
-            for (int j = 0; j < numberOfRunsPerGroup; j++) {
-                actionsOrder.add(i);
+        Consumer<Integer> action = threadPosition -> {
+            final K key = keyProvider.apply(threadPosition);
+            remainingCallsPerKey.put(key, numberOfCalls);
+            for (int i = 0; i < numberOfCalls; i++) {
+                remainingCallsPerKey.computeIfPresent(key, (k, v) -> v - 1);
             }
+
+            // If we don't reach 0, the `remainingCalls` have been reset.
+            Assertions.assertThat(remainingCallsPerKey.get(key))
+                    .withFailMessage("Synchronization failed: remaining calls have been reset.")
+                    .isZero();
         };
 
-        // Run the action a bunch of times with different inputs
-        // and potentially different keys each time.
-        IntStream.range(0, numberOfActions)
+        IntStream.range(0, numberOfThreads)
                 .parallel()
-                .forEach(runActionAndGetOrder::accept);
+                .forEach(action::accept);
 
-        assertOrderIsCorrect(actionsOrder, numberOfRunsPerGroup, keyProvider);
-    }
-
-    /**
-     * We loop through calls order and see if all calls for a given action have finished
-     * before another action with the same key starts for this task.
-     * Two actions with different keys should be able to run at the same time.
-     */
-    private <K> void assertOrderIsCorrect(ConcurrentLinkedQueue<Integer> actionsOrder, int numberOfRunsPerGroup, Function<Integer, K> keyProvider) {
-        final Map<K, Map<Integer, Integer>> callsOrder = new HashMap<>();
-
-        for (int index : actionsOrder) {
-            final Map<Integer, Integer> foundOutputsForKeyGroup = callsOrder.computeIfAbsent(keyProvider.apply(index), (key) -> new HashMap<>());
-            for (int alreadyFound : foundOutputsForKeyGroup.keySet()) {
-                if (!Objects.equals(alreadyFound, index) && foundOutputsForKeyGroup.get(alreadyFound) < numberOfRunsPerGroup) {
-                    Assertions.fail("Synchronization has failed: %s has only %s out of %s occurrences while %s has been inserted.",
-                            alreadyFound, foundOutputsForKeyGroup.get(alreadyFound), numberOfRunsPerGroup, index);
-                }
-            }
-
-            foundOutputsForKeyGroup.merge(index, 1, (currentValue, defaultValue) -> currentValue + 1);
+        for (Integer remainingCalls : remainingCallsPerKey.values()) {
+            // If we don't reach 0, the `remainingCalls` have been reset at some point.
+            Assertions.assertThat(remainingCalls)
+                    .withFailMessage("Synchronization failed: more than 0 remaining calls at the end.")
+                    .isZero();
         }
     }
 
@@ -170,7 +163,8 @@ class TargetedLockRunnerTest {
     void runWithLockOnConstantValue() {
         runWithLock(100, 100, i -> true);
         Assertions.assertThatThrownBy(() -> runWithoutLock(100, 100, i -> true))
-                .hasMessageContaining("Synchronization has failed");
+                .getCause()
+                .hasMessageContaining("Synchronization failed");
     }
 
     /**
@@ -183,7 +177,8 @@ class TargetedLockRunnerTest {
     void runWithLockOnParity() {
         runWithLock(100, 100, i -> i % 2 == 0);
         Assertions.assertThatThrownBy(() -> runWithoutLock(100, 100, i -> i % 2 == 0))
-                .hasMessageContaining("Synchronization has failed");
+                .getCause()
+                .hasMessageContaining("Synchronization failed");
     }
 
     /**
