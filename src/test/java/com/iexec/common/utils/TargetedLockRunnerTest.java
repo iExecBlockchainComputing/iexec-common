@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -68,6 +68,25 @@ class TargetedLockRunnerTest {
     // region Check synchronization works
     /**
      * Runs an action a bunch of times
+     *
+     * @param <K> Type of the key associated to an action.
+     */
+    private <K, R> void run(int numberOfThreads,
+                         BiConsumer<Integer, Map<K, Integer>> action) {
+        final Map<K, Integer> remainingCallsPerKey = new ConcurrentHashMap<>();
+
+        IntStream.range(0, numberOfThreads)
+                .parallel()
+                .forEach(threadPosition -> action.accept(threadPosition, remainingCallsPerKey));
+
+        for (Integer remainingCalls : remainingCallsPerKey.values()) {
+            // If we don't reach 0, the `remainingCalls` have been reset at some point.
+            assertRemainingCallsIsZero(remainingCalls, "more than 0 remaining calls at the end.");
+        }
+    }
+
+    /**
+     * Runs an action a bunch of times
      * and checks it doesn't interfere with other runs of similar key.
      * <br>
      * It is known an action should be run {@code numberOfCalls} times
@@ -83,28 +102,18 @@ class TargetedLockRunnerTest {
                                  int numberOfCalls,
                                  Function<Integer, K> keyProvider) {
         final TargetedLockRunner<K> locks = new TargetedLockRunner<>();
-        final Map<K, Integer> remainingCallsPerKey = new ConcurrentHashMap<>();
-
-        Consumer<Integer> action = threadPosition -> {
-            final K key = keyProvider.apply(threadPosition);
-            remainingCallsPerKey.put(key, numberOfCalls);
-            for (int i = 0; i < numberOfCalls; i++) {
-                remainingCallsPerKey.computeIfPresent(key, (k, v) -> v - 1);
-            }
-            // If we don't reach 0, the `remainingCalls` have been reset.
-            Assertions.assertThat(remainingCallsPerKey.get(key))
-                    .withFailMessage("Synchronization failed.")
-                    .isZero();
-        };
-
-        IntStream.range(0, numberOfThreads)
-                .parallel()
-                .forEach(i -> locks.runWithLock(keyProvider.apply(i), () -> action.accept(i)));
-
-        for (Integer remainingCalls : remainingCallsPerKey.values()) {
-            // If we don't reach 0, the `remainingCalls` have been reset at some point.
-            Assertions.assertThat(remainingCalls).isZero();
-        }
+        run(
+                numberOfThreads,
+                (Integer threadPosition, Map<K, Integer> remainingCallsPerKey) -> locks.runWithLock(
+                        keyProvider.apply(threadPosition),
+                        () -> runAndDecrementRemainingCalls(
+                                threadPosition,
+                                numberOfCalls,
+                                keyProvider,
+                                remainingCallsPerKey
+                        )
+                )
+        );
     }
 
     /**
@@ -126,31 +135,34 @@ class TargetedLockRunnerTest {
     private <K> void runWithoutLock(int numberOfThreads,
                                     int numberOfCalls,
                                     Function<Integer, K> keyProvider) {
-        final Map<K, Integer> remainingCallsPerKey = new ConcurrentHashMap<>();
+        run(
+                numberOfThreads,
+                (Integer threadPosition, Map<K, Integer> remainingCallsPerKey) -> runAndDecrementRemainingCalls(
+                        threadPosition,
+                        numberOfCalls,
+                        keyProvider,
+                        remainingCallsPerKey
+                ));
+    }
 
-        Consumer<Integer> action = threadPosition -> {
-            final K key = keyProvider.apply(threadPosition);
-            remainingCallsPerKey.put(key, numberOfCalls);
-            for (int i = 0; i < numberOfCalls; i++) {
-                remainingCallsPerKey.computeIfPresent(key, (k, v) -> v - 1);
-            }
-
-            // If we don't reach 0, the `remainingCalls` have been reset.
-            Assertions.assertThat(remainingCallsPerKey.get(key))
-                    .withFailMessage("Synchronization failed: remaining calls have been reset.")
-                    .isZero();
-        };
-
-        IntStream.range(0, numberOfThreads)
-                .parallel()
-                .forEach(action::accept);
-
-        for (Integer remainingCalls : remainingCallsPerKey.values()) {
-            // If we don't reach 0, the `remainingCalls` have been reset at some point.
-            Assertions.assertThat(remainingCalls)
-                    .withFailMessage("Synchronization failed: more than 0 remaining calls at the end.")
-                    .isZero();
+    private <K> void runAndDecrementRemainingCalls(int threadPosition,
+                                                   int numberOfCalls,
+                                                   Function<Integer, K> keyProvider,
+                                                   Map<K, Integer> remainingCallsPerKey) {
+        final K key = keyProvider.apply(threadPosition);
+        remainingCallsPerKey.put(key, numberOfCalls);
+        for (int i = 0; i < numberOfCalls; i++) {
+            remainingCallsPerKey.computeIfPresent(key, (k, v) -> v - 1);
         }
+        // If we don't reach 0, the `remainingCalls` have been reset.
+        final Integer remainingCalls = remainingCallsPerKey.get(key);
+        assertRemainingCallsIsZero(remainingCalls, "remaining calls have been reset.");
+    }
+
+    private void assertRemainingCallsIsZero(Integer remainingCalls, String newErrorMessage) {
+        Assertions.assertThat(remainingCalls)
+                .withFailMessage("Synchronization failed: " + newErrorMessage)
+                .isZero();
     }
 
     /**
