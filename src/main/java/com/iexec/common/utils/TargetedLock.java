@@ -48,30 +48,33 @@ public class TargetedLock<K> {
     }
 
     public void runWithLock(K key, Runnable action) {
-        // `ConcurrentHashMap::computeIfAbsent` is atomic, so there can't be any race condition there.
-        synchronized (locks.computeIfAbsent(key, id -> new Object())) {
+        synchronized (getLock(key)) {
             action.run();
         }
     }
 
     public void acceptWithLock(K key, Consumer<K> action) {
-        // `ConcurrentHashMap::computeIfAbsent` is atomic, so there can't be any race condition there.
-        synchronized (locks.computeIfAbsent(key, id -> new Object())) {
+        synchronized (getLock(key)) {
             action.accept(key);
         }
     }
 
     public <R> R getWithLock(K key, Supplier<R> action) {
-        // `ConcurrentHashMap::computeIfAbsent` is atomic, so there can't be any race condition there.
-        synchronized (locks.computeIfAbsent(key, id -> new Object())) {
+        synchronized (getLock(key)) {
             return action.get();
         }
     }
 
     public <R> R applyWithLock(K key, Function<K, R> action) {
-        // `ConcurrentHashMap::computeIfAbsent` is atomic, so there can't be any race condition there.
-        synchronized (locks.computeIfAbsent(key, id -> new Object())) {
+        synchronized (getLock(key)) {
             return action.apply(key);
         }
+    }
+
+    private Object getLock(K key) {
+        // `ConcurrentHashMap::computeIfAbsent` is atomic,
+        // so there can't be any race condition there
+        // if this call is wrapped in a `synchronized` block.
+        return locks.computeIfAbsent(key, id -> new Object());
     }
 }
