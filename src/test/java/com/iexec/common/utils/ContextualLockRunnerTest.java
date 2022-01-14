@@ -3,7 +3,6 @@ package com.iexec.common.utils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -12,14 +11,14 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-class TargetedLockRunnerTest {
+class ContextualLockRunnerTest {
     private static final int NUMBER_OF_THREADS = 100;
     private static final int NUMBER_OF_CALLS = 100;
 
     // region Check methods actually run what's expected
     @Test
     void runWithLock() {
-        final TargetedLockRunner<Integer> locks = new TargetedLockRunner<>();
+        final ContextualLockRunner<Integer> locks = new ContextualLockRunner<>();
 
         Wrapper<Integer> wrappedValue = new Wrapper<>(0);
         locks.runWithLock(1, () -> wrappedValue.setValue(1));
@@ -29,7 +28,7 @@ class TargetedLockRunnerTest {
 
     @Test
     void acceptWithLock() {
-        final TargetedLockRunner<Integer> locks = new TargetedLockRunner<>();
+        final ContextualLockRunner<Integer> locks = new ContextualLockRunner<>();
 
         Wrapper<Integer> wrappedValue = new Wrapper<>(0);
         locks.acceptWithLock(1, wrappedValue::setValue);
@@ -39,7 +38,7 @@ class TargetedLockRunnerTest {
 
     @Test
     void getWithLock() {
-        final TargetedLockRunner<Integer> locks = new TargetedLockRunner<>();
+        final ContextualLockRunner<Integer> locks = new ContextualLockRunner<>();
 
         boolean hasRun = locks.getWithLock(1, () -> true);
 
@@ -48,7 +47,7 @@ class TargetedLockRunnerTest {
 
     @Test
     void applyWithLock() {
-        final TargetedLockRunner<Integer> locks = new TargetedLockRunner<>();
+        final ContextualLockRunner<Integer> locks = new ContextualLockRunner<>();
 
         Wrapper<Integer> wrappedValue = new Wrapper<>(0);
         boolean hasRun = locks.applyWithLock(1, wrappedValue::setValueAndAcknowledge);
@@ -184,7 +183,7 @@ class TargetedLockRunnerTest {
      * @param <K> Type of the lock key.
      */
     private <K> void runWithLock(Function<Integer, K> keyProvider) {
-        final TargetedLockRunner<K> locks = new TargetedLockRunner<>();
+        final ContextualLockRunner<K> locks = new ContextualLockRunner<>();
         run(
                 (Integer threadPosition, Map<K, Integer> remainingCallsPerKey) -> locks.runWithLock(
                         keyProvider.apply(threadPosition),
@@ -211,7 +210,7 @@ class TargetedLockRunnerTest {
      * @param <K> Type of the lock key.
      */
     private <K> void acceptWithLock(Function<Integer, K> keyProvider) {
-        final TargetedLockRunner<K> locks = new TargetedLockRunner<>();
+        final ContextualLockRunner<K> locks = new ContextualLockRunner<>();
         run(
                 (Integer threadPosition, Map<K, Integer> remainingCallsPerKey) -> locks.acceptWithLock(
                         keyProvider.apply(threadPosition),
@@ -238,7 +237,7 @@ class TargetedLockRunnerTest {
      * @param <K> Type of the lock key.
      */
     private <K> void applyWithLock(Function<Integer, K> keyProvider) {
-        final TargetedLockRunner<K> locks = new TargetedLockRunner<>();
+        final ContextualLockRunner<K> locks = new ContextualLockRunner<>();
         run(
                 (Integer threadPosition, Map<K, Integer> remainingCallsPerKey) -> locks.applyWithLock(
                         keyProvider.apply(threadPosition),
@@ -265,7 +264,7 @@ class TargetedLockRunnerTest {
      * @param <K> Type of the lock key.
      */
     private <K> void getWithLock(Function<Integer, K> keyProvider) {
-        final TargetedLockRunner<K> locks = new TargetedLockRunner<>();
+        final ContextualLockRunner<K> locks = new ContextualLockRunner<>();
         run(
                 (Integer threadPosition, Map<K, Integer> remainingCallsPerKey) -> locks.getWithLock(
                         keyProvider.apply(threadPosition),
@@ -289,7 +288,7 @@ class TargetedLockRunnerTest {
      * that means the counter has been reset by another thread
      * - which should occur as there is no lock on key.
      * <br>
-     * That's the same as {@link TargetedLockRunnerTest#runWithLock(Function)}
+     * That's the same as {@link ContextualLockRunnerTest#runWithLock(Function)}
      * but there's no lock so synchronization should fail.
      *
      * @param <K> Type of the lock key.
@@ -314,7 +313,7 @@ class TargetedLockRunnerTest {
      * that means the counter has been reset by another thread
      * - which should occur as there is no lock on key.
      * <br>
-     * That's the same as {@link TargetedLockRunnerTest#applyWithLock(Function)}
+     * That's the same as {@link ContextualLockRunnerTest#applyWithLock(Function)}
      * but there's no lock so synchronization should fail.
      *
      * @param <K> Type of the lock key.
