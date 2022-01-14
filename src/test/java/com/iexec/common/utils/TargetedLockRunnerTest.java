@@ -3,6 +3,7 @@ package com.iexec.common.utils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -79,7 +80,7 @@ class TargetedLockRunnerTest {
     void runWithLockOnConstantValue() {
         runWithLock(i -> true);
         Assertions.assertThatThrownBy(() -> runWithoutLock(i -> true))
-                .getCause()
+                .getRootCause()
                 .hasMessageContaining("Synchronization failed");
     }
 
@@ -93,7 +94,7 @@ class TargetedLockRunnerTest {
     void runWithLockOnParity() {
         runWithLock(i -> i % 2 == 0);
         Assertions.assertThatThrownBy(() -> runWithoutLock(i -> i % 2 == 0))
-                .getCause()
+                .getRootCause()
                 .hasMessageContaining("Synchronization failed");
     }
 
@@ -120,7 +121,7 @@ class TargetedLockRunnerTest {
     void acceptWithLockOnParity() {
         acceptWithLock(i -> i % 2 == 0);
         Assertions.assertThatThrownBy(() -> runWithoutLock(i -> i % 2 == 0))
-                .getCause()
+                .getRootCause()
                 .hasMessageContaining("Synchronization failed");
     }
 
@@ -134,7 +135,7 @@ class TargetedLockRunnerTest {
     void applyWithLockOnParity() {
         applyWithLock(i -> i % 2 == 0);
         Assertions.assertThatThrownBy(() -> applyWithoutLock(i -> i % 2 == 0))
-                .getCause()
+                .getRootCause()
                 .hasMessageContaining("Synchronization failed");
     }
 
