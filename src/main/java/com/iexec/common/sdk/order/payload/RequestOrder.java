@@ -16,17 +16,13 @@
 
 package com.iexec.common.sdk.order.payload;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.chain.DealParams;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Objects;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 import static com.iexec.common.sdk.order.OrderUtils.toLowerCase;
 
 @Data
@@ -66,15 +62,14 @@ public class RequestOrder extends Order {
         this.params = params;
     }
 
+    /**
+     * @deprecated Use {@link DealParams#toJsonString()} instead.
+     * @param params Deal parameters to write on chain
+     * @return JSON string that will be written on chain
+     */
+    @Deprecated
     public static String toStringParams(DealParams params) {
-        ObjectMapper mapper = new ObjectMapper();
-        Arrays.asList(NON_NULL, NON_EMPTY, NON_DEFAULT).forEach(mapper::setSerializationInclusion);
-        try {
-            return mapper.writeValueAsString(params);
-        } catch (JsonProcessingException e) {
-            log.error("Deal parameters serialization failed.", e);
-        }
-        return "";
+        return params.toJsonString();
     }
 
     public void setApp(String app) {
