@@ -50,6 +50,9 @@ public class IexecEnvUtils {
     public static final String IEXEC_INPUT_FILES_FOLDER = "IEXEC_INPUT_FILES_FOLDER";
     public static final String IEXEC_INPUT_FILE_NAME_PREFIX = "IEXEC_INPUT_FILE_NAME_";
     public static final String IEXEC_INPUT_FILE_URL_PREFIX = "IEXEC_INPUT_FILE_URL_";
+    // secrets
+    public static final String IEXEC_APP_DEVELOPER_SECRET_PREFIX = "IEXEC_APP_DEVELOPER_SECRET_";
+    public static final String IEXEC_REQUESTER_SECRET_PREFIX = "IEXEC_REQUESTER_SECRET_";
 
     private IexecEnvUtils() {
         throw new UnsupportedOperationException();
@@ -88,7 +91,7 @@ public class IexecEnvUtils {
      * @return
      */
     public static Map<String, String> getComputeStageEnvMap(TaskDescription taskDescription) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put(IEXEC_TASK_ID, taskDescription.getChainTaskId());
         map.put(IEXEC_IN, IexecFileHelper.SLASH_IEXEC_IN);
         map.put(IEXEC_OUT, IexecFileHelper.SLASH_IEXEC_OUT);
