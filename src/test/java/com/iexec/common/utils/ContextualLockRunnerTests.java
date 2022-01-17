@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-class ContextualLockRunnerTest {
+class ContextualLockRunnerTests {
     private static final int NUMBER_OF_THREADS = 100;
     private static final int NUMBER_OF_CALLS = 100;
 
@@ -288,7 +288,7 @@ class ContextualLockRunnerTest {
      * that means the counter has been reset by another thread
      * - which should occur as there is no lock on key.
      * <br>
-     * That's the same as {@link ContextualLockRunnerTest#runWithLock(Function)}
+     * That's the same as {@link ContextualLockRunnerTests#runWithLock(Function)}
      * but there's no lock so synchronization should fail.
      *
      * @param <K> Type of the lock key.
@@ -313,7 +313,7 @@ class ContextualLockRunnerTest {
      * that means the counter has been reset by another thread
      * - which should occur as there is no lock on key.
      * <br>
-     * That's the same as {@link ContextualLockRunnerTest#applyWithLock(Function)}
+     * That's the same as {@link ContextualLockRunnerTests#applyWithLock(Function)}
      * but there's no lock so synchronization should fail.
      *
      * @param <K> Type of the lock key.
