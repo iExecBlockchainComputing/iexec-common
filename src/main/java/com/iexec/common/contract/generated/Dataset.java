@@ -20,8 +20,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.DynamicBytes;
@@ -68,7 +66,7 @@ public class Dataset extends Contract {
     protected static final HashMap<String, String> _addresses;
 
     static {
-        _addresses = new HashMap<>();
+        _addresses = new HashMap<String, String>();
     }
 
     @Deprecated
@@ -90,61 +88,56 @@ public class Dataset extends Contract {
     }
 
     public RemoteFunctionCall<byte[]> m_datasetChecksum() {
-        final Function function = new Function(FUNC_M_DATASETCHECKSUM,
-                List.of(),
-                List.of(new TypeReference<Bytes32>() {
-                }));
+        final Function function = new Function(FUNC_M_DATASETCHECKSUM, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> m_datasetMultiaddr() {
-        final Function function = new Function(FUNC_M_DATASETMULTIADDR,
-                List.of(),
-                List.of(new TypeReference<DynamicBytes>() {
-                }));
+        final Function function = new Function(FUNC_M_DATASETMULTIADDR, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicBytes>() {}));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<String> m_datasetName() {
-        final Function function = new Function(FUNC_M_DATASETNAME,
-                List.of(),
-                List.of(new TypeReference<Utf8String>() {
-                }));
+        final Function function = new Function(FUNC_M_DATASETNAME, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> owner() {
-        final Function function = new Function(FUNC_OWNER,
-                List.of(),
-                List.of(new TypeReference<Address>() {
-                }));
+        final Function function = new Function(FUNC_OWNER, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> registry() {
-        final Function function = new Function(FUNC_REGISTRY,
-                List.of(),
-                List.of(new TypeReference<Address>() {
-                }));
+        final Function function = new Function(FUNC_REGISTRY, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setName(String _ens, String _name) {
         final Function function = new Function(
                 FUNC_SETNAME, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(_ens),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_ens), 
                 new org.web3j.abi.datatypes.Utf8String(_name)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> initialize(String _datasetName, byte[] _datasetMultiaddr, byte[] _datasetChecksum) {
         final Function function = new Function(
                 FUNC_INITIALIZE, 
-                Arrays.asList(new org.web3j.abi.datatypes.Utf8String(_datasetName),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(_datasetName), 
                 new org.web3j.abi.datatypes.DynamicBytes(_datasetMultiaddr), 
                 new org.web3j.abi.datatypes.generated.Bytes32(_datasetChecksum)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 

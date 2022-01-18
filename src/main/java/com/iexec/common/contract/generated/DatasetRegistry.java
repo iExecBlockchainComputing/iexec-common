@@ -1,7 +1,7 @@
 package com.iexec.common.contract.generated;
 
 import io.reactivex.Flowable;
-
+import io.reactivex.functions.Function;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,6 @@ import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Bytes32;
-import org.web3j.abi.datatypes.generated.Bytes4;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -24,6 +23,7 @@ import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.RemoteFunctionCall;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.BaseEventResponse;
+import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
@@ -103,16 +103,20 @@ public class DatasetRegistry extends Contract {
     public static final String FUNC_PREDICTDATASET = "predictDataset";
 
     public static final Event APPROVAL_EVENT = new Event("Approval", 
-            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
+    ;
 
     public static final Event APPROVALFORALL_EVENT = new Event("ApprovalForAll", 
-            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Bool>() {}));
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Bool>() {}));
+    ;
 
     public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred", 
-            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
+    ;
 
     public static final Event TRANSFER_EVENT = new Event("Transfer", 
-            Arrays.asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}, new TypeReference<Uint256>(true) {}));
+    ;
 
     @Deprecated
     protected DatasetRegistry(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
@@ -134,7 +138,7 @@ public class DatasetRegistry extends Contract {
 
     public List<ApprovalEventResponse> getApprovalEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVAL_EVENT, transactionReceipt);
-        ArrayList<ApprovalEventResponse> responses = new ArrayList<>(valueList.size());
+        ArrayList<ApprovalEventResponse> responses = new ArrayList<ApprovalEventResponse>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ApprovalEventResponse typedResponse = new ApprovalEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -147,14 +151,17 @@ public class DatasetRegistry extends Contract {
     }
 
     public Flowable<ApprovalEventResponse> approvalEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(log -> {
-            EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
-            ApprovalEventResponse typedResponse = new ApprovalEventResponse();
-            typedResponse.log = log;
-            typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
-            typedResponse.approved = (String) eventValues.getIndexedValues().get(1).getValue();
-            typedResponse.tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
-            return typedResponse;
+        return web3j.ethLogFlowable(filter).map(new Function<Log, ApprovalEventResponse>() {
+            @Override
+            public ApprovalEventResponse apply(Log log) {
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVAL_EVENT, log);
+                ApprovalEventResponse typedResponse = new ApprovalEventResponse();
+                typedResponse.log = log;
+                typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
+                typedResponse.approved = (String) eventValues.getIndexedValues().get(1).getValue();
+                typedResponse.tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
+                return typedResponse;
+            }
         });
     }
 
@@ -166,7 +173,7 @@ public class DatasetRegistry extends Contract {
 
     public List<ApprovalForAllEventResponse> getApprovalForAllEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(APPROVALFORALL_EVENT, transactionReceipt);
-        ArrayList<ApprovalForAllEventResponse> responses = new ArrayList<>(valueList.size());
+        ArrayList<ApprovalForAllEventResponse> responses = new ArrayList<ApprovalForAllEventResponse>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             ApprovalForAllEventResponse typedResponse = new ApprovalForAllEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -179,14 +186,17 @@ public class DatasetRegistry extends Contract {
     }
 
     public Flowable<ApprovalForAllEventResponse> approvalForAllEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(log -> {
-            EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, log);
-            ApprovalForAllEventResponse typedResponse = new ApprovalForAllEventResponse();
-            typedResponse.log = log;
-            typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
-            typedResponse.operator = (String) eventValues.getIndexedValues().get(1).getValue();
-            typedResponse.approved = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
-            return typedResponse;
+        return web3j.ethLogFlowable(filter).map(new Function<Log, ApprovalForAllEventResponse>() {
+            @Override
+            public ApprovalForAllEventResponse apply(Log log) {
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(APPROVALFORALL_EVENT, log);
+                ApprovalForAllEventResponse typedResponse = new ApprovalForAllEventResponse();
+                typedResponse.log = log;
+                typedResponse.owner = (String) eventValues.getIndexedValues().get(0).getValue();
+                typedResponse.operator = (String) eventValues.getIndexedValues().get(1).getValue();
+                typedResponse.approved = (Boolean) eventValues.getNonIndexedValues().get(0).getValue();
+                return typedResponse;
+            }
         });
     }
 
@@ -198,7 +208,7 @@ public class DatasetRegistry extends Contract {
 
     public List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
-        ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<>(valueList.size());
+        ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -210,13 +220,16 @@ public class DatasetRegistry extends Contract {
     }
 
     public Flowable<OwnershipTransferredEventResponse> ownershipTransferredEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(log -> {
-            EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
-            OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
-            typedResponse.log = log;
-            typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
-            typedResponse.newOwner = (String) eventValues.getIndexedValues().get(1).getValue();
-            return typedResponse;
+        return web3j.ethLogFlowable(filter).map(new Function<Log, OwnershipTransferredEventResponse>() {
+            @Override
+            public OwnershipTransferredEventResponse apply(Log log) {
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
+                OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
+                typedResponse.log = log;
+                typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
+                typedResponse.newOwner = (String) eventValues.getIndexedValues().get(1).getValue();
+                return typedResponse;
+            }
         });
     }
 
@@ -228,7 +241,7 @@ public class DatasetRegistry extends Contract {
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(TRANSFER_EVENT, transactionReceipt);
-        ArrayList<TransferEventResponse> responses = new ArrayList<>(valueList.size());
+        ArrayList<TransferEventResponse> responses = new ArrayList<TransferEventResponse>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             TransferEventResponse typedResponse = new TransferEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -241,14 +254,17 @@ public class DatasetRegistry extends Contract {
     }
 
     public Flowable<TransferEventResponse> transferEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(log -> {
-            EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
-            TransferEventResponse typedResponse = new TransferEventResponse();
-            typedResponse.log = log;
-            typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
-            typedResponse.to = (String) eventValues.getIndexedValues().get(1).getValue();
-            typedResponse.tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
-            return typedResponse;
+        return web3j.ethLogFlowable(filter).map(new Function<Log, TransferEventResponse>() {
+            @Override
+            public TransferEventResponse apply(Log log) {
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(TRANSFER_EVENT, log);
+                TransferEventResponse typedResponse = new TransferEventResponse();
+                typedResponse.log = log;
+                typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
+                typedResponse.to = (String) eventValues.getIndexedValues().get(1).getValue();
+                typedResponse.tokenId = (BigInteger) eventValues.getIndexedValues().get(2).getValue();
+                return typedResponse;
+            }
         });
     }
 
@@ -261,266 +277,246 @@ public class DatasetRegistry extends Contract {
     public RemoteFunctionCall<TransactionReceipt> approve(String to, BigInteger tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_APPROVE, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(160, to),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, to), 
                 new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<BigInteger> balanceOf(String owner) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_BALANCEOF,
-                List.of(new Address(160, owner)),
-                List.of(new TypeReference<Uint256>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_BALANCEOF, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, owner)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<String> baseURI() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_BASEURI,
-                List.of(),
-                List.of(new TypeReference<Utf8String>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_BASEURI, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> getApproved(BigInteger tokenId) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETAPPROVED,
-                List.of(new Uint256(tokenId)),
-                List.of(new TypeReference<Address>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETAPPROVED, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<TransactionReceipt> initialize(String _previous) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_INITIALIZE,
-                List.of(new Address(160, _previous)),
-                Collections.emptyList());
+                FUNC_INITIALIZE, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, _previous)), 
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<Boolean> initialized() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_INITIALIZED,
-                List.of(),
-                List.of(new TypeReference<Bool>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_INITIALIZED, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
     public RemoteFunctionCall<Boolean> isApprovedForAll(String owner, String operator) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ISAPPROVEDFORALL, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(160, owner),
-                new org.web3j.abi.datatypes.Address(160, operator)),
-                List.of(new TypeReference<Bool>() {
-                }));
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, owner), 
+                new org.web3j.abi.datatypes.Address(160, operator)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
     public RemoteFunctionCall<Boolean> isRegistered(String _entry) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ISREGISTERED,
-                List.of(new Address(160, _entry)),
-                List.of(new TypeReference<Bool>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ISREGISTERED, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, _entry)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
     public RemoteFunctionCall<String> master() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_MASTER,
-                List.of(),
-                List.of(new TypeReference<Address>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_MASTER, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> name() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_NAME,
-                List.of(),
-                List.of(new TypeReference<Utf8String>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_NAME, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> owner() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNER,
-                List.of(),
-                List.of(new TypeReference<Address>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNER, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> ownerOf(BigInteger tokenId) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNEROF,
-                List.of(new Uint256(tokenId)),
-                List.of(new TypeReference<Address>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNEROF, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> previous() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_PREVIOUS,
-                List.of(),
-                List.of(new TypeReference<Address>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_PREVIOUS, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<byte[]> proxyCode() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_PROXYCODE,
-                List.of(),
-                List.of(new TypeReference<DynamicBytes>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_PROXYCODE, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicBytes>() {}));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<byte[]> proxyCodeHash() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_PROXYCODEHASH,
-                List.of(),
-                List.of(new TypeReference<Bytes32>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_PROXYCODEHASH, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>() {}));
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteFunctionCall<TransactionReceipt> renounceOwnership() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_RENOUNCEOWNERSHIP,
-                List.of(),
-                Collections.emptyList());
+                FUNC_RENOUNCEOWNERSHIP, 
+                Arrays.<Type>asList(), 
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> safeTransferFrom(String from, String to, BigInteger tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_safeTransferFrom, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(160, from),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, from), 
                 new org.web3j.abi.datatypes.Address(160, to), 
                 new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> safeTransferFrom(String from, String to, BigInteger tokenId, byte[] _data) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_safeTransferFrom, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(160, from),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, from), 
                 new org.web3j.abi.datatypes.Address(160, to), 
                 new org.web3j.abi.datatypes.generated.Uint256(tokenId), 
                 new org.web3j.abi.datatypes.DynamicBytes(_data)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setApprovalForAll(String operator, Boolean approved) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETAPPROVALFORALL, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(160, operator),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, operator), 
                 new org.web3j.abi.datatypes.Bool(approved)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setBaseURI(String _baseURI) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_SETBASEURI,
-                List.of(new Utf8String(_baseURI)),
-                Collections.emptyList());
+                FUNC_SETBASEURI, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(_baseURI)), 
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setName(String _ens, String _name) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETNAME, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(160, _ens),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, _ens), 
                 new org.web3j.abi.datatypes.Utf8String(_name)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<Boolean> supportsInterface(byte[] interfaceId) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_SUPPORTSINTERFACE,
-                List.of(new Bytes4(interfaceId)),
-                List.of(new TypeReference<Bool>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_SUPPORTSINTERFACE, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Bytes4(interfaceId)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
     public RemoteFunctionCall<String> symbol() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_SYMBOL,
-                List.of(),
-                List.of(new TypeReference<Utf8String>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_SYMBOL, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<BigInteger> tokenByIndex(BigInteger index) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKENBYINDEX,
-                List.of(new Uint256(index)),
-                List.of(new TypeReference<Uint256>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKENBYINDEX, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(index)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<BigInteger> tokenOfOwnerByIndex(String owner, BigInteger index) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKENOFOWNERBYINDEX, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(160, owner),
-                new org.web3j.abi.datatypes.generated.Uint256(index)),
-                List.of(new TypeReference<Uint256>() {
-                }));
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, owner), 
+                new org.web3j.abi.datatypes.generated.Uint256(index)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<String> tokenURI(BigInteger tokenId) {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKENURI,
-                List.of(new Uint256(tokenId)),
-                List.of(new TypeReference<Utf8String>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOKENURI, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<BigInteger> totalSupply() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOTALSUPPLY,
-                List.of(),
-                List.of(new TypeReference<Uint256>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_TOTALSUPPLY, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<TransactionReceipt> transferFrom(String from, String to, BigInteger tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_TRANSFERFROM, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(160, from),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, from), 
                 new org.web3j.abi.datatypes.Address(160, to), 
                 new org.web3j.abi.datatypes.generated.Uint256(tokenId)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> transferOwnership(String newOwner) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_TRANSFEROWNERSHIP,
-                List.of(new Address(160, newOwner)),
-                Collections.emptyList());
+                FUNC_TRANSFEROWNERSHIP, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, newOwner)), 
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> createDataset(String _datasetOwner, String _datasetName, byte[] _datasetMultiaddr, byte[] _datasetChecksum) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_CREATEDATASET, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(160, _datasetOwner),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, _datasetOwner), 
                 new org.web3j.abi.datatypes.Utf8String(_datasetName), 
                 new org.web3j.abi.datatypes.DynamicBytes(_datasetMultiaddr), 
                 new org.web3j.abi.datatypes.generated.Bytes32(_datasetChecksum)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<String> predictDataset(String _datasetOwner, String _datasetName, byte[] _datasetMultiaddr, byte[] _datasetChecksum) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_PREDICTDATASET, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(160, _datasetOwner),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(160, _datasetOwner), 
                 new org.web3j.abi.datatypes.Utf8String(_datasetName), 
                 new org.web3j.abi.datatypes.DynamicBytes(_datasetMultiaddr), 
-                new org.web3j.abi.datatypes.generated.Bytes32(_datasetChecksum)),
-                List.of(new TypeReference<Address>() {
-                }));
+                new org.web3j.abi.datatypes.generated.Bytes32(_datasetChecksum)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 

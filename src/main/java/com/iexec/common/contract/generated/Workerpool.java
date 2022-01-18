@@ -1,7 +1,7 @@
 package com.iexec.common.contract.generated;
 
 import io.reactivex.Flowable;
-
+import io.reactivex.functions.Function;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +22,7 @@ import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.RemoteFunctionCall;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.BaseEventResponse;
+import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
@@ -57,12 +58,13 @@ public class Workerpool extends Contract {
     public static final String FUNC_CHANGEPOLICY = "changePolicy";
 
     public static final Event POLICYUPDATE_EVENT = new Event("PolicyUpdate", 
-            Arrays.asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
+            Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}, new TypeReference<Uint256>() {}));
+    ;
 
     protected static final HashMap<String, String> _addresses;
 
     static {
-        _addresses = new HashMap<>();
+        _addresses = new HashMap<String, String>();
     }
 
     @Deprecated
@@ -85,7 +87,7 @@ public class Workerpool extends Contract {
 
     public List<PolicyUpdateEventResponse> getPolicyUpdateEvents(TransactionReceipt transactionReceipt) {
         List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(POLICYUPDATE_EVENT, transactionReceipt);
-        ArrayList<PolicyUpdateEventResponse> responses = new ArrayList<>(valueList.size());
+        ArrayList<PolicyUpdateEventResponse> responses = new ArrayList<PolicyUpdateEventResponse>(valueList.size());
         for (Contract.EventValuesWithLog eventValues : valueList) {
             PolicyUpdateEventResponse typedResponse = new PolicyUpdateEventResponse();
             typedResponse.log = eventValues.getLog();
@@ -99,15 +101,18 @@ public class Workerpool extends Contract {
     }
 
     public Flowable<PolicyUpdateEventResponse> policyUpdateEventFlowable(EthFilter filter) {
-        return web3j.ethLogFlowable(filter).map(log -> {
-            EventValuesWithLog eventValues = extractEventParametersWithLog(POLICYUPDATE_EVENT, log);
-            PolicyUpdateEventResponse typedResponse = new PolicyUpdateEventResponse();
-            typedResponse.log = log;
-            typedResponse.oldWorkerStakeRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
-            typedResponse.newWorkerStakeRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
-            typedResponse.oldSchedulerRewardRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(2).getValue();
-            typedResponse.newSchedulerRewardRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(3).getValue();
-            return typedResponse;
+        return web3j.ethLogFlowable(filter).map(new Function<Log, PolicyUpdateEventResponse>() {
+            @Override
+            public PolicyUpdateEventResponse apply(Log log) {
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(POLICYUPDATE_EVENT, log);
+                PolicyUpdateEventResponse typedResponse = new PolicyUpdateEventResponse();
+                typedResponse.log = log;
+                typedResponse.oldWorkerStakeRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(0).getValue();
+                typedResponse.newWorkerStakeRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(1).getValue();
+                typedResponse.oldSchedulerRewardRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(2).getValue();
+                typedResponse.newSchedulerRewardRatioPolicy = (BigInteger) eventValues.getNonIndexedValues().get(3).getValue();
+                return typedResponse;
+            }
         });
     }
 
@@ -118,68 +123,63 @@ public class Workerpool extends Contract {
     }
 
     public RemoteFunctionCall<BigInteger> m_schedulerRewardRatioPolicy() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_M_SCHEDULERREWARDRATIOPOLICY,
-                List.of(),
-                List.of(new TypeReference<Uint256>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_M_SCHEDULERREWARDRATIOPOLICY, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<BigInteger> m_workerStakeRatioPolicy() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_M_WORKERSTAKERATIOPOLICY,
-                List.of(),
-                List.of(new TypeReference<Uint256>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_M_WORKERSTAKERATIOPOLICY, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<String> m_workerpoolDescription() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_M_WORKERPOOLDESCRIPTION,
-                List.of(),
-                List.of(new TypeReference<Utf8String>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_M_WORKERPOOLDESCRIPTION, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> owner() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNER,
-                List.of(),
-                List.of(new TypeReference<Address>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNER, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<String> registry() {
-        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_REGISTRY,
-                List.of(),
-                List.of(new TypeReference<Address>() {
-                }));
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_REGISTRY, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<TransactionReceipt> setName(String _ens, String _name) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_SETNAME, 
-                Arrays.asList(new org.web3j.abi.datatypes.Address(_ens),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_ens), 
                 new org.web3j.abi.datatypes.Utf8String(_name)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> initialize(String _workerpoolDescription) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
-                FUNC_INITIALIZE,
-                List.of(new Utf8String(_workerpoolDescription)),
-                Collections.emptyList());
+                FUNC_INITIALIZE, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(_workerpoolDescription)), 
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> changePolicy(BigInteger _newWorkerStakeRatioPolicy, BigInteger _newSchedulerRewardRatioPolicy) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_CHANGEPOLICY, 
-                Arrays.asList(new org.web3j.abi.datatypes.generated.Uint256(_newWorkerStakeRatioPolicy),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(_newWorkerStakeRatioPolicy), 
                 new org.web3j.abi.datatypes.generated.Uint256(_newSchedulerRewardRatioPolicy)), 
-                Collections.emptyList());
+                Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
