@@ -20,13 +20,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.web3j.crypto.ECKeyPair;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface EIP712<M> {
 
     @JsonProperty("types")
-    HashMap<String, List<TypeParam>> getTypes();
+    Map<String, List<TypeParam>> getTypes();
 
     @JsonProperty("domain")
     EIP712Domain getDomain();
