@@ -71,6 +71,9 @@ dependencies {
     //TODO Migrate from Awaitility to Failsafe everywhere
     implementation 'org.awaitility:awaitility:4.1.1'
 
+    // expiring map
+    implementation 'net.jodah:expiringmap:0.5.10'
+
     // test
     testImplementation 'org.junit.jupiter:junit-jupiter:5.6.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
