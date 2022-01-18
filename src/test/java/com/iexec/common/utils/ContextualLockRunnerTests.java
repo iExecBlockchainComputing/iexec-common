@@ -71,9 +71,9 @@ class ContextualLockRunnerTests {
     // region Check synchronization works
     /**
      * A constant value is used to lock all operations:
-     * final order should be a list within which each value should not interfere with others.
-     * E.g. [2, 2, 2, 1, 1, 1, 0, 0, 0, 3, 3, 3] would be an expected result,
-     * however [2, <b>1</b>, 2, 2, 1, 1, 0, 0, 0, 3, 3, 3] would not be an expected result as 1 interferes with 2.
+     * all operations having the same key,
+     * there should not be more than a single working thread at the same time
+     * so operations should be run sequentially.
      */
     @Test
     void runWithLockOnConstantValue() {
@@ -85,9 +85,8 @@ class ContextualLockRunnerTests {
 
     /**
      * Parity is used to lock all operations:
-     * final order should be a list within which each value should not interfere with others of same parity.
-     * E.g. [2, 1, 2, 2, 0, 1, 1, 3, 0, 0, 0, 3, 3] would be an expected result,
-     * however [2, 1, 2, 2, 1, <b>3</b>, 1, 0, 0, 0, 3, 3] would not be an expected result as 3 interferes with 1.
+     * operations will be separated in 2 blocks - odd and even keys -,
+     * there should be at most 2 working threads at the same time.
      */
     @Test
     void runWithLockOnParity() {
@@ -100,6 +99,7 @@ class ContextualLockRunnerTests {
     /**
      * Operation's value are used to lock operations:
      * any order is then acceptable as we don't care about interferences between distinct operations.
+     * There could be any number of concurrent threads working on the operations.
      */
     @Test
     void runWithLockPerValue() {
@@ -112,9 +112,8 @@ class ContextualLockRunnerTests {
 
     /**
      * Parity is used to lock all operations:
-     * final order should be a list within which each value should not interfere with others of same parity.
-     * E.g. [2, 1, 2, 2, 0, 1, 1, 3, 0, 0, 0, 3, 3] would be an expected result,
-     * however [2, 1, 2, 2, 1, <b>3</b>, 1, 0, 0, 0, 3, 3] would not be an expected result as 3 interferes with 1.
+     * operations will be separated in 2 blocks - odd and even keys -,
+     * there should be at most 2 working threads at the same time.
      */
     @Test
     void acceptWithLockOnParity() {
@@ -126,9 +125,8 @@ class ContextualLockRunnerTests {
 
     /**
      * Parity is used to lock all operations:
-     * final order should be a list within which each value should not interfere with others of same parity.
-     * E.g. [2, 1, 2, 2, 0, 1, 1, 3, 0, 0, 0, 3, 3] would be an expected result,
-     * however [2, 1, 2, 2, 1, <b>3</b>, 1, 0, 0, 0, 3, 3] would not be an expected result as 3 interferes with 1.
+     * operations will be separated in 2 blocks - odd and even keys -,
+     * there should be at most 2 working threads at the same time.
      */
     @Test
     void applyWithLockOnParity() {
@@ -140,9 +138,8 @@ class ContextualLockRunnerTests {
 
     /**
      * Parity is used to lock all operations:
-     * final order should be a list within which each value should not interfere with others of same parity.
-     * E.g. [2, 1, 2, 2, 0, 1, 1, 3, 0, 0, 0, 3, 3] would be an expected result,
-     * however [2, 1, 2, 2, 1, <b>3</b>, 1, 0, 0, 0, 3, 3] would not be an expected result as 3 interferes with 1.
+     * operations will be separated in 2 blocks - odd and even keys -,
+     * there should be at most 2 working threads at the same time.
      */
     @Test
     void getWithLockOnParity() {
