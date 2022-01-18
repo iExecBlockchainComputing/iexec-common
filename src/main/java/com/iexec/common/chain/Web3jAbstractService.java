@@ -201,7 +201,7 @@ public abstract class Web3jAbstractService {
         }
 
         Optional<BigInteger> optionalBalance = getBalance(address);
-        if (!optionalBalance.isPresent()) {
+        if (optionalBalance.isEmpty()) {
             return false;
         }
 

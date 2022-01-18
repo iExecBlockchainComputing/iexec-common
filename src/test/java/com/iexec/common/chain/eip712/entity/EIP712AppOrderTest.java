@@ -28,7 +28,7 @@ import org.web3j.crypto.WalletUtils;
 import java.io.IOException;
 import java.math.BigInteger;
 
-public class EIP712AppOrderTest {
+class EIP712AppOrderTest {
 
     public static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
     public static final String APP_ADDRESS = "0x2EbD509d777B187E8394566bA6ec093B9dd73DF1";
@@ -43,7 +43,7 @@ public class EIP712AppOrderTest {
      * Note: Don't forget to update salt
      */
     @Test
-    public void signAppOrderEIP712() {
+    void signAppOrderEIP712() {
         EIP712AppOrder eip712AppOrder = new EIP712AppOrder(
                 DOMAIN,
                 AppOrder.builder()

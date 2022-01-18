@@ -51,7 +51,7 @@ public class OrderSigner {
         String signature = new EIP712AppOrder(eip712Domain, appOrder)
                 .signMessage(ecKeyPair);
         if (StringUtils.isEmpty(signature)) {
-            log.error("Empty signature [appOrder:{}]", appOrder.toString());
+            log.error("Empty signature [appOrder:{}]", appOrder);
             return null;
         }
         appOrder.setSign(signature);
@@ -65,7 +65,7 @@ public class OrderSigner {
         String signature = new EIP712WorkerpoolOrder(eip712Domain, workerpoolOrder)
                 .signMessage(ecKeyPair);
         if (StringUtils.isEmpty(signature)) {
-            log.error("Empty signature [workerpoolOrder:{}]", workerpoolOrder.toString());
+            log.error("Empty signature [workerpoolOrder:{}]", workerpoolOrder);
             return null;
         }
         workerpoolOrder.setSign(signature);
@@ -79,7 +79,7 @@ public class OrderSigner {
         String signature = new EIP712DatasetOrder(eip712Domain, datasetOrder)
                 .signMessage(ecKeyPair);
         if (StringUtils.isEmpty(signature)) {
-            log.error("Empty signature [datasetOrder:{}]", datasetOrder.toString());
+            log.error("Empty signature [datasetOrder:{}]", datasetOrder);
             return null;
         }
         datasetOrder.setSign(signature);
@@ -93,7 +93,7 @@ public class OrderSigner {
         String signature = new EIP712RequestOrder(eip712Domain, requestOrder)
                 .signMessage(ecKeyPair);
         if (StringUtils.isEmpty(signature)) {
-            log.error("Empty signature [requestOrder:{}]", requestOrder.toString());
+            log.error("Empty signature [requestOrder:{}]", requestOrder);
             return null;
         }
         requestOrder.setSign(signature);

@@ -29,7 +29,7 @@ import org.web3j.crypto.WalletUtils;
 import java.io.IOException;
 import java.math.BigInteger;
 
-public class EIP712RequestOrderTest {
+class EIP712RequestOrderTest {
 
     public static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
 
@@ -43,7 +43,7 @@ public class EIP712RequestOrderTest {
      * Note: Don't forget to update salt
      */
     @Test
-    public void signRequestOrderEIP712() {
+    void signRequestOrderEIP712() {
         RequestOrder requestOrder = RequestOrder.builder()
                 .app("0x6709CAe77CDa2cbA8Cb90A4F5a4eFfb5c8Fe8367")
                 .appmaxprice(BigInteger.ZERO)

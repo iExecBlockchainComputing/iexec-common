@@ -255,11 +255,11 @@ public class FileHelper {
         String zipFilePath = Path.of(saveIn, folderName + ".zip").toAbsolutePath().toString();
         Path sourceFolderPath = Paths.get(folderPath);
 
-        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(new File(zipFilePath)))) {
-            Files.walkFileTree(sourceFolderPath, new SimpleFileVisitor<Path>() {
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFilePath))) {
+            Files.walkFileTree(sourceFolderPath, new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    log.debug("Adding file to zip [file:{}, zip:{}]", file.toAbsolutePath().toString(), zipFilePath);
+                    log.debug("Adding file to zip [file:{}, zip:{}]", file.toAbsolutePath(), zipFilePath);
                     zos.putNextEntry(new ZipEntry(sourceFolderPath.relativize(file).toString()));
                     if (!Files.isSymbolicLink(file)) {
                         Files.copy(file, zos);
@@ -420,11 +420,7 @@ public class FileHelper {
     }
 
     private static String getIndentString(int indent) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < indent; i++) {
-            sb.append("│   ");
-        }
-        return sb.toString();
+        return "│   ".repeat(indent);
     }
 
 }

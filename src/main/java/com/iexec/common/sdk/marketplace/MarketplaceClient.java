@@ -165,7 +165,6 @@ public class MarketplaceClient implements Marketplace {
         if (!orderbook.isOk()) {
             log.error("Failed to get orders [queryParams:{}, error:{}]",
                     queryParams, orderbook.getError());
-            List.of();
         }
         return orderbook.getOrders() != null ? orderbook.getOrders() : List.of();
     }

@@ -24,10 +24,10 @@ import static com.iexec.common.replicate.ReplicateStatus.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class ReplicateStatusTests {
+class ReplicateStatusTests {
 
     @Test
-    public void shouldGetMissingStatuses() {
+    void shouldGetMissingStatuses() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTING);
 
         assertEquals(missingStatuses.size(), 7);
@@ -41,19 +41,19 @@ public class ReplicateStatusTests {
     }
 
     @Test
-    public void shouldNotGetMissingStatusesWhenFromGreaterThanTo() {
+    void shouldNotGetMissingStatusesWhenFromGreaterThanTo() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(COMPUTING, CREATED);
         assertEquals(missingStatuses.size(), 0);
     }
 
     @Test
-    public void shouldNotGetMissingStatusesWhenFromEqualsTo() {
+    void shouldNotGetMissingStatusesWhenFromEqualsTo() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, CREATED);
         assertEquals(missingStatuses.size(), 0);
     }
 
     @Test
-    public void shouldNotGetMissingStatusesIfFromOrToIsNotInSuccessList() {
+    void shouldNotGetMissingStatusesIfFromOrToIsNotInSuccessList() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTE_FAILED);
         assertEquals(missingStatuses.size(), 0);
     }

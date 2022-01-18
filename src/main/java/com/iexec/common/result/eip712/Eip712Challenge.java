@@ -17,69 +17,49 @@
 package com.iexec.common.result.eip712;
 
 import com.iexec.common.chain.eip712.EIP712Domain;
+import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.chain.eip712.TypeParam;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-/**
- * @since 5.9.1
- * @deprecated Such {@link Eip712Challenge} class should extend
- * {@link com.iexec.common.chain.eip712.EIP712Entity}.
- * Upgrade (and move) this class to get this behaviour (PR TODO)
- * or build your own implementation.
- */
-@Deprecated(forRemoval = true)
-@Data
-@Getter
-@NoArgsConstructor
-public class Eip712Challenge {
-
+public class Eip712Challenge extends EIP712Entity<Message> {
     private static final String DOMAIN_NAME = "iExec Result Repository";
     private static final String DOMAIN_VERSION = "1";
     private static final String PRIMARY_TYPE = "Challenge";
-
-    private Types types;
-    private EIP712Domain domain;
-    private String primaryType;
-    private Message message;
+    private static final List<TypeParam> MESSAGE_TYPE_PARAMS = Collections.singletonList(
+            new TypeParam("challenge", "string")
+    );
 
     public Eip712Challenge(String challenge, long chainId) {
-        this(challenge, chainId, DOMAIN_NAME, DOMAIN_VERSION, PRIMARY_TYPE);
+        this(challenge, chainId, DOMAIN_NAME, DOMAIN_VERSION);
     }
 
     public Eip712Challenge(String challenge, long chainId, String domainName) {
-        this(challenge, chainId, domainName, DOMAIN_VERSION, PRIMARY_TYPE);
+        this(challenge, chainId, domainName, DOMAIN_VERSION);
     }
 
-    public Eip712Challenge(String challenge, long chainId, String domainName, String domainVersion, String primaryType) {
-        List<TypeParam> domainTypeParams = Arrays.asList(
-                new TypeParam("name", "string"),
-                new TypeParam("version", "string"),
-                new TypeParam("chainId", "uint256")
+    public Eip712Challenge(String challenge, long chainId, String domainName, String domainVersion) {
+        super(
+                new EIP712Domain(domainName, domainVersion, chainId, null),
+                Message.builder().challenge(challenge).build()
         );
-
-        List<TypeParam> messageTypeParams = Arrays.asList(
-                new TypeParam("challenge", "string")
-        );
-
-        Types types = new Types(domainTypeParams, messageTypeParams);
-
-        EIP712Domain domain = new EIP712Domain(domainName, domainVersion, chainId, null);
-
-        Message message = Message.builder()
-                .challenge(challenge)
-                .build();
-
-        this.types = types;
-        this.domain = domain;
-        this.message = message;
-        this.primaryType = primaryType;
     }
 
+    @Override
+    public String getPrimaryType() {
+        return PRIMARY_TYPE;
+    }
+
+    @Override
+    public String getMessageHash() {
+        return super.hashMessageValues(
+                getMessage().getChallenge()
+        );
+    }
+
+    @Override
+    public List<TypeParam> getMessageTypeParams() {
+        return MESSAGE_TYPE_PARAMS;
+    }
 }
-
-

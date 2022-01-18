@@ -16,34 +16,32 @@
 
 package com.iexec.common.chain.eip712;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ObjectArrays;
 import com.iexec.common.utils.HashUtils;
 import com.iexec.common.utils.SignatureUtils;
 import org.web3j.crypto.ECKeyPair;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public abstract class EIP712Entity<M> implements EIP712<M> {
 
-    private final HashMap<String, List<TypeParam>> types;
+    private final Map<String, List<TypeParam>> types;
     private final EIP712Domain domain;
     private final M message;
 
     protected EIP712Entity(EIP712Domain domain, M message) {
         this.domain = domain;
         this.message = message;
-
-        HashMap<String, List<TypeParam>> types = new HashMap<>();
-        types.put(EIP712Domain.primaryType, domain.getTypes());
-        types.put(getPrimaryType(), getMessageTypeParams());
-        this.types = types;
+        this.types = Map.of(
+                EIP712Domain.primaryType, domain.getTypes(),
+                getPrimaryType(), getMessageTypeParams()
+        );
     }
 
     @Override
-    public HashMap<String, List<TypeParam>> getTypes() {
-        return types;
+    public Map<String, List<TypeParam>> getTypes() {
+        return new HashMap<>(types);
     }
 
     @Override
@@ -76,4 +74,13 @@ public abstract class EIP712Entity<M> implements EIP712<M> {
         return SignatureUtils.signAsString(this.getHash(), ecKeyPair);
     }
 
+    @JsonIgnore
+    public List<TypeParam> getDomainTypeParams() {
+        return new ArrayList<>(types.get(EIP712Domain.primaryType));
+    }
+
+    @JsonIgnore
+    public List<TypeParam> getMessageTypeParams() {
+        return new ArrayList<>(types.get(getPrimaryType()));
+    }
 }

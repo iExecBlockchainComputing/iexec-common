@@ -26,14 +26,14 @@ import static com.iexec.common.utils.FileHelper.readAllBytes;
 import static com.iexec.common.utils.FileHelper.readFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EncryptionHelperTests {
+class EncryptionHelperTests {
 
     private final static String DOT_SLASH = "./src/test/resources/security/";
     private String plainTextRsaPublicKey;
     private String plainTextRsaPrivateKey;
 
     @BeforeEach
-    public void before() {
+    void before() {
         plainTextRsaPublicKey = readFile(DOT_SLASH + "test_rsa_key.pub");
         plainTextRsaPrivateKey = readFile(DOT_SLASH + "test_rsa_key");
     }
@@ -45,7 +45,7 @@ public class EncryptionHelperTests {
     }
 
     @Test
-    public void shouldEncryptAndDecrypt() {
+    void shouldEncryptAndDecrypt() {
         removeOldFiles();
         String inDataFileName = "result-0xabc.zip";
 

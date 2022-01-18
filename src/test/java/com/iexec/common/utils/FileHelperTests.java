@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -33,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class FileHelperTests {
+class FileHelperTests {
 
     private static final String TEST_FOLDER = "/tmp/iexec-test";
     // http
@@ -56,37 +55,37 @@ public class FileHelperTests {
 
     // clean the test repo before and after each test
     @BeforeEach
-    public void init() throws IOException {
+    void init() throws IOException {
         FileUtils.deleteDirectory(new File(TEST_FOLDER));
     }
 
     @AfterEach
-    public void tearDown() throws IOException {
+    void tearDown() throws IOException {
         FileUtils.deleteDirectory(new File(TEST_FOLDER));
     }
 
     @Test
-    public void shouldThrowExceptionWhenInvokingConstructor() throws Exception {
+    void shouldThrowExceptionWhenInvokingConstructor() throws Exception {
         Constructor<FileHelper> clazz = FileHelper.class.getDeclaredConstructor();
         clazz.setAccessible(true);
         // calling the private constructor
-        assertThrows(Exception.class, () -> clazz.newInstance());
+        assertThrows(Exception.class, clazz::newInstance);
     }
 
 
     @Test
-    public void shouldCreateFileWithContent() throws IOException {
+    void shouldCreateFileWithContent() throws IOException {
         String data = "a test";
         File file = FileHelper.createFileWithContent(TEST_FOLDER + "/test.txt", data);
         assertThat(file).isNotNull();
         assertThat(file).exists();
         assertThat(file).isFile();
-        String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8);
+        String content = Files.readString(Paths.get(file.getAbsolutePath()));
         assertThat(content).isEqualTo(data);
     }
 
     @Test
-    public void shouldCreateFolder() {
+    void shouldCreateFolder() {
         String folderPath = TEST_FOLDER + "/folder";
         boolean created = FileHelper.createFolder(folderPath);
         File newFolder = new File(folderPath);
@@ -105,7 +104,7 @@ public class FileHelperTests {
     }
 
     @Test
-    public void shouldCreateFolderRecursively() {
+    void shouldCreateFolderRecursively() {
         String folderPath = TEST_FOLDER + "/folder1/folder2/folder3";
         boolean created = FileHelper.createFolder(folderPath);
         File newFolder = new File(folderPath);
@@ -124,7 +123,7 @@ public class FileHelperTests {
     }
 
     @Test
-    public void shouldDeleteFile() {
+    void shouldDeleteFile() {
         String filePath = TEST_FOLDER + "/test.txt";
         File file = FileHelper.createFileWithContent(filePath, "Hello world");
         assertThat(file).isNotNull();
@@ -138,7 +137,7 @@ public class FileHelperTests {
     }
 
     @Test
-    public void shouldNotDeleteNonExistingFile() {
+    void shouldNotDeleteNonExistingFile() {
         String filePath = TEST_FOLDER + "/test.txt";
 
         boolean isDeleted = FileHelper.deleteFile(filePath);
@@ -148,7 +147,7 @@ public class FileHelperTests {
     }
 
     @Test
-    public void shouldDeleteFolder() {
+    void shouldDeleteFolder() {
         String folderPath = TEST_FOLDER + "/folder";
         boolean created = FileHelper.createFolder(folderPath);
         File newFolder = new File(folderPath);
@@ -164,7 +163,7 @@ public class FileHelperTests {
     }
 
     @Test
-    public void shouldDeleteFoldersRecursively() {
+    void shouldDeleteFoldersRecursively() {
         String folderPath = TEST_FOLDER + "/folder1/folder2/folder3";
         boolean created = FileHelper.createFolder(folderPath);
         File newFolder = new File(folderPath);
@@ -180,7 +179,7 @@ public class FileHelperTests {
     }
 
     @Test
-    public void shouldNotDeleteNonExistingFolder() {
+    void shouldNotDeleteNonExistingFolder() {
         String folderPath = TEST_FOLDER + "/folder";
         boolean isDeleted = FileHelper.deleteFolder(folderPath);
         File deletedFolder = new File(folderPath);
@@ -189,7 +188,7 @@ public class FileHelperTests {
     }
 
     @Test
-    public void shouldZipFolder() {
+    void shouldZipFolder() {
         FileHelper.createFileWithContent(TEST_FOLDER + "/taskId/test.txt", "a test");
         File zipFile = FileHelper.zipFolder(TEST_FOLDER + "/taskId");
         assertThat(zipFile).isNotNull();
@@ -201,7 +200,7 @@ public class FileHelperTests {
     // downloadFile(url, dir, name)
 
     @Test
-    public void shouldDownloadFileWithName() {
+    void shouldDownloadFileWithName() {
         String downloadedFilePath = FileHelper.downloadFile(
                 HTTP_URL, TEST_FOLDER, ICON_PNG);
         assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/icon.png");
@@ -212,7 +211,7 @@ public class FileHelperTests {
     }
 
     @Test
-    public void shouldDownloadFileWithNameFromHttpsUrl() {
+    void shouldDownloadFileWithNameFromHttpsUrl() {
         String downloadedFilePath = FileHelper.downloadFile(
                 HTTPS_URL, TEST_FOLDER, "token.svg");
         assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/token.svg");
@@ -224,7 +223,7 @@ public class FileHelperTests {
 
     // TODO
     // @Test
-    // public void shouldDownloadFileWithNameWithHttpRedirection() {
+    // void shouldDownloadFileWithNameWithHttpRedirection() {
     //     String downloadedFilePath = FileHelper.downloadFile(
     //             REDIRECTION_URL, TEST_FOLDER, ICON_PNG);
     //     assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/icon.png");
@@ -235,32 +234,32 @@ public class FileHelperTests {
     // }
 
     @Test
-    public void shouldNotDownloadFileWithEmptyUrl() {
+    void shouldNotDownloadFileWithEmptyUrl() {
         assertThat(FileHelper.downloadFile("", TEST_FOLDER, "file.txt")).isEmpty();
         assertThat(new File(TEST_FOLDER).exists()).isFalse();
     }
 
     @Test
-    public void shouldNotDownloadFileWithEmptyParentFolderPath() {
+    void shouldNotDownloadFileWithEmptyParentFolderPath() {
         assertThat(FileHelper.downloadFile(HTTP_URL, "", ICON_PNG)).isEmpty();
         assertThat(new File(TEST_FOLDER).exists()).isFalse();
     }
 
     @Test
-    public void shouldNotDownloadFileWithEmptyOutputFileName() {
+    void shouldNotDownloadFileWithEmptyOutputFileName() {
         assertThat(FileHelper.downloadFile(HTTP_URL, TEST_FOLDER, "")).isEmpty();
         assertThat(new File(TEST_FOLDER).exists()).isFalse();
     }
 
     @Test
-    public void shouldNotDownloadFileWithBadUrl() {
+    void shouldNotDownloadFileWithBadUrl() {
         assertThat(FileHelper.downloadFile("http://bad-url", TEST_FOLDER, "file.txt"))
                 .isEmpty();
         assertThat(new File(TEST_FOLDER).exists()).isFalse();
     }
 
     @Test
-    public void shouldNotDownloadFileSinceCannotCreateFolder() {
+    void shouldNotDownloadFileSinceCannotCreateFolder() {
         String downloadedFilePath = FileHelper.downloadFile(
                 HTTP_URL, "/unauthorized", ICON_PNG);
         assertThat(downloadedFilePath).isEmpty();
@@ -268,18 +267,18 @@ public class FileHelperTests {
 
     // TODO
     // @Test
-    // public void shouldCleanCreatedParentFolderWhenFailingToWriteDownloadedFile() {}
+    // void shouldCleanCreatedParentFolderWhenFailingToWriteDownloadedFile() {}
 
     // readFileBytesFromUri(url)
 
     @Test
-    public void shouldReadFileBytesFromUrl() {
+    void shouldReadFileBytesFromUrl() {
         byte[] bytes = FileHelper.readFileBytesFromUrl(HTTP_URL);
         assertThat(bytes).isNotEmpty();
     }
 
     @Test
-    public void shouldNotReadFileBytesFromBadUrl() {
+    void shouldNotReadFileBytesFromBadUrl() {
         byte[] bytes = FileHelper.readFileBytesFromUrl("http://bad-url");
         assertThat(bytes).isNull();
     }
@@ -287,7 +286,7 @@ public class FileHelperTests {
     // downloadFile(url, dir)
 
     @Test
-    public void shouldDownloadFileWithHttpUrl() {
+    void shouldDownloadFileWithHttpUrl() {
         String downloadedFilePath = downloadFile(HTTP_URL, TEST_FOLDER);
         String filename = Paths.get(HTTP_URL).getFileName().toString();
         assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/" + filename);
@@ -299,7 +298,7 @@ public class FileHelperTests {
     }
 
     @Test
-    public void shouldDownloadFileWithHttpsUrl() {
+    void shouldDownloadFileWithHttpsUrl() {
         String downloadedFilePath = downloadFile(HTTPS_URL, TEST_FOLDER);
         String filename = Paths.get(HTTPS_URL).getFileName().toString();
         assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/" + filename);
@@ -311,7 +310,7 @@ public class FileHelperTests {
 
     // TODO
     // @Test
-    // public void shouldDownloadFileWithRedirectionUrl() {
+    // void shouldDownloadFileWithRedirectionUrl() {
     //     String downloadedFilePath = downloadFile(REDIRECTION_URL, TEST_FOLDER);
     //     String filename = Paths.get(REDIRECTION_URL).getFileName().toString();
     //     assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/" + filename);
@@ -324,37 +323,37 @@ public class FileHelperTests {
     // exists()
 
     @Test
-    public void shouldFindFolder() {
+    void shouldFindFolder() {
         assertThat(FileHelper.exists("/tmp")).isTrue();
     }
 
     @Test
-    public void shouldFindFile() {
+    void shouldFindFile() {
         File file = FileHelper.createFileWithContent(TEST_FOLDER + "/test.txt", "whatever");
         assertThat(FileHelper.exists(file.getAbsolutePath())).isTrue();
     }
 
     @Test
-    public void shouldNotFindFolder() {
+    void shouldNotFindFolder() {
         assertThat(FileHelper.exists("/not-found")).isFalse();
     }
 
     // removeZipExtension(path)
 
     @Test
-    public void shouldRemoveZipExtension() {
+    void shouldRemoveZipExtension() {
         String fileName = FileHelper.removeZipExtension("/some/where/file.zip");
         assertEquals("/some/where/file", fileName);
     }
 
     @Test
-    public void shouldNotRemoveZipExtensionSinceNoExtension() {
+    void shouldNotRemoveZipExtensionSinceNoExtension() {
         String fileName = FileHelper.removeZipExtension("/some/where/file");
         assertEquals(fileName, "");
     }
 
     @Test
-    public void shouldNotRemoveZipExtensionSinceWrongExtension() {
+    void shouldNotRemoveZipExtensionSinceWrongExtension() {
         String fileName = FileHelper.removeZipExtension("/some/where/file.bla");
         assertEquals(fileName, "");
     }

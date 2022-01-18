@@ -30,14 +30,14 @@ import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 
-public class CredentialsAbstractServiceTests {
+class CredentialsAbstractServiceTests {
 
     @TempDir
     File tempDir;
 
     public static final String WALLET_PASS = "wallet-pass";
 
-    class CredentialsServiceStub extends CredentialsAbstractService {
+    static class CredentialsServiceStub extends CredentialsAbstractService {
         public CredentialsServiceStub(String walletPassword, String walletPath) throws Exception {
             super(walletPassword, walletPath);
         }
@@ -48,7 +48,7 @@ public class CredentialsAbstractServiceTests {
     }
 
     @Test
-    public void shouldLoadCorrectCredentials() throws Exception {
+    void shouldLoadCorrectCredentials() throws Exception {
         String walletPath = createTempWallet(WALLET_PASS);
 
         CredentialsServiceStub credentialsService = new CredentialsServiceStub(WALLET_PASS, walletPath);
@@ -60,12 +60,12 @@ public class CredentialsAbstractServiceTests {
     }
 
     @Test
-    public void shouldThrowIOExceptionSinceWalletFileNotFind() throws Exception {
+    void shouldThrowIOExceptionSinceWalletFileNotFind() throws Exception {
         assertThrows(FileNotFoundException.class, () -> new CredentialsServiceStub(WALLET_PASS, "dummy-path"));
     }
 
     @Test
-    public void shouldThrowIOExceptionSinceCorruptedWalletFile() throws Exception {
+    void shouldThrowIOExceptionSinceCorruptedWalletFile() throws Exception {
         String walletPath = createTempWallet(WALLET_PASS);
         FileWriter fw = new FileWriter(walletPath);
         fw.write("{new: devilish corrupted content}");
@@ -74,7 +74,7 @@ public class CredentialsAbstractServiceTests {
     }
 
     @Test
-    public void shouldThrowCipherExceptionSinceWrongPassword() throws Exception {
+    void shouldThrowCipherExceptionSinceWrongPassword() throws Exception {
         String wrongPass = "wrong-pass";
         String walletPath = createTempWallet(WALLET_PASS);
         assertThrows(CipherException.class, () -> new CredentialsServiceStub(wrongPass, walletPath));

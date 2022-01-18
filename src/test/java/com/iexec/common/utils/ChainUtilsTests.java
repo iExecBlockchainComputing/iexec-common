@@ -21,10 +21,10 @@ import org.junit.jupiter.api.Test;
 import static com.iexec.common.chain.ChainUtils.generateChainTaskId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ChainUtilsTests {
+class ChainUtilsTests {
 
     @Test
-    public void shouldBeCorrectOneValue(){
+    void shouldBeCorrectOneValue(){
         String dealId = "0xa0b0fd396b0f79f14e4d6b34af7180bd9e80e2d86afda91c6127c5c17a268e66";
         String chainTaskId = generateChainTaskId(dealId, 0);
 

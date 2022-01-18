@@ -20,12 +20,12 @@ import com.iexec.common.result.ComputedFile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ResultUtilsTests {
+class ResultUtilsTests {
 
     public static final String CHAIN_TASK_ID = "chainTaskId";
 
     @Test
-    public void shouldComputeWeb3ResultDigest() {
+    void shouldComputeWeb3ResultDigest() {
         ComputedFile computedFile = ComputedFile.builder()
                 .taskId(CHAIN_TASK_ID)
                 .callbackData("0x0000000000000000000000000000000000000000000000000000000000000001")
@@ -36,7 +36,7 @@ public class ResultUtilsTests {
     }
 
     @Test
-    public void shouldComputeWeb2ResultDigest() {
+    void shouldComputeWeb2ResultDigest() {
         ComputedFile computedFile = ComputedFile.builder()
                 .taskId(CHAIN_TASK_ID)
                 .deterministicOutputPath("/iexec_out")

@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PreComputeExitCodeTests {
+class PreComputeExitCodeTests {
 
     @Test
-    public void contains() {
+    void contains() {
         assertThat(PreComputeExitCode.contains(-1)).isTrue();
         assertThat(PreComputeExitCode.contains(0)).isTrue();
         assertThat(PreComputeExitCode.contains(-3)).isFalse();
@@ -19,7 +19,7 @@ public class PreComputeExitCodeTests {
     }
 
     @Test
-    public void values() {
+    void values() {
         assertThat(PreComputeExitCode.UNKNOWN_ERROR.value()).isEqualTo(-1);
         assertThat(PreComputeExitCode.SUCCESS.value()).isEqualTo(0);
         assertThat(PreComputeExitCode.EMPTY_REQUIRED_ENV_VAR.value()).isEqualTo(64);

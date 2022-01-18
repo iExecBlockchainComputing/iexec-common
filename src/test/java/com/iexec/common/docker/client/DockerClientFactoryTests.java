@@ -23,25 +23,25 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("slow")
-public class DockerClientFactoryTests {
+class DockerClientFactoryTests {
 
     private static final String DOCKER_IO_USER = "DOCKER_IO_USER";
     private static final String DOCKER_IO_PASSWORD = "DOCKER_IO_PASSWORD";
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         DockerClientFactory.purgeClients();
     }
 
     @Test
-    public void shouldGetTheSameUnauthenticatedClientInstanceWithDefaultRegistry() throws Exception {
+    void shouldGetTheSameUnauthenticatedClientInstanceWithDefaultRegistry() throws Exception {
         DockerClientInstance instance1 = DockerClientFactory.getDockerClientInstance();
         DockerClientInstance instance2 = DockerClientFactory.getDockerClientInstance();
         assertThat(instance1 == instance2).isTrue();
     }
 
     @Test
-    public void shouldGetTheSameUnauthenticatedClientInstanceWithCustomRegistry() throws Exception {
+    void shouldGetTheSameUnauthenticatedClientInstanceWithCustomRegistry() throws Exception {
         String registryAddress = "registryAddress";
         DockerClientInstance instance1 = DockerClientFactory.getDockerClientInstance(registryAddress);
         DockerClientInstance instance2 = DockerClientFactory.getDockerClientInstance(registryAddress);
@@ -49,7 +49,7 @@ public class DockerClientFactoryTests {
     }
 
     @Test
-    public void shouldGetTheSameAuthenticatedClient() throws Exception {
+    void shouldGetTheSameAuthenticatedClient() throws Exception {
         String dockerIoUsername = getEnvValue(DOCKER_IO_USER);
         String dockerIoPassword = getEnvValue(DOCKER_IO_PASSWORD);
         DockerClientInstance instance1 = DockerClientFactory.getDockerClientInstance(

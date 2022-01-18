@@ -73,7 +73,7 @@ public class ChainUtils {
             builder.blockNumber(txBlockNumber.longValue());
         } else {
             log.warn("Transaction log received but blockNumber is null inside (lastBlock will be used instead) "
-                    + "[chainTaskId:{}, receiptLog:{}, lastBlock:{}]", chainTaskId, chainResponseLog.toString(), lastBlock);
+                    + "[chainTaskId:{}, receiptLog:{}, lastBlock:{}]", chainTaskId, chainResponseLog, lastBlock);
             builder.blockNumber(lastBlock);
         }
 

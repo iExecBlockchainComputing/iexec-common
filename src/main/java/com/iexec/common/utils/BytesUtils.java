@@ -30,6 +30,9 @@ public class BytesUtils {
     public static final int BYTES_32_SIZE = 32;
     //"0x0000000000000000000000000000000000000000000000000000000000000000"
     public final static String EMPTY_HEX_STRING_32 = BytesUtils.bytesToString(new byte[BYTES_32_SIZE]);
+    /**
+     * @deprecated Use {@link BytesUtils#EMPTY_HEX_STRING_32} instead.
+     */
     @Deprecated
     public final static String EMPTY_HEXASTRING_64 = BytesUtils.bytesToString(new byte[BYTES_32_SIZE]);
     private static final int BYTES_32_HEX_STRING_SIZE = BYTES_32_SIZE * 2; // 64
@@ -60,11 +63,6 @@ public class BytesUtils {
     }
 
     public static boolean isHexString(String hexString) {
-        return isHexaString(hexString);
-    }
-
-    @Deprecated
-    public static boolean isHexaString(String hexString) {
         return hexString != null
                 && HEX_PATTERN.matcher(hexString).matches();
     }
@@ -97,11 +95,6 @@ public class BytesUtils {
 
     public static boolean isNonZeroedBytes32(String hexString) {
         return isNonZeroedHexStringWithPrefixAndProperBytesSize(hexString, BYTES_32_SIZE);
-    }
-
-    @Deprecated
-    public static boolean isBytes32(byte[] bytes) {
-        return bytes != null && bytes.length == BYTES_32_SIZE;
     }
 
     /**

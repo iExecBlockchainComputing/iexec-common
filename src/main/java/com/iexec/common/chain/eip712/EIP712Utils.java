@@ -23,6 +23,8 @@ import org.web3j.utils.Numeric;
 import java.math.BigInteger;
 import java.util.List;
 
+import static com.iexec.common.utils.BytesUtils.BYTES_32_SIZE;
+
 /**
  * See https://medium.com/metamask/eip712-is-coming-what-to-expect-and-how-to-use-it-bb92fd1a7a26
  */
@@ -72,7 +74,7 @@ public class EIP712Utils {
     }
 
     static String encodeByteArray(byte[] byteArray) {
-        if (!BytesUtils.isBytes32(byteArray)) {
+        if (byteArray == null || byteArray.length != BYTES_32_SIZE) {
             return "";
         }
         return Numeric.toHexString(byteArray);

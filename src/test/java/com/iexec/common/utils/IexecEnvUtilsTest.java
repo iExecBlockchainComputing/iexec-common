@@ -35,7 +35,7 @@ class IexecEnvUtilsTest {
     public static final String INPUT_FILE_1 = "http://host/filename";
 
     @Test
-    public void getAllIexecEnv() {
+    void getAllIexecEnv() {
         TaskDescription taskDescription = TaskDescription.builder()
                 .chainTaskId(CHAIN_TASK_ID)
                 .datasetAddress(DATASET_ADDRESS)

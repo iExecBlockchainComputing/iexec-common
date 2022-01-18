@@ -25,7 +25,7 @@ public enum OrderType {
 
     private final String value;
 
-    private OrderType(String value) {
+    OrderType(String value) {
         this.value = value;
     }
 

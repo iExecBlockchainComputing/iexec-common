@@ -37,7 +37,7 @@ class RetryerTest {
     private IexecHubAbstractService iexecHubAbstractService;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         MockitoAnnotations.openMocks(this);
     }
 

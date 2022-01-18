@@ -28,7 +28,7 @@ import org.web3j.crypto.WalletUtils;
 import java.io.IOException;
 import java.math.BigInteger;
 
-public class EIP712DatasetOrderTest {
+class EIP712DatasetOrderTest {
 
     public static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
     public static final String DATASET_ADDRESS = "0x2550E5B60f48742aBce2275F34417e7cBf5AcA86";
@@ -43,7 +43,7 @@ public class EIP712DatasetOrderTest {
      * Note: Don't forget to update salt
      */
     @Test
-    public void signDatasetOrderEIP712() {
+    void signDatasetOrderEIP712() {
         EIP712DatasetOrder eip712DatasetOrder = new EIP712DatasetOrder(
                 DOMAIN,
                 DatasetOrder.builder()

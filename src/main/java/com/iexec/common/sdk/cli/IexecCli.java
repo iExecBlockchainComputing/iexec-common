@@ -154,7 +154,7 @@ public class IexecCli {
         sidechain.put("native", true);
         chainDotJson.getJSONObject("chains").put("sidechain", sidechain);
         Optional<DockerLogs> setChainLogs =
-                dockerClient.exec(IEXEC_CLI, "sh", "-c", "echo '" + chainDotJson.toString() + "' > chain.json");
+                dockerClient.exec(IEXEC_CLI, "sh", "-c", "echo '" + chainDotJson + "' > chain.json");
         if (setChainLogs.isEmpty()
                 || StringUtils.isNotBlank(setChainLogs.get().getStderr())) {
             throw new RuntimeException("Cannot setup local chain");

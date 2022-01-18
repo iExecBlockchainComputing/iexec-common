@@ -56,7 +56,7 @@ public class ReplicateStatusDetails {
 
     public ReplicateStatusDetails tailStdout() {
         if (stdout != null && stdout.length() > MAX_STDOUT_LENGTH) {
-            stdout = stdout.substring(stdout.length() - MAX_STDOUT_LENGTH, stdout.length());
+            stdout = stdout.substring(stdout.length() - MAX_STDOUT_LENGTH);
         }
         return this;
     }

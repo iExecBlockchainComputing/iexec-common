@@ -58,6 +58,7 @@ import static com.iexec.common.chain.ChainContributionStatus.CONTRIBUTED;
 import static com.iexec.common.chain.ChainContributionStatus.REVEALED;
 import static com.iexec.common.contract.generated.IexecHubContract.*;
 import static com.iexec.common.tee.TeeEnclaveConfiguration.buildEnclaveConfigurationFromJsonString;
+import static com.iexec.common.utils.BytesUtils.isNonZeroedBytes32;
 import static org.web3j.protocol.core.JsonRpc2_0Web3j.DEFAULT_BLOCK_TIME;
 import static org.web3j.tx.TransactionManager.DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH;
 
@@ -85,7 +86,7 @@ public abstract class IexecHubAbstractService {
     public IexecHubAbstractService(Credentials credentials,
                                    Web3jAbstractService web3jAbstractService,
                                    String iexecHubAddress) {
-        this(credentials, web3jAbstractService, iexecHubAddress, DEFAULT_BLOCK_TIME, 6, 3);
+        this(credentials, web3jAbstractService, iexecHubAddress, Duration.ofMillis(DEFAULT_BLOCK_TIME), 6, 3);
     }
 
     @Deprecated
@@ -94,32 +95,7 @@ public abstract class IexecHubAbstractService {
                                    String iexecHubAddress,
                                    int nbBlocksToWaitPerRetry,
                                    int maxRetries) {
-        this(credentials, web3jAbstractService, iexecHubAddress, DEFAULT_BLOCK_TIME, nbBlocksToWaitPerRetry, maxRetries);
-    }
-
-    /**
-     * @param credentials credentials for sending transaction
-     * @param web3jAbstractService custom web3j service
-     * @param iexecHubAddress address of the iExec Hub contract
-     * @param blockTime block time in ms
-     * @param nbBlocksToWaitPerRetry nb block to wait per retry
-     * @param maxRetries maximum reties
-     */
-    @Deprecated
-    public IexecHubAbstractService(Credentials credentials,
-                                   Web3jAbstractService web3jAbstractService,
-                                   String iexecHubAddress,
-                                   int blockTime,
-                                   int nbBlocksToWaitPerRetry,
-                                   int maxRetries) {
-        this(
-                credentials,
-                web3jAbstractService,
-                iexecHubAddress,
-                Duration.ofMillis(blockTime),
-                nbBlocksToWaitPerRetry,
-                maxRetries
-        );
+        this(credentials, web3jAbstractService, iexecHubAddress, Duration.ofMillis(DEFAULT_BLOCK_TIME), nbBlocksToWaitPerRetry, maxRetries);
     }
 
     /**
@@ -912,9 +888,7 @@ public abstract class IexecHubAbstractService {
             ChainTask chainTask = ChainTask.tuple2ChainTask(getHubContract()
                     .viewTaskABILegacy(BytesUtils.stringToBytes(chainTaskId)).send());
             String chainDealId = chainTask.getDealid();
-            if (!StringUtils.isEmpty(chainDealId)
-                    && BytesUtils.isBytes32(BytesUtils.stringToBytes(chainDealId))
-                    && !BytesUtils.EMPTY_HEXASTRING_64.equals(chainDealId)){
+            if (isNonZeroedBytes32(chainDealId)){
                 return Optional.of(chainTask);
             } else {
                 log.debug("Failed to get consistent ChainTask [chainTaskId:{}]",
@@ -1018,7 +992,7 @@ public abstract class IexecHubAbstractService {
                     app.getContractAddress(), e);
             return Optional.empty();
         }
-        String mrEnclave = "";
+        String mrEnclave;
         try {
             mrEnclave = new String(app.m_appMREnclave().send());
         } catch (Exception e) {

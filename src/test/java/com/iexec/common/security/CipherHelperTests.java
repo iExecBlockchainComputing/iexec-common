@@ -27,13 +27,13 @@ import java.util.Random;
 import static com.iexec.common.security.CipherHelper.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CipherHelperTests {
+class CipherHelperTests {
 
     private static final int KB = 1000;
     private static final int MB = 1000 * KB;
 
     @Test
-    public void shouldEncryptAndDecryptWithAes() {
+    void shouldEncryptAndDecryptWithAes() {
         byte[] originalData = getRandomByteArray(1 * MB);
 
         byte[] aesKey = generateAesKey();
@@ -49,7 +49,7 @@ public class CipherHelperTests {
     }
 
     @Test
-    public void shouldEncryptAndDecryptWithRsaKeys() {
+    void shouldEncryptAndDecryptWithRsaKeys() {
         byte[] originalData = getRandomByteArray(128);
 
         KeyPair rsaKeys = generateRsaKeys();
@@ -65,7 +65,7 @@ public class CipherHelperTests {
     }
 
     @Test
-    public void shouldEncryptAndDecryptWithRsaKeysFile() {
+    void shouldEncryptAndDecryptWithRsaKeysFile() {
         byte[] originalData = getRandomByteArray(128);
 
         String keyDirPath = "./src/test/resources/security";

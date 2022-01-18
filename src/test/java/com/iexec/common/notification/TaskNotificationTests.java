@@ -21,10 +21,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TaskNotificationTests {
+class TaskNotificationTests {
 
     @Test
-    public void shouldGetAbortNotificationCause() {
+    void shouldGetAbortNotificationCause() {
         TaskNotification notif1 = TaskNotification.builder()
                 .chainTaskId("chainTaskId")
                 .taskNotificationExtra(TaskNotificationExtra.builder()

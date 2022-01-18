@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CipherUtilsTests {
+class CipherUtilsTests {
 
     private static final String DIR = "src/test/resources/security/";
     // AES
@@ -33,52 +33,52 @@ public class CipherUtilsTests {
     // ###############
 
     @Test
-    public void shouldGenerate256AesKey() {
+    void shouldGenerate256AesKey() {
         byte[] aesKey = CipherUtils.generateAesKey();
         assertThat(aesKey).hasSize(32);
     }
 
     @Test
-    public void shouldGenerateDifferent256AesKey() {
+    void shouldGenerateDifferent256AesKey() {
         byte[] aesKey1 = CipherUtils.generateAesKey();
         byte[] aesKey2 = CipherUtils.generateAesKey();
         assertThat(aesKey1).isNotEqualTo(aesKey2);
     }
 
     @Test
-    public void shouldGenerateAesKeyWithGivenSize() {
+    void shouldGenerateAesKeyWithGivenSize() {
         byte[] aesKey = CipherUtils.generateAesKey(128);
         assertThat(aesKey).hasSize(16);
     }
 
     @Test
-    public void shouldGenerateIvWithSize16bytes() {
+    void shouldGenerateIvWithSize16bytes() {
         byte[] iv = CipherUtils.generateIv();
         assertThat(iv).hasSize(16);
     }
 
     @Test
-    public void shouldGenerateDifferentIvs() {
+    void shouldGenerateDifferentIvs() {
         byte[] iv1 = CipherUtils.generateIv();
         byte[] iv2 = CipherUtils.generateIv();
         assertThat(iv1).isNotEqualTo(iv2);
     }
 
     @Test
-    public void shouldGet16BytesIvFromEncryptedData() {
+    void shouldGet16BytesIvFromEncryptedData() {
         byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
         assertThat(CipherUtils.getIvFromEncryptedData(encryptedData)).hasSize(16);
     }
 
     @Test
-    public void shouldStripIvFromEncryptedData() {
+    void shouldStripIvFromEncryptedData() {
         byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
         byte[] strippedData = CipherUtils.stripIvFromEncryptedData(encryptedData);
         assertThat(encryptedData.length).isEqualTo(strippedData.length + 16);
     }
 
     @Test
-    public void shouldGenerateIvWithGivenSize() {
+    void shouldGenerateIvWithGivenSize() {
         byte[] iv = CipherUtils.generateIv(32);
         assertThat(iv).hasSize(32);
     }
@@ -86,7 +86,7 @@ public class CipherUtilsTests {
     // encryption
 
     @Test
-    public void shouldEncryptAndDecryptDataWithAesKey() throws Exception {
+    void shouldEncryptAndDecryptDataWithAesKey() throws Exception {
         byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
         byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
         byte[] encryptedData = CipherUtils.aesEncrypt(plainData, base64Key);
@@ -95,7 +95,7 @@ public class CipherUtilsTests {
     }
 
     @Test
-    public void shouldEncryptDataWithDifferentIvs() throws Exception {
+    void shouldEncryptDataWithDifferentIvs() throws Exception {
         byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
         byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
         byte[] encryptedData1 = CipherUtils.aesEncrypt(plainData, base64Key);
@@ -109,7 +109,7 @@ public class CipherUtilsTests {
     // decryption
 
     @Test
-    public void shouldDecryptDataEncryptedWithSdk() throws Exception {
+    void shouldDecryptDataEncryptedWithSdk() throws Exception {
         byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
         byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
         byte[] sdkEncryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
@@ -118,7 +118,7 @@ public class CipherUtilsTests {
     }
 
     @Test
-    public void shouldNotDecryptDataWithBadKey() {
+    void shouldNotDecryptDataWithBadKey() {
         byte[] badKey = Base64.getEncoder().encode(CipherUtils.generateAesKey());
         byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
         Assertions.assertThrows(
@@ -127,7 +127,7 @@ public class CipherUtilsTests {
     }
 
     @Test
-    public void shouldNotDecryptDataWithBadIv() throws Exception {
+    void shouldNotDecryptDataWithBadIv() throws Exception {
         byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
         byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
         byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
@@ -145,12 +145,12 @@ public class CipherUtilsTests {
     // ###############
 
     @Test
-    public void shouldGenerateRsaKeyPair() {
+    void shouldGenerateRsaKeyPair() {
         assertThat(CipherUtils.generateRsaKeyPair()).isNotEmpty();
     }
 
     @Test
-    public void shouldEncryptDataWithRsa() throws Exception {
+    void shouldEncryptDataWithRsa() throws Exception {
         byte[] plainData = FileHelper.readAllBytes(RSA_PLAIN_DATA_FILE);
         Optional<KeyPair> keyPair = 
                 CipherUtils.readRsaKeyPair(RSA_PUB_KEY_FILE, RSA_PRIV_KEY_FILE);
@@ -162,7 +162,7 @@ public class CipherUtilsTests {
     }
 
     @Test
-    public void shouldDecryptDataWithRsa() throws Exception {
+    void shouldDecryptDataWithRsa() throws Exception {
         byte[] plainData = FileHelper.readAllBytes(RSA_PLAIN_DATA_FILE);
         byte[] encryptedData = FileHelper.readAllBytes(RSA_ENC_DATA_FILE);
         Optional<KeyPair> keyPair = 
@@ -173,7 +173,7 @@ public class CipherUtilsTests {
     }
 
     @Test
-    public void shouldDecodeBase64RsaPublicKeyToRsaPublicKey() {
+    void shouldDecodeBase64RsaPublicKeyToRsaPublicKey() {
         String base64RsaPub = FileHelper.readFile(RSA_PUB_KEY_FILE);
         Optional<PublicKey> publicKey = CipherUtils.base64ToRsaPublicKey(base64RsaPub);
         byte[] expectedKey = Base64.getDecoder().decode(
@@ -193,7 +193,7 @@ public class CipherUtilsTests {
     }
 
     @Test
-    public void shouldDecodeBase64RsaPrivateKeyToRsaPrivateKey() {
+    void shouldDecodeBase64RsaPrivateKeyToRsaPrivateKey() {
         String base64RsaPriv = FileHelper.readFile(RSA_PRIV_KEY_FILE);
         Optional<PrivateKey> privateKey =
                 CipherUtils.base64ToRsaPrivateKey(base64RsaPriv);
