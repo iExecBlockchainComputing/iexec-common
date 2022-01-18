@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * but two actions with different keys can be run at the same time.
  * <br>
  * To avoid memory-leaks, entries expire after a given time.
- * Default is 1 hour, but it can be set at {@link ContextualLockRunner} object creation.
+ * Default is 1 hour, but it can be set at object creation.
  *
  * @param <K> Type of the key.
  */
