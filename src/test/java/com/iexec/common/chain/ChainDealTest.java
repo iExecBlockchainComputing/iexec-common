@@ -23,7 +23,6 @@ import org.web3j.tuples.generated.Tuple9;
 
 import java.math.BigInteger;
 
-import static com.iexec.common.chain.ChainDeal.stringToDealParams;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -57,62 +56,13 @@ class ChainDealTest {
                     BigInteger.valueOf(5),
                     BigInteger.valueOf(6));
     public static final String CHAIN_DEAL_ID = "chainDeal";
-    private static final String ARGS = "argument for the worker";
-    private static final String FILE1 = "http://test.com/image1.png";
-    private static final String FILE2 = "http://test.com/image2.png";
-    private static final String FILE3 = "http://test.com/image3.png";
 
     @Test
-    void shouldReadArgsWithoutJson() {
-        DealParams params = stringToDealParams(ARGS);
-        assertEquals(ARGS, params.getIexecArgs());
-        assertEquals(0, params.getIexecInputFiles().size());
+    void testEmptyConstructor() {
+        ChainDeal deal = new ChainDeal();
+        org.assertj.core.api.Assertions.assertThat(deal).hasAllNullFieldsOrProperties();
     }
 
-    @Test
-    void shouldReadArgsInJson() {
-        DealParams params = stringToDealParams("{\"iexec_args\":\"" + ARGS + "\"}");
-        assertEquals(ARGS, params.getIexecArgs());
-        assertEquals(0, params.getIexecInputFiles().size());
-    }
-
-    @Test
-    void shouldReadArgsInJsonAndEmptyInputFiles() {
-        DealParams params = stringToDealParams("{\"iexec_args\":\"" + ARGS + "\"," +
-                "\"iexec_input_files\":[]}");
-        assertEquals(ARGS, params.getIexecArgs());
-        assertEquals(0, params.getIexecInputFiles().size());
-    }
-
-
-    @Test
-    void shouldReadArgsAndOneInputFile() {
-        DealParams params = stringToDealParams("{\"iexec_args\":\"" + ARGS + "\"," +
-                "\"iexec_input_files\":[\"" + FILE1 + "\"]}");
-        assertEquals(ARGS, params.getIexecArgs());
-        assertEquals(1, params.getIexecInputFiles().size());
-        assertEquals(FILE1, params.getIexecInputFiles().get(0));
-    }
-
-    @Test
-    void shouldReadArgsAndMultipleFiles() {
-        DealParams params = stringToDealParams("{\"iexec_args\":\"" + ARGS + "\"," +
-                "\"iexec_input_files\":[\"" + FILE1 + "\",\"" + FILE2 + "\",\"" + FILE3 + "\"]}");
-        assertEquals(ARGS, params.getIexecArgs());
-        assertEquals(3, params.getIexecInputFiles().size());
-        assertEquals(FILE1, params.getIexecInputFiles().get(0));
-        assertEquals(FILE2, params.getIexecInputFiles().get(1));
-        assertEquals(FILE3, params.getIexecInputFiles().get(2));
-    }
-
-    @Test
-    void shouldReadNotCorrectJsonFile() {
-        String wrongJson = "{\"wrong_field1\":\"wrong arg value\"," +
-                "\"iexec_input_files\":[\"" + FILE1 + "\"]}";
-        DealParams params = stringToDealParams(wrongJson);
-        assertEquals(wrongJson, params.getIexecArgs());
-        assertEquals(0, params.getIexecInputFiles().size());
-    }
 
     @Test
     void shouldConvertToChainDeal() {
@@ -141,7 +91,7 @@ class ChainDealTest {
                         .requester(DEAL_PT_2.component3())
                         .beneficiary(DEAL_PT_2.component4())
                         .callback(DEAL_PT_2.component5())
-                        .params(stringToDealParams(DEAL_PT_2.component6()))
+                        .params(DealParams.createFromString(DEAL_PT_2.component6()))
                         .chainCategory(category)
                         .startTime(config.component2())
                         .botFirst(config.component3())

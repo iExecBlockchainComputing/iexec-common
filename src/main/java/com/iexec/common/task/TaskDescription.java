@@ -29,6 +29,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -59,6 +60,7 @@ public class TaskDescription {
     private boolean isResultEncryption;
     private String resultStorageProvider;
     private String resultStorageProxy;
+    private Map<String, String> secrets;
     private String teePostComputeImage;
     private String teePostComputeFingerprint;
 
@@ -137,11 +139,6 @@ public class TaskDescription {
             datasetName = chainDeal.getChainDataset().getName();
             datasetChecksum = chainDeal.getChainDataset().getChecksum();
         }
-        List<String> inputFiles = List.of();
-        if (chainDeal.getParams() != null &&
-                chainDeal.getParams().getIexecInputFiles() != null) {
-            inputFiles = chainDeal.getParams().getIexecInputFiles();
-        }
         return TaskDescription.builder()
                 .chainTaskId(chainTaskId)
                 .requester(chainDeal
@@ -158,19 +155,22 @@ public class TaskDescription {
                         .getEnclaveConfiguration())
                 .cmd(chainDeal.getParams()
                         .getIexecArgs())
-                .inputFiles(inputFiles)
+                .inputFiles(chainDeal.getParams()
+                        .getIexecInputFiles())
                 .maxExecutionTime(chainDeal.getChainCategory()
                         .getMaxExecutionTime())
                 .isTeeTask(TeeUtils
                         .isTeeTag(chainDeal.getTag()))
                 .developerLoggerEnabled(chainDeal.getParams()
                         .isIexecDeveloperLoggerEnabled())
+                .isResultEncryption(chainDeal.getParams()
+                        .isIexecResultEncryption())
                 .resultStorageProvider(chainDeal.getParams()
                         .getIexecResultStorageProvider())
                 .resultStorageProxy(chainDeal.getParams()
                         .getIexecResultStorageProxy())
-                .isResultEncryption(chainDeal.getParams()
-                        .isIexecResultEncryption())
+                .secrets(chainDeal.getParams()
+                        .getIexecSecrets())
                 .teePostComputeImage(chainDeal.getParams()
                         .getIexecTeePostComputeImage())
                 .teePostComputeFingerprint(chainDeal.getParams()

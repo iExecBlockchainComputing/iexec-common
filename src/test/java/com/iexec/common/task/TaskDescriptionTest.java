@@ -140,7 +140,12 @@ class TaskDescriptionTest {
                 task.getTeePostComputeImage());
         Assertions.assertEquals(TEE_POST_COMPUTE_FINGERPRINT,
                 task.getTeePostComputeFingerprint());
-        Assertions.assertEquals(true, task.containsDataset());
+        Assertions.assertTrue(task.containsDataset());
+    }
+
+    @Test
+    void toTaskDescriptionWithNullDeal() {
+        Assertions.assertNull(TaskDescription.toTaskDescription("0x15", 5, null));
     }
 
     @Test
