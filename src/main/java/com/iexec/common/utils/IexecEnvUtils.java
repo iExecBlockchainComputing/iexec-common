@@ -50,6 +50,9 @@ public class IexecEnvUtils {
     public static final String IEXEC_INPUT_FILES_FOLDER = "IEXEC_INPUT_FILES_FOLDER";
     public static final String IEXEC_INPUT_FILE_NAME_PREFIX = "IEXEC_INPUT_FILE_NAME_";
     public static final String IEXEC_INPUT_FILE_URL_PREFIX = "IEXEC_INPUT_FILE_URL_";
+    // secrets
+    public static final String IEXEC_APP_DEVELOPER_SECRET_PREFIX = "IEXEC_APP_DEVELOPER_SECRET_";
+    public static final String IEXEC_REQUESTER_SECRET_PREFIX = "IEXEC_REQUESTER_SECRET_";
 
     private IexecEnvUtils() {
         throw new UnsupportedOperationException();

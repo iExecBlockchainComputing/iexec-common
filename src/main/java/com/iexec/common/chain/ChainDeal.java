@@ -16,15 +16,12 @@
 
 package com.iexec.common.chain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.utils.BytesUtils;
 import lombok.*;
 import org.web3j.tuples.generated.Tuple6;
 import org.web3j.tuples.generated.Tuple9;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 
 @Data
 @NoArgsConstructor
@@ -68,23 +65,6 @@ public class ChainDeal {
                 !getChainDataset().getChainDatasetId().equals(BytesUtils.EMPTY_ADDRESS);
     }
 
-    public static DealParams stringToDealParams(String params) {
-        try {
-            DealParams dealParams = new ObjectMapper().readValue(params, DealParams.class);
-            if (dealParams.getIexecInputFiles() == null) {
-                dealParams.setIexecInputFiles(new ArrayList<>());
-            }
-            return dealParams;
-        } catch (IOException e) {
-            //the requester want to execute one task with the whole string
-            return DealParams.builder()
-                    .iexecArgs(params)
-                    .iexecInputFiles(new ArrayList<>())
-                    .iexecDeveloperLoggerEnabled(false)
-                    .build();
-        }
-    }
-
     public static ChainDeal parts2ChainDeal(String chainDealId, Tuple9<String, String, BigInteger, String, String, BigInteger, String, String, BigInteger> dealPt1, Tuple6<BigInteger, byte[], String, String, String, String> dealPt2, Tuple6<BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> config, ChainApp app, ChainCategory category, ChainDataset dataset) {
         if (dealPt1 == null || dealPt2 == null || config == null || app == null || category == null) {
             return new ChainDeal();
@@ -105,7 +85,7 @@ public class ChainDeal {
                 .requester(dealPt2.component3())
                 .beneficiary(dealPt2.component4())
                 .callback(dealPt2.component5())
-                .params(stringToDealParams(dealPt2.component6()))
+                .params(DealParams.createFromString(dealPt2.component6()))
                 .chainCategory(category)
                 .startTime(config.component2())
                 .botFirst(config.component3())

@@ -144,6 +144,11 @@ class TaskDescriptionTest {
     }
 
     @Test
+    void toTaskDescriptionWithNullDeal() {
+        Assertions.assertNull(TaskDescription.toTaskDescription("0x15", 5, null));
+    }
+
+    @Test
     void toTaskDescription() {
         ChainDeal chainDeal = ChainDeal.builder()
                 .requester(REQUESTER)
