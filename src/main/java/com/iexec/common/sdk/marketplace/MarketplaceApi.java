@@ -26,6 +26,7 @@ interface MarketplaceApi {
     /**
      * Get orders from the marketplace.
      * 
+     * @param orderType
      * @param queryParameters query parameter to be populated
      * when constructing the request. Can be empty but not null.
      * @return json string of orderbook

@@ -20,6 +20,8 @@ public abstract class OrderUtils {
 
     /**
      * Lowercases string or returns empty
+     * @param s
+     * @return
      */
     public static String toLowerCase(String s) {
         return s != null ? s.toLowerCase() : "";

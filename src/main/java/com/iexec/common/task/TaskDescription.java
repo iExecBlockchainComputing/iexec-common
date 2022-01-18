@@ -115,6 +115,9 @@ public class TaskDescription {
      * Create a {@link TaskDescription} from the provided chain deal. This method
      * if preferred to constructors or the builder method.
      * 
+     * @param chainTaskId
+     * @param taskIdx
+     * @param chainDeal
      * @return the created taskDescription
      */
     public static TaskDescription toTaskDescription(String chainTaskId,

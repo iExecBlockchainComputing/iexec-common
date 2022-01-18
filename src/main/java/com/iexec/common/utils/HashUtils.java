@@ -46,6 +46,7 @@ public class HashUtils {
     /**
      * Generates SHA-256 digest for the given file.
      *
+     * @param file
      * @return SHA-256 digest in hex string format,
      * e.g: 0x66daf4e6810d83d4859846a5df1afabf88c9fda135bc732ea977f25348d98ede
      */
@@ -67,6 +68,7 @@ public class HashUtils {
     /**
      * Generates SHA-256 digest for the given UTF-8 string.
      * 
+     * @param utf8String
      * @return SHA-256 digest in hex string format,
      * e.g: 0x66daf4e6810d83d4859846a5df1afabf88c9fda135bc732ea977f25348d98ede
      */
@@ -79,6 +81,7 @@ public class HashUtils {
     /**
      * Generates SHA-256 digest for the given byte array.
      * 
+     * @param bytes
      * @return SHA-256 digest in hex string format,
      * e.g: 0x66daf4e6810d83d4859846a5df1afabf88c9fda135bc732ea977f25348d98ede
      */

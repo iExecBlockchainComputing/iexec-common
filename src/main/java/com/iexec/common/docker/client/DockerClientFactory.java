@@ -61,6 +61,8 @@ public abstract class DockerClientFactory {
      * 
      * @param registryUrl e.g. {@code https://index.docker.io/v1/, https://nexus.iex.ec,
      *                          docker.io, nexus.iex.ec}
+     * @param username
+     * @param password
      * @throws DockerException if the authentication fails
      */
     public static synchronized DockerClientInstance getDockerClientInstance(
