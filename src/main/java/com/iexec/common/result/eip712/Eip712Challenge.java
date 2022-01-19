@@ -19,10 +19,12 @@ package com.iexec.common.result.eip712;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.chain.eip712.TypeParam;
+import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
 
+@NoArgsConstructor
 public class Eip712Challenge extends EIP712Entity<Message> {
     private static final String DOMAIN_NAME = "iExec Result Repository";
     private static final String DOMAIN_VERSION = "1";

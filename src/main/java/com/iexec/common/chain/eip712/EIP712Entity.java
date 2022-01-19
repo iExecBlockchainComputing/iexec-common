@@ -20,15 +20,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ObjectArrays;
 import com.iexec.common.utils.HashUtils;
 import com.iexec.common.utils.SignatureUtils;
+import lombok.NoArgsConstructor;
 import org.web3j.crypto.ECKeyPair;
 
 import java.util.*;
 
+@NoArgsConstructor
 public abstract class EIP712Entity<M> implements EIP712<M> {
 
-    private final Map<String, List<TypeParam>> types;
-    private final EIP712Domain domain;
-    private final M message;
+    private Map<String, List<TypeParam>> types;
+    private EIP712Domain domain;
+    private M message;
 
     protected EIP712Entity(EIP712Domain domain, M message) {
         this.domain = domain;
