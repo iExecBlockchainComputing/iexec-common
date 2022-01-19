@@ -17,6 +17,11 @@ ext {
     isDev = project.hasProperty('dev')
     // versions
     dockerJavaVersion = '3.2.12'
+    gitBranch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
+}
+
+if (gitBranch != 'main' && gitBranch != 'master' && ! (gitBranch ==~ '(release|hotfix|support)/.*')) {
+    version += '-NEXT-SNAPSHOT'
 }
 
 repositories {
