@@ -29,7 +29,6 @@ repositories {
     maven {
         url "https://jitpack.io"
     }
-    jcenter()
 }
 
 // java-library plugin defines 'api' configuration
