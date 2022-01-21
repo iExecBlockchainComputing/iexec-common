@@ -3,6 +3,7 @@ package com.iexec.common.utils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -79,7 +80,6 @@ class ContextualLockRunnerTests {
     void runWithLockOnConstantValue() {
         runWithLock(i -> true);
         Assertions.assertThatThrownBy(() -> runWithoutLock(i -> true))
-                .getRootCause()
                 .hasMessageContaining("Synchronization failed");
     }
 
@@ -92,7 +92,6 @@ class ContextualLockRunnerTests {
     void runWithLockOnParity() {
         runWithLock(i -> i % 2 == 0);
         Assertions.assertThatThrownBy(() -> runWithoutLock(i -> i % 2 == 0))
-                .getRootCause()
                 .hasMessageContaining("Synchronization failed");
     }
 
@@ -115,11 +114,10 @@ class ContextualLockRunnerTests {
      * operations will be separated in 2 blocks - odd and even keys -,
      * there should be at most 2 working threads at the same time.
      */
-    @Test
+    @RepeatedTest(1000)
     void acceptWithLockOnParity() {
         acceptWithLock(i -> i % 2 == 0);
         Assertions.assertThatThrownBy(() -> runWithoutLock(i -> i % 2 == 0))
-                .getRootCause()
                 .hasMessageContaining("Synchronization failed");
     }
 
@@ -132,7 +130,6 @@ class ContextualLockRunnerTests {
     void applyWithLockOnParity() {
         applyWithLock(i -> i % 2 == 0);
         Assertions.assertThatThrownBy(() -> applyWithoutLock(i -> i % 2 == 0))
-                .getRootCause()
                 .hasMessageContaining("Synchronization failed");
     }
 
@@ -156,9 +153,20 @@ class ContextualLockRunnerTests {
     private <K> void run(BiConsumer<Integer, Map<K, Integer>> action) {
         final Map<K, Integer> remainingCallsPerKey = new ConcurrentHashMap<>();
 
-        IntStream.range(0, NUMBER_OF_THREADS)
-                .parallel()
-                .forEach(threadPosition -> action.accept(threadPosition, remainingCallsPerKey));
+        try {
+            IntStream.range(0, NUMBER_OF_THREADS)
+                    .parallel()
+                    .forEach(threadPosition -> action.accept(threadPosition, remainingCallsPerKey));
+        } catch (AssertionError e) {
+            // Sometimes it has a cause, sometimes not.
+            // When there's a cause,
+            // the "Synchronization failed" message is in this cause.
+            // Otherwise, it's in the exception itself.
+            if (e.getCause() != null) {
+                throw (AssertionError)e.getCause();
+            }
+            throw e;
+        }
 
         for (Integer remainingCalls : remainingCallsPerKey.values()) {
             // If we don't reach 0, the `remainingCalls` have been reset at some point.
