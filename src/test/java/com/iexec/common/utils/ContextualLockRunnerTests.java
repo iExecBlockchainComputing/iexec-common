@@ -3,7 +3,6 @@ package com.iexec.common.utils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -114,7 +113,7 @@ class ContextualLockRunnerTests {
      * operations will be separated in 2 blocks - odd and even keys -,
      * there should be at most 2 working threads at the same time.
      */
-    @RepeatedTest(1000)
+    @Test
     void acceptWithLockOnParity() {
         acceptWithLock(i -> i % 2 == 0);
         Assertions.assertThatThrownBy(() -> runWithoutLock(i -> i % 2 == 0))
