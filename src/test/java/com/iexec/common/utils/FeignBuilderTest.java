@@ -4,7 +4,6 @@ import feign.RequestLine;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import static org.mockserver.model.HttpResponse.response;
  * The purpose of those tests is to check the {@code JacksonEncoder#encode}
  * and {@code JacksonDecoder#decode} methods are properly overridden.
  */
-@Slf4j
 public class FeignBuilderTest {
 
     @Container
@@ -31,10 +29,7 @@ public class FeignBuilderTest {
 
     @BeforeEach
     void preflight() {
-        log.info("preflight");
         mockServer.start();
-        log.info("host {}", mockServer.getHost());
-        log.info("port {}", mockServer.getServerPort());
         feignTestClient = FeignBuilder.createBuilder()
                 .target(FeignTestClient.class,
                         "http://" + mockServer.getHost() + ":" + mockServer.getServerPort());
