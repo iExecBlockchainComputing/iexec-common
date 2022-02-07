@@ -1,6 +1,7 @@
 package com.iexec.common.docker;
 
 import com.github.dockerjava.api.model.Device;
+import com.iexec.common.sgx.SgxDriverMode;
 import com.iexec.common.utils.SgxUtils;
 import org.junit.jupiter.api.Test;
 
@@ -31,15 +32,15 @@ class DockerRunRequestTests {
     void shouldAddSgxDevice() {
         DockerRunRequest request = DockerRunRequest.builder()
                 .containerName("containerName")
-                .isSgx(true)
+                .sgxDriverMode(SgxDriverMode.LEGACY)
                 .build();
         System.out.println(request);
         assertThat(request.getDevices().get(0).getcGroupPermissions())
                 .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);        
         assertThat(request.getDevices().get(0).getPathInContainer())
-                .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
+                .isEqualTo("/dev/isgx");
         assertThat(request.getDevices().get(0).getPathOnHost())
-                .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
+                .isEqualTo("/dev/isgx");
     }
 
     @Test
@@ -51,16 +52,16 @@ class DockerRunRequestTests {
         devices.add(device2);
         DockerRunRequest request = DockerRunRequest.builder()
                 .containerName("containerName")
-                .isSgx(true) // notice order here
+                .sgxDriverMode(SgxDriverMode.LEGACY) // notice order here
                 .devices(devices)
                 .build();
         System.out.println(request);
         assertThat(request.getDevices().get(0).getcGroupPermissions())
                 .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);        
         assertThat(request.getDevices().get(0).getPathInContainer())
-                .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
+                .isEqualTo("/dev/isgx");
         assertThat(request.getDevices().get(0).getPathOnHost())
-                .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
+                .isEqualTo("/dev/isgx");
         assertThat(request.getDevices().get(1)).isEqualTo(device1);
         assertThat(request.getDevices().get(2)).isEqualTo(device2);
     }
@@ -75,7 +76,7 @@ class DockerRunRequestTests {
         DockerRunRequest request = DockerRunRequest.builder()
                 .containerName("containerName")
                 .devices(devices) // changed order here
-                .isSgx(true)
+                .sgxDriverMode(SgxDriverMode.LEGACY)
                 .build();
         System.out.println(request);
         assertThat(request.getDevices().get(0)).isEqualTo(device1);
@@ -83,9 +84,9 @@ class DockerRunRequestTests {
         assertThat(request.getDevices().get(2).getcGroupPermissions())
                 .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);        
         assertThat(request.getDevices().get(2).getPathInContainer())
-                .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
+                .isEqualTo("/dev/isgx");
         assertThat(request.getDevices().get(2).getPathOnHost())
-                .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
+                .isEqualTo("/dev/isgx");
     }
 
     @Test
@@ -101,7 +102,7 @@ class DockerRunRequestTests {
     @Test
     void shouldReturnEmptyDeviceListWhenNoDevices() {
         DockerRunRequest request = DockerRunRequest.builder().build();
-        assertThat(request.isSgx()).isFalse();
+        assertThat(request.getSgxDriverMode()).isEqualTo(SgxDriverMode.NONE);
         assertThat(request.getDevices()).isNotNull();
         assertThat(request.getDevices()).isEmpty();
     }

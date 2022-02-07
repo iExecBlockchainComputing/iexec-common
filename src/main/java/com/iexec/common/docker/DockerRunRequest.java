@@ -17,6 +17,7 @@
 package com.iexec.common.docker;
 
 import com.github.dockerjava.api.model.Device;
+import com.iexec.common.sgx.SgxDriverMode;
 import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.SgxUtils;
 import lombok.AllArgsConstructor;
@@ -42,7 +43,7 @@ public class DockerRunRequest {
     private List<String> env;
     private List<String> binds;
     private long maxExecutionTime;
-    private boolean isSgx;
+    private SgxDriverMode sgxDriverMode;
     private String dockerNetwork;
     private String workingDir;
     private boolean shouldDisplayLogs;
@@ -72,30 +73,37 @@ public class DockerRunRequest {
         return devices != null ? new ArrayList<>(devices) : List.of();
     }
 
-    // override builder's isSgx() & devices() methods
+    public SgxDriverMode getSgxDriverMode() {
+        return sgxDriverMode != null ? sgxDriverMode : SgxDriverMode.NONE;
+    }
+
+    // override builder's sgxDriverMode() & devices() methods
     public static class DockerRunRequestBuilder { 
-        private boolean isSgx;
+        private SgxDriverMode sgxDriverMode;
         private List<Device> devices;
 
         /**
          * Add an SGX device when isSgx is true.
          * 
-         * @param isSgx
+         * @param sgxDriverMode SGX driver mode
          * @return
          */
-        public DockerRunRequestBuilder isSgx(boolean isSgx) {
-            this.isSgx = isSgx;
-            if (!isSgx) {
+        public DockerRunRequestBuilder sgxDriverMode(SgxDriverMode sgxDriverMode) {
+            this.sgxDriverMode = sgxDriverMode;
+            if (!SgxDriverMode.isDriverModeNotNone(sgxDriverMode)) {
                 return this;
             }
             if (this.devices == null) {
                 this.devices = new ArrayList<>();
             }
-            Device sgxDevice = new Device(
-                    SgxUtils.SGX_CGROUP_PERMISSIONS,
-                    SgxUtils.SGX_DEVICE_PATH,
-                    SgxUtils.SGX_DEVICE_PATH);
-            this.devices.add(sgxDevice);
+
+            for (String deviceName : sgxDriverMode.getDevices()) {
+                Device sgxDevice = new Device(
+                        SgxUtils.SGX_CGROUP_PERMISSIONS,
+                        "/dev/" + deviceName,
+                        "/dev/" + deviceName);
+                this.devices.add(sgxDevice);
+            }
             return this;
         }
 
