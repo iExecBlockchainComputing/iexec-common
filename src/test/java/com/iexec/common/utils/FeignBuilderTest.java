@@ -5,13 +5,12 @@ import feign.RequestLine;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockserver.client.MockServerClient;
-import org.testcontainers.containers.MockServerContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.utility.DockerImageName;
+import org.mockserver.integration.ClientAndServer;
+import org.mockserver.socket.PortFactory;
 
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -22,23 +21,25 @@ import static org.mockserver.model.HttpResponse.response;
  */
 public class FeignBuilderTest {
 
-    @Container
-    private static final MockServerContainer mockServer = new MockServerContainer(DockerImageName.parse("mockserver/mockserver"))
-            .withExposedPorts(1080);
+    private ClientAndServer mockServer;
 
     private FeignTestClient feignTestClient;
 
     @BeforeEach
     void preflight() {
-        mockServer.start();
+        mockServer = ClientAndServer.startClientAndServer(PortFactory.findFreePort());
         feignTestClient = FeignBuilder.createBuilder(Logger.Level.FULL)
-                .target(FeignTestClient.class,
-                        "http://" + mockServer.getHost() + ":" + mockServer.getServerPort());
+                .target(FeignTestClient.class, "http://localhost:" + mockServer.getPort());
+    }
+
+    @AfterEach
+    void stopServer() {
+        mockServer.stop();
     }
 
     @Test
     void testStringDecoder() {
-        new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+        mockServer
                 .when(request()
                         .withMethod("GET")
                         .withPath("/string"))
@@ -50,7 +51,7 @@ public class FeignBuilderTest {
 
     @Test
     void testStringEncoder() {
-        new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+        mockServer
                 .when(request()
                         .withMethod("POST")
                         .withPath("/string"))
@@ -62,7 +63,7 @@ public class FeignBuilderTest {
 
     @Test
     void testJsonDecoder() {
-        new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+        mockServer
                 .when(request()
                         .withMethod("GET")
                         .withPath("/object"))
@@ -74,7 +75,7 @@ public class FeignBuilderTest {
 
     @Test
     void testJsonEncoder() {
-        new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+        mockServer
                 .when(request()
                         .withMethod("POST")
                         .withPath("/object"))
