@@ -16,11 +16,28 @@ import java.lang.reflect.Type;
 /**
  * Returns a Feign builder with shared configuration to create various Feign client instances.
  * <p>
- * The shared configuration is:
+ * This builder allows to create Feign client instances which can manipulate {@code String} literals as well as
+ * {@code Object} instances. Currently, there is no existing encoder/decoder pair which allows to manipulate both
+ * data types.
+ * <p>
+ * We have:
  * <ul>
- * <li>JacksonEncoder with overridden encode method to deal with strings
- * <li>JacksonDecoder with overridden decode method to deal with strings
- * <li>SLF4J logger enabled with FULL details. Logs are displayed by configuring the log level on a target interface logger.
+ * <li>{@code JacksonEncoder} and {@code JacksonDecoder} classes, they work well for JSON (de)serialization of
+ *     {@code Object} instances. Those classes do not work well with {@code String} objects.
+ * <li>Default Feign encoder and decoder classes (respectively {@code Encoder.Default} and {@code StringDecoder}), they
+ *     only work with {@code String} objects.
+ * </ul>
+ * <p>
+ * This issue is solved by overriding {@code encode} and {@code decode} methods from {@code JacksonEncoder} and
+ * {@code JacksonDecoder} classes. When an object of {@code String} type is detected, a fallback is performed on
+ * the default classes.
+ * <p>
+ * The proposed shared configuration is:
+ * <ul>
+ * <li>{@code JacksonEncoder} with overridden {@code encode} method to deal with strings
+ * <li>{@code JacksonDecoder} with overridden {@code decode} method to deal with strings
+ * <li>SLF4J logger enabled with Feign logging level injected as a method parameter.
+ *      Logs are displayed by configuring the log level on the {@code feign} package or the {@code feign.Logger} class.
  * <li>application/json Content-Type header
  * </ul>
  */
@@ -28,6 +45,11 @@ public class FeignBuilder {
 
     private FeignBuilder() {};
 
+    /**
+     * Returns a Feign builder configured with shared configurations.
+     * @param logLevel Feign logging level to configure.
+     * @return A Feign builder ready to implement a client by targeting an interface describing REST endpoints.
+     */
     public static Feign.Builder createBuilder(Logger.Level logLevel) {
         return Feign.builder()
                 .encoder(new JacksonEncoder() {
