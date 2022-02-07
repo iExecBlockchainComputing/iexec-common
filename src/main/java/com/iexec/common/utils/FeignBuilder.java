@@ -28,7 +28,7 @@ public class FeignBuilder {
 
     private FeignBuilder() {};
 
-    public static Feign.Builder createBuilder() {
+    public static Feign.Builder createBuilder(Logger.Level logLevel) {
         return Feign.builder()
                 .encoder(new JacksonEncoder() {
                     @Override
@@ -51,7 +51,7 @@ public class FeignBuilder {
                     }
                 })
                 .logger(new Slf4jLogger())
-                .logLevel(Logger.Level.FULL)
+                .logLevel(logLevel)
                 .requestInterceptor(template -> template.header("Content-Type", "application/json"));
     }
 

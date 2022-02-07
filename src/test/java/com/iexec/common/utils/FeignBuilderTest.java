@@ -1,5 +1,6 @@
 package com.iexec.common.utils;
 
+import feign.Logger;
 import feign.RequestLine;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,7 @@ public class FeignBuilderTest {
     @BeforeEach
     void preflight() {
         mockServer.start();
-        feignTestClient = FeignBuilder.createBuilder()
+        feignTestClient = FeignBuilder.createBuilder(Logger.Level.FULL)
                 .target(FeignTestClient.class,
                         "http://" + mockServer.getHost() + ":" + mockServer.getServerPort());
     }
