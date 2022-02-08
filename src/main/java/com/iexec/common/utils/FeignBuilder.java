@@ -38,7 +38,8 @@ import java.lang.reflect.Type;
  * <li>{@code JacksonDecoder} with overridden {@code decode} method to deal with strings
  * <li>SLF4J logger enabled with Feign logging level injected as a method parameter.
  *      Logs are displayed by configuring the log level on the {@code feign} package or the {@code feign.Logger} class.
- * <li>application/json Content-Type header
+ * <li>{@code Content-Type} header with {@code application/json} default value to match {@code JacksonEncoder} and
+ *     {@code JacksonDecoder} usage. This configuration works as well with the fallback for {@code String} objects.
  * </ul>
  */
 public class FeignBuilder {
