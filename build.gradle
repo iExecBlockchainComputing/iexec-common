@@ -86,8 +86,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
     testImplementation 'org.assertj:assertj-core:3.18.1'
     // mock-server
-    testImplementation "org.mock-server:mockserver-client-java:5.11.2"
-    testImplementation "org.mock-server:mockserver-junit-jupiter:5.11.2"
+    testImplementation "org.mock-server:mockserver-client-java:$mockServerVersion"
+    testImplementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
 }
 
 
