@@ -15,9 +15,11 @@ targetCompatibility = 11
 ext {
     // ./gradlew build -Pdev
     isDev = project.hasProperty('dev')
-    // versions
-    dockerJavaVersion = '3.2.12'
     gitBranch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
+    // dependency versions
+    dockerJavaVersion = '3.2.12'
+    mockServerVersion = '5.11.2'
+    openFeignVersion = '11.7'
 }
 
 if (gitBranch != 'main' && gitBranch != 'master' && ! (gitBranch ==~ '(release|hotfix|support)/.*')) {
@@ -41,6 +43,10 @@ dependencies {
     // apache commons.lang3
     api "org.apache.commons:commons-lang3:3.9"
 
+    // feign
+    api "io.github.openfeign:feign-jackson:$openFeignVersion"
+    api "io.github.openfeign:feign-slf4j:$openFeignVersion"
+
     // multiaddresses (IPFS)
     implementation 'com.github.multiformats:java-multiaddr:1.3.1'
 
@@ -60,9 +66,6 @@ dependencies {
     implementation 'org.json:json:20201115'
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
-    implementation 'io.github.openfeign:feign-okhttp:11.0'
-    implementation 'io.github.openfeign:feign-jackson:11.0'
-    implementation 'io.github.openfeign:feign-slf4j:11.0'
 
     // docker
     implementation "com.github.docker-java:docker-java:${dockerJavaVersion}"
@@ -82,6 +85,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.6.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
     testImplementation 'org.assertj:assertj-core:3.18.1'
+    // mock-server
+    testImplementation "org.mock-server:mockserver-client-java:$mockServerVersion"
+    testImplementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
 }
 
 
