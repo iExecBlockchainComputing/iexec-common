@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -83,13 +84,19 @@ public class DockerRunRequest {
         private List<Device> devices;
 
         /**
-         * Add an SGX device when isSgx is true.
+         * Depending on SGX driver mode, do the following:
+         * <ul>
+         *     <li>If mode is {@literal null} or {@link SgxDriverMode#NONE},
+         *     simply stores the mode {@link SgxDriverMode#NONE};</li>
+         *     <li>If mode is {@link SgxDriverMode#LEGACY} or {@link SgxDriverMode#NATIVE},
+         *     stores this mode and stores a list of devices defined in the related enum value.</li>
+         * </ul>
          * 
          * @param sgxDriverMode SGX driver mode
-         * @return
+         * @return This {@link DockerRunRequestBuilder} with updated fields.
          */
         public DockerRunRequestBuilder sgxDriverMode(SgxDriverMode sgxDriverMode) {
-            this.sgxDriverMode = sgxDriverMode;
+            this.sgxDriverMode = Objects.requireNonNullElse(sgxDriverMode, SgxDriverMode.NONE);
             if (!SgxDriverMode.isDriverModeNotNone(sgxDriverMode)) {
                 return this;
             }
@@ -98,11 +105,7 @@ public class DockerRunRequest {
             }
 
             for (String deviceName : sgxDriverMode.getDevices()) {
-                Device sgxDevice = new Device(
-                        SgxUtils.SGX_CGROUP_PERMISSIONS,
-                        "/dev/" + deviceName,
-                        "/dev/" + deviceName);
-                this.devices.add(sgxDevice);
+                this.devices.add(Device.parse("/dev/" + deviceName));
             }
             return this;
         }
@@ -111,8 +114,8 @@ public class DockerRunRequest {
          * Add new elements without replacing
          * the existing list.
          * 
-         * @param devices
-         * @return
+         * @param devices List of devices to add to the Docker run.
+         * @return This {@link DockerRunRequestBuilder} with updated field.
          */
         public DockerRunRequestBuilder devices(List<Device> devices) {
             if (this.devices == null) {

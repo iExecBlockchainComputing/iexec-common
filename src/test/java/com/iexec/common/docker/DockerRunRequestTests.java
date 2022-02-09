@@ -3,6 +3,7 @@ package com.iexec.common.docker;
 import com.github.dockerjava.api.model.Device;
 import com.iexec.common.sgx.SgxDriverMode;
 import com.iexec.common.utils.SgxUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 class DockerRunRequestTests {
 
     @Test
@@ -23,7 +25,7 @@ class DockerRunRequestTests {
                 .containerName("containerName")
                 .devices(devices)
                 .build();
-        System.out.println(request);
+        log.info("{}", request);
         assertThat(request.getDevices().get(0)).isEqualTo(device1);
         assertThat(request.getDevices().get(1)).isEqualTo(device2);
     }
@@ -34,7 +36,7 @@ class DockerRunRequestTests {
                 .containerName("containerName")
                 .sgxDriverMode(SgxDriverMode.LEGACY)
                 .build();
-        System.out.println(request);
+        log.info("{}", request);
         assertThat(request.getDevices().get(0).getcGroupPermissions())
                 .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);        
         assertThat(request.getDevices().get(0).getPathInContainer())
@@ -55,7 +57,7 @@ class DockerRunRequestTests {
                 .sgxDriverMode(SgxDriverMode.LEGACY) // notice order here
                 .devices(devices)
                 .build();
-        System.out.println(request);
+        log.info("{}", request);
         assertThat(request.getDevices().get(0).getcGroupPermissions())
                 .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);        
         assertThat(request.getDevices().get(0).getPathInContainer())
@@ -78,7 +80,7 @@ class DockerRunRequestTests {
                 .devices(devices) // changed order here
                 .sgxDriverMode(SgxDriverMode.LEGACY)
                 .build();
-        System.out.println(request);
+        log.info("{}", request);
         assertThat(request.getDevices().get(0)).isEqualTo(device1);
         assertThat(request.getDevices().get(1)).isEqualTo(device2);
         assertThat(request.getDevices().get(2).getcGroupPermissions())

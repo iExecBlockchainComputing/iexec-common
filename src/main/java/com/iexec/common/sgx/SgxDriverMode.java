@@ -40,6 +40,6 @@ public enum SgxDriverMode {
      * or {@link SgxDriverMode#NONE}, {@literal true} otherwise.
      */
     public static boolean isDriverModeNotNone(SgxDriverMode driverMode) {
-        return driverMode != null && !driverMode.equals(NONE);
+        return driverMode != null && driverMode != (NONE);
     }
 }
