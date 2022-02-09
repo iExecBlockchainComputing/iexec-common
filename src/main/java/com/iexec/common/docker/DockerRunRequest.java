@@ -25,6 +25,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -104,8 +105,8 @@ public class DockerRunRequest {
                 this.devices = new ArrayList<>();
             }
 
-            for (String deviceName : sgxDriverMode.getDevices()) {
-                this.devices.add(Device.parse("/dev/" + deviceName));
+            for (Path devicePath : sgxDriverMode.getDevices()) {
+                this.devices.add(Device.parse(devicePath.toString()));
             }
             return this;
         }

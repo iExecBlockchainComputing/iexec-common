@@ -16,18 +16,20 @@
 
 package com.iexec.common.sgx;
 
+import java.nio.file.Path;
+
 public enum SgxDriverMode {
-    NONE(new String[]{}),
-    LEGACY(new String[]{"isgx"}),
-    NATIVE(new String[]{"sgx_enclave", "sgx_provision"});
+    NONE(),
+    LEGACY(Path.of("/dev", "isgx")),
+    NATIVE(Path.of("/dev", "sgx_enclave"), Path.of("/dev", "sgx_provision"));
 
-    private final String[] devices;
+    private final Path[] devices;
 
-    SgxDriverMode(String[] driverNames) {
+    SgxDriverMode(Path... driverNames) {
         this.devices = driverNames;
     }
 
-    public String[] getDevices() {
+    public Path[] getDevices() {
         return devices;
     }
 
