@@ -67,6 +67,8 @@ dependencies {
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
 
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+
     // docker
     implementation "com.github.docker-java:docker-java:${dockerJavaVersion}"
     // Using zerodep until docker client stops blocking after having called
