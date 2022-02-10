@@ -105,8 +105,8 @@ public class DockerRunRequest {
                 this.devices = new ArrayList<>();
             }
 
-            for (Path devicePath : sgxDriverMode.getDevices()) {
-                this.devices.add(Device.parse(devicePath.toString()));
+            for (String devicePath : sgxDriverMode.getDevices()) {
+                this.devices.add(Device.parse(devicePath));
             }
             return this;
         }
