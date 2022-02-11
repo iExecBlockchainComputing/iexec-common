@@ -67,6 +67,10 @@ dependencies {
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
 
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.hibernate.validator:hibernate-validator:6.0.13.Final'
+    implementation 'org.glassfish:javax.el:3.0.0'
+
     // docker
     implementation "com.github.docker-java:docker-java:${dockerJavaVersion}"
     // Using zerodep until docker client stops blocking after having called
