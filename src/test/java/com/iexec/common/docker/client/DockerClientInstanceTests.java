@@ -29,6 +29,7 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import com.iexec.common.docker.DockerLogs;
 import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.docker.DockerRunResponse;
+import com.iexec.common.sgx.SgxDriverMode;
 import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.IexecFileHelper;
 import com.iexec.common.utils.SgxUtils;
@@ -109,14 +110,14 @@ class DockerClientInstanceTests {
         usedImages.forEach(instance::removeImage);
     }
 
-    DockerRunRequest getDefaultDockerRunRequest(boolean isSgx) {
+    DockerRunRequest getDefaultDockerRunRequest(SgxDriverMode sgxDriverMode) {
         return DockerRunRequest.builder()
                 .containerName(getRandomString())
                 .chainTaskId(CHAIN_TASK_ID)
                 .imageUri(ALPINE_LATEST)
                 .cmd(CMD)
                 .env(ENV)
-                .isSgx(isSgx)
+                .sgxDriverMode(sgxDriverMode)
                 .containerPort(1000)
                 .binds(Collections.singletonList(IexecFileHelper.SLASH_IEXEC_IN +
                         ":" + IexecFileHelper.SLASH_IEXEC_OUT))
@@ -619,7 +620,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldRunSuccessfullyAndWaitForContainerToFinish() {
-        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
+        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
         dockerRunRequest.setCmd("sh -c 'sleep 2 && echo " + msg + "'");
@@ -644,7 +645,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldRunSuccessfullyAndNotWaitForTimeout() {
-        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
+        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(0); // detached mode // can be -1
         dockerRunRequest.setCmd("sh -c 'sleep 30'");
         String containerName = dockerRunRequest.getContainerName();
@@ -670,7 +671,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldRunAndReturnFailureInStderrSinceBadCmd() {
-        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
+        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         dockerRunRequest.setCmd("sh -c 'someBadCmd'");
         String containerName = dockerRunRequest.getContainerName();
@@ -695,7 +696,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldRunAndReturnFailureAndLogsSinceTimeout() {
-        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
+        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg1 = "First message";
         String msg2 = "Second message";
@@ -723,7 +724,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldReturnFailureSinceCantCreateContainer() {
-        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
+        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
         dockerRunRequest.setCmd("sh -c 'sleep 2 && echo " + msg + "'");
@@ -750,7 +751,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldReturnFailureSinceCantStartContainer() {
-        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
+        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
         dockerRunRequest.setCmd("sh -c 'sleep 2 && echo " + msg + "'");
@@ -777,7 +778,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldReturnFailureSinceCantStopContainer() {
-        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
+        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
         dockerRunRequest.setCmd("sh -c 'sleep 10 && echo " + msg + "'");
@@ -806,7 +807,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldReturnFailureAndLogsSinceCantRemoveContainer() {
-        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(false);
+        DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
         dockerRunRequest.setCmd("sh -c 'sleep 2 && echo " + msg + "'");
@@ -837,7 +838,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldCreateContainer() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerClientInstance.pullImage(request.getImageUri());
         String containerId = dockerClientInstance.createContainer(request);
         assertThat(containerId).isNotEmpty();
@@ -853,21 +854,21 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotCreateContainerSinceEmptyContainerName() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         request.setContainerName("");
         assertThat(dockerClientInstance.createContainer(request)).isEmpty();
     }
 
     @Test
     void shouldNotCreateContainerSinceEmptyImageUri() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         request.setImageUri("");
         assertThat(dockerClientInstance.createContainer(request)).isEmpty();
     }
 
     @Test
     void shouldNotCreateContainerSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         when(dockerClientInstance.getClient())
                 .thenCallRealMethod() // isContainerPresent
                 .thenCallRealMethod() // isNetworkPresent
@@ -878,7 +879,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldCreateContainerAndRemoveExistingDuplicate() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerClientInstance.pullImage(request.getImageUri());
         // create first container
         String container1Id = dockerClientInstance.createContainer(request);
@@ -893,7 +894,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotCreateContainerSinceDuplicateIsPresent() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerClientInstance.pullImage(request.getImageUri());
         // create first container
         String container1Id = dockerClientInstance.createContainer(request);
@@ -910,7 +911,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldBuildHostConfigFromRunRequest() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
 
         HostConfig hostConfig =
                 dockerClientInstance.buildHostConfigFromRunRequest(request);
@@ -925,7 +926,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldBuildHostConfigWithDeviceFromRunRequest() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         request.setDevices(List.of(new Device("", DEVICE_PATH_IN_CONTAINER, DEVICE_PATH_ON_HOST)));
 
         HostConfig hostConfig =
@@ -945,7 +946,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldBuildHostConfigWithSgxDeviceFromRunRequest() {
-        DockerRunRequest request = getDefaultDockerRunRequest(true);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.LEGACY);
 
         HostConfig hostConfig =
                 dockerClientInstance.buildHostConfigFromRunRequest(request);
@@ -958,9 +959,9 @@ class DockerClientInstanceTests {
         assertThat(hostConfig.getDevices()[0].getcGroupPermissions())
                 .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);
         assertThat(hostConfig.getDevices()[0].getPathInContainer())
-                .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
+                .isEqualTo("/dev/isgx");
         assertThat(hostConfig.getDevices()[0].getPathOnHost())
-                .isEqualTo(SgxUtils.SGX_DEVICE_PATH);
+                .isEqualTo("/dev/isgx");
     }
 
     @Test
@@ -974,7 +975,7 @@ class DockerClientInstanceTests {
     void shouldBuildCreateContainerCmdFromRunRequest() {
         CreateContainerCmd createContainerCmd = dockerClientInstance.getClient()
                 .createContainerCmd("repo/image:tag");
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         request.setCmd("");
         request.setEnv(null);
         request.setContainerPort(0);
@@ -997,7 +998,7 @@ class DockerClientInstanceTests {
     void shouldBuildCreateContainerCmdFromRunRequestWithFullParams() {
         CreateContainerCmd createContainerCmd = dockerClientInstance.getClient()
                 .createContainerCmd("repo/image:tag");
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
 
         Optional<CreateContainerCmd> oActualCreateContainerCmd =
                 dockerClientInstance.buildCreateContainerCmdFromRunRequest(request,
@@ -1023,7 +1024,7 @@ class DockerClientInstanceTests {
     void shouldNotBuildCreateContainerCmdFromRunRequestSinceNoRequest() {
         Optional<CreateContainerCmd> actualCreateContainerCmd =
                 dockerClientInstance.buildCreateContainerCmdFromRunRequest(
-                        getDefaultDockerRunRequest(false),
+                        getDefaultDockerRunRequest(SgxDriverMode.NONE),
                         null);
         assertThat(actualCreateContainerCmd).isEmpty();
     }
@@ -1043,7 +1044,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldIsContainerPresentBeTrue() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerClientInstance.createContainer(request);
 
         boolean isPresent = dockerClientInstance
@@ -1059,7 +1060,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldIsContainerActiveBeTrue() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
         dockerClientInstance.createContainer(request);
         boolean isStarted = dockerClientInstance.startContainer(request.getContainerName());
@@ -1074,7 +1075,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldIsContainerActiveBeFalseSinceContainerIsNotRunning() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerClientInstance.createContainer(request);
         // Container is not running or restarting
 
@@ -1091,7 +1092,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldGetContainerName() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerId = dockerClientInstance.createContainer(request);
 
         assertThat(dockerClientInstance.getContainerName(containerId))
@@ -1113,7 +1114,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotGetContainerNameSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerId = dockerClientInstance.createContainer(request);
 
         useCorruptedDockerClient();
@@ -1128,7 +1129,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldGetContainerId() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         pullImageIfNecessary();
         String expectedId = dockerClientInstance.createContainer(request);
 
@@ -1156,7 +1157,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldGetContainerStatus() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         pullImageIfNecessary();
         dockerClientInstance.createContainer(request);
 
@@ -1182,7 +1183,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldStartContainer() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
@@ -1204,7 +1205,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotStartContainerSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
         dockerClientInstance.createContainer(request);
@@ -1222,7 +1223,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldTimeoutAfterWaitContainerUntilExitOrTimeout() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 30 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
@@ -1244,7 +1245,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldWaitContainerUntilExitOrTimeoutSinceExited() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
         dockerClientInstance.createContainer(request);
@@ -1265,7 +1266,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldGetContainerExitCode() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerClientInstance.createContainer(request);
         int exitCode = dockerClientInstance
                 .getContainerExitCode(request.getContainerName());
@@ -1283,7 +1284,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldGetContainerLogsSinceStdout() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         request.setCmd("sh -c 'echo Hello from Docker alpine!'");
         pullImageIfNecessary();
         dockerClientInstance.createContainer(request);
@@ -1303,7 +1304,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldGetContainerLogsSinceStderr() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         request.setCmd("sh -c 'echo Hello from Docker alpine! >&2'");
         pullImageIfNecessary();
         dockerClientInstance.createContainer(request);
@@ -1328,7 +1329,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotGetContainerLogsSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerClientInstance.createContainer(request);
         when(dockerClientInstance.getClient())
                 .thenCallRealMethod() // isContainerPresent
@@ -1341,7 +1342,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldStopContainer() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
@@ -1362,7 +1363,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldReturnTrueWhenContainerIsNotActive() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
@@ -1397,7 +1398,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotStopContainerSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
@@ -1416,7 +1417,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldRemoveContainer() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
         dockerClientInstance.createContainer(request);
@@ -1433,7 +1434,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotRemoveContainerSinceRunning() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 5 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
@@ -1449,7 +1450,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotRemoveContainerSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 5 && echo Hello from Docker alpine!'");
         pullImageIfNecessary();
@@ -1468,7 +1469,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldExecuteCommandInContainer() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 10'");
         String msg = "Hello from Docker alpine!";
@@ -1495,7 +1496,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotExecuteCommandSinceDockerException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(false);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 10'");
         String msg = "Hello from Docker alpine!";

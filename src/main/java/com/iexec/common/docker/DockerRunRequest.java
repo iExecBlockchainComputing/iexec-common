@@ -17,6 +17,7 @@
 package com.iexec.common.docker;
 
 import com.github.dockerjava.api.model.Device;
+import com.iexec.common.sgx.SgxDriverMode;
 import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.SgxUtils;
 import lombok.AllArgsConstructor;
@@ -24,8 +25,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -42,7 +45,7 @@ public class DockerRunRequest {
     private List<String> env;
     private List<String> binds;
     private long maxExecutionTime;
-    private boolean isSgx;
+    private SgxDriverMode sgxDriverMode;
     private String dockerNetwork;
     private String workingDir;
     private boolean shouldDisplayLogs;
@@ -72,30 +75,39 @@ public class DockerRunRequest {
         return devices != null ? new ArrayList<>(devices) : List.of();
     }
 
-    // override builder's isSgx() & devices() methods
+    public SgxDriverMode getSgxDriverMode() {
+        return sgxDriverMode != null ? sgxDriverMode : SgxDriverMode.NONE;
+    }
+
+    // override builder's sgxDriverMode() & devices() methods
     public static class DockerRunRequestBuilder { 
-        private boolean isSgx;
+        private SgxDriverMode sgxDriverMode;
         private List<Device> devices;
 
         /**
-         * Add an SGX device when isSgx is true.
+         * Depending on SGX driver mode, do the following:
+         * <ul>
+         *     <li>If mode is {@literal null} or {@link SgxDriverMode#NONE},
+         *     simply stores the mode {@link SgxDriverMode#NONE};</li>
+         *     <li>If mode is {@link SgxDriverMode#LEGACY} or {@link SgxDriverMode#NATIVE},
+         *     stores this mode and stores a list of devices defined in the related enum value.</li>
+         * </ul>
          * 
-         * @param isSgx
-         * @return
+         * @param sgxDriverMode SGX driver mode
+         * @return This {@link DockerRunRequestBuilder} with updated fields.
          */
-        public DockerRunRequestBuilder isSgx(boolean isSgx) {
-            this.isSgx = isSgx;
-            if (!isSgx) {
+        public DockerRunRequestBuilder sgxDriverMode(SgxDriverMode sgxDriverMode) {
+            this.sgxDriverMode = Objects.requireNonNullElse(sgxDriverMode, SgxDriverMode.NONE);
+            if (!SgxDriverMode.isDriverModeNotNone(sgxDriverMode)) {
                 return this;
             }
             if (this.devices == null) {
                 this.devices = new ArrayList<>();
             }
-            Device sgxDevice = new Device(
-                    SgxUtils.SGX_CGROUP_PERMISSIONS,
-                    SgxUtils.SGX_DEVICE_PATH,
-                    SgxUtils.SGX_DEVICE_PATH);
-            this.devices.add(sgxDevice);
+
+            for (String devicePath : sgxDriverMode.getDevices()) {
+                this.devices.add(Device.parse(devicePath));
+            }
             return this;
         }
 
@@ -103,8 +115,8 @@ public class DockerRunRequest {
          * Add new elements without replacing
          * the existing list.
          * 
-         * @param devices
-         * @return
+         * @param devices List of devices to add to the Docker run.
+         * @return This {@link DockerRunRequestBuilder} with updated field.
          */
         public DockerRunRequestBuilder devices(List<Device> devices) {
             if (this.devices == null) {
