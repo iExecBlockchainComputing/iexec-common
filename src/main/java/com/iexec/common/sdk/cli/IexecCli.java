@@ -34,7 +34,7 @@ import java.util.Optional;
 public class IexecCli {
 
     private static final String IEXEC_CLI = "iexec-cli";
-    private static final String IEXEC_SDK_DOCKER_URI = "iexechub/iexec-sdk:5.0.0";
+    private static final String IEXEC_SDK_DOCKER_URI = "iexechub/iexec-sdk:7.0.2";
     private static final String WORKING_DIR = "/home/node";
     private static final int DEV_CHAIN_ID = 17;
     private static final String DEV_CHAIN_HUB = "0xBF6B2B07e47326B7c8bfCb4A5460bef9f0Fd2002";
