@@ -1,5 +1,7 @@
 package com.iexec.common.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import feign.Feign;
 import feign.Logger;
 import feign.RequestTemplate;
@@ -45,7 +47,7 @@ import java.lang.reflect.Type;
  */
 public class FeignBuilder {
 
-    private FeignBuilder() {};
+    private FeignBuilder() {}
 
     /**
      * Returns a Feign builder configured with shared configurations.
@@ -53,8 +55,11 @@ public class FeignBuilder {
      * @return A Feign builder ready to implement a client by targeting an interface describing REST endpoints.
      */
     public static Feign.Builder createBuilder(Logger.Level logLevel) {
+        ObjectMapper mapper = JsonMapper.builder()
+                .addModule(new JavaTimeModule())
+                .build();
         return Feign.builder()
-                .encoder(new JacksonEncoder() {
+                .encoder(new JacksonEncoder(mapper) {
                     @Override
                     public void encode(Object object, Type bodyType, RequestTemplate template) {
                         if (bodyType == String.class) {
@@ -64,7 +69,7 @@ public class FeignBuilder {
                         }
                     }
                 })
-                .decoder(new JacksonDecoder() {
+                .decoder(new JacksonDecoder(mapper) {
                     @Override
                     public Object decode(Response response, Type type) throws IOException {
                         if (type == String.class) {
