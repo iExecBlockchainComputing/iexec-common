@@ -18,23 +18,27 @@ package com.iexec.common.result.eip712;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class Eip712ChallengeUtilsTests {
 
-    private Eip712Challenge eip712Challenge;
+    private static final Eip712Challenge eip712Challenge =
+            new Eip712Challenge("0x10ff103511e3e233033628dbd641136d4670c16c33a4ce11950ab316ef18bce9", 17);
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-    @BeforeEach
-    void init() {
-        eip712Challenge = new Eip712Challenge("0x10ff103511e3e233033628dbd641136d4670c16c33a4ce11950ab316ef18bce9", 17);
+    @Test
+    void shouldSerializeAndDeserializeEip712Challenge() throws JsonProcessingException {
+        String jsonString = mapper.writeValueAsString(eip712Challenge);
+        Eip712Challenge deserializedChallenge = mapper.readValue(jsonString, Eip712Challenge.class);
+        assertThat(deserializedChallenge).usingRecursiveComparison().isEqualTo(eip712Challenge);
     }
 
     @Test
     void shouldGetChallengeAsJson() throws JsonProcessingException {
-        assertEquals("{" +
+        assertThat(mapper.writeValueAsString(eip712Challenge))
+                .isEqualTo("{" +
                 "\"types\":{\"EIP712Domain\":[" +
                     "{\"name\":\"name\",\"type\":\"string\"}," +
                     "{\"name\":\"version\",\"type\":\"string\"}," +
@@ -44,22 +48,25 @@ class Eip712ChallengeUtilsTests {
                 "\"domain\":{\"name\":\"iExec Result Repository\",\"version\":\"1\",\"chainId\":17}," +
                 "\"message\":{\"challenge\":\"0x10ff103511e3e233033628dbd641136d4670c16c33a4ce11950ab316ef18bce9\"}," +
                 "\"primaryType\":\"Challenge\"" +
-                "}", new ObjectMapper().writeValueAsString(eip712Challenge));
+                "}");
     }
 
     @Test
     void shouldGetCorrectDomainSeparator() {
-        assertEquals("0x73b2ffe0e9f80f155eba2ca6ad915b2bd92e0d89c354112dc63b6dd70c30f51e", Eip712ChallengeUtils.getDomainSeparator(eip712Challenge));
+        assertThat(Eip712ChallengeUtils.getDomainSeparator(eip712Challenge))
+                .isEqualTo("0x73b2ffe0e9f80f155eba2ca6ad915b2bd92e0d89c354112dc63b6dd70c30f51e");
     }
 
     @Test
     void shouldGetCorrectMessageHash() {
-        assertEquals("0x2ff97da3e19fd11436479ffcec54baa5501c439d8a65f01dec5a217f7bf4bc70", Eip712ChallengeUtils.getMessageHash(eip712Challenge));
+        assertThat(Eip712ChallengeUtils.getMessageHash(eip712Challenge))
+                .isEqualTo("0x2ff97da3e19fd11436479ffcec54baa5501c439d8a65f01dec5a217f7bf4bc70");
     }
 
     @Test
     void shouldGetCorrectChallengeHashToSign() {
-        assertEquals("0x3bb958b947bc47479a7ee767d74a45146e41ac703d989d72f2b9c8f1aaf00a13", Eip712ChallengeUtils.getEip712ChallengeString(eip712Challenge));
+        assertThat(Eip712ChallengeUtils.getEip712ChallengeString(eip712Challenge))
+                .isEqualTo("0x3bb958b947bc47479a7ee767d74a45146e41ac703d989d72f2b9c8f1aaf00a13");
     }
 
 
