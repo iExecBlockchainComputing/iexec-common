@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.socket.PortFactory;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -35,6 +36,14 @@ public class FeignBuilderTest {
     @AfterEach
     void stopServer() {
         mockServer.stop();
+    }
+
+    @Test
+    void testBuilderCreation() {
+        assertNotNull(FeignBuilder.createBuilder(Logger.Level.FULL)
+                .target(FeignTestClient.class, "http://localhost:" + mockServer.getPort()));
+        assertNotNull(FeignBuilder.createBuilder(Logger.Level.FULL, "username", "password")
+                .target(FeignTestClient.class, "http://localhost:" + mockServer.getPort()));
     }
 
     @Test
