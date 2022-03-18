@@ -4,6 +4,7 @@ import feign.Feign;
 import feign.Logger;
 import feign.RequestTemplate;
 import feign.Response;
+import feign.auth.BasicAuthRequestInterceptor;
 import feign.codec.Encoder;
 import feign.codec.StringDecoder;
 import feign.jackson.JacksonDecoder;
@@ -76,6 +77,19 @@ public class FeignBuilder {
                 .logger(new Slf4jLogger())
                 .logLevel(logLevel)
                 .requestInterceptor(template -> template.header("Content-Type", "application/json"));
+    }
+
+    /**
+     * Returns a Feign builder configured with shared configurations and a {@code BasicAuthRequestInterceptor}.
+     * @param logLevel Feign logging level to configure.
+     * @param username Basic authentication username for authenticated REST calls.
+     * @param password Basic authentication password for authenticated REST calls.
+     * @return A Feign builder ready to implement a client by targeting an interface describing REST endpoints.
+     */
+    public static Feign.Builder createBuilder(Logger.Level logLevel, String username, String password) {
+        BasicAuthRequestInterceptor requestInterceptor =
+                new BasicAuthRequestInterceptor(username, password);
+        return createBuilder(logLevel).requestInterceptor(requestInterceptor);
     }
 
 }
