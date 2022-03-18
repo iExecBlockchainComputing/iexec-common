@@ -28,10 +28,10 @@ import java.util.List;
 public class Eip712Challenge extends EIP712Entity<Message> {
     private static final String DOMAIN_NAME = "iExec Result Repository";
     private static final String DOMAIN_VERSION = "1";
-    private static final String PRIMARY_TYPE = "Challenge";
     private static final List<TypeParam> MESSAGE_TYPE_PARAMS = Collections.singletonList(
             new TypeParam("challenge", "string")
     );
+    private final String primaryType = "Challenge";
 
     public Eip712Challenge(String challenge, long chainId) {
         this(challenge, chainId, DOMAIN_NAME, DOMAIN_VERSION);
@@ -48,9 +48,8 @@ public class Eip712Challenge extends EIP712Entity<Message> {
         );
     }
 
-    @Override
     public String getPrimaryType() {
-        return PRIMARY_TYPE;
+        return primaryType;
     }
 
     @Override
