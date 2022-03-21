@@ -42,7 +42,7 @@ public class FeignBuilderTest {
     void testBuilderCreation() {
         assertNotNull(FeignBuilder.createBuilder(Logger.Level.FULL)
                 .target(FeignTestClient.class, "http://localhost:" + mockServer.getPort()));
-        assertNotNull(FeignBuilder.createBuilder(Logger.Level.FULL, "username", "password")
+        assertNotNull(FeignBuilder.createBuilderWithBasicAuth(Logger.Level.FULL, "username", "password")
                 .target(FeignTestClient.class, "http://localhost:" + mockServer.getPort()));
     }
 

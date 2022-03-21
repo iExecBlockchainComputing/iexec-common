@@ -92,7 +92,7 @@ public class FeignBuilder {
      * @param password Basic authentication password for authenticated REST calls.
      * @return A Feign builder ready to implement a client by targeting an interface describing REST endpoints.
      */
-    public static Feign.Builder createBuilder(Logger.Level logLevel, String username, String password) {
+    public static Feign.Builder createBuilderWithBasicAuth(Logger.Level logLevel, String username, String password) {
         BasicAuthRequestInterceptor requestInterceptor =
                 new BasicAuthRequestInterceptor(username, password);
         return createBuilder(logLevel).requestInterceptor(requestInterceptor);
