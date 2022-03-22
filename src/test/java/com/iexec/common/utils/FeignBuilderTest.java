@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.socket.PortFactory;
 
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -55,7 +57,7 @@ public class FeignBuilderTest {
                 .respond(response()
                         .withBody("stringValue"));
         String value = feignTestClient.getStringValue();
-        Assertions.assertEquals("stringValue", value);
+        assertEquals("stringValue", value);
     }
 
     @Test
@@ -67,7 +69,7 @@ public class FeignBuilderTest {
                 .respond(response()
                         .withBody("")
                         .withStatusCode(200));
-        Assertions.assertEquals("", feignTestClient.setStringValue("stringValue"));
+        assertEquals("", feignTestClient.setStringValue("stringValue"));
     }
 
     @Test
@@ -77,9 +79,10 @@ public class FeignBuilderTest {
                         .withMethod("GET")
                         .withPath("/object"))
                 .respond(response()
-                        .withBody("{\"objectField\": \"objectValue\"}"));
+                        .withBody("{\"objectField\": \"objectValue\",\"durationField\":5.000000000}"));
         TestObject testObject = feignTestClient.getTestObject();
-        Assertions.assertEquals("objectValue", testObject.getObjectField());
+        assertEquals("objectValue", testObject.getObjectField());
+        assertEquals(Duration.ofSeconds(5L), testObject.getDurationField());
     }
 
     @Test
@@ -93,7 +96,8 @@ public class FeignBuilderTest {
                         .withStatusCode(200));
         TestObject testObject = new TestObject();
         testObject.setObjectField("objectValue");
-        Assertions.assertEquals("", feignTestClient.setTestObject(testObject));
+        testObject.setDurationField(Duration.ofSeconds(5));
+        assertEquals("", feignTestClient.setTestObject(testObject));
     }
 
     interface FeignTestClient {
@@ -117,6 +121,7 @@ public class FeignBuilderTest {
     @NoArgsConstructor
     static class TestObject {
         private String objectField;
+        private Duration durationField;
     }
 
 }
