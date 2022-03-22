@@ -305,7 +305,7 @@ public class DockerClientInstance {
                     .awaitCompletion(timeout.toSeconds(), TimeUnit.SECONDS);
             log.info("Pulled docker image [name:{}]", imageName);
             return true;
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             log.error("Error pulling docker image [name:{}]", imageName, e);
             return false;
         }
