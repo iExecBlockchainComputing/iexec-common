@@ -289,10 +289,15 @@ public class DockerClientInstance {
         try (PullImageCmd pullImageCmd =
                     getClient().pullImageCmd(repoAndTag.repos)) {
             log.info("Pulling docker image [name:{}]", imageName);
-            pullImageCmd
+            boolean isPulledBeforeTimeout = pullImageCmd
                     .withTag(repoAndTag.tag)
                     .exec(new PullImageResultCallback() {})
                     .awaitCompletion(timeout.toSeconds(), TimeUnit.SECONDS);
+            if (!isPulledBeforeTimeout){
+                log.error("Docker image has not been pulled (timeout) [name:{}, timeout:{}s]",
+                        imageName, timeout.toSeconds());
+                return false;
+            }
             log.info("Pulled docker image [name:{}]", imageName);
             return true;
         } catch (Exception e) {
