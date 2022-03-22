@@ -47,6 +47,8 @@ dependencies {
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
     api "io.github.openfeign:feign-slf4j:$openFeignVersion"
 
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0"
+
     // multiaddresses (IPFS)
     implementation 'com.github.multiformats:java-multiaddr:1.3.1'
 

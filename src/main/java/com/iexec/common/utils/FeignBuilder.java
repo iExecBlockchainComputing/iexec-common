@@ -1,9 +1,13 @@
 package com.iexec.common.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import feign.Feign;
 import feign.Logger;
 import feign.RequestTemplate;
 import feign.Response;
+import feign.auth.BasicAuthRequestInterceptor;
 import feign.codec.Encoder;
 import feign.codec.StringDecoder;
 import feign.jackson.JacksonDecoder;
@@ -44,7 +48,7 @@ import java.lang.reflect.Type;
  */
 public class FeignBuilder {
 
-    private FeignBuilder() {};
+    private FeignBuilder() {}
 
     /**
      * Returns a Feign builder configured with shared configurations.
@@ -52,8 +56,11 @@ public class FeignBuilder {
      * @return A Feign builder ready to implement a client by targeting an interface describing REST endpoints.
      */
     public static Feign.Builder createBuilder(Logger.Level logLevel) {
+        ObjectMapper mapper = JsonMapper.builder()
+                .addModule(new JavaTimeModule())
+                .build();
         return Feign.builder()
-                .encoder(new JacksonEncoder() {
+                .encoder(new JacksonEncoder(mapper) {
                     @Override
                     public void encode(Object object, Type bodyType, RequestTemplate template) {
                         if (bodyType == String.class) {
@@ -63,7 +70,7 @@ public class FeignBuilder {
                         }
                     }
                 })
-                .decoder(new JacksonDecoder() {
+                .decoder(new JacksonDecoder(mapper) {
                     @Override
                     public Object decode(Response response, Type type) throws IOException {
                         if (type == String.class) {
@@ -76,6 +83,19 @@ public class FeignBuilder {
                 .logger(new Slf4jLogger())
                 .logLevel(logLevel)
                 .requestInterceptor(template -> template.header("Content-Type", "application/json"));
+    }
+
+    /**
+     * Returns a Feign builder configured with shared configurations and a {@code BasicAuthRequestInterceptor}.
+     * @param logLevel Feign logging level to configure.
+     * @param username Basic authentication username for authenticated REST calls.
+     * @param password Basic authentication password for authenticated REST calls.
+     * @return A Feign builder ready to implement a client by targeting an interface describing REST endpoints.
+     */
+    public static Feign.Builder createBuilderWithBasicAuth(Logger.Level logLevel, String username, String password) {
+        BasicAuthRequestInterceptor requestInterceptor =
+                new BasicAuthRequestInterceptor(username, password);
+        return createBuilder(logLevel).requestInterceptor(requestInterceptor);
     }
 
 }
