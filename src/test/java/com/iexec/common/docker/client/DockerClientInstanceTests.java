@@ -415,7 +415,7 @@ public class DockerClientInstanceTests {
 
     @Test
     public void shouldPullImageWithExplicitTimeout() {
-        assertThat(dockerClientInstance.pullImage(ALPINE_LATEST, Duration.of(1, ChronoUnit.MINUTES))).isTrue();
+        assertThat(dockerClientInstance.pullImage(ALPINE_LATEST, Duration.of(3, ChronoUnit.MINUTES))).isTrue();
         assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isTrue();
         dockerClientInstance.removeImage(ALPINE_LATEST);
     }
