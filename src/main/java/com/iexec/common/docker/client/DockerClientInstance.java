@@ -35,7 +35,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -62,8 +64,7 @@ public class DockerClientInstance {
     /**
      * Create a new unauthenticated Docker client instance with the default Docker registry
      * {@link DockerClientInstance#DEFAULT_DOCKER_REGISTRY}.
-     * 
-     * @param registryAddress
+     *
      * @throws Exception if registry address is blank
      */
     DockerClientInstance() {
@@ -114,7 +115,7 @@ public class DockerClientInstance {
 
     /**
      * Docker volume
-     * 
+     *
      */
 
     public synchronized boolean createVolume(String volumeName) {
@@ -185,7 +186,7 @@ public class DockerClientInstance {
 
     /**
      * Docker network
-     * 
+     *
      */
 
     public synchronized String createNetwork(String networkName) {
@@ -261,17 +262,29 @@ public class DockerClientInstance {
 
     /**
      * Docker image
-     * 
+     *
      */
 
     /**
      * Pull docker image and timeout after 1 minute.
      * 
-     * @param imageName
+     * @param imageName Name of the image to pull
      * @return true if image is pulled successfully,
      * false otherwise.
      */
     public boolean pullImage(String imageName) {
+        return pullImage(imageName, Duration.of(1, ChronoUnit.MINUTES));
+    }
+
+    /**
+     * Pull docker image and timeout after given duration.
+     *
+     * @param imageName Name of the image to pull
+     * @param timeout Duration to wait before timeout
+     * @return true if image is pulled successfully,
+     * false otherwise.
+     */
+    public boolean pullImage(String imageName, Duration timeout) {
         if (StringUtils.isBlank(imageName)) {
             log.error("Invalid docker image name [name:{}]", imageName);
             return false;
@@ -286,10 +299,15 @@ public class DockerClientInstance {
         try (PullImageCmd pullImageCmd =
                     getClient().pullImageCmd(repoAndTag.repos)) {
             log.info("Pulling docker image [name:{}]", imageName);
-            pullImageCmd
+            boolean isPulledBeforeTimeout = pullImageCmd
                     .withTag(repoAndTag.tag)
                     .exec(new PullImageResultCallback() {})
-                    .awaitCompletion(1, TimeUnit.MINUTES);
+                    .awaitCompletion(timeout.toSeconds(), TimeUnit.SECONDS);
+            if (!isPulledBeforeTimeout){
+                log.error("Docker image has not been pulled (timeout) [name:{}, timeout:{}s]",
+                        imageName, timeout.toSeconds());
+                return false;
+            }
             log.info("Pulled docker image [name:{}]", imageName);
             return true;
         } catch (Exception e) {
@@ -369,7 +387,7 @@ public class DockerClientInstance {
 
     /**
      * Docker container
-     * 
+     *
      */
 
     /**
@@ -828,7 +846,7 @@ public class DockerClientInstance {
 
     /**
      * Docker client
-     * 
+     *
      */
 
     /**

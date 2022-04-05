@@ -37,7 +37,9 @@ import org.junit.jupiter.api.*;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -408,6 +410,21 @@ public class DockerClientInstanceTests {
     public void shouldPullImage() {
         assertThat(dockerClientInstance.pullImage(ALPINE_LATEST)).isTrue();
         assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isTrue();
+        dockerClientInstance.removeImage(ALPINE_LATEST);
+    }
+
+    @Test
+    public void shouldPullImageWithExplicitTimeout() {
+        assertThat(dockerClientInstance.pullImage(ALPINE_LATEST, Duration.of(3, ChronoUnit.MINUTES))).isTrue();
+        assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isTrue();
+        dockerClientInstance.removeImage(ALPINE_LATEST);
+    }
+
+    @Test
+    public void shouldNotPullImageSinceTimeout() {
+        dockerClientInstance.removeImage(ALPINE_LATEST);
+        assertThat(dockerClientInstance.pullImage(ALPINE_LATEST, Duration.of(1, ChronoUnit.SECONDS))).isFalse();
+        assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isFalse();
         dockerClientInstance.removeImage(ALPINE_LATEST);
     }
 
