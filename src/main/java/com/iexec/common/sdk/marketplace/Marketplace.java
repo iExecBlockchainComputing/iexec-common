@@ -31,6 +31,12 @@ public interface Marketplace {
 
     List<WorkerpoolMarketOrder> getWorkerpoolOrders(String workerpoolAddress);
 
+    List<WorkerpoolMarketOrder> getTaggedWorkerpoolOrders(String tag);
+
+    Optional<WorkerpoolMarketOrder> getOneTaggedWorkerpoolOrder(String workerpoolAddress, String tag);
+
+    List<WorkerpoolMarketOrder> getTaggedWorkerpoolOrders(String workerpoolAddress, String tag);
+
     Optional<AppMarketOrder> getOneAppOrder(String appAddress);
 
     Optional<AppMarketOrder> getOneRequesterRestrictedAppOrder(String appAddress, String requesterAddress);
