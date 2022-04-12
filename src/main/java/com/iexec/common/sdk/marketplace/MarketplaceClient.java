@@ -79,6 +79,32 @@ public class MarketplaceClient implements Marketplace {
     }
 
     @Override
+    public List<WorkerpoolMarketOrder> getTaggedWorkerpoolOrders(String tag) {
+        final MPQueryParams queryParams = MPQueryParams.builder()
+                .minTag(tag)
+                .maxTag(tag)
+                .build();
+        return getOrders(OrderType.WORKERPOOL, queryParams);
+    }
+
+    @Override
+    public Optional<WorkerpoolMarketOrder> getOneTaggedWorkerpoolOrder(String workerpoolAddress, String tag) {
+        return getTaggedWorkerpoolOrders(workerpoolAddress, tag)
+                .stream()
+                .findFirst();
+    }
+
+    @Override
+    public List<WorkerpoolMarketOrder> getTaggedWorkerpoolOrders(String workerpoolAddress, String tag) {
+        MPQueryParams queryParams = MPQueryParams.builder()
+                .workerpool(workerpoolAddress)
+                .minTag(tag)
+                .maxTag(tag)
+                .build();
+        return getOrders(OrderType.WORKERPOOL, queryParams);
+    }
+
+    @Override
     public Optional<AppMarketOrder> getOneAppOrder(String appAddress) {
         return getAppOrders(appAddress)
                 .stream()
