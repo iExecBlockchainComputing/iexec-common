@@ -31,11 +31,11 @@ public interface Marketplace {
 
     public List<WorkerpoolMarketOrder> getWorkerpoolOrders(String workerpoolAddress);
 
-    List<WorkerpoolMarketOrder> getTaggedWorkerpoolOrders(String tag);
+    List<WorkerpoolMarketOrder> getWorkerpoolOrdersByTag(String tag);
 
-    Optional<WorkerpoolMarketOrder> getOneTaggedWorkerpoolOrder(String workerpoolAddress, String tag);
+    Optional<WorkerpoolMarketOrder> getOneWorkerpoolOrderByTag(String workerpoolAddress, String tag);
 
-    List<WorkerpoolMarketOrder> getTaggedWorkerpoolOrders(String workerpoolAddress, String tag);
+    List<WorkerpoolMarketOrder> getWorkerpoolOrdersByTag(String workerpoolAddress, String tag);
 
     public Optional<AppMarketOrder> getOneAppOrder(String appAddress);
 

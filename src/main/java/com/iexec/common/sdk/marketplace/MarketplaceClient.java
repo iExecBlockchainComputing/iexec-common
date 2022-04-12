@@ -79,7 +79,7 @@ public class MarketplaceClient implements Marketplace {
     }
 
     @Override
-    public List<WorkerpoolMarketOrder> getTaggedWorkerpoolOrders(String tag) {
+    public List<WorkerpoolMarketOrder> getWorkerpoolOrdersByTag(String tag) {
         final MPQueryParams queryParams = MPQueryParams.builder()
                 .minTag(tag)
                 .maxTag(tag)
@@ -88,14 +88,14 @@ public class MarketplaceClient implements Marketplace {
     }
 
     @Override
-    public Optional<WorkerpoolMarketOrder> getOneTaggedWorkerpoolOrder(String workerpoolAddress, String tag) {
-        return getTaggedWorkerpoolOrders(workerpoolAddress, tag)
+    public Optional<WorkerpoolMarketOrder> getOneWorkerpoolOrderByTag(String workerpoolAddress, String tag) {
+        return getWorkerpoolOrdersByTag(workerpoolAddress, tag)
                 .stream()
                 .findFirst();
     }
 
     @Override
-    public List<WorkerpoolMarketOrder> getTaggedWorkerpoolOrders(String workerpoolAddress, String tag) {
+    public List<WorkerpoolMarketOrder> getWorkerpoolOrdersByTag(String workerpoolAddress, String tag) {
         MPQueryParams queryParams = MPQueryParams.builder()
                 .workerpool(workerpoolAddress)
                 .minTag(tag)
