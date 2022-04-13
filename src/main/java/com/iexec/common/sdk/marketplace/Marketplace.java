@@ -27,9 +27,31 @@ public interface Marketplace {
 
     List<WorkerpoolMarketOrder> getWorkerpoolOrders();
 
-    Optional<WorkerpoolMarketOrder> getOneWorkerpoolOrder(String workerpoolAddress);
+    Optional<WorkerpoolMarketOrder> getOneWorkerpoolOrderByWorkerpoolAddress(String workerpoolAddress);
 
-    List<WorkerpoolMarketOrder> getWorkerpoolOrders(String workerpoolAddress);
+    /**
+     * @deprecated Use {@link Marketplace#getOneWorkerpoolOrderByWorkerpoolAddress(String)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    default Optional<WorkerpoolMarketOrder> getOneWorkerpoolOrder(String workerpoolAddress) {
+        return getOneWorkerpoolOrderByWorkerpoolAddress(workerpoolAddress);
+    }
+
+    List<WorkerpoolMarketOrder> getWorkerpoolOrdersByWorkerpoolAddress(String workerpoolAddress);
+
+    /**
+     * @deprecated Use {@link Marketplace#getWorkerpoolOrdersByWorkerpoolAddress(String)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    default List<WorkerpoolMarketOrder> getWorkerpoolOrders(String workerpoolAddress) {
+        return getWorkerpoolOrdersByWorkerpoolAddress(workerpoolAddress);
+    }
+
+    List<WorkerpoolMarketOrder> getWorkerpoolOrdersByTag(String tag);
+
+    Optional<WorkerpoolMarketOrder> getOneWorkerpoolOrderByWorkerpoolAddressAndTag(String workerpoolAddress, String tag);
+
+    List<WorkerpoolMarketOrder> getWorkerpoolOrdersByWorkerpoolAddressAndTag(String workerpoolAddress, String tag);
 
     Optional<AppMarketOrder> getOneAppOrder(String appAddress);
 
