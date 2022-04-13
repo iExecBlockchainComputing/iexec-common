@@ -16,9 +16,9 @@
 
 package com.iexec.common.chain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iexec.common.security.Signature;
 import com.iexec.common.utils.HashUtils;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +35,7 @@ public class WorkerpoolAuthorization {
     private String enclaveChallenge;
     private Signature signature;
 
+    @JsonIgnore
     public String getHash() {
         return HashUtils.concatenateAndHash(workerWallet, chainTaskId, enclaveChallenge);
     }
