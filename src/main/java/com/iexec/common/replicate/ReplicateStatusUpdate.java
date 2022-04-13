@@ -16,16 +16,16 @@
 
 package com.iexec.common.replicate;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.iexec.common.replicate.ReplicateStatusModifier.*;
+import java.util.Date;
+
+import static com.iexec.common.replicate.ReplicateStatusModifier.POOL_MANAGER;
+import static com.iexec.common.replicate.ReplicateStatusModifier.WORKER;
 
 @Data
 @Builder
@@ -37,8 +37,6 @@ public class ReplicateStatusUpdate {
     private ReplicateStatusModifier modifier;
     private Date date;                          // defined by the core
     private ReplicateStatusDetails details;
-    @JsonIgnore
-    private boolean isSuccess;                  // inferred automatically from the status
 
     public ReplicateStatusUpdate(ReplicateStatus status) {
         this(status, null, null);
@@ -59,11 +57,14 @@ public class ReplicateStatusUpdate {
         this.modifier = modifier;
         this.details = details;
 
-        this.isSuccess = ReplicateStatus.isSuccess(status);
-
         if (modifier != null && modifier.equals(POOL_MANAGER)) {
            this.date = new Date();
         }
+    }
+
+    @JsonIgnore
+    public boolean isSuccess() {
+        return ReplicateStatus.isSuccess(status);
     }
 
     @JsonIgnore
