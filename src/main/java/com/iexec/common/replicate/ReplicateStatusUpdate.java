@@ -17,6 +17,7 @@
 package com.iexec.common.replicate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +32,7 @@ import static com.iexec.common.replicate.ReplicateStatusModifier.WORKER;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ReplicateStatusUpdate {
 
     private ReplicateStatus status;
@@ -62,7 +64,12 @@ public class ReplicateStatusUpdate {
         }
     }
 
-    @JsonIgnore
+    /**
+     * Returns {@link ReplicateStatus#isSuccess(ReplicateStatus)} result.
+     * The result will be serialized in json and appear as {@code success} field.
+     * @return false if {@code status} is a failure status, true otherwise.
+     * @see ReplicateStatus
+     */
     public boolean isSuccess() {
         return ReplicateStatus.isSuccess(status);
     }

@@ -20,6 +20,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
 import static com.iexec.common.replicate.ReplicateStatus.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +32,12 @@ public class ReplicateStatusUpdateTests {
     @Test
     void shouldSerializeAndDeserializeReplicateStatusUpdate() throws JsonProcessingException {
         ReplicateStatusUpdate statusUpdate = ReplicateStatusUpdate.poolManagerRequest(CREATED);
+        Date date = statusUpdate.getDate();
         String jsonString = mapper.writeValueAsString(statusUpdate);
+        String expectedString = "{\"status\":\"CREATED\",\"modifier\":\"POOL_MANAGER\""
+                + ",\"date\":" + date.getTime()
+                + ",\"details\":null,\"success\":true}";
+        assertThat(jsonString).isEqualTo(expectedString);
         ReplicateStatusUpdate deserializedStatusUpdate = mapper.readValue(jsonString, ReplicateStatusUpdate.class);
         assertThat(deserializedStatusUpdate).usingRecursiveComparison().isEqualTo(statusUpdate);
     }
