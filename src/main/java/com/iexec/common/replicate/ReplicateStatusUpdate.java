@@ -67,7 +67,7 @@ public class ReplicateStatusUpdate {
     /**
      * Returns {@link ReplicateStatus#isSuccess(ReplicateStatus)} result.
      * The result will be serialized in json and appear as {@code success} field.
-     * @return false if {@code status} is a failure status, true otherwise.
+     * @return true if {@code status} is a successful status, false otherwise.
      * @see ReplicateStatus
      */
     public boolean isSuccess() {

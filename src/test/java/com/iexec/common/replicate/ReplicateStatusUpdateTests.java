@@ -34,9 +34,13 @@ public class ReplicateStatusUpdateTests {
         ReplicateStatusUpdate statusUpdate = ReplicateStatusUpdate.poolManagerRequest(CREATED);
         Date date = statusUpdate.getDate();
         String jsonString = mapper.writeValueAsString(statusUpdate);
-        String expectedString = "{\"status\":\"CREATED\",\"modifier\":\"POOL_MANAGER\""
-                + ",\"date\":" + date.getTime()
-                + ",\"details\":null,\"success\":true}";
+        String expectedString = "{"
+                + "\"status\":\"CREATED\","
+                + "\"modifier\":\"POOL_MANAGER\","
+                + "\"date\":" + date.getTime() +","
+                + "\"details\":null,"
+                + "\"success\":true"
+                + "}";
         assertThat(jsonString).isEqualTo(expectedString);
         ReplicateStatusUpdate deserializedStatusUpdate = mapper.readValue(jsonString, ReplicateStatusUpdate.class);
         assertThat(deserializedStatusUpdate).usingRecursiveComparison().isEqualTo(statusUpdate);
