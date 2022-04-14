@@ -84,4 +84,8 @@ public class ReplicateActionResponse {
                 .build();
         return new ReplicateActionResponse(false, details);
     }
+
+    public static ReplicateActionResponse failureWithDetails(ReplicateStatusDetails details) {
+        return new ReplicateActionResponse(false, details);
+    }
 }

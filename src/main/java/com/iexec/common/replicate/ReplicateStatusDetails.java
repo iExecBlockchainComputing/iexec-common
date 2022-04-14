@@ -36,6 +36,7 @@ public class ReplicateStatusDetails {
     private String errorMessage;
     private ReplicateStatusCause cause;
     private String stdout;
+    private int exitCode;
 
     public ReplicateStatusDetails(ReplicateStatusDetails details) {
         chainReceipt = details.getChainReceipt();

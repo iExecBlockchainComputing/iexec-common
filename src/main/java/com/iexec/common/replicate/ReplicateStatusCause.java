@@ -40,6 +40,7 @@ public enum ReplicateStatusCause {
     DATASET_FILE_BAD_CHECKSUM,
 
     // computation
+    APP_COMPUTE_FAILED,
     PRE_COMPUTE_FAILED,
     POST_COMPUTE_FAILED,
     TEE_NOT_SUPPORTED,
