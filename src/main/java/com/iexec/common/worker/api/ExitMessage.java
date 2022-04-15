@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,17 @@
 
 package com.iexec.common.worker.api;
 
-import com.iexec.common.utils.FeignBuilder;
-import feign.Logger;
+import com.iexec.common.replicate.ReplicateStatusCause;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public class WorkerApiClientBuilder {
 
-    private WorkerApiClientBuilder() {
-        throw new UnsupportedOperationException();
-    }
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class ExitMessage {
 
-    public static WorkerApiClient getInstance(String url) {
-        return getInstance(url, Logger.Level.BASIC);
-    }
-
-    public static WorkerApiClient getInstance(String url,
-                                              Logger.Level logLevel) {
-        return FeignBuilder.createBuilder(logLevel)
-                .target(WorkerApiClient.class, url);
-    }
+    private ReplicateStatusCause cause;
 
 }
