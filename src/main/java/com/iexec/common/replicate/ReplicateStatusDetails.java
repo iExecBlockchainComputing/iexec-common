@@ -36,7 +36,7 @@ public class ReplicateStatusDetails {
     private String errorMessage;
     private ReplicateStatusCause cause;
     private String stdout;
-    private int exitCode;
+    private Integer exitCode; //null means unset
 
     public ReplicateStatusDetails(ReplicateStatusDetails details) {
         chainReceipt = details.getChainReceipt();
