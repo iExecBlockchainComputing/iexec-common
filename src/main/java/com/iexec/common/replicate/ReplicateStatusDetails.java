@@ -45,6 +45,7 @@ public class ReplicateStatusDetails {
         errorMessage = details.getErrorMessage();
         cause = details.getCause();
         stdout = details.getStdout();
+        exitCode = details.getExitCode();
     }
 
     public ReplicateStatusDetails(long blockNumber) {
