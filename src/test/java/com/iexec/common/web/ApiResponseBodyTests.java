@@ -35,7 +35,7 @@ public class ApiResponseBodyTests {
                 .errors(List.of("error1", "error2"))
                 .build();
         String jsonString = mapper.writeValueAsString(responseBody);
-        assertThat(jsonString).isEqualTo("{\"errors\":[\"error1\",\"error2\"],\"data\":null}");
+        assertThat(jsonString).isEqualTo("{\"errors\":[\"error1\",\"error2\"]}");
         ApiResponseBody<?> deserializedResponseBody = mapper.readValue(jsonString, ApiResponseBody.class);
         assertThat(deserializedResponseBody).usingRecursiveComparison().isEqualTo(responseBody);
     }
@@ -46,7 +46,7 @@ public class ApiResponseBodyTests {
                 .data(0)
                 .build();
         String jsonString = mapper.writeValueAsString(responseBody);
-        assertThat(jsonString).isEqualTo("{\"errors\":null,\"data\":0}");
+        assertThat(jsonString).isEqualTo("{\"data\":0}");
         JavaType javaType = mapper.getTypeFactory().constructParametricType(ApiResponseBody.class, Integer.class);
         ApiResponseBody<String> deserializedResponseBody = mapper.readValue(jsonString, javaType);
         assertThat(deserializedResponseBody).usingRecursiveComparison().isEqualTo(responseBody);
@@ -58,7 +58,7 @@ public class ApiResponseBodyTests {
                 .data("dummy-data")
                 .build();
         String jsonString = mapper.writeValueAsString(responseBody);
-        assertThat(jsonString).isEqualTo("{\"errors\":null,\"data\":\"dummy-data\"}");
+        assertThat(jsonString).isEqualTo("{\"data\":\"dummy-data\"}");
         JavaType javaType = mapper.getTypeFactory().constructParametricType(ApiResponseBody.class, String.class);
         ApiResponseBody<String> deserializedResponseBody = mapper.readValue(jsonString, javaType);
         assertThat(deserializedResponseBody).usingRecursiveComparison().isEqualTo(responseBody);
