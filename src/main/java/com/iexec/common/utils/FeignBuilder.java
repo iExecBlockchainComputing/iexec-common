@@ -7,6 +7,7 @@ import feign.Feign;
 import feign.Logger;
 import feign.RequestTemplate;
 import feign.Response;
+import feign.Retryer;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.codec.Encoder;
 import feign.codec.StringDecoder;
@@ -44,6 +45,7 @@ import java.lang.reflect.Type;
  *      Logs are displayed by configuring the log level on the {@code feign} package or the {@code feign.Logger} class.
  * <li>{@code Content-Type} header with {@code application/json} default value to match {@code JacksonEncoder} and
  *     {@code JacksonDecoder} usage. This configuration works as well with the fallback for {@code String} objects.
+ * <li>Default feign retryer configuration with a time interval increasing exponentially between successive attempts.
  * </ul>
  */
 public class FeignBuilder {
@@ -82,7 +84,8 @@ public class FeignBuilder {
                 })
                 .logger(new Slf4jLogger())
                 .logLevel(logLevel)
-                .requestInterceptor(template -> template.header("Content-Type", "application/json"));
+                .requestInterceptor(template -> template.header("Content-Type", "application/json"))
+                .retryer(new Retryer.Default());
     }
 
     /**
