@@ -36,6 +36,7 @@ public class ApiResponseBodyDecoder {
         try {
             return Optional.ofNullable(mapper.readValue(response, javaType));
         } catch (JsonProcessingException e) {
+            log.warn("Failed to decode response", e);
             return Optional.empty();
         }
     }
