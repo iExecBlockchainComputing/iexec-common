@@ -16,20 +16,40 @@
 
 package com.iexec.common.web;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Collection;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApiResponseBody<T> {
-    private List<String> errors;
-    private T data;
+public class ApiResponseBody<D, E> {
+    private D data;
+    private E errors;
+
+    /**
+     * Return whether this response contains error(s).
+     * Checks whether the object is null.
+     * In case of a collection of errors, also checks whether it is empty.
+     *
+     * @return {@literal false} if {@code errors} is null or empty,
+     * {@literal true} otherwise.
+     */
+    @JsonIgnore
+    public boolean isError() {
+        boolean isError = errors == null;
+
+        if (errors instanceof Collection) {
+            isError = !((Collection<?>) errors).isEmpty();
+        }
+
+        return isError;
+    }
 }

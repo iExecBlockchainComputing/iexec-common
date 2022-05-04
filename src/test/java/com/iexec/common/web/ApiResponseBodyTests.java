@@ -31,36 +31,36 @@ public class ApiResponseBodyTests {
 
     @Test
     void shouldSerializeAndDeserializeWithErrors() throws JsonProcessingException {
-        ApiResponseBody<?> responseBody = ApiResponseBody.builder()
+        ApiResponseBody<Void, List<String>> responseBody = ApiResponseBody.<Void, List<String>>builder()
                 .errors(List.of("error1", "error2"))
                 .build();
         String jsonString = mapper.writeValueAsString(responseBody);
         assertThat(jsonString).isEqualTo("{\"errors\":[\"error1\",\"error2\"]}");
-        ApiResponseBody<?> deserializedResponseBody = mapper.readValue(jsonString, ApiResponseBody.class);
+        ApiResponseBody<?, ?> deserializedResponseBody = mapper.readValue(jsonString, ApiResponseBody.class);
         assertThat(deserializedResponseBody).usingRecursiveComparison().isEqualTo(responseBody);
     }
 
     @Test
     void shouldSerializeAndDeserializeWithTypeInteger() throws JsonProcessingException {
-        ApiResponseBody<Integer> responseBody = ApiResponseBody.<Integer>builder()
+        ApiResponseBody<Integer, Void> responseBody = ApiResponseBody.<Integer, Void>builder()
                 .data(0)
                 .build();
         String jsonString = mapper.writeValueAsString(responseBody);
         assertThat(jsonString).isEqualTo("{\"data\":0}");
-        JavaType javaType = mapper.getTypeFactory().constructParametricType(ApiResponseBody.class, Integer.class);
-        ApiResponseBody<String> deserializedResponseBody = mapper.readValue(jsonString, javaType);
+        JavaType javaType = mapper.getTypeFactory().constructParametricType(ApiResponseBody.class, Integer.class, Void.class);
+        ApiResponseBody<String, Void> deserializedResponseBody = mapper.readValue(jsonString, javaType);
         assertThat(deserializedResponseBody).usingRecursiveComparison().isEqualTo(responseBody);
     }
 
     @Test
     void shouldSerializeAndDeserializeWithTypeString() throws JsonProcessingException {
-        ApiResponseBody<String> responseBody = ApiResponseBody.<String>builder()
+        ApiResponseBody<String, Void> responseBody = ApiResponseBody.<String, Void>builder()
                 .data("dummy-data")
                 .build();
         String jsonString = mapper.writeValueAsString(responseBody);
         assertThat(jsonString).isEqualTo("{\"data\":\"dummy-data\"}");
-        JavaType javaType = mapper.getTypeFactory().constructParametricType(ApiResponseBody.class, String.class);
-        ApiResponseBody<String> deserializedResponseBody = mapper.readValue(jsonString, javaType);
+        JavaType javaType = mapper.getTypeFactory().constructParametricType(ApiResponseBody.class, String.class, Void.class);
+        ApiResponseBody<String, Void> deserializedResponseBody = mapper.readValue(jsonString, javaType);
         assertThat(deserializedResponseBody).usingRecursiveComparison().isEqualTo(responseBody);
     }
 
