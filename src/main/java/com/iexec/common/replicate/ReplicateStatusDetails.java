@@ -17,6 +17,7 @@
 package com.iexec.common.replicate;
 
 import com.iexec.common.chain.ChainReceipt;
+import com.iexec.common.tee.TeeSessionGenerationError;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,6 +38,7 @@ public class ReplicateStatusDetails {
     private ReplicateStatusCause cause;
     private String stdout;
     private Integer exitCode; //null means unset
+    private TeeSessionGenerationError teeSessionGenerationError;    // null means unset
 
     public ReplicateStatusDetails(ReplicateStatusDetails details) {
         chainReceipt = details.getChainReceipt();
@@ -46,6 +48,7 @@ public class ReplicateStatusDetails {
         cause = details.getCause();
         stdout = details.getStdout();
         exitCode = details.getExitCode();
+        teeSessionGenerationError = details.getTeeSessionGenerationError();
     }
 
     public ReplicateStatusDetails(long blockNumber) {
