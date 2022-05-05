@@ -32,10 +32,10 @@ public class ApiResponseBodyTests {
     @Test
     void shouldSerializeAndDeserializeWithErrors() throws JsonProcessingException {
         ApiResponseBody<Void, List<String>> responseBody = ApiResponseBody.<Void, List<String>>builder()
-                .errors(List.of("error1", "error2"))
+                .error(List.of("error1", "error2"))
                 .build();
         String jsonString = mapper.writeValueAsString(responseBody);
-        assertThat(jsonString).isEqualTo("{\"errors\":[\"error1\",\"error2\"]}");
+        assertThat(jsonString).isEqualTo("{\"error\":[\"error1\",\"error2\"]}");
         ApiResponseBody<?, ?> deserializedResponseBody = mapper.readValue(jsonString, ApiResponseBody.class);
         assertThat(deserializedResponseBody).usingRecursiveComparison().isEqualTo(responseBody);
     }

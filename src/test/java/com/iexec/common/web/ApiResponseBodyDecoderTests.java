@@ -35,20 +35,20 @@ class ApiResponseBodyDecoderTests {
 
     private static Stream<Arguments> responsesWithErrors() {
         return Stream.of(
-                Arguments.of("{\"errors\": \"error\"}"      , Void.class  , String.class   , ApiResponseBody.builder().errors("error").build()),
-                Arguments.of("{\"errors\": \"error\"}"      , String.class, String.class   , ApiResponseBody.builder().errors("error").build()),
-                Arguments.of("{\"errors\": \"ENUM_MEMBER\"}", Void.class  , DummyEnum.class, ApiResponseBody.builder().errors(DummyEnum.ENUM_MEMBER).build()),
+                Arguments.of("{\"error\": \"error\"}"      , Void.class  , String.class   , ApiResponseBody.builder().error("error").build()),
+                Arguments.of("{\"error\": \"error\"}"      , String.class, String.class   , ApiResponseBody.builder().error("error").build()),
+                Arguments.of("{\"error\": \"ENUM_MEMBER\"}", Void.class  , DummyEnum.class, ApiResponseBody.builder().error(DummyEnum.ENUM_MEMBER).build()),
                 Arguments.of(
-                        "{\"errors\": [\"VALIDATION_ERROR_1\", \"VALIDATION_ERROR_2\"]}",
-                        Void.class, List.class, ApiResponseBody.builder().errors(List.of("VALIDATION_ERROR_1", "VALIDATION_ERROR_2")).build()
+                        "{\"error\": [\"VALIDATION_ERROR_1\", \"VALIDATION_ERROR_2\"]}",
+                        Void.class, List.class, ApiResponseBody.builder().error(List.of("VALIDATION_ERROR_1", "VALIDATION_ERROR_2")).build()
                 )
         );
     }
 
     private static Stream<Arguments> responsesWithDataAndErrors() {
         return Stream.of(
-                Arguments.of("{\"data\": \"test\", \"errors\": \"error\"}"      , String.class, String.class   , ApiResponseBody.builder().data("test").errors("error").build()),
-                Arguments.of("{\"data\": \"test\", \"errors\": \"ENUM_MEMBER\"}", String.class, DummyEnum.class, ApiResponseBody.builder().data("test").errors(DummyEnum.ENUM_MEMBER).build())
+                Arguments.of("{\"data\": \"test\", \"error\": \"error\"}"      , String.class, String.class   , ApiResponseBody.builder().data("test").error("error").build()),
+                Arguments.of("{\"data\": \"test\", \"error\": \"ENUM_MEMBER\"}", String.class, DummyEnum.class, ApiResponseBody.builder().data("test").error(DummyEnum.ENUM_MEMBER).build())
         );
     }
 
@@ -57,15 +57,15 @@ class ApiResponseBodyDecoderTests {
                 Arguments.of(""                              , Void.class   , Void.class),
                 Arguments.of("[]"                            , Void.class   , Void.class),
                 Arguments.of("{\"data\": \"Not an integer\"}", Integer.class, Void.class),
-                Arguments.of("{\"errors\": 1"                , Void.class   , DummyEnum.class),
+                Arguments.of("{\"error\": 1"                 , Void.class   , DummyEnum.class),
                 Arguments.of("{\"Unknown key\": 1"           , Void.class   , DummyEnum.class)
         );
     }
 
     @ParameterizedTest
     @MethodSource({"emptyResponses","responsesWithData","responsesWithErrors","responsesWithDataAndErrors"})
-    <D, E> void shouldDecodeResponse(String responseBody, Class<D> dataClass, Class<E> errorsClass, ApiResponseBody<D, E> expectedResult) {
-        final Optional<ApiResponseBody<D, E>> oResult = ApiResponseBodyDecoder.decodeResponse(responseBody, dataClass, errorsClass);
+    <D, E> void shouldDecodeResponse(String responseBody, Class<D> dataClass, Class<E> errorClass, ApiResponseBody<D, E> expectedResult) {
+        final Optional<ApiResponseBody<D, E>> oResult = ApiResponseBodyDecoder.decodeResponse(responseBody, dataClass, errorClass);
         assertTrue(oResult.isPresent());
 
         final ApiResponseBody<D, E> actualResult = oResult.get();
@@ -74,8 +74,8 @@ class ApiResponseBodyDecoderTests {
 
     @ParameterizedTest
     @MethodSource({"responsesWithData","responsesWithDataAndErrors"})
-    <D, E> void shouldDecodeResponseAndGetData(String responseBody, Class<D> dataClass, Class<E> errorsClass, ApiResponseBody<D, E> expectedResult) {
-        final Optional<D> oData = ApiResponseBodyDecoder.getDataFromResponse(responseBody, dataClass, errorsClass);
+    <D, E> void shouldDecodeResponseAndGetData(String responseBody, Class<D> dataClass, Class<E> errorClass, ApiResponseBody<D, E> expectedResult) {
+        final Optional<D> oData = ApiResponseBodyDecoder.getDataFromResponse(responseBody, dataClass, errorClass);
         assertTrue(oData.isPresent());
 
         final D data = oData.get();
@@ -84,32 +84,32 @@ class ApiResponseBodyDecoderTests {
 
     @ParameterizedTest
     @MethodSource({"responsesWithErrors","responsesWithDataAndErrors"})
-    <D, E> void shouldDecodeResponseAndGetErrors(String responseBody, Class<D> dataClass, Class<E> errorsClass, ApiResponseBody<D, E> expectedResult) {
-        final Optional<E> oErrors = ApiResponseBodyDecoder.getErrorsFromResponse(responseBody, dataClass, errorsClass);
-        assertTrue(oErrors.isPresent());
+    <D, E> void shouldDecodeResponseAndGetErrors(String responseBody, Class<D> dataClass, Class<E> errorClass, ApiResponseBody<D, E> expectedResult) {
+        final Optional<E> oError = ApiResponseBodyDecoder.getErrorFromResponse(responseBody, dataClass, errorClass);
+        assertTrue(oError.isPresent());
 
-        final E actualErrors = oErrors.get();
-        assertEquals(expectedResult.getErrors(), actualErrors);
+        final E actualErrors = oError.get();
+        assertEquals(expectedResult.getError(), actualErrors);
     }
 
     @ParameterizedTest
     @MethodSource("malformedResponses")
-    <D, E> void shouldNotDecodeResponse(String responseBody, Class<D> dataClass, Class<E> errorsClass) {
-        final Optional<ApiResponseBody<D, E>> oResult = ApiResponseBodyDecoder.decodeResponse(responseBody, dataClass, errorsClass);
+    <D, E> void shouldNotDecodeResponse(String responseBody, Class<D> dataClass, Class<E> errorClass) {
+        final Optional<ApiResponseBody<D, E>> oResult = ApiResponseBodyDecoder.decodeResponse(responseBody, dataClass, errorClass);
         assertTrue(oResult.isEmpty());
     }
 
     @ParameterizedTest
     @MethodSource({"emptyResponses", "responsesWithErrors", "malformedResponses"})
-    <D, E> void shouldNotDecodeResponseAndNotGetData(String responseBody, Class<D> dataClass, Class<E> errorsClass) {
-        final Optional<D> oResult = ApiResponseBodyDecoder.getDataFromResponse(responseBody, dataClass, errorsClass);
+    <D, E> void shouldNotDecodeResponseAndNotGetData(String responseBody, Class<D> dataClass, Class<E> errorClass) {
+        final Optional<D> oResult = ApiResponseBodyDecoder.getDataFromResponse(responseBody, dataClass, errorClass);
         assertTrue(oResult.isEmpty());
     }
 
     @ParameterizedTest
     @MethodSource({"emptyResponses", "responsesWithData", "malformedResponses"})
-    <D, E> void shouldNotDecodeResponseAndNotGetErrors(String responseBody, Class<D> dataClass, Class<E> errorsClass) {
-        final Optional<E> oResult = ApiResponseBodyDecoder.getErrorsFromResponse(responseBody, dataClass, errorsClass);
+    <D, E> void shouldNotDecodeResponseAndNotGetErrors(String responseBody, Class<D> dataClass, Class<E> errorClass) {
+        final Optional<E> oResult = ApiResponseBodyDecoder.getErrorFromResponse(responseBody, dataClass, errorClass);
         assertTrue(oResult.isEmpty());
     }
 }

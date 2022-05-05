@@ -31,8 +31,8 @@ public class ApiResponseBodyDecoder {
         throw new UnsupportedOperationException();
     }
 
-    public static <D,E> Optional<ApiResponseBody<D, E>> decodeResponse(String response, Class<D> dataClass, Class<E> errorsClass) {
-        JavaType javaType = mapper.getTypeFactory().constructParametricType(ApiResponseBody.class, dataClass, errorsClass);
+    public static <D,E> Optional<ApiResponseBody<D, E>> decodeResponse(String response, Class<D> dataClass, Class<E> errorClass) {
+        JavaType javaType = mapper.getTypeFactory().constructParametricType(ApiResponseBody.class, dataClass, errorClass);
         try {
             return Optional.ofNullable(mapper.readValue(response, javaType));
         } catch (JsonProcessingException e) {
@@ -41,13 +41,13 @@ public class ApiResponseBodyDecoder {
         }
     }
 
-    public static <D,E> Optional<D> getDataFromResponse(String response, Class<D> dataClass, Class<E> errorsClass) {
-        return decodeResponse(response, dataClass, errorsClass)
+    public static <D,E> Optional<D> getDataFromResponse(String response, Class<D> dataClass, Class<E> errorClass) {
+        return decodeResponse(response, dataClass, errorClass)
                 .map(ApiResponseBody::getData);
     }
 
-    public static <D,E> Optional<E> getErrorsFromResponse(String response, Class<D> dataClass, Class<E> errorsClass) {
-        return decodeResponse(response, dataClass, errorsClass)
-                .map(ApiResponseBody::getErrors);
+    public static <D,E> Optional<E> getErrorFromResponse(String response, Class<D> dataClass, Class<E> errorClass) {
+        return decodeResponse(response, dataClass, errorClass)
+                .map(ApiResponseBody::getError);
     }
 }

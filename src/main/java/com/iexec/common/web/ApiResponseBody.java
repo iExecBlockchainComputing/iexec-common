@@ -32,7 +32,7 @@ import java.util.Collection;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponseBody<D, E> {
     private D data;
-    private E errors;
+    private E error;
 
     /**
      * Return whether this response contains error(s).
@@ -43,11 +43,11 @@ public class ApiResponseBody<D, E> {
      * {@literal true} otherwise.
      */
     @JsonIgnore
-    public boolean isError() {
-        boolean isError = errors == null;
+    public boolean isErrorResponse() {
+        boolean isError = error == null;
 
-        if (errors instanceof Collection) {
-            isError = !((Collection<?>) errors).isEmpty();
+        if (error instanceof Collection) {
+            isError = !((Collection<?>) error).isEmpty();
         }
 
         return isError;
