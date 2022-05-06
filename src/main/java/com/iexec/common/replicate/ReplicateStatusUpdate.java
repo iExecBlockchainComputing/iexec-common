@@ -91,7 +91,7 @@ public class ReplicateStatusUpdate {
     public static ReplicateStatusUpdate poolManagerRequest(ReplicateStatus status,
                                                            ReplicateStatusCause cause) {
         ReplicateStatusDetails details = new ReplicateStatusDetails(cause);
-        return new ReplicateStatusUpdate(status, WORKER, details);
+        return new ReplicateStatusUpdate(status, POOL_MANAGER, details);
     }
 
     public static ReplicateStatusUpdate poolManagerRequest(ReplicateStatus status,
