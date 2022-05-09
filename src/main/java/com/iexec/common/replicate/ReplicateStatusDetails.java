@@ -29,6 +29,7 @@ import lombok.NoArgsConstructor;
 public class ReplicateStatusDetails {
 
     public static final int MAX_STDOUT_LENGTH = 100000;
+    public static final int MAX_STDERR_LENGTH = 100000;
 
     private ChainReceipt chainReceipt;
     private String resultLink;
@@ -36,6 +37,7 @@ public class ReplicateStatusDetails {
     private String errorMessage;
     private ReplicateStatusCause cause;
     private String stdout;
+    private String stderr;
     private Integer exitCode; //null means unset
     private String teeSessionGenerationError; // null means unset
 
@@ -48,6 +50,7 @@ public class ReplicateStatusDetails {
         stdout = details.getStdout();
         exitCode = details.getExitCode();
         teeSessionGenerationError = details.getTeeSessionGenerationError();
+        stderr = details.getStderr();
     }
 
     public ReplicateStatusDetails(long blockNumber) {
@@ -61,6 +64,13 @@ public class ReplicateStatusDetails {
     public ReplicateStatusDetails tailStdout() {
         if (stdout != null && stdout.length() > MAX_STDOUT_LENGTH) {
             stdout = stdout.substring(stdout.length() - MAX_STDOUT_LENGTH);
+        }
+        return this;
+    }
+
+    public ReplicateStatusDetails tailStderr() {
+        if (stdout != null && stdout.length() > MAX_STDERR_LENGTH) {
+            stdout = stdout.substring(stdout.length() - MAX_STDERR_LENGTH);
         }
         return this;
     }
