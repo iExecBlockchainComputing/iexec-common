@@ -41,13 +41,13 @@ public class ApiResponseBodyDecoder {
         }
     }
 
-    public static <D,E> Optional<D> getDataFromResponse(String response, Class<D> dataClass, Class<E> errorClass) {
-        return decodeResponse(response, dataClass, errorClass)
+    public static <D> Optional<D> getDataFromResponse(String response, Class<D> dataClass) {
+        return decodeResponse(response, dataClass, Object.class)
                 .map(ApiResponseBody::getData);
     }
 
-    public static <D,E> Optional<E> getErrorFromResponse(String response, Class<D> dataClass, Class<E> errorClass) {
-        return decodeResponse(response, dataClass, errorClass)
+    public static <E> Optional<E> getErrorFromResponse(String response, Class<E> errorClass) {
+        return decodeResponse(response, Object.class, errorClass)
                 .map(ApiResponseBody::getError);
     }
 }

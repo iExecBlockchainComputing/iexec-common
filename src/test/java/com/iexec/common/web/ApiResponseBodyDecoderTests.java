@@ -75,7 +75,7 @@ class ApiResponseBodyDecoderTests {
     @ParameterizedTest
     @MethodSource({"responsesWithData","responsesWithDataAndErrors"})
     <D, E> void shouldDecodeResponseAndGetData(String responseBody, Class<D> dataClass, Class<E> errorClass, ApiResponseBody<D, E> expectedResult) {
-        final Optional<D> oData = ApiResponseBodyDecoder.getDataFromResponse(responseBody, dataClass, errorClass);
+        final Optional<D> oData = ApiResponseBodyDecoder.getDataFromResponse(responseBody, dataClass);
         assertTrue(oData.isPresent());
 
         final D data = oData.get();
@@ -85,7 +85,7 @@ class ApiResponseBodyDecoderTests {
     @ParameterizedTest
     @MethodSource({"responsesWithErrors","responsesWithDataAndErrors"})
     <D, E> void shouldDecodeResponseAndGetErrors(String responseBody, Class<D> dataClass, Class<E> errorClass, ApiResponseBody<D, E> expectedResult) {
-        final Optional<E> oError = ApiResponseBodyDecoder.getErrorFromResponse(responseBody, dataClass, errorClass);
+        final Optional<E> oError = ApiResponseBodyDecoder.getErrorFromResponse(responseBody, errorClass);
         assertTrue(oError.isPresent());
 
         final E actualErrors = oError.get();
@@ -102,14 +102,14 @@ class ApiResponseBodyDecoderTests {
     @ParameterizedTest
     @MethodSource({"emptyResponses", "responsesWithErrors", "malformedResponses"})
     <D, E> void shouldNotDecodeResponseAndNotGetData(String responseBody, Class<D> dataClass, Class<E> errorClass) {
-        final Optional<D> oResult = ApiResponseBodyDecoder.getDataFromResponse(responseBody, dataClass, errorClass);
+        final Optional<D> oResult = ApiResponseBodyDecoder.getDataFromResponse(responseBody, dataClass);
         assertTrue(oResult.isEmpty());
     }
 
     @ParameterizedTest
     @MethodSource({"emptyResponses", "responsesWithData", "malformedResponses"})
     <D, E> void shouldNotDecodeResponseAndNotGetErrors(String responseBody, Class<D> dataClass, Class<E> errorClass) {
-        final Optional<E> oResult = ApiResponseBodyDecoder.getErrorFromResponse(responseBody, dataClass, errorClass);
+        final Optional<E> oResult = ApiResponseBodyDecoder.getErrorFromResponse(responseBody, errorClass);
         assertTrue(oResult.isEmpty());
     }
 }
