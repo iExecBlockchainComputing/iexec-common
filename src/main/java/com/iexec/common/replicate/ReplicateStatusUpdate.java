@@ -77,11 +77,11 @@ public class ReplicateStatusUpdate {
     @JsonIgnore
     public ReplicateStatusDetails getDetailsWithoutLogs() {
         if (details == null
-                || details.getReplicateLogs() == null) {
+                || details.getComputeLogs() == null) {
             return details;
         }
         ReplicateStatusDetails detailsWithoutLogs = new ReplicateStatusDetails(details);
-        detailsWithoutLogs.setReplicateLogs(null);
+        detailsWithoutLogs.setComputeLogs(null);
         return detailsWithoutLogs;
     }
 

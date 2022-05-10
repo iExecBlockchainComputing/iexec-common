@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ReplicateLogs {
+public class ComputeLogs {
     private String walletAddress;
     private String stdout;
     private String stderr;

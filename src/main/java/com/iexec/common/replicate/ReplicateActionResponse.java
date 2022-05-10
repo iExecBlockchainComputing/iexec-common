@@ -52,9 +52,9 @@ public class ReplicateActionResponse {
         return new ReplicateActionResponse(true, details);
     }
 
-    public static ReplicateActionResponse successWithLogs(ReplicateLogs replicateLogs) {
+    public static ReplicateActionResponse successWithLogs(ComputeLogs computeLogs) {
         ReplicateStatusDetails details = ReplicateStatusDetails.builder()
-                .replicateLogs(replicateLogs)
+                .computeLogs(computeLogs)
                 .build();
         return new ReplicateActionResponse(true, details);
     }
@@ -72,7 +72,7 @@ public class ReplicateActionResponse {
 
     public static ReplicateActionResponse failureWithStdout(String stdout) {
         ReplicateStatusDetails details = ReplicateStatusDetails.builder()
-                .replicateLogs(ReplicateLogs.builder().stdout(stdout).build())
+                .computeLogs(ComputeLogs.builder().stdout(stdout).build())
                 .build();
         return new ReplicateActionResponse(false, details);
     }
@@ -80,7 +80,7 @@ public class ReplicateActionResponse {
     public static ReplicateActionResponse failureWithStdout(ReplicateStatusCause cause, String stdout) {
         ReplicateStatusDetails details = ReplicateStatusDetails.builder()
                 .cause(cause)
-                .replicateLogs(ReplicateLogs.builder().stdout(stdout).build())
+                .computeLogs(ComputeLogs.builder().stdout(stdout).build())
                 .build();
         return new ReplicateActionResponse(false, details);
     }

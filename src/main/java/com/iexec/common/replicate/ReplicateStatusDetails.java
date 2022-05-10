@@ -36,7 +36,7 @@ public class ReplicateStatusDetails {
     private String chainCallbackData;
     private String errorMessage;
     private ReplicateStatusCause cause;
-    private ReplicateLogs replicateLogs;
+    private ComputeLogs computeLogs;
     private Integer exitCode; //null means unset
     private String teeSessionGenerationError; // null means unset
 
@@ -46,12 +46,12 @@ public class ReplicateStatusDetails {
         chainCallbackData = details.getChainCallbackData();
         errorMessage = details.getErrorMessage();
         cause = details.getCause();
-        replicateLogs = details.getReplicateLogs() == null
+        computeLogs = details.getComputeLogs() == null
                 ? null
-                : ReplicateLogs.builder()
-                .walletAddress(details.getReplicateLogs().getWalletAddress())
-                .stdout(details.getReplicateLogs().getStdout())
-                .stderr(details.getReplicateLogs().getStderr())
+                : ComputeLogs.builder()
+                .walletAddress(details.getComputeLogs().getWalletAddress())
+                .stdout(details.getComputeLogs().getStdout())
+                .stderr(details.getComputeLogs().getStderr())
                 .build();
         exitCode = details.getExitCode();
         teeSessionGenerationError = details.getTeeSessionGenerationError();
@@ -66,13 +66,13 @@ public class ReplicateStatusDetails {
     }
 
     public ReplicateStatusDetails tailLogs() {
-        final String stdout = replicateLogs.getStdout();
+        final String stdout = computeLogs.getStdout();
         if (stdout != null && stdout.length() > MAX_STDOUT_LENGTH) {
-            replicateLogs.setStdout(stdout.substring(stdout.length() - MAX_STDOUT_LENGTH));
+            computeLogs.setStdout(stdout.substring(stdout.length() - MAX_STDOUT_LENGTH));
         }
-        String stderr = replicateLogs.getStderr();
+        String stderr = computeLogs.getStderr();
         if (stderr != null && stderr.length() > MAX_STDERR_LENGTH) {
-            replicateLogs.setStderr(stderr.substring(stderr.length() - MAX_STDERR_LENGTH));
+            computeLogs.setStderr(stderr.substring(stderr.length() - MAX_STDERR_LENGTH));
         }
         return this;
     }
