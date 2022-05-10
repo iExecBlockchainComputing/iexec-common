@@ -52,9 +52,9 @@ public class ReplicateActionResponse {
         return new ReplicateActionResponse(true, details);
     }
 
-    public static ReplicateActionResponse successWithLogs(String stdout, String stderr) {
+    public static ReplicateActionResponse successWithLogs(ReplicateLogs replicateLogs) {
         ReplicateStatusDetails details = ReplicateStatusDetails.builder()
-                .replicateLogs(ReplicateLogs.builder().stdout(stdout).stderr(stderr).build())
+                .replicateLogs(replicateLogs)
                 .build();
         return new ReplicateActionResponse(true, details);
     }

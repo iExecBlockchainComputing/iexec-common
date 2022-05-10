@@ -75,15 +75,14 @@ public class ReplicateStatusUpdate {
     }
 
     @JsonIgnore
-    public ReplicateStatusDetails getDetailsWithoutStdout() {
+    public ReplicateStatusDetails getDetailsWithoutLogs() {
         if (details == null
-                || details.getReplicateLogs() == null
-                || details.getReplicateLogs().getStdout() == null) {
+                || details.getReplicateLogs() == null) {
             return details;
         }
-        ReplicateStatusDetails detailsWithoutStdout = new ReplicateStatusDetails(details);
-        detailsWithoutStdout.getReplicateLogs().setStdout(null);
-        return detailsWithoutStdout;
+        ReplicateStatusDetails detailsWithoutLogs = new ReplicateStatusDetails(details);
+        detailsWithoutLogs.setReplicateLogs(null);
+        return detailsWithoutLogs;
     }
 
     public static ReplicateStatusUpdate poolManagerRequest(ReplicateStatus status) {

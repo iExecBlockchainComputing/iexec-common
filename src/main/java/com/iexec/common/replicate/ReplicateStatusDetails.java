@@ -49,6 +49,7 @@ public class ReplicateStatusDetails {
         replicateLogs = details.getReplicateLogs() == null
                 ? null
                 : ReplicateLogs.builder()
+                .walletAddress(details.getReplicateLogs().getWalletAddress())
                 .stdout(details.getReplicateLogs().getStdout())
                 .stderr(details.getReplicateLogs().getStderr())
                 .build();
@@ -64,15 +65,11 @@ public class ReplicateStatusDetails {
         this.cause = cause;
     }
 
-    public ReplicateStatusDetails tailStdout() {
+    public ReplicateStatusDetails tailLogs() {
         final String stdout = replicateLogs.getStdout();
         if (stdout != null && stdout.length() > MAX_STDOUT_LENGTH) {
             replicateLogs.setStdout(stdout.substring(stdout.length() - MAX_STDOUT_LENGTH));
         }
-        return this;
-    }
-
-    public ReplicateStatusDetails tailStderr() {
         String stderr = replicateLogs.getStderr();
         if (stderr != null && stderr.length() > MAX_STDERR_LENGTH) {
             replicateLogs.setStderr(stderr.substring(stderr.length() - MAX_STDERR_LENGTH));

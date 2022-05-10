@@ -16,6 +16,7 @@
 
 package com.iexec.common.replicate;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +26,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ReplicateLogs {
+    private String walletAddress;
     private String stdout;
     private String stderr;
 }
