@@ -76,11 +76,13 @@ public class ReplicateStatusUpdate {
 
     @JsonIgnore
     public ReplicateStatusDetails getDetailsWithoutStdout() {
-        if (details == null || details.getStdout() == null) {
+        if (details == null
+                || details.getReplicateLogs() == null
+                || details.getReplicateLogs().getStdout() == null) {
             return details;
         }
         ReplicateStatusDetails detailsWithoutStdout = new ReplicateStatusDetails(details);
-        detailsWithoutStdout.setStdout(null);
+        detailsWithoutStdout.getReplicateLogs().setStdout(null);
         return detailsWithoutStdout;
     }
 

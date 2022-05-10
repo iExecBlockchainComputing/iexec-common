@@ -36,8 +36,7 @@ public class ReplicateStatusDetails {
     private String chainCallbackData;
     private String errorMessage;
     private ReplicateStatusCause cause;
-    private String stdout;
-    private String stderr;
+    private ReplicateLogs replicateLogs;
     private Integer exitCode; //null means unset
     private String teeSessionGenerationError; // null means unset
 
@@ -47,10 +46,14 @@ public class ReplicateStatusDetails {
         chainCallbackData = details.getChainCallbackData();
         errorMessage = details.getErrorMessage();
         cause = details.getCause();
-        stdout = details.getStdout();
+        replicateLogs = details.getReplicateLogs() == null
+                ? null
+                : ReplicateLogs.builder()
+                .stdout(details.getReplicateLogs().getStdout())
+                .stderr(details.getReplicateLogs().getStderr())
+                .build();
         exitCode = details.getExitCode();
         teeSessionGenerationError = details.getTeeSessionGenerationError();
-        stderr = details.getStderr();
     }
 
     public ReplicateStatusDetails(long blockNumber) {
@@ -62,15 +65,17 @@ public class ReplicateStatusDetails {
     }
 
     public ReplicateStatusDetails tailStdout() {
+        final String stdout = replicateLogs.getStdout();
         if (stdout != null && stdout.length() > MAX_STDOUT_LENGTH) {
-            stdout = stdout.substring(stdout.length() - MAX_STDOUT_LENGTH);
+            replicateLogs.setStdout(stdout.substring(stdout.length() - MAX_STDOUT_LENGTH));
         }
         return this;
     }
 
     public ReplicateStatusDetails tailStderr() {
-        if (stdout != null && stdout.length() > MAX_STDERR_LENGTH) {
-            stdout = stdout.substring(stdout.length() - MAX_STDERR_LENGTH);
+        String stderr = replicateLogs.getStderr();
+        if (stderr != null && stderr.length() > MAX_STDERR_LENGTH) {
+            replicateLogs.setStderr(stderr.substring(stderr.length() - MAX_STDERR_LENGTH));
         }
         return this;
     }
