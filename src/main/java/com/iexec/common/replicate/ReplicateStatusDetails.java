@@ -42,6 +42,12 @@ public class ReplicateStatusDetails {
         chainCallbackData = details.getChainCallbackData();
         errorMessage = details.getErrorMessage();
         cause = details.getCause();
+        exitCode = details.getExitCode();
+        teeSessionGenerationError = details.getTeeSessionGenerationError();
+
+        // computeLogs may be tailed later.
+        // As we don't want the original instance of `ComputeLogs`
+        // to be tailed at the same time, we need to duplicate it.
         computeLogs = details.getComputeLogs() == null
                 ? null
                 : ComputeLogs.builder()
@@ -49,8 +55,6 @@ public class ReplicateStatusDetails {
                 .stdout(details.getComputeLogs().getStdout())
                 .stderr(details.getComputeLogs().getStderr())
                 .build();
-        exitCode = details.getExitCode();
-        teeSessionGenerationError = details.getTeeSessionGenerationError();
     }
 
     public ReplicateStatusDetails(long blockNumber) {
