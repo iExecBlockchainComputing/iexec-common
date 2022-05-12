@@ -28,7 +28,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ComputeLogs {
+    public static final int MAX_LOG_LENGTH = 100000;
+
     private String walletAddress;
     private String stdout;
     private String stderr;
+
+    public ComputeLogs tailLogs() {
+        stdout = tailLog(stdout);
+        stderr = tailLog(stderr);
+        return this;
+    }
+
+    private String tailLog(String log) {
+        if (log != null && log.length() > MAX_LOG_LENGTH) {
+            return log.substring(log.length() - MAX_LOG_LENGTH);
+        }
+        return log;
+    }
 }

@@ -27,10 +27,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReplicateStatusDetails {
-
-    public static final int MAX_STDOUT_LENGTH = 100000;
-    public static final int MAX_STDERR_LENGTH = 100000;
-
     private ChainReceipt chainReceipt;
     private String resultLink;
     private String chainCallbackData;
@@ -66,14 +62,7 @@ public class ReplicateStatusDetails {
     }
 
     public ReplicateStatusDetails tailLogs() {
-        final String stdout = computeLogs.getStdout();
-        if (stdout != null && stdout.length() > MAX_STDOUT_LENGTH) {
-            computeLogs.setStdout(stdout.substring(stdout.length() - MAX_STDOUT_LENGTH));
-        }
-        String stderr = computeLogs.getStderr();
-        if (stderr != null && stderr.length() > MAX_STDERR_LENGTH) {
-            computeLogs.setStderr(stderr.substring(stderr.length() - MAX_STDERR_LENGTH));
-        }
+        computeLogs.tailLogs();
         return this;
     }
 }
