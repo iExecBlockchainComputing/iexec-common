@@ -27,16 +27,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReplicateStatusDetails {
-
-    public static final int MAX_STDOUT_LENGTH = 100000;
-
     private ChainReceipt chainReceipt;
     private String resultLink;
     private String chainCallbackData;
     private String errorMessage;
     private ReplicateStatusCause cause;
-    private String stdout;
+    private ComputeLogs computeLogs;
     private Integer exitCode; //null means unset
+    private String teeSessionGenerationError; // null means unset
 
     public ReplicateStatusDetails(ReplicateStatusDetails details) {
         chainReceipt = details.getChainReceipt();
@@ -44,8 +42,19 @@ public class ReplicateStatusDetails {
         chainCallbackData = details.getChainCallbackData();
         errorMessage = details.getErrorMessage();
         cause = details.getCause();
-        stdout = details.getStdout();
         exitCode = details.getExitCode();
+        teeSessionGenerationError = details.getTeeSessionGenerationError();
+
+        // computeLogs may be tailed later.
+        // As we don't want the original instance of `ComputeLogs`
+        // to be tailed at the same time, we need to duplicate it.
+        computeLogs = details.getComputeLogs() == null
+                ? null
+                : ComputeLogs.builder()
+                .walletAddress(details.getComputeLogs().getWalletAddress())
+                .stdout(details.getComputeLogs().getStdout())
+                .stderr(details.getComputeLogs().getStderr())
+                .build();
     }
 
     public ReplicateStatusDetails(long blockNumber) {
@@ -56,10 +65,8 @@ public class ReplicateStatusDetails {
         this.cause = cause;
     }
 
-    public ReplicateStatusDetails tailStdout() {
-        if (stdout != null && stdout.length() > MAX_STDOUT_LENGTH) {
-            stdout = stdout.substring(stdout.length() - MAX_STDOUT_LENGTH);
-        }
+    public ReplicateStatusDetails tailLogs() {
+        computeLogs.tailLogs();
         return this;
     }
 }
