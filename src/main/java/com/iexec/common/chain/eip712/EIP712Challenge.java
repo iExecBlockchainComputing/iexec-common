@@ -66,7 +66,7 @@ public class EIP712Challenge extends EIP712Entity<Challenge> {
      */
     public String toJsonString() {
         ObjectMapper mapper = new ObjectMapper();
-        Arrays.asList(NON_NULL, NON_EMPTY, NON_DEFAULT).forEach(mapper::setSerializationInclusion);
+        Arrays.asList(NON_EMPTY, NON_DEFAULT).forEach(mapper::setSerializationInclusion);
         try {
             return mapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
