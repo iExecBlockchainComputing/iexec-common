@@ -28,7 +28,7 @@ import java.math.BigInteger;
 /**
  * @deprecated To be removed
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class Eip712ChallengeUtils {
 
     private Eip712ChallengeUtils() {

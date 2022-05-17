@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * @deprecated To be removed
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

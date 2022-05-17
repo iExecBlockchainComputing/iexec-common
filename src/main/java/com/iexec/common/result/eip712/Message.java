@@ -22,7 +22,7 @@ import lombok.*;
 /**
  * @deprecated Use {@link com.iexec.common.chain.eip712.Challenge}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @Data
 @Builder
 @AllArgsConstructor
