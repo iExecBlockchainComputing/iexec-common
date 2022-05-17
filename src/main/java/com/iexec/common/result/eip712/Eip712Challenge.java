@@ -24,6 +24,10 @@ import lombok.NoArgsConstructor;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @deprecated Use {@link com.iexec.common.chain.eip712.EIP712Challenge}
+ */
+@Deprecated
 @NoArgsConstructor
 public class Eip712Challenge extends EIP712Entity<Message> {
     private static final String DOMAIN_NAME = "iExec Result Repository";

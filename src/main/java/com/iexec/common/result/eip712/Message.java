@@ -19,6 +19,10 @@ package com.iexec.common.result.eip712;
 
 import lombok.*;
 
+/**
+ * @deprecated Use {@link com.iexec.common.chain.eip712.Challenge}
+ */
+@Deprecated
 @Data
 @Builder
 @AllArgsConstructor
