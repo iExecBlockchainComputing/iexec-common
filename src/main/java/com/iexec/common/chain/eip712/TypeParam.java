@@ -20,6 +20,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Describe a single member of a struct in an EIP-712 compliant data types description.
+ * <p>
+ * This is part of {@code typeHash = keccak256(encodeType(typeOf(s)))} where {@code encodeType} is
+ * {@code structName(paramType<1> paramName<1>,...,paramType<n> paramName<n>)}.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,5 +33,13 @@ public class TypeParam {
 
     private String name;
     private String type;
+
+    /**
+     * Gets the description of a single parameter as a String.
+     * @return The {@code "type name"} string
+     */
+    public String toDescription() {
+        return type + " " + name;
+    }
 
 }
