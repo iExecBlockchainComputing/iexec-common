@@ -36,7 +36,7 @@ public class TypeParam {
 
     /**
      * Gets the description of a single parameter as a String.
-     * @return The {@code "type name"} string
+     * @return The {@code "<type> <name>"} string
      */
     public String toDescription() {
         return type + " " + name;
