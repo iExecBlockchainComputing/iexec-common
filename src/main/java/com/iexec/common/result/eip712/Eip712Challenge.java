@@ -19,13 +19,14 @@ package com.iexec.common.result.eip712;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.chain.eip712.TypeParam;
+import com.iexec.common.chain.eip712.entity.EIP712Challenge;
 import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
 
 /**
- * @deprecated Use {@link com.iexec.common.chain.eip712.EIP712Challenge}
+ * @deprecated Use {@link EIP712Challenge}
  */
 @Deprecated(forRemoval = true)
 @NoArgsConstructor
