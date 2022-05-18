@@ -16,17 +16,12 @@
 
 package com.iexec.common.chain.eip712;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.utils.HashUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 
 /**
  * EIP-712 compliant challenge based on {@link Challenge} type and {@link EIP712Domain}.
@@ -58,21 +53,6 @@ public class EIP712Challenge extends EIP712Entity<Challenge> {
         return super.hashMessageValues(
                 getMessage().getChallenge()
         );
-    }
-
-    /**
-     * Represents the instance as a JSON string that will be exchanged between services.
-     * @return the JSON string representing the instance
-     */
-    public String toJsonString() {
-        ObjectMapper mapper = new ObjectMapper();
-        Arrays.asList(NON_EMPTY, NON_DEFAULT).forEach(mapper::setSerializationInclusion);
-        try {
-            return mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            log.error("EIP-712 challenge serialization failed.", e);
-            return "";
-        }
     }
 
     /**

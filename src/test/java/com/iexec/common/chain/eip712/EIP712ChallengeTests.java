@@ -16,6 +16,8 @@
 
 package com.iexec.common.chain.eip712;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.utils.HashUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -30,12 +32,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class EIP712ChallengeTests {
 
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     @Test
-    void shouldReturnJsonString() {
+    void shouldReturnJsonString() throws JsonProcessingException {
         Challenge challenge = Challenge.builder().challenge("challenge").build();
         EIP712Domain domain = new EIP712Domain("COMMON", "1", 15L, null);
         EIP712Challenge eip712Challenge = new EIP712Challenge(domain, challenge);
-        assertThat(eip712Challenge.toJsonString())
+        assertThat(mapper.writeValueAsString(eip712Challenge))
                 .isNotEmpty()
                 .isEqualTo("{\"types\":{\"EIP712Domain\":[" +
                         "{\"name\":\"name\",\"type\":\"string\"}," +
