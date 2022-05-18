@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.iexec.common.chain.eip712;
+package com.iexec.common.chain.eip712.entity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iexec.common.chain.eip712.EIP712Domain;
+import com.iexec.common.chain.eip712.TypeParam;
 import com.iexec.common.utils.HashUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

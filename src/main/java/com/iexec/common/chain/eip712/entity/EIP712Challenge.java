@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package com.iexec.common.chain.eip712;
+package com.iexec.common.chain.eip712.entity;
 
+import com.iexec.common.chain.eip712.EIP712Domain;
+import com.iexec.common.chain.eip712.EIP712Entity;
+import com.iexec.common.chain.eip712.TypeParam;
 import com.iexec.common.utils.HashUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
