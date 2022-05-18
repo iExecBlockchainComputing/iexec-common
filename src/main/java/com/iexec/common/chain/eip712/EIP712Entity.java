@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 import org.web3j.crypto.ECKeyPair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public abstract class EIP712Entity<M> implements EIP712<M> {
@@ -65,7 +66,9 @@ public abstract class EIP712Entity<M> implements EIP712<M> {
     }
 
     public String hashMessageValues(Object... values) {
-        String type = getPrimaryType() + "(" + EIP712Utils.typeParamsToString(getMessageTypeParams()) + ")";
+        String type = getPrimaryType() + "(" + getMessageTypeParams().stream()
+                .map(TypeParam::toDescription)
+                .collect(Collectors.joining(",")) + ")";
         //MyEntity(address param1, string param2, ..)
         String typeHash = EIP712Utils.encodeData(type);
         String[] encodedValues = Arrays.stream(values).map(EIP712Utils::encodeData).toArray(String[]::new);
@@ -81,8 +84,4 @@ public abstract class EIP712Entity<M> implements EIP712<M> {
         return new ArrayList<>(types.get(EIP712Domain.primaryType));
     }
 
-    @JsonIgnore
-    public List<TypeParam> getMessageTypeParams() {
-        return new ArrayList<>(types.get(getPrimaryType()));
-    }
 }

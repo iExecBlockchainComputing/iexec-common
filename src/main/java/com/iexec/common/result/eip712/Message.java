@@ -17,8 +17,13 @@
 package com.iexec.common.result.eip712;
 
 
+import com.iexec.common.chain.eip712.entity.Challenge;
 import lombok.*;
 
+/**
+ * @deprecated Use {@link Challenge}
+ */
+@Deprecated(forRemoval = true)
 @Data
 @Builder
 @AllArgsConstructor

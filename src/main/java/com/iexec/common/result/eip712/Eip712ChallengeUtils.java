@@ -25,6 +25,10 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 
+/**
+ * @deprecated To be removed
+ */
+@Deprecated(forRemoval = true)
 public class Eip712ChallengeUtils {
 
     private Eip712ChallengeUtils() {

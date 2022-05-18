@@ -23,6 +23,10 @@ import lombok.*;
 
 import java.util.List;
 
+/**
+ * @deprecated To be removed
+ */
+@Deprecated(forRemoval = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

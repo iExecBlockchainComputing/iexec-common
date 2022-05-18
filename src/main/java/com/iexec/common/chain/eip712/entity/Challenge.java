@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2022 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,32 +14,20 @@
  * limitations under the License.
  */
 
-package com.iexec.common.chain.eip712;
+package com.iexec.common.chain.eip712.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Describe a single member of a struct in an EIP-712 compliant data types description.
- * <p>
- * This is part of {@code typeHash = keccak256(encodeType(typeOf(s)))} where {@code encodeType} is
- * {@code structName(paramType<1> paramName<1>,...,paramType<n> paramName<n>)}.
+ * Represents the Challenge type in an EIP-712 compliant challenge.
  */
 @Data
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class TypeParam {
-
-    private String name;
-    private String type;
-
-    /**
-     * Gets the description of a single parameter as a String.
-     * @return The {@code "<type> <name>"} string
-     */
-    public String toDescription() {
-        return type + " " + name;
-    }
-
+@NoArgsConstructor
+public class Challenge {
+    private String challenge;
 }

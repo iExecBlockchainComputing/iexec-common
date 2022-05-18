@@ -21,7 +21,6 @@ import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
-import java.util.List;
 
 import static com.iexec.common.utils.BytesUtils.BYTES_32_SIZE;
 
@@ -91,15 +90,5 @@ public class EIP712Utils {
      * "0x1901" + Numeric.cleanHexPrefix(domainSeparator) + Numeric.cleanHexPrefix(messageHash)))));
      *
      */
-    public static String typeParamsToString(List<TypeParam> typeParams) {
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < typeParams.size(); i++) {
-            s.append(typeParams.get(i).getType()).append(" ").append(typeParams.get(i).getName());
-            if (i <= typeParams.size() - 2) {
-                s.append(",");
-            }
-        }
-        return s.toString();
-    }
 
 }

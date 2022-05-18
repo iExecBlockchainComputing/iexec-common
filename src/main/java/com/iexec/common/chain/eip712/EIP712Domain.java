@@ -25,20 +25,31 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * Represents the {@code EIP712Domain} part an EIP-712 compliant data structure.
+ * <p>
+ * This class allows to:
+ * <ul>
+ * <li> describe a domain with the correct fields
+ * <li> represent the domain structure as string like {@code EIP712Domain(string name,string version,unit256 chainId)}
+ * <li> compute the {@code domainSeparator}, the hash of the concatenation of the domain structure hash and the hash of field values
+ * </ul>
+ */
 @Getter
 public class EIP712Domain {
 
     public static final String primaryType = "EIP712Domain";
 
-    private String name;
-    private String version;
-    private long chainId;
+    private final String name;
+    private final String version;
+    private final long chainId;
 
     @JsonInclude(value = JsonInclude.Include.NON_NULL)
-    private String verifyingContract;
+    private final String verifyingContract;
     @JsonIgnore
-    private List<TypeParam> types;
+    private final List<TypeParam> types = new ArrayList<>();
 
     public EIP712Domain() {
         this("", "", 0L, null);
@@ -58,7 +69,6 @@ public class EIP712Domain {
     }
 
     private void initTypes() {
-        this.types = new ArrayList<>();
         this.types.addAll(Arrays.asList(
                 new TypeParam("name", "string"),
                 new TypeParam("version", "string"),
@@ -72,21 +82,38 @@ public class EIP712Domain {
     }
 
     /**
-     * @return EIP712Domain(string name, string version, uint256 chainId, ..)
+     * Gets the representation of the EIP712Domain instance.
+     * @return The {@code EIP712Domain(string name,string version,uint256 chainId,...)} string
+     */
+    @JsonIgnore
+    public String getDomainType() {
+        return primaryType + "(" +
+                types.stream().map(TypeParam::toDescription)
+                        .collect(Collectors.joining(",")) + ")";
+    }
+
+    /**
+     * Gets the {@code domainSeparator} of an EIP-712 compliant data structure.
+     * <p>
+     * It concatenates the hash of {@link #getDomainType()} and the hash of each field value for the current instance.
+     * The result of this concatenation is then hashed.
+     * @return The computed hash.
      */
     @JsonIgnore
     public String getDomainSeparator() {
-        String domainType = EIP712Domain.primaryType + "(" + EIP712Utils.typeParamsToString(types) + ")";
+        String domainType = getDomainType();
 
         if (StringUtils.isNotEmpty(this.verifyingContract)) {
-            return HashUtils.concatenateAndHash(EIP712Utils.encodeData(domainType),
+            return HashUtils.concatenateAndHash(
+                    EIP712Utils.encodeData(domainType),
                     EIP712Utils.encodeData(name),
                     EIP712Utils.encodeData(version),
                     EIP712Utils.encodeData(chainId),
                     EIP712Utils.encodeData(verifyingContract));
         }
 
-        return HashUtils.concatenateAndHash(EIP712Utils.encodeData(domainType),
+        return HashUtils.concatenateAndHash(
+                EIP712Utils.encodeData(domainType),
                 EIP712Utils.encodeData(name),
                 EIP712Utils.encodeData(version),
                 EIP712Utils.encodeData(chainId));
