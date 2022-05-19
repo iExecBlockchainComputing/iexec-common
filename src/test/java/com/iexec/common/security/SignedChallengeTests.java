@@ -18,6 +18,7 @@ package com.iexec.common.security;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,12 +33,8 @@ public class SignedChallengeTests {
         assertThat(signedChallenge.getWalletAddress()).isEqualTo("walletAddress");
     }
 
-    @Test
-    void shouldNotCreateSignedChallengeFromNull() {
-        assertThat(SignedChallenge.createFromString(null)).isNull();
-    }
-
     @ParameterizedTest
+    @NullSource
     @ValueSource(strings = {"", "empty", "part1_part2", "part1_part2_part3_part4"})
     void shouldNotCreateSignedChallengeFromMalformedString(String authorization) {
         assertThat(SignedChallenge.createFromString(authorization)).isNull();
