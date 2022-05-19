@@ -58,12 +58,4 @@ public class EIP712Challenge extends EIP712Entity<Challenge> {
         );
     }
 
-    /**
-     * Concatenates and hash {@literal 0x1901}, {@code domainSeparator} and {@code messageHash}
-     * @return The computed hash.
-     */
-    public String hash() {
-        return HashUtils.concatenateAndHash("0x1901", getDomain().getDomainSeparator(), getMessageHash());
-    }
-
 }
