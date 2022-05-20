@@ -21,11 +21,13 @@ import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.chain.eip712.TypeParam;
 import com.iexec.common.sdk.order.payload.DatasetOrder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class EIP712DatasetOrder extends EIP712Entity<DatasetOrder> {
 
     public EIP712DatasetOrder(EIP712Domain domain, DatasetOrder datasetOrder) {

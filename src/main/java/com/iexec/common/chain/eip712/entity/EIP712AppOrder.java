@@ -21,11 +21,13 @@ import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.chain.eip712.TypeParam;
 import com.iexec.common.sdk.order.payload.AppOrder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class EIP712AppOrder extends EIP712Entity<AppOrder> {
 
     public EIP712AppOrder(EIP712Domain domain, AppOrder appOrder) {
