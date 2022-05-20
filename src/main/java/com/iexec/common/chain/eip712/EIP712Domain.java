@@ -48,8 +48,6 @@ public class EIP712Domain {
 
     @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private final String verifyingContract;
-    @JsonIgnore
-    private final List<TypeParam> types = new ArrayList<>();
 
     public EIP712Domain() {
         this("", "", 0L, null);
@@ -64,21 +62,22 @@ public class EIP712Domain {
         this.version = version;
         this.chainId = chainId;
         this.verifyingContract = verifyingContract;
-
-        this.initTypes();
     }
 
-    private void initTypes() {
-        this.types.addAll(Arrays.asList(
+    @JsonIgnore
+    public List<TypeParam> getTypes() {
+        List<TypeParam> types = new ArrayList<>();
+        types.addAll(Arrays.asList(
                 new TypeParam("name", "string"),
                 new TypeParam("version", "string"),
                 new TypeParam("chainId", "uint256")
         ));
 
         if (StringUtils.isNotEmpty(this.verifyingContract)) {
-            this.types.add(
+            types.add(
                     new TypeParam("verifyingContract", "address"));
         }
+        return types;
     }
 
     /**
@@ -88,7 +87,7 @@ public class EIP712Domain {
     @JsonIgnore
     public String getDomainType() {
         return primaryType + "(" +
-                types.stream().map(TypeParam::toDescription)
+                getTypes().stream().map(TypeParam::toDescription)
                         .collect(Collectors.joining(",")) + ")";
     }
 
