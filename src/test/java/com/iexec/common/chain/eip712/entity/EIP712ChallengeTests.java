@@ -37,6 +37,16 @@ public class EIP712ChallengeTests {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Test
+    void shouldSerializeAndDeserialize() throws JsonProcessingException {
+        Challenge challenge = Challenge.builder().challenge("challenge").build();
+        EIP712Domain domain = new EIP712Domain();
+        EIP712Challenge eip712Challenge = new EIP712Challenge(domain, challenge);
+        String jsonString = mapper.writeValueAsString(eip712Challenge);
+        EIP712Challenge deserializedChallenge = mapper.readValue(jsonString, EIP712Challenge.class);
+        assertThat(deserializedChallenge).usingRecursiveComparison().isEqualTo(eip712Challenge);
+    }
+
+    @Test
     void shouldReturnJsonString() throws JsonProcessingException {
         Challenge challenge = Challenge.builder().challenge("challenge").build();
         EIP712Domain domain = new EIP712Domain("COMMON", "1", 15L, null);
