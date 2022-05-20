@@ -72,7 +72,7 @@ public class EIP712ChallengeTests {
                 "0x1901",
                 domainSeparator,
                 messageHash);
-        assertThat(eip712Challenge.hash())
+        assertThat(eip712Challenge.getHash())
                 .isEqualTo(hash)
                 .isEqualTo("0xea5ec041da81859f2c04a4876d5999ed8e66ad221b5b8699ca91f6814693a80e");
     }
