@@ -39,10 +39,11 @@ class EIP712DomainTest {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    void shouldGetDomain() throws JsonProcessingException {
+    void shouldGetDomainWithVerifyingContract() throws JsonProcessingException {
         EIP712Domain domain =
                 new EIP712Domain(DOMAIN_NAME, DOMAIN_VERSION, DOMAIN_CHAIN_ID, DOMAIN_VERIFYING_CONTRACT);
-        assertThat(mapper.writeValueAsString(domain))
+        String jsonString = mapper.writeValueAsString(domain);
+        assertThat(jsonString)
                 .isEqualTo("{" +
                         "\"name\":\"iExec Custom Module Domain\"," +
                         "\"version\":\"1\"," +
@@ -59,13 +60,18 @@ class EIP712DomainTest {
         assertThat(domain.getDomainSeparator())
                 .isEqualTo(domainSeparator)
                 .isEqualTo("0xb3b1dcc957351eff67866cbc947be104a71d09ff7e146a2c42e8f7edc2bf501c");
+        EIP712Domain deserializedDomain = mapper.readValue(jsonString, EIP712Domain.class);
+        assertThat(deserializedDomain)
+                .usingRecursiveComparison()
+                .isEqualTo(domain);
     }
 
     @Test
     void shouldGetDomainWithoutVerifyingContract() throws JsonProcessingException {
         EIP712Domain domain =
                 new EIP712Domain(DOMAIN_NAME, DOMAIN_VERSION, DOMAIN_CHAIN_ID, null);
-        assertThat(mapper.writeValueAsString(domain))
+        String jsonString = mapper.writeValueAsString(domain);
+        assertThat(jsonString)
                 .isEqualTo("{" +
                         "\"name\":\"iExec Custom Module Domain\"," +
                         "\"version\":\"1\"," +
@@ -81,6 +87,10 @@ class EIP712DomainTest {
         assertThat(domain.getDomainSeparator())
                 .isEqualTo(domainSeparator)
                 .isEqualTo("0xc1ca0800eccc218e09b4b90ca3ba732ee9a923d115f880316caf56c466c0bc34");
+        EIP712Domain deserializedDomain = mapper.readValue(jsonString, EIP712Domain.class);
+        assertThat(deserializedDomain)
+                .usingRecursiveComparison()
+                .isEqualTo(domain);
     }
 
 }
