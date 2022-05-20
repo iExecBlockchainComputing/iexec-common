@@ -17,12 +17,14 @@
 package com.iexec.common.chain.eip712;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.web3j.crypto.ECKeyPair;
 
 import java.util.List;
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface EIP712<M> {
 
     @JsonProperty("types")
