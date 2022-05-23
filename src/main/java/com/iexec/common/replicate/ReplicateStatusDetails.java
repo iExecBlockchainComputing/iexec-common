@@ -66,7 +66,9 @@ public class ReplicateStatusDetails {
     }
 
     public ReplicateStatusDetails tailLogs() {
-        computeLogs.tailLogs();
+        if (computeLogs != null) {
+            computeLogs.tailLogs();
+        }
         return this;
     }
 }
