@@ -16,10 +16,11 @@
 
 package com.iexec.common.chain.eip712.entity;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.sdk.order.payload.WorkerpoolOrder;
 import com.iexec.common.utils.BytesUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.ECKeyPair;
@@ -28,10 +29,32 @@ import org.web3j.crypto.WalletUtils;
 import java.io.IOException;
 import java.math.BigInteger;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class EIP712WorkerpoolOrderTest {
 
-    public static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
-    public static final String POOL_ADDRESS = "0x53Ef1328a96E40E125bca15b9a4da045C5e63E1A";
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
+    private static final WorkerpoolOrder WORKERPOOL_ORDER = WorkerpoolOrder.builder()
+            .workerpool("0x53Ef1328a96E40E125bca15b9a4da045C5e63E1A")
+            .price(BigInteger.ZERO)
+            .volume(BigInteger.ONE)
+            .category(BigInteger.ZERO)
+            .trust(BigInteger.ZERO)
+            .tag("0x0000000000000000000000000000000000000000000000000000000000000000")
+            .datasetrestrict(BytesUtils.EMPTY_ADDRESS)
+            .apprestrict(BytesUtils.EMPTY_ADDRESS)
+            .requesterrestrict(BytesUtils.EMPTY_ADDRESS)
+            .salt("0x40af1a4975ca6ca7285d7738e51c8da91a9daee4a23fb45d105068be56f85e56")
+            .build();
+
+    @Test
+    void shouldSerializeAndDeserialize() throws JsonProcessingException {
+        EIP712WorkerpoolOrder eip712WorkerpoolOrder = new EIP712WorkerpoolOrder(DOMAIN, WORKERPOOL_ORDER);
+        String jsonString = mapper.writeValueAsString(eip712WorkerpoolOrder);
+        EIP712WorkerpoolOrder deserializedEip712WorkerPoolOrder = mapper.readValue(jsonString, EIP712WorkerpoolOrder.class);
+        assertThat(deserializedEip712WorkerPoolOrder).usingRecursiveComparison().isEqualTo(eip712WorkerpoolOrder);
+    }
 
     /**
      * Expected signature string could also be found with:
@@ -44,24 +67,9 @@ class EIP712WorkerpoolOrderTest {
      */
     @Test
     void signWorkerpoolOrderEIP712() {
-        EIP712WorkerpoolOrder eip712WorkerpoolOrder = new EIP712WorkerpoolOrder(
-                DOMAIN,
-                WorkerpoolOrder.builder()
-                        .workerpool(POOL_ADDRESS)
-                        .price(BigInteger.ZERO)
-                        .volume(BigInteger.ONE)
-                        .category(BigInteger.ZERO)
-                        .trust(BigInteger.ZERO)
-                        .tag("0x0000000000000000000000000000000000000000000000000000000000000000")
-                        .datasetrestrict(BytesUtils.EMPTY_ADDRESS)
-                        .apprestrict(BytesUtils.EMPTY_ADDRESS)
-                        .requesterrestrict(BytesUtils.EMPTY_ADDRESS)
-                        .salt("0x40af1a4975ca6ca7285d7738e51c8da91a9daee4a23fb45d105068be56f85e56")
-                        .build()
-        );
-
+        EIP712WorkerpoolOrder eip712WorkerpoolOrder = new EIP712WorkerpoolOrder(DOMAIN, WORKERPOOL_ORDER);
         String signatureString = eip712WorkerpoolOrder.signMessage(getWallet());
-        Assertions.assertThat(signatureString)
+        assertThat(signatureString)
                 .isEqualTo("0x5d7c625e34c1dbfa76c6f1b953910f21d83fb51499748e2ccf15f9d357142f1c4f8b24dc583914b02c868d5a1d751409bbe83c753152cfd88fdd3ac65b39e9fe1c");
     }
 

@@ -16,6 +16,8 @@
 
 package com.iexec.common.chain.eip712.entity;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.sdk.order.payload.AppOrder;
 import com.iexec.common.utils.BytesUtils;
@@ -28,10 +30,30 @@ import org.web3j.crypto.WalletUtils;
 import java.io.IOException;
 import java.math.BigInteger;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class EIP712AppOrderTest {
 
-    public static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
-    public static final String APP_ADDRESS = "0x2EbD509d777B187E8394566bA6ec093B9dd73DF1";
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
+    private static final AppOrder APP_ORDER = AppOrder.builder()
+            .app("0x2EbD509d777B187E8394566bA6ec093B9dd73DF1")
+            .price(BigInteger.valueOf(0))
+            .volume(BigInteger.valueOf(1))
+            .tag("0x0000000000000000000000000000000000000000000000000000000000000000")
+            .datasetrestrict(BytesUtils.EMPTY_ADDRESS)
+            .workerpoolrestrict(BytesUtils.EMPTY_ADDRESS)
+            .requesterrestrict(BytesUtils.EMPTY_ADDRESS)
+            .salt("0xbe858b0eee90cf2e85297bd3df81373f6b4de20c67a3e1f5db1a9d5be8abc3c4")
+            .build();
+
+    @Test
+    void shouldSerializeAndDeserialize() throws JsonProcessingException {
+        EIP712AppOrder eip712AppOrder = new EIP712AppOrder(DOMAIN, APP_ORDER);
+        String jsonString = mapper.writeValueAsString(eip712AppOrder);
+        EIP712AppOrder deserializedEip712AppOrder = mapper.readValue(jsonString, EIP712AppOrder.class);
+        assertThat(deserializedEip712AppOrder).usingRecursiveComparison().isEqualTo(eip712AppOrder);
+    }
 
     /**
      * Expected signature string could also be found with:
@@ -44,22 +66,9 @@ class EIP712AppOrderTest {
      */
     @Test
     void signAppOrderEIP712() {
-        EIP712AppOrder eip712AppOrder = new EIP712AppOrder(
-                DOMAIN,
-                AppOrder.builder()
-                        .app(APP_ADDRESS)
-                        .price(BigInteger.valueOf(0))
-                        .volume(BigInteger.valueOf(1))
-                        .tag("0x0000000000000000000000000000000000000000000000000000000000000000")
-                        .datasetrestrict(BytesUtils.EMPTY_ADDRESS)
-                        .workerpoolrestrict(BytesUtils.EMPTY_ADDRESS)
-                        .requesterrestrict(BytesUtils.EMPTY_ADDRESS)
-                        .salt("0xbe858b0eee90cf2e85297bd3df81373f6b4de20c67a3e1f5db1a9d5be8abc3c4")
-                        .build()
-        );
-
+        EIP712AppOrder eip712AppOrder = new EIP712AppOrder(DOMAIN, APP_ORDER);
         String signatureString = eip712AppOrder.signMessage(getWallet());
-        Assertions.assertThat(signatureString)
+        assertThat(signatureString)
                 .isEqualTo("0xb1d87561e2358d0f2f3f305562f47da8a053faa179b00a534405996da5ff20e63cabc35e204619d95e9e8b431ad30c7e0f95f189860821b8066b13da896f15ee1b");
     }
 
