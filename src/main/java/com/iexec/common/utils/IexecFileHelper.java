@@ -39,13 +39,13 @@ public class IexecFileHelper {
 
     public static ComputedFile readComputedFile(String chainTaskId, String computedFileDir) {
         if (chainTaskId.isEmpty()){
-            log.error("Failed to read compute file (empty chainTaskId)[chainTaskId:{}, computedFileDir:{}]",
+            log.error("Failed to read compute file (empty chainTaskId) [chainTaskId:{}, computedFileDir:{}]",
                     chainTaskId, computedFileDir);
             return null;
         }
 
         if (computedFileDir.isEmpty()){
-            log.error("Failed to read compute file (empty computedFileDir)[chainTaskId:{}, computedFileDir:{}]",
+            log.error("Failed to read compute file (empty computedFileDir) [chainTaskId:{}, computedFileDir:{}]",
                     chainTaskId, computedFileDir);
             return null;
         }
@@ -55,7 +55,7 @@ public class IexecFileHelper {
         String jsonString = FileHelper.readFile(computedFilePath);
 
         if (jsonString.isEmpty()) {
-            log.error("Failed to read compute file (invalid path)[chainTaskId:{}, computedFilePath:{}]",
+            log.error("Failed to read compute file (invalid path) [chainTaskId:{}, computedFilePath:{}]",
                     chainTaskId, computedFileDir);
             return null;
         }
@@ -69,8 +69,7 @@ public class IexecFileHelper {
             return computedFile;
         } catch (IOException e) {
             log.error("Failed to read compute file [chainTaskId:{}, computedFilePath:{}]",
-                    chainTaskId, computedFileDir);
-            e.printStackTrace();
+                    chainTaskId, computedFileDir, e);
         }
         return null;
     }

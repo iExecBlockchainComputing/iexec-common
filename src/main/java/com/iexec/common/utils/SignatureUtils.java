@@ -16,16 +16,17 @@
 
 package com.iexec.common.utils;
 
+import com.iexec.common.security.Signature;
+import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.*;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.security.SignatureException;
 
-import com.iexec.common.security.Signature;
-
 import static com.iexec.common.utils.BytesUtils.*;
 
+@Slf4j
 public class SignatureUtils {
 
     public static final Signature EMPTY_SIGNATURE =  new Signature();
@@ -69,7 +70,7 @@ public class SignatureUtils {
         try {
             publicKey = Sign.signedPrefixedMessageToKey(message, signatureData);
         } catch (SignatureException e) {
-            e.printStackTrace();
+            log.error("Failed to recover public key from signature", e);
             return false;
         }
 
@@ -146,7 +147,7 @@ public class SignatureUtils {
             BigInteger publicKey = Sign.signedPrefixedMessageToKey(stringToBytes(messageHash), signatureData);
             signerAddress = Numeric.prependHexPrefix(Keys.getAddress(publicKey));
         } catch (SignatureException e) {
-            e.printStackTrace();
+            log.error("Failed to recover public key from signature", e);
         }
         return signerAddress;
     }

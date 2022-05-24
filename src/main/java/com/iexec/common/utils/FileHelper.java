@@ -340,8 +340,7 @@ public class FileHelper {
             return new File(replacer).renameTo(new File(toBeReplaced));
         } catch (IOException e) {
             log.error("Problem when trying to replace file [toBeReplaced:{}, replacer:{}]",
-                    toBeReplaced, replacer);
-            e.printStackTrace();
+                    toBeReplaced, replacer, e);
             return false;
         }
     }
@@ -359,9 +358,7 @@ public class FileHelper {
             FileUtils.copyDirectory(new File(source), new File(target));
             return true;
         } catch (IOException e) {
-            log.error("Error copying folder [source:{}, target:{}, error:{}]",
-                    source, target, e.getMessage());
-            e.printStackTrace();
+            log.error("Error copying folder [source:{}, target:{}]", source, target, e);
             return false;
         }
     }
@@ -371,9 +368,7 @@ public class FileHelper {
             Files.copy(Path.of(source), Path.of(target));
             return true;
         } catch (IOException e) {
-            log.error("Error copying file [source:{}, target:{}, error:{}]",
-                    source, target, e.getMessage());
-            e.printStackTrace();
+            log.error("Error copying file [source:{}, target:{}]", source, target, e);
             return false;
         }
     }

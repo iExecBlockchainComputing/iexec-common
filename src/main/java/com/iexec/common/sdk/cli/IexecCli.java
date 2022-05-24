@@ -171,8 +171,7 @@ public class IexecCli {
             String cliInputJsonString = new ObjectMapper().writeValueAsString(cliInput);
             return "echo '" + cliInputJsonString + "' > orders.json";
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            log.error("Failed to copyCliInputToHomeDir (writeValueAsString)");
+            log.error("Failed to copyCliInputToHomeDir (writeValueAsString)", e);
             return "";
         }
     }

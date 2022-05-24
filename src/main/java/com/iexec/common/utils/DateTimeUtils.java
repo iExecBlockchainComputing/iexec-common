@@ -16,9 +16,12 @@
 
 package com.iexec.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Calendar;
 import java.util.Date;
 
+@Slf4j
 public class DateTimeUtils {
 
     private DateTimeUtils(){
@@ -36,12 +39,13 @@ public class DateTimeUtils {
         return new Date().getTime();
     }
 
+    // No usage found for the moment
+    @Deprecated(forRemoval = true)
     public static boolean sleep(long ms) {
         try {
-
             Thread.sleep(ms);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error("Interrupted sleep");
         }
         return true;
     }
