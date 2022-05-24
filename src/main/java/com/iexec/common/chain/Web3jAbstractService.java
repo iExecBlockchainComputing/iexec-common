@@ -89,7 +89,7 @@ public abstract class Web3jAbstractService {
                     return web3j;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Connection check failed", e);
             }
             int fewSeconds = 5;
             log.error("Failed to connect to ethereum node (will retry) [chainNodeAddress:{}, retryIn:{}]",
@@ -112,7 +112,7 @@ public abstract class Web3jAbstractService {
         try {
             return getLatestBlock().getNumber().longValue();
         } catch (IOException e) {
-            log.error("GetLastBlock failed");
+            log.error("GetLastBlock failed", e);
         }
         return 0;
     }
@@ -145,7 +145,7 @@ public abstract class Web3jAbstractService {
                 currentBlockNumber = getLatestBlockNumber();
             }
         } catch (InterruptedException e) {
-            log.error("Error in checking the latest block number [execption:{}]", e.getMessage());
+            log.error("Error when checking the latest block number", e);
         }
 
         return false;
@@ -165,10 +165,10 @@ public abstract class Web3jAbstractService {
 
             maxWaitingTime = (latestBlockTimestamp.longValue() - tenBlocksAgoTimestamp.longValue()) * 1000;
 
-            log.info(" [latestBlockTimestamp:{}, tenBlocksAgoTimestamp:{}, maxWaitingTime:{}]",
+            log.info("[latestBlockTimestamp:{}, tenBlocksAgoTimestamp:{}, maxWaitingTime:{}]",
                     latestBlockTimestamp, tenBlocksAgoTimestamp, maxWaitingTime);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error when computing mas waiting time", e);
         }
         return maxWaitingTime;
     }
@@ -187,8 +187,7 @@ public abstract class Web3jAbstractService {
 
             defaultTime = ((latestBlockTimestamp.longValue() - tenBlocksAgoTimestamp.longValue()) / NB_OF_BLOCKS) * 1000L;
         } catch (IOException e) {
-            log.error("Failed to getAverageTimePerBlock");
-            e.printStackTrace();
+            log.error("Failed to getAverageTimePerBlock", e);
         }
         return defaultTime;
     }
