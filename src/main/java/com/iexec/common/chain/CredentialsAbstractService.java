@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class CredentialsAbstractService {
 
-    private Credentials credentials;
+    private final Credentials credentials;
 
     public CredentialsAbstractService() throws Exception {
         try {
@@ -44,7 +44,7 @@ public abstract class CredentialsAbstractService {
             credentials = Credentials.create(ecKeyPair);
             log.info("Created new wallet credentials [address:{}] ", credentials.getAddress());
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
-            log.error("Cannot create new wallet credentials [exception:{}] ", e);
+            log.error("Cannot create new wallet credentials", e);
             throw e;
         }
     }
@@ -54,7 +54,7 @@ public abstract class CredentialsAbstractService {
             credentials = WalletUtils.loadCredentials(walletPassword, walletPath);
             log.info("Loaded wallet credentials [address:{}] ", credentials.getAddress());
         } catch (IOException | CipherException e) {
-            log.error("Cannot load wallet credentials [exception:{}] ", e);
+            log.error("Cannot load wallet credentials", e);
             throw e;
         }
     }
