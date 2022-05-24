@@ -17,10 +17,12 @@
 package com.iexec.common.utils;
 
 import com.google.common.net.InetAddresses;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+@Slf4j
 public class NetworkUtils {
 
     private NetworkUtils() {
@@ -32,7 +34,7 @@ public class NetworkUtils {
         try {
             address = InetAddress.getByName(hostname);
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            log.error("No IP address could be found [host:{}]", hostname, e);
         }
         return address != null ? address.getHostAddress() : "";
     }
