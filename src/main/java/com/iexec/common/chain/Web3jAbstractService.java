@@ -168,7 +168,7 @@ public abstract class Web3jAbstractService {
             log.info("[latestBlockTimestamp:{}, tenBlocksAgoTimestamp:{}, maxWaitingTime:{}]",
                     latestBlockTimestamp, tenBlocksAgoTimestamp, maxWaitingTime);
         } catch (IOException e) {
-            log.error("Error when computing mas waiting time", e);
+            log.error("Error when computing max waiting time", e);
         }
         return maxWaitingTime;
     }
