@@ -1,4 +1,4 @@
-@Library('global-jenkins-library@1.3.0') _
+@Library('global-jenkins-library@feature/infra-migration') _
 buildJavaProject(
         integrationTestsEnvVars: [],
         shouldPublishJars: true,
