@@ -1,6 +1,8 @@
 @Library('global-jenkins-library@feature/infra-migration') _
 buildJavaProject(
-        integrationTestsEnvVars: [],
-        shouldPublishJars: true,
-        shouldPublishDockerImages: false,
-        notifyJobs: ['iexec-core', 'iexec-worker'])
+    buildInfo: getBuildInfo(),
+    integrationTestsEnvVars: [],
+    shouldPublishJars: true,
+    shouldPublishDockerImages: false,
+    notifyJobs: ['iexec-core', 'iexec-worker']
+)
