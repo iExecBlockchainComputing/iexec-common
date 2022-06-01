@@ -18,7 +18,6 @@ package com.iexec.common.security;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.web3j.utils.Numeric;
 
 @Builder
 @Getter
