@@ -54,7 +54,7 @@ public class SignatureUtils {
             if (publicKey != null) {
                 String addressRecovered = "0x" + Keys.getAddress(publicKey);
 
-                if (addressRecovered.equals(signerAddress)) {
+                if (addressRecovered.equalsIgnoreCase(signerAddress)) {
                     return true;
                 }
             }
