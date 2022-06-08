@@ -21,12 +21,15 @@ import com.google.common.collect.ObjectArrays;
 import com.iexec.common.utils.HashUtils;
 import com.iexec.common.utils.SignatureUtils;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
+@Slf4j
 public abstract class EIP712Entity<M> implements EIP712<M> {
 
     private Map<String, List<TypeParam>> types;
@@ -82,6 +85,17 @@ public abstract class EIP712Entity<M> implements EIP712<M> {
     @JsonIgnore
     public List<TypeParam> getDomainTypeParams() {
         return new ArrayList<>(types.get(EIP712Domain.primaryType));
+    }
+
+    public String buildAuthorizationTokenFromCredentials(Credentials credentials) {
+        try {
+            String challengeString = this.getHash();
+            String signatureString = this.signMessage(credentials.getEcKeyPair());
+            return String.join("_", challengeString, signatureString, credentials.getAddress());
+        } catch (RuntimeException e) {
+            log.error("Can't build authorization token", e);
+            return "";
+        }
     }
 
 }

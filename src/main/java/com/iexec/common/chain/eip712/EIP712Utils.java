@@ -16,10 +16,8 @@
 
 package com.iexec.common.chain.eip712;
 
-import com.iexec.common.chain.eip712.entity.EIP712Challenge;
 import com.iexec.common.utils.BytesUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
@@ -94,15 +92,4 @@ public class EIP712Utils {
      * "0x1901" + Numeric.cleanHexPrefix(domainSeparator) + Numeric.cleanHexPrefix(messageHash)))));
      *
      */
-
-    public static String buildAuthorizationToken(EIP712Challenge eip712Challenge, String walletAddress, ECKeyPair ecKeyPair) {
-        try {
-            String challengeString = eip712Challenge.getHash();
-            String signatureString = eip712Challenge.signMessage(ecKeyPair);
-            return String.join("_", challengeString, signatureString, walletAddress);
-        } catch (RuntimeException e) {
-            log.error("Can't build authorization token", e);
-            return "";
-        }
-    }
 }
