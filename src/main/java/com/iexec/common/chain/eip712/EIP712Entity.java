@@ -22,7 +22,6 @@ import com.iexec.common.utils.HashUtils;
 import com.iexec.common.utils.SignatureUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 
 import java.util.*;
@@ -86,25 +85,4 @@ public abstract class EIP712Entity<M> implements EIP712<M> {
     public List<TypeParam> getDomainTypeParams() {
         return new ArrayList<>(types.get(EIP712Domain.primaryType));
     }
-
-    /**
-     * Builds an authorization token from given {@link Credentials}.
-     * <p>
-     * An authorization token is the concatenation of the following values,
-     * delimited by an underscore:
-     * <ol>
-     *     <li>Entity hash;</li>
-     *     <li>Signed message;</li>
-     *     <li>Credentials address.</li>
-     * </ol>
-     *
-     * @param credentials Credentials representing the signer.
-     * @return The authorization token.
-     */
-    public String buildAuthorizationTokenFromCredentials(Credentials credentials) {
-        String hash = this.getHash();
-        String signedMessage = this.signMessage(credentials.getEcKeyPair());
-        return String.join("_", hash, signedMessage, credentials.getAddress());
-    }
-
 }

@@ -18,12 +18,16 @@ package com.iexec.common.chain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import com.iexec.common.chain.eip712.EIP712Domain;
+import com.iexec.common.chain.eip712.entity.Challenge;
+import com.iexec.common.chain.eip712.entity.EIP712Challenge;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.web3j.crypto.CipherException;
@@ -79,6 +83,27 @@ class CredentialsAbstractServiceTests {
         String walletPath = createTempWallet(WALLET_PASS);
         assertThrows(CipherException.class, () -> new CredentialsServiceStub(wrongPass, walletPath));
     }
+
+    @Test
+    void shouldBuildAuthorizationTokenFromCredentials() throws Exception {
+        final Challenge challenge = Challenge.builder().challenge("abcd").build();
+        final EIP712Domain domain = new EIP712Domain("OTHER DOMAIN", "2", 13L, null);
+        final EIP712Challenge eip712Challenge = new EIP712Challenge(domain, challenge);
+        final Credentials credentials = Credentials.create("0x2a46e8c1535792f6689b10d5c882c9363910c30751ec193ae71ec71630077909");
+
+        final String expectedToken = "0xe001855eda78679dfa4972de06d1cf28c630561e17fc6b075130ce688f448bfe" +
+                "_0xc0b3f255c47783e482e1932923dc388cfb5a737ebebdcec04b8ad7ac427c8c9d5155c3211a375704416b639ff8aa7571ef999122a0259bfaf1bbf822345505b11c" +
+                "_0x2d29bfbec903479fe4ba991918bab99b494f2bef";
+
+        final CredentialsServiceStub credentialsServiceStub = new CredentialsServiceStub();
+        when(credentialsServiceStub.getCredentials()).thenReturn(credentials);
+
+        final String token = credentialsServiceStub.signEIP712EntityAndBuildToken(eip712Challenge);
+        assertThat(token)
+                .isNotEmpty()
+                .isEqualTo(expectedToken);
+    }
+
 
     String createTempWallet(String password) throws Exception {
         String walletFilename = WalletUtils.generateFullNewWalletFile(password, tempDir);
