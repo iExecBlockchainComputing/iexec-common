@@ -87,15 +87,24 @@ public abstract class EIP712Entity<M> implements EIP712<M> {
         return new ArrayList<>(types.get(EIP712Domain.primaryType));
     }
 
+    /**
+     * Builds an authorization token from given {@link Credentials}.
+     * <p>
+     * An authorization token is the concatenation of the following values,
+     * delimited by an underscore:
+     * <ol>
+     *     <li>Entity hash;</li>
+     *     <li>Signed message;</li>
+     *     <li>Credentials address.</li>
+     * </ol>
+     *
+     * @param credentials Credentials representing the signer.
+     * @return The authorization token.
+     */
     public String buildAuthorizationTokenFromCredentials(Credentials credentials) {
-        try {
-            String challengeString = this.getHash();
-            String signatureString = this.signMessage(credentials.getEcKeyPair());
-            return String.join("_", challengeString, signatureString, credentials.getAddress());
-        } catch (RuntimeException e) {
-            log.error("Can't build authorization token", e);
-            return "";
-        }
+        String hash = this.getHash();
+        String signedMessage = this.signMessage(credentials.getEcKeyPair());
+        return String.join("_", hash, signedMessage, credentials.getAddress());
     }
 
 }
