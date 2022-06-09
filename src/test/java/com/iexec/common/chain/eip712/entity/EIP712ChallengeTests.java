@@ -23,6 +23,7 @@ import com.iexec.common.chain.eip712.TypeParam;
 import com.iexec.common.utils.HashUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
@@ -124,4 +125,20 @@ public class EIP712ChallengeTests {
                 .isEqualTo("0x58c09e3e047920707563968aa3b3d1782e643869669d82283250c6ef75c8792f");
     }
 
+    @Test
+    void shouldBuildAuthorizationTokenFromCredentials() {
+        final Challenge challenge = Challenge.builder().challenge("abcd").build();
+        final EIP712Domain domain = new EIP712Domain("OTHER DOMAIN", "2", 13L, null);
+        final EIP712Challenge eip712Challenge = new EIP712Challenge(domain, challenge);
+        final Credentials credentials = Credentials.create("0x2a46e8c1535792f6689b10d5c882c9363910c30751ec193ae71ec71630077909");
+
+        final String expectedToken = "0xe001855eda78679dfa4972de06d1cf28c630561e17fc6b075130ce688f448bfe" +
+                "_0xc0b3f255c47783e482e1932923dc388cfb5a737ebebdcec04b8ad7ac427c8c9d5155c3211a375704416b639ff8aa7571ef999122a0259bfaf1bbf822345505b11c" +
+                "_0x2d29bfbec903479fe4ba991918bab99b494f2bef";
+
+        final String token = eip712Challenge.buildAuthorizationTokenFromCredentials(credentials);
+        assertThat(token)
+                .isNotEmpty()
+                .isEqualTo(expectedToken);
+    }
 }
