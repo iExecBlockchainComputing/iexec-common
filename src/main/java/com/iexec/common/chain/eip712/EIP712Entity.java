@@ -21,14 +21,12 @@ import com.google.common.collect.ObjectArrays;
 import com.iexec.common.utils.HashUtils;
 import com.iexec.common.utils.SignatureUtils;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.ECKeyPair;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
-@Slf4j
 public abstract class EIP712Entity<M> implements EIP712<M> {
 
     private Map<String, List<TypeParam>> types;
