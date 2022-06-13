@@ -31,6 +31,10 @@ public class DockerRunResponse {
     private DockerLogs dockerLogs;
     private int containerExitCode;
 
+    public boolean isSuccessful() {
+        return finalStatus == DockerRunFinalStatus.SUCCESS;
+    }
+
     public String getStdout() {
         if (dockerLogs != null && dockerLogs.getStdout() != null) {
             return dockerLogs.getStdout();
