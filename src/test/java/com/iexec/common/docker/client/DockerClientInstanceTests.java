@@ -27,6 +27,7 @@ import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.iexec.common.docker.DockerLogs;
+import com.iexec.common.docker.DockerRunFinalStatus;
 import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.docker.DockerRunResponse;
 import com.iexec.common.sgx.SgxDriverMode;
@@ -42,6 +43,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -636,7 +638,7 @@ class DockerClientInstanceTests {
     // docker run
 
     @Test
-    void shouldRunSuccessfullyAndWaitForContainerToFinish() {
+    void shouldRunSuccessfullyAndWaitForContainerToFinish() throws TimeoutException {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
@@ -647,7 +649,7 @@ class DockerClientInstanceTests {
                 dockerClientInstance.run(dockerRunRequest);
 
         assertThat(dockerRunResponse).isNotNull();
-        assertThat(dockerRunResponse.isSuccessful()).isTrue();
+        assertThat(dockerRunResponse.getFinalStatus()).isEqualTo(DockerRunFinalStatus.SUCCESS);
         assertThat(dockerRunResponse.getContainerExitCode()).isZero();
         assertThat(dockerRunResponse.getStdout().trim()).isEqualTo(msg);
         assertThat(dockerRunResponse.getStderr()).isEmpty();
@@ -661,7 +663,7 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldRunSuccessfullyAndNotWaitForTimeout() {
+    void shouldRunSuccessfullyAndNotWaitForTimeout() throws TimeoutException {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(0); // detached mode // can be -1
         dockerRunRequest.setCmd("sh -c 'sleep 30'");
@@ -671,7 +673,7 @@ class DockerClientInstanceTests {
                 dockerClientInstance.run(dockerRunRequest);
 
         assertThat(dockerRunResponse).isNotNull();
-        assertThat(dockerRunResponse.isSuccessful()).isTrue();
+        assertThat(dockerRunResponse.getFinalStatus()).isEqualTo(DockerRunFinalStatus.SUCCESS);
         assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
@@ -687,7 +689,7 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldRunAndReturnFailureInStderrSinceBadCmd() {
+    void shouldRunAndReturnFailureInStderrSinceBadCmd() throws TimeoutException {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         dockerRunRequest.setCmd("sh -c 'someBadCmd'");
@@ -698,7 +700,7 @@ class DockerClientInstanceTests {
 
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
-        assertThat(dockerRunResponse.isSuccessful()).isFalse();
+        assertThat(dockerRunResponse.getFinalStatus()).isEqualTo(DockerRunFinalStatus.FAILED);
         assertThat(dockerRunResponse.getContainerExitCode()).isNotZero();
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isNotEmpty();
@@ -712,7 +714,7 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldRunAndReturnFailureAndLogsSinceTimeout() {
+    void shouldRunAndReturnFailureAndLogsSinceTimeout() throws TimeoutException {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg1 = "First message";
@@ -726,7 +728,7 @@ class DockerClientInstanceTests {
 
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
-        assertThat(dockerRunResponse.isSuccessful()).isFalse();
+        assertThat(dockerRunResponse.getFinalStatus()).isEqualTo(DockerRunFinalStatus.TIMEOUT);
         assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout().trim()).isEqualTo(msg1);
         assertThat(dockerRunResponse.getStderr()).isEmpty();
@@ -740,7 +742,7 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldReturnFailureSinceCantCreateContainer() {
+    void shouldReturnFailureSinceCantCreateContainer() throws TimeoutException {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
@@ -753,7 +755,7 @@ class DockerClientInstanceTests {
 
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
-        assertThat(dockerRunResponse.isSuccessful()).isFalse();
+        assertThat(dockerRunResponse.getFinalStatus()).isEqualTo(DockerRunFinalStatus.FAILED);
         assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
@@ -767,7 +769,7 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldReturnFailureSinceCantStartContainer() {
+    void shouldReturnFailureSinceCantStartContainer() throws TimeoutException {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
@@ -780,7 +782,7 @@ class DockerClientInstanceTests {
 
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
-        assertThat(dockerRunResponse.isSuccessful()).isFalse();
+        assertThat(dockerRunResponse.getFinalStatus()).isEqualTo(DockerRunFinalStatus.FAILED);
         assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
@@ -794,7 +796,7 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldReturnFailureSinceCantStopContainer() {
+    void shouldReturnFailureSinceCantStopContainer() throws TimeoutException {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
@@ -807,7 +809,7 @@ class DockerClientInstanceTests {
 
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
-        assertThat(dockerRunResponse.isSuccessful()).isFalse();
+        assertThat(dockerRunResponse.getFinalStatus()).isEqualTo(DockerRunFinalStatus.TIMEOUT);
         assertThat(dockerRunResponse.getContainerExitCode()).isEqualTo(-1);
         assertThat(dockerRunResponse.getStdout()).isEmpty();
         assertThat(dockerRunResponse.getStderr()).isEmpty();
@@ -816,14 +818,14 @@ class DockerClientInstanceTests {
         verify(dockerClientInstance)
                 .waitContainerUntilExitOrTimeout(eq(containerName), any());
         verify(dockerClientInstance).stopContainer(containerName);
-        verify(dockerClientInstance, never()).getContainerLogs(containerName);
+        verify(dockerClientInstance).getContainerLogs(containerName);
         verify(dockerClientInstance, never()).removeContainer(containerName);
         // clean
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
 
     @Test
-    void shouldReturnFailureAndLogsSinceCantRemoveContainer() {
+    void shouldReturnFailureAndLogsSinceCantRemoveContainer() throws TimeoutException {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
@@ -836,7 +838,7 @@ class DockerClientInstanceTests {
 
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
-        assertThat(dockerRunResponse.isSuccessful()).isFalse();
+        assertThat(dockerRunResponse.getFinalStatus()).isEqualTo(DockerRunFinalStatus.FAILED);
         assertThat(dockerRunResponse.getContainerExitCode()).isZero();
         assertThat(dockerRunResponse.getStdout().trim()).isEqualTo(msg);
         assertThat(dockerRunResponse.getStderr()).isEmpty();
@@ -1239,7 +1241,7 @@ class DockerClientInstanceTests {
     // waitContainerUntilExitOrTimeout
 
     @Test
-    void shouldTimeoutAfterWaitContainerUntilExitOrTimeout() {
+    void shouldTimeoutAfterWaitContainerUntilExitOrTimeout() throws TimeoutException {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 30 && echo Hello from Docker alpine!'");
@@ -1249,11 +1251,11 @@ class DockerClientInstanceTests {
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
         Date before = new Date();
-        int exitCode = dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
-                Instant.now().plusSeconds(5));
+
+        assertThrows(TimeoutException.class, () -> dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
+                Instant.now().plusSeconds(5)));
         assertThat(dockerClientInstance.getContainerStatus(containerName))
                 .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        assertThat(exitCode).isEqualTo(-1);
         assertThat(new Date().getTime() - before.getTime()).isGreaterThan(1000);
         // cleaning
         dockerClientInstance.stopContainer(containerName);
@@ -1261,7 +1263,7 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldWaitContainerUntilExitOrTimeoutSinceExited() {
+    void shouldWaitContainerUntilExitOrTimeoutSinceExited() throws TimeoutException {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
