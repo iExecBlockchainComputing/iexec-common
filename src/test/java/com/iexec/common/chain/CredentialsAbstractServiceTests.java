@@ -18,7 +18,7 @@ package com.iexec.common.chain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -95,7 +95,7 @@ class CredentialsAbstractServiceTests {
                 "_0xc0b3f255c47783e482e1932923dc388cfb5a737ebebdcec04b8ad7ac427c8c9d5155c3211a375704416b639ff8aa7571ef999122a0259bfaf1bbf822345505b11c" +
                 "_0x2d29bfbec903479fe4ba991918bab99b494f2bef";
 
-        final CredentialsServiceStub credentialsServiceStub = new CredentialsServiceStub();
+        final CredentialsServiceStub credentialsServiceStub = spy(CredentialsServiceStub.class);
         when(credentialsServiceStub.getCredentials()).thenReturn(credentials);
 
         final String token = credentialsServiceStub.signEIP712EntityAndBuildToken(eip712Challenge);
