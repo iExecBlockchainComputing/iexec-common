@@ -83,5 +83,4 @@ public abstract class EIP712Entity<M> implements EIP712<M> {
     public List<TypeParam> getDomainTypeParams() {
         return new ArrayList<>(types.get(EIP712Domain.primaryType));
     }
-
 }
