@@ -444,9 +444,7 @@ public class DockerClientInstance {
 
         getContainerLogs(containerName).ifPresent(dockerRunResponse::setDockerLogs);
         if (!removeContainer(containerName)) {
-            log.error("Failed to remove container after run [name:{}]", containerName);
-            dockerRunResponse.setFinalStatus(DockerRunFinalStatus.FAILED);
-            return dockerRunResponse;
+            log.warn("Failed to remove container after run [name:{}]", containerName);
         }
         return dockerRunResponse;
     }

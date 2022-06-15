@@ -829,7 +829,7 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldReturnFailureAndLogsSinceCantRemoveContainer() throws TimeoutException {
+    void shouldReturnSuccessButLogsSinceCantRemoveContainer() throws TimeoutException {
         DockerRunRequest dockerRunRequest = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerRunRequest.setMaxExecutionTime(5000); // 5s
         String msg = "Hello world!";
@@ -842,7 +842,7 @@ class DockerClientInstanceTests {
 
         System.out.println(dockerRunResponse);
         assertThat(dockerRunResponse).isNotNull();
-        assertThat(dockerRunResponse.getFinalStatus()).isEqualTo(DockerRunFinalStatus.FAILED);
+        assertThat(dockerRunResponse.getFinalStatus()).isEqualTo(DockerRunFinalStatus.SUCCESS);
         assertThat(dockerRunResponse.getContainerExitCode()).isZero();
         assertThat(dockerRunResponse.getStdout().trim()).isEqualTo(msg);
         assertThat(dockerRunResponse.getStderr()).isEmpty();
