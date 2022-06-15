@@ -90,5 +90,4 @@ public class EIP712Utils {
      * "0x1901" + Numeric.cleanHexPrefix(domainSeparator) + Numeric.cleanHexPrefix(messageHash)))));
      *
      */
-
 }

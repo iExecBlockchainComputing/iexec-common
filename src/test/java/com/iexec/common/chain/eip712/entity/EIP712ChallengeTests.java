@@ -23,6 +23,7 @@ import com.iexec.common.chain.eip712.TypeParam;
 import com.iexec.common.utils.HashUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
@@ -123,5 +124,4 @@ public class EIP712ChallengeTests {
                 .isEqualTo(messageHash)
                 .isEqualTo("0x58c09e3e047920707563968aa3b3d1782e643869669d82283250c6ef75c8792f");
     }
-
 }
