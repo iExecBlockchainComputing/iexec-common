@@ -156,7 +156,6 @@ class DockerClientInstanceTests {
         assertThat(instance.getClient().authConfig().getPassword()).isNull();
     }
 
-    @Disabled
     @Test
     void shouldGetAuthenticatedClientWithDockerIoRegistry() throws Exception {
         String dockerIoUsername = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
@@ -481,7 +480,6 @@ class DockerClientInstanceTests {
      * Try to pull a private image from iexechub, require valid login and permissions.
      * The test will fail if Docker Hub credentials are missing or invalid.
      */
-    @Disabled
     @Test
     void shouldPullPrivateImage() {
         String username = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
