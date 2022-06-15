@@ -714,9 +714,7 @@ public class DockerClientInstance {
 
     public int getContainerExitCode(String containerName) {
         if (StringUtils.isBlank(containerName)) {
-            // TODO throw new IllegalArgumentException("Container name cannot be blank");
-            log.error("Invalid docker container name [name:{}]", containerName);
-            return -1;
+            throw new IllegalArgumentException("Container name cannot be blank");
         }
         try (InspectContainerCmd inspectContainerCmd =
                      getClient().inspectContainerCmd(containerName)) {

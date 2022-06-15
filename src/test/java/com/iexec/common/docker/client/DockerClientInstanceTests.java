@@ -36,6 +36,9 @@ import com.iexec.common.utils.IexecFileHelper;
 import com.iexec.common.utils.SgxUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
@@ -46,6 +49,7 @@ import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -152,6 +156,7 @@ class DockerClientInstanceTests {
         assertThat(instance.getClient().authConfig().getPassword()).isNull();
     }
 
+    @Disabled
     @Test
     void shouldGetAuthenticatedClientWithDockerIoRegistry() throws Exception {
         String dockerIoUsername = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
@@ -476,6 +481,7 @@ class DockerClientInstanceTests {
      * Try to pull a private image from iexechub, require valid login and permissions.
      * The test will fail if Docker Hub credentials are missing or invalid.
      */
+    @Disabled
     @Test
     void shouldPullPrivateImage() {
         String username = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
@@ -1240,6 +1246,22 @@ class DockerClientInstanceTests {
 
     // waitContainerUntilExitOrTimeout
 
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {""})
+    void shouldNotWaitContainerUntilExitOrTimeoutSinceBlankContainerName(String containerName) {
+        final String message = assertThrows(IllegalArgumentException.class, () -> dockerClientInstance.waitContainerUntilExitOrTimeout(containerName, null))
+                .getMessage();
+        assertEquals("Container name cannot be blank", message);
+    }
+
+    @Test
+    void shouldNotWaitContainerUntilExitOrTimeoutSinceNoTimeout() {
+        final String message = assertThrows(IllegalArgumentException.class, () -> dockerClientInstance.waitContainerUntilExitOrTimeout("dummyContainerName", null))
+                .getMessage();
+        assertEquals("Timeout date cannot be null", message);
+    }
+
     @Test
     void shouldTimeoutAfterWaitContainerUntilExitOrTimeout() throws TimeoutException {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
@@ -1297,6 +1319,15 @@ class DockerClientInstanceTests {
         useCorruptedDockerClient();
         assertThat(dockerClientInstance.getContainerExitCode(getRandomString()))
                 .isEqualTo(-1);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {""})
+    void shouldNotGetContainerExitCodeSinceBlankContainerName(String containerName) {
+        final String message = assertThrows(IllegalArgumentException.class, () -> dockerClientInstance.getContainerExitCode(containerName))
+                .getMessage();
+        assertEquals("Container name cannot be blank", message);
     }
 
     // getContainerLogs
