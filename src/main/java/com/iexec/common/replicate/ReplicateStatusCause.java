@@ -63,6 +63,7 @@ public enum ReplicateStatusCause {
     PRE_COMPUTE_TIMEOUT,
     PRE_COMPUTE_FAILED_UNKNOWN_ISSUE, //exit 1 (unknown)
     // Post compute
+    POST_COMPUTE_IMAGE_MISSING,
     POST_COMPUTE_TASK_ID_MISSING, // exit 3
     POST_COMPUTE_EXIT_REPORTING_FAILED, // exit 2
     POST_COMPUTE_WORKER_ADDRESS_MISSING, //exit 1 (known)
