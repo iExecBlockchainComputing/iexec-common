@@ -43,6 +43,7 @@ public enum ReplicateStatusCause {
     APP_NOT_FOUND_LOCALLY,
     APP_COMPUTE_FAILED,
     // pre-computation
+    PRE_COMPUTE_IMAGE_MISSING,
     PRE_COMPUTE_TASK_ID_MISSING, //exit 3
     PRE_COMPUTE_EXIT_REPORTING_FAILED, //exit 2
     PRE_COMPUTE_OUTPUT_PATH_MISSING, //exit 1 (known)
