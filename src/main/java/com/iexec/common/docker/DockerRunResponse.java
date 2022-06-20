@@ -27,9 +27,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DockerRunResponse {
 
-    private boolean isSuccessful;
+    private DockerRunFinalStatus finalStatus;
     private DockerLogs dockerLogs;
     private int containerExitCode;
+
+    public boolean isSuccessful() {
+        return finalStatus == DockerRunFinalStatus.SUCCESS;
+    }
 
     public String getStdout() {
         if (dockerLogs != null && dockerLogs.getStdout() != null) {

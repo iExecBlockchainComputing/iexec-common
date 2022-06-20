@@ -27,6 +27,7 @@ import com.github.dockerjava.core.command.ExecStartResultCallback;
 import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.iexec.common.docker.DockerLogs;
+import com.iexec.common.docker.DockerRunFinalStatus;
 import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.docker.DockerRunResponse;
 import com.iexec.common.utils.ArgsUtils;
@@ -40,6 +41,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -394,7 +396,7 @@ public class DockerClientInstance {
                 dockerRunRequest.getContainerName(), dockerRunRequest.getImageUri(),
                 dockerRunRequest.getArrayArgsCmd());
         DockerRunResponse dockerRunResponse = DockerRunResponse.builder()
-                .isSuccessful(false)
+                .finalStatus(DockerRunFinalStatus.FAILED)
                 .containerExitCode(-1)
                 .build();
         String containerName = dockerRunRequest.getContainerName();
@@ -411,27 +413,39 @@ public class DockerClientInstance {
         if (dockerRunRequest.getMaxExecutionTime() <= 0) {
             // container will run until self-exited or explicitly-stopped
             log.info("Docker container will run in detached mode [name:{}]", containerName);
-            dockerRunResponse.setSuccessful(true);
+            dockerRunResponse.setFinalStatus(DockerRunFinalStatus.SUCCESS);
             return dockerRunResponse;
         }
         Instant timeoutDate = Instant.now()
                 .plusMillis(dockerRunRequest.getMaxExecutionTime());
-        int exitCode = waitContainerUntilExitOrTimeout(containerName, timeoutDate);
-        dockerRunResponse.setContainerExitCode(exitCode);
-        boolean isTimeout = exitCode == -1;
-        boolean isSuccessful = !isTimeout && exitCode == 0L;
-        if (isTimeout && !stopContainer(containerName)) {
-            log.error("Failed to force-stop container after timeout [name:{}]", containerName);
-            return dockerRunResponse;
+        boolean isSuccessful;
+        try {
+            int exitCode = waitContainerUntilExitOrTimeout(containerName, timeoutDate);
+            dockerRunResponse.setContainerExitCode(exitCode);
+
+            isSuccessful = exitCode == 0L;
+            log.info("Finished running docker container [name:{}, isSuccessful:{}]",
+                    containerName, isSuccessful);
+            dockerRunResponse.setFinalStatus(
+                    isSuccessful
+                            ? DockerRunFinalStatus.SUCCESS
+                            : DockerRunFinalStatus.FAILED);
+        } catch (TimeoutException e) {
+            log.error(e.getMessage());
+            dockerRunResponse.setFinalStatus(DockerRunFinalStatus.TIMEOUT);
+            if (!stopContainer(containerName)) {
+                getContainerLogs(containerName).ifPresent(dockerRunResponse::setDockerLogs);
+                log.error("Failed to force-stop container after timeout [name:{}]", containerName);
+                return dockerRunResponse;
+            }
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
         }
+
         getContainerLogs(containerName).ifPresent(dockerRunResponse::setDockerLogs);
         if (!removeContainer(containerName)) {
-            log.error("Failed to remove container after run [name:{}]", containerName);
-            return dockerRunResponse;
+            log.warn("Failed to remove container after run [name:{}]", containerName);
         }
-        log.info("Finished running docker container [name:{}, isSuccessful:{}]",
-                containerName, isSuccessful);
-        dockerRunResponse.setSuccessful(isSuccessful);
         return dockerRunResponse;
     }
 
@@ -668,16 +682,12 @@ public class DockerClientInstance {
     public int waitContainerUntilExitOrTimeout(
             String containerName,
             Instant timeoutDate
-    ) {
+    ) throws TimeoutException {
         if (StringUtils.isBlank(containerName)) {
-            // TODO throw new IllegalArgumentException("Container name cannot be blank");
-            log.error("Container name cannot be blank [name:{}]", containerName);
-            return -1;
+            throw new IllegalArgumentException("Container name cannot be blank");
         }
         if (timeoutDate == null) {
-            // TODO throw new IllegalArgumentException("Timeout date cannot be null");
-            log.error("Timeout date cannot be null");
-            return -1;
+            throw new IllegalArgumentException("Timeout date cannot be null");
         }
         boolean isExited = false;
         boolean isTimeout = false;
@@ -692,8 +702,7 @@ public class DockerClientInstance {
             seconds++;
         }
         if (!isExited) {
-            log.warn("Container reached timeout [name:{}]", containerName);
-            return -1;    
+            throw new TimeoutException(String.format("Container reached timeout [name:%s]", containerName));
         }
         int containerExitCode = getContainerExitCode(containerName);
         log.info("Container exited by itself [name:{}, exitCode:{}]",
@@ -703,9 +712,7 @@ public class DockerClientInstance {
 
     public int getContainerExitCode(String containerName) {
         if (StringUtils.isBlank(containerName)) {
-            // TODO throw new IllegalArgumentException("Container name cannot be blank");
-            log.error("Invalid docker container name [name:{}]", containerName);
-            return -1;
+            throw new IllegalArgumentException("Container name cannot be blank");
         }
         try (InspectContainerCmd inspectContainerCmd =
                      getClient().inspectContainerCmd(containerName)) {
