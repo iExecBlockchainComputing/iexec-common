@@ -19,6 +19,7 @@ package com.iexec.common.utils;
 import org.web3j.utils.Numeric;
 
 import javax.xml.bind.DatatypeConverter;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -116,5 +117,10 @@ public class BytesUtils {
         }
         return Numeric.hexStringToByteArray(Numeric.toHexStringWithPrefixZeroPadded(
                 Numeric.toBigInt(hexString), BYTES_32_HEX_STRING_SIZE));
+    }
+
+    public static String toByte32HexString(long value) {
+        return Numeric.toHexStringWithPrefixZeroPadded(BigInteger.valueOf(value),
+                BYTES_32_HEX_STRING_SIZE);
     }
 }

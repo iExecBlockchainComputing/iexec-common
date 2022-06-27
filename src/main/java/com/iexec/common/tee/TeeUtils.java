@@ -18,21 +18,51 @@ package com.iexec.common.tee;
 
 import com.iexec.common.utils.BytesUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.web3j.utils.Numeric;
+
+import java.math.BigInteger;
 
 public class TeeUtils {
 
+    @Deprecated(since = "7.0.0", forRemoval = true)
     public static final String TEE_TAG = "0x0000000000000000000000000000000000000000000000000000000000000001";
+    public static final int TEE_RUNTIME_FRAMEWORK_MASK = 0b1111; //last nibble (4 bits)
+    public static final int TEE_SCONE_BITS = 0b0011;
+    public static final int TEE_GRAMINE_BITS = 0b0101;
+    /**
+     * Value: 0x0000000000000000000000000000000000000000000000000000000000000003
+     */
+    public static final String TEE_SCONE_ONLY_TAG = BytesUtils.toByte32HexString(TEE_SCONE_BITS);
+    /**
+     * Value: 0x0000000000000000000000000000000000000000000000000000000000000005
+     */
+    public static final String TEE_GRAMINE_ONLY_TAG = BytesUtils.toByte32HexString(TEE_GRAMINE_BITS);
 
     private TeeUtils() {
         throw new UnsupportedOperationException();
     }
 
+    private static boolean hasBitsInTag(int expectedBits, String hexTag) {
+        return Numeric.toBigInt(hexTag)
+                .and(BigInteger.valueOf(TEE_RUNTIME_FRAMEWORK_MASK))
+                .equals(BigInteger.valueOf(expectedBits));
+    }
+
+    public static boolean hasTeeSconeInTag(String hexTag) {
+        return hasBitsInTag(TEE_SCONE_BITS, hexTag);
+    }
+
+    public static boolean hasTeeGramineInTag(String hexTag) {
+        return hasBitsInTag(TEE_GRAMINE_BITS, hexTag);
+    }
+
+    @Deprecated(since = "7.0.0", forRemoval = true)
     //TODO : xor instead of equals
-    public static boolean isTeeTag(String tag){
+    public static boolean isTeeTag(String tag) {
         return tag != null && tag.equals(TEE_TAG);
     }
 
-    public static boolean isTeeChallenge(String challenge){
+    public static boolean isTeeChallenge(String challenge) {
         return challenge != null && !challenge.equals(BytesUtils.EMPTY_ADDRESS);
     }
 
@@ -45,7 +75,7 @@ public class TeeUtils {
     }
 
     public static boolean booleanFromYesNo(String isYes) {
-        return isYes!= null && isYes.equals("yes");
+        return isYes != null && isYes.equals("yes");
     }
 
 }

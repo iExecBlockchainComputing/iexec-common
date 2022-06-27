@@ -16,10 +16,19 @@
 
 package com.iexec.common.sdk.order;
 
+import com.iexec.common.tee.TeeUtils;
+import com.iexec.common.utils.BytesUtils;
+import lombok.Getter;
+
+import static com.iexec.common.utils.BytesUtils.toByte32HexString;
+
+//TODO Move
+@Getter
 public enum OrderTag {
 
-    STANDARD("0x0000000000000000000000000000000000000000000000000000000000000000"),
-    TEE     ("0x0000000000000000000000000000000000000000000000000000000000000001");
+    STANDARD(BytesUtils.EMPTY_HEX_STRING_32),
+    TEE_SCONE(toByte32HexString(TeeUtils.TEE_SCONE_BITS)),
+    TEE_GRAMINE(toByte32HexString(TeeUtils.TEE_GRAMINE_BITS));
 
     private final String value;
 
