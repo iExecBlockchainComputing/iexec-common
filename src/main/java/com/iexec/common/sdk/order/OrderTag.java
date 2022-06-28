@@ -20,15 +20,13 @@ import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import lombok.Getter;
 
-import static com.iexec.common.utils.BytesUtils.toByte32HexString;
-
-//TODO Move
+//TODO: Eventually move from sdk package
 @Getter
 public enum OrderTag {
 
     STANDARD(BytesUtils.EMPTY_HEX_STRING_32),
-    TEE_SCONE(toByte32HexString(TeeUtils.TEE_SCONE_BITS)),
-    TEE_GRAMINE(toByte32HexString(TeeUtils.TEE_GRAMINE_BITS));
+    TEE_SCONE(TeeUtils.TEE_SCONE_ONLY_TAG),
+    TEE_GRAMINE(TeeUtils.TEE_GRAMINE_ONLY_TAG);
 
     private final String value;
 

@@ -39,7 +39,7 @@ class IexecHubAbstractServiceTest {
 
     public static final int RETRY_DELAY = 10; //in ms
     public static final int MAX_RETRY = 3;
-    private final static String CHAIN_DEAL_ID = BytesUtils.toByte32HexString(0x1);
+    private final static String CHAIN_DEAL_ID = BytesUtils.toByte32HexString(0xa);
     private static String CHAIN_TASK_ID;
 
     @Mock
