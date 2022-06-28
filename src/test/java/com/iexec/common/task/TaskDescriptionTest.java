@@ -174,7 +174,7 @@ class TaskDescriptionTest {
                         .name(DATASET_NAME)
                         .uri(BytesUtils.bytesToString(DATASET_URI.getBytes(StandardCharsets.UTF_8)))
                         .checksum(DATASET_CHECKSUM).build())
-                .tag(TeeUtils.TEE_TAG)
+                .tag(TeeUtils.TEE_SCONE_ONLY_TAG) // any supported TEE tag
                 .chainCategory(ChainCategory.builder()
                         .maxExecutionTime(MAX_EXECUTION_TIME)
                         .build())

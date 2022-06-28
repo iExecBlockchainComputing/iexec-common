@@ -21,7 +21,6 @@ import com.iexec.common.chain.ChainTask;
 import com.iexec.common.chain.ChainTaskStatus;
 import com.iexec.common.chain.WorkerpoolAuthorization;
 import com.iexec.common.security.Signature;
-import com.iexec.common.tee.TeeUtils;
 
 public class TestUtils {
 
@@ -53,7 +52,6 @@ public class TestUtils {
     public final static String WALLET_WORKER_4 = "0x4aef50214110fdad4e8b9128347f2ba1ec72f614";
 
     public static final String NON_TEE_TAG =    "0x0000000000000000000000000000000000000000000000000000000000000000";
-    public static final String TEE_TAG =        TeeUtils.TEE_TAG;
 
     private TestUtils() {
         throw new UnsupportedOperationException();
