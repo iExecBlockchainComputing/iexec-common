@@ -272,7 +272,7 @@ public class FileHelper {
             return new File(zipFilePath);
 
         } catch (Exception e) {
-            log.error("Failed to zip folder [path:{}]", zipFilePath);
+            log.error("Failed to zip folder [path:{}]", zipFilePath, e);
         }
         return null;
     }
