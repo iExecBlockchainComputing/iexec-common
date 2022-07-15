@@ -22,6 +22,7 @@ package com.iexec.common.task;
 import com.iexec.common.chain.*;
 import com.iexec.common.dapp.DappType;
 import com.iexec.common.tee.TeeEnclaveConfiguration;
+import com.iexec.common.tee.TeeEnclaveProvider;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import org.junit.jupiter.api.Assertions;
@@ -45,6 +46,7 @@ class TaskDescriptionTest {
     public static final String CMD = "cmd";
     public static final int MAX_EXECUTION_TIME = 1;
     public static final boolean IS_TEE_TASK = true;
+    public static final TeeEnclaveProvider TEE_ENCLAVE_PROVIDER = TeeEnclaveProvider.SCONE;
     public static final int BOT_SIZE = 1;
     public static final int BOT_FIRST = 2;
     public static final int TASK_IDX = 3;
@@ -75,6 +77,7 @@ class TaskDescriptionTest {
                 .cmd(CMD)
                 .maxExecutionTime(MAX_EXECUTION_TIME)
                 .isTeeTask(IS_TEE_TASK)
+                .teeEnclaveProvider(TEE_ENCLAVE_PROVIDER)
                 .botSize(BOT_SIZE)
                 .botFirstIndex(BOT_FIRST)
                 .botIndex(TASK_IDX)
@@ -112,6 +115,8 @@ class TaskDescriptionTest {
                 task.getMaxExecutionTime());
         Assertions.assertEquals(IS_TEE_TASK,
                 task.isTeeTask());
+        Assertions.assertEquals(TEE_ENCLAVE_PROVIDER,
+                task.getTeeEnclaveProvider());
         Assertions.assertEquals(TASK_IDX,
                 task.getBotIndex());
         Assertions.assertEquals(BOT_SIZE,
@@ -205,6 +210,8 @@ class TaskDescriptionTest {
                 task.getMaxExecutionTime());
         Assertions.assertEquals(IS_TEE_TASK,
                 task.isTeeTask());
+        Assertions.assertEquals(TEE_ENCLAVE_PROVIDER,
+                task.getTeeEnclaveProvider());
         Assertions.assertEquals(TASK_IDX,
                 task.getBotIndex());
         Assertions.assertEquals(BOT_SIZE,
