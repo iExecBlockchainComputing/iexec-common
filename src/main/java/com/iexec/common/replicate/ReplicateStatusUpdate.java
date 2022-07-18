@@ -26,7 +26,6 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 import static com.iexec.common.replicate.ReplicateStatusModifier.POOL_MANAGER;
-import static com.iexec.common.replicate.ReplicateStatusModifier.WORKER;
 
 @Data
 @Builder
