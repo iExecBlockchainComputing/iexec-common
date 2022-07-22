@@ -27,7 +27,7 @@ public class TeeUtils {
 
     public static final int TEE_SCONE_BITS = 0b0011;
     public static final int TEE_GRAMINE_BITS = 0b0101;
-    public static final Map<Integer, TeeEnclaveProvider> TEE_ENCLAVE_PROVIDER_FROM_BITS = Map.of(
+    private static final Map<Integer, TeeEnclaveProvider> TEE_BITS_TO_ENCLAVE_PROVIDER = Map.of(
             TEE_SCONE_BITS, TeeEnclaveProvider.SCONE,
             TEE_GRAMINE_BITS, TeeEnclaveProvider.GRAMINE
     );
@@ -90,11 +90,7 @@ public class TeeUtils {
      * or {@literal null} if tag is not a TEE tag or if there is no match.
      */
     public static TeeEnclaveProvider getTeeEnclaveProvider(String hexTag) {
-        if (!hasTeeSconeInTag(hexTag)) {
-            return null;
-        }
-
-        for (Map.Entry<Integer, TeeEnclaveProvider> teeEnclaveProvider : TEE_ENCLAVE_PROVIDER_FROM_BITS.entrySet()) {
+        for (Map.Entry<Integer, TeeEnclaveProvider> teeEnclaveProvider : TEE_BITS_TO_ENCLAVE_PROVIDER.entrySet()) {
             if (hasTeeRuntimeFrameworkBitsInTag(teeEnclaveProvider.getKey(), hexTag)) {
                 return teeEnclaveProvider.getValue();
             }
