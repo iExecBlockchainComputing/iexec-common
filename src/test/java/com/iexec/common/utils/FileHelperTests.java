@@ -27,7 +27,7 @@ import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static com.iexec.common.utils.FileHelper.*;
+import static com.iexec.common.utils.FileHelper.downloadFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,10 +43,10 @@ class FileHelperTests {
             "0x240987ee1480e8e0b1b26fa806810fea04021191a8e6d8ab6325c15fa61fa9b6";
     // https
     private static final String HTTPS_URL =
-            "https://iex.ec/wp-content/uploads/2018/12/token.svg";
+            "https://github.githubassets.com/favicons/favicon.png";
     // private static final String HTTPS_FILENAME = "token.svg";
     private static final String HTTPS_FILE_DIGEST =
-            "0x5e824f880294851ce7cf77671231f41fcd5502579c603adc884a978b2a3ce364";
+            "0x74cf90ac2fe6624ab1056cacea11cf7ed4f8bef54bbb0e869638013bba45bc08";
     // redirection
     // private static final String REDIRECTION_URL = "https://goo.gl/t8JxoX";
     // private static final String REDIRECTION_FILE_DIGEST = "TODO";
