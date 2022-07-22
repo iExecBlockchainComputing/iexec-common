@@ -42,11 +42,11 @@ class FileHelperTests {
     private static final String HTTP_FILE_DIGEST =
             "0x240987ee1480e8e0b1b26fa806810fea04021191a8e6d8ab6325c15fa61fa9b6";
     // https
-    private static final String HTTPS_URL =
-            "https://github.githubassets.com/favicons/favicon.png";
+    private static final String HTTPS_URL = "https://upload.wikimedia.org" + 
+            "/wikipedia/commons/thumb/6/65/600px_Black_bordered_HEX-0082D6.svg/600px-600px_Black_bordered_HEX-0082D6.svg.png";
     // private static final String HTTPS_FILENAME = "token.svg";
     private static final String HTTPS_FILE_DIGEST =
-            "0x74cf90ac2fe6624ab1056cacea11cf7ed4f8bef54bbb0e869638013bba45bc08";
+            "0x7ee6112553cfa9ef3fd9311f55d6543f959a969700cfd39499f8775b4201739b";
     // redirection
     // private static final String REDIRECTION_URL = "https://goo.gl/t8JxoX";
     // private static final String REDIRECTION_FILE_DIGEST = "TODO";
