@@ -27,7 +27,7 @@ import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static com.iexec.common.utils.FileHelper.*;
+import static com.iexec.common.utils.FileHelper.downloadFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,11 +42,11 @@ class FileHelperTests {
     private static final String HTTP_FILE_DIGEST =
             "0x240987ee1480e8e0b1b26fa806810fea04021191a8e6d8ab6325c15fa61fa9b6";
     // https
-    private static final String HTTPS_URL =
-            "https://iex.ec/wp-content/uploads/2018/12/token.svg";
+    private static final String HTTPS_URL = "https://upload.wikimedia.org" + 
+            "/wikipedia/commons/thumb/6/65/600px_Black_bordered_HEX-0082D6.svg/600px-600px_Black_bordered_HEX-0082D6.svg.png";
     // private static final String HTTPS_FILENAME = "token.svg";
     private static final String HTTPS_FILE_DIGEST =
-            "0x5e824f880294851ce7cf77671231f41fcd5502579c603adc884a978b2a3ce364";
+            "0x7ee6112553cfa9ef3fd9311f55d6543f959a969700cfd39499f8775b4201739b";
     // redirection
     // private static final String REDIRECTION_URL = "https://goo.gl/t8JxoX";
     // private static final String REDIRECTION_FILE_DIGEST = "TODO";
