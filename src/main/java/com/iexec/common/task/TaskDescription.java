@@ -115,6 +115,14 @@ public class TaskDescription {
                 !StringUtils.isEmpty(teePostComputeFingerprint);
     }
 
+    public String getAppCommand() {
+        String appArgs = appEnclaveConfiguration.getEntrypoint();
+        if (!StringUtils.isEmpty(cmd)) {
+            appArgs = appArgs + " " + cmd;
+        }
+        return appArgs;
+    }
+
     /**
      * Create a {@link TaskDescription} from the provided chain deal. This method
      * if preferred to constructors or the builder method.
