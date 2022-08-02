@@ -22,6 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class EnvUtils {
 
+    private EnvUtils() {}
+
     public static String getEnvVarOrExit(String envVarName) {
         String envVar = getEnvVar(envVarName);
         if (StringUtils.isBlank(envVar)) {
