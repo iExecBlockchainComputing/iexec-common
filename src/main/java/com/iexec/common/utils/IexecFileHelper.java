@@ -31,7 +31,7 @@ public class IexecFileHelper {
     public static final String SLASH_OUTPUT = File.separator + "output";
     public static final String SLASH_INPUT = File.separator + "input";    
     public static final String COMPUTED_JSON = "computed.json";
-    public static final String SLASH_COMPUTED_JSON = File.separator + "computed.json";
+    public static final String SLASH_COMPUTED_JSON = File.separator + COMPUTED_JSON;
 
     private IexecFileHelper() {
         throw new UnsupportedOperationException();
