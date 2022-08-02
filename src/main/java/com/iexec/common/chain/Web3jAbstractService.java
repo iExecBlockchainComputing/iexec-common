@@ -42,7 +42,7 @@ import static com.iexec.common.contract.generated.WorkerpoolRegistry.FUNC_CREATE
 @Slf4j
 public abstract class Web3jAbstractService {
 
-    private final static long GAS_LIMIT_CAP = 500000;
+    private static final long GAS_LIMIT_CAP = 500000;
     private final float gasPriceMultiplier;
     private final long gasPriceCap;
     private final boolean isSidechain;
