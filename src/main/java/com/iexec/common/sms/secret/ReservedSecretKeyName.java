@@ -16,6 +16,7 @@
 
 package com.iexec.common.sms.secret;
 
+@Deprecated(forRemoval = true)
 public class ReservedSecretKeyName {
 
     //result encryption
