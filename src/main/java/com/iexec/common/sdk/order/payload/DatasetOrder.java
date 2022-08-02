@@ -20,8 +20,6 @@ import lombok.*;
 
 import java.math.BigInteger;
 
-import static com.iexec.common.sdk.order.OrderUtils.toLowerCase;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
