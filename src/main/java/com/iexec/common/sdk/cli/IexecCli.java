@@ -41,6 +41,8 @@ public class IexecCli {
 
     private static final DockerClientInstance dockerClient = DockerClientFactory.getDockerClientInstance();
 
+    private IexecCli() {}
+
     /**
      * Match order onchain by running "iexec order fill"
      * in an iExec SDK docker image. For local chain, the

@@ -24,4 +24,6 @@ public class ReservedSecretKeyName {
     public static final String IEXEC_RESULT_DROPBOX_TOKEN = "iexec-result-dropbox-token";
     public static final String IEXEC_RESULT_IEXEC_IPFS_TOKEN = "iexec-result-iexec-ipfs-token";
 
+    private ReservedSecretKeyName() {}
+
 }

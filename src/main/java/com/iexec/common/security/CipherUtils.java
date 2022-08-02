@@ -40,6 +40,8 @@ import java.util.Optional;
 @Slf4j
 public class CipherUtils {
 
+    private CipherUtils() {}
+
     // ###############
     // #     AES     #
     // ###############

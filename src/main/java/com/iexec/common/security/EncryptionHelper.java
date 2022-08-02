@@ -34,6 +34,8 @@ public class EncryptionHelper {
     public static final String ENCRYPTION_PREFIX = "encrypted-";
     public static final String DECRYPTION_PREFIX = "plain-";
 
+    private EncryptionHelper() {}
+
     /*
      *
      * #1: Large file encryption is made with AES

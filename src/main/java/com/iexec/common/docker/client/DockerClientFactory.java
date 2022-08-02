@@ -26,6 +26,8 @@ public abstract class DockerClientFactory {
 
     private static final Map<String, DockerClientInstance> clientsMap = new HashMap<>();
 
+    private DockerClientFactory() {}
+
     /**
      * Get an unauthenticated Docker client instance connected to the default Docker
      * registry {@link DockerClientInstance#DEFAULT_DOCKER_REGISTRY}.

@@ -29,6 +29,8 @@ import static com.iexec.common.utils.FileHelper.readFile;
 @Deprecated
 public class CipherHelper {
 
+    private CipherHelper() {}
+
 
     /****************
      *
