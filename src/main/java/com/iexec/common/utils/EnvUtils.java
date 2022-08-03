@@ -16,10 +16,13 @@
 
 package com.iexec.common.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EnvUtils {
 
     public static String getEnvVarOrExit(String envVarName) {

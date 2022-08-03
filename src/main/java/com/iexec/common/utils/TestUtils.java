@@ -47,10 +47,10 @@ public class TestUtils {
     public static final String REQUESTER_ADDRESS = "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
     public static final String DATASET_ADDRESS = "0xdddddddddddddddddddddddddddddddddddddddd";
     public static final String ENCLAVE_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
-    public final static String WALLET_WORKER_1 = "0x1a69b2eb604db8eba185df03ea4f5288dcbbd248";
-    public final static String WALLET_WORKER_2 = "0x2ab2674aa374fe6415d11f0a8fcbd8027fc1e6a9";
-    public final static String WALLET_WORKER_3 = "0x3a3406e69adf886c442ff1791cbf67cea679275d";
-    public final static String WALLET_WORKER_4 = "0x4aef50214110fdad4e8b9128347f2ba1ec72f614";
+    public static final String WALLET_WORKER_1 = "0x1a69b2eb604db8eba185df03ea4f5288dcbbd248";
+    public static final String WALLET_WORKER_2 = "0x2ab2674aa374fe6415d11f0a8fcbd8027fc1e6a9";
+    public static final String WALLET_WORKER_3 = "0x3a3406e69adf886c442ff1791cbf67cea679275d";
+    public static final String WALLET_WORKER_4 = "0x4aef50214110fdad4e8b9128347f2ba1ec72f614";
 
     public static final String NON_TEE_TAG =    "0x0000000000000000000000000000000000000000000000000000000000000000";
     public static final String TEE_TAG =        TeeUtils.TEE_TAG;

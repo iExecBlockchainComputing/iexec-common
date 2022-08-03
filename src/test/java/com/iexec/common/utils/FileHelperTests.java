@@ -29,7 +29,6 @@ import java.nio.file.Paths;
 
 import static com.iexec.common.utils.FileHelper.downloadFile;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FileHelperTests {
@@ -42,7 +41,7 @@ class FileHelperTests {
     private static final String HTTP_FILE_DIGEST =
             "0x240987ee1480e8e0b1b26fa806810fea04021191a8e6d8ab6325c15fa61fa9b6";
     // https
-    private static final String HTTPS_URL = "https://upload.wikimedia.org" + 
+    private static final String HTTPS_URL = "https://upload.wikimedia.org" +
             "/wikipedia/commons/thumb/6/65/600px_Black_bordered_HEX-0082D6.svg/600px-600px_Black_bordered_HEX-0082D6.svg.png";
     // private static final String HTTPS_FILENAME = "token.svg";
     private static final String HTTPS_FILE_DIGEST =
@@ -77,9 +76,10 @@ class FileHelperTests {
     void shouldCreateFileWithContent() throws IOException {
         String data = "a test";
         File file = FileHelper.createFileWithContent(TEST_FOLDER + "/test.txt", data);
-        assertThat(file).isNotNull();
-        assertThat(file).exists();
-        assertThat(file).isFile();
+        assertThat(file)
+                .isNotNull()
+                .exists()
+                .isFile();
         String content = Files.readString(Paths.get(file.getAbsolutePath()));
         assertThat(content).isEqualTo(data);
     }
@@ -90,17 +90,19 @@ class FileHelperTests {
         boolean created = FileHelper.createFolder(folderPath);
         File newFolder = new File(folderPath);
         assertThat(created).isTrue();
-        assertThat(newFolder).isNotNull();
-        assertThat(newFolder).exists();
-        assertThat(newFolder).isDirectory();
+        assertThat(newFolder)
+                .isNotNull()
+                .exists()
+                .isDirectory();
 
         // it should not change anything if the folder is already created
         boolean createdAgain = FileHelper.createFolder(folderPath);
         File existingFolder = new File(folderPath);
         assertThat(createdAgain).isTrue();
-        assertThat(existingFolder).isNotNull();
-        assertThat(existingFolder).exists();
-        assertThat(existingFolder).isDirectory();
+        assertThat(existingFolder)
+                .isNotNull()
+                .exists()
+                .isDirectory();
     }
 
     @Test
@@ -109,26 +111,29 @@ class FileHelperTests {
         boolean created = FileHelper.createFolder(folderPath);
         File newFolder = new File(folderPath);
         assertThat(created).isTrue();
-        assertThat(newFolder).isNotNull();
-        assertThat(newFolder).exists();
-        assertThat(newFolder).isDirectory();
+        assertThat(newFolder)
+                .isNotNull()
+                .exists()
+                .isDirectory();
 
         // it should not change anything if the folder is already created
         boolean createdAgain = FileHelper.createFolder(folderPath);
         File existingFolder = new File(folderPath);
         assertThat(createdAgain).isTrue();
-        assertThat(existingFolder).isNotNull();
-        assertThat(existingFolder).exists();
-        assertThat(existingFolder).isDirectory();
+        assertThat(existingFolder)
+                .isNotNull()
+                .exists()
+                .isDirectory();
     }
 
     @Test
     void shouldDeleteFile() {
         String filePath = TEST_FOLDER + "/test.txt";
         File file = FileHelper.createFileWithContent(filePath, "Hello world");
-        assertThat(file).isNotNull();
-        assertThat(file).exists();
-        assertThat(file).isFile();
+        assertThat(file)
+                .isNotNull()
+                .exists()
+                .isFile();
 
         boolean isDeleted = FileHelper.deleteFile(filePath);
         File deletedFile = new File(filePath);
@@ -152,9 +157,10 @@ class FileHelperTests {
         boolean created = FileHelper.createFolder(folderPath);
         File newFolder = new File(folderPath);
         assertThat(created).isTrue();
-        assertThat(newFolder).isNotNull();
-        assertThat(newFolder).exists();
-        assertThat(newFolder).isDirectory();
+        assertThat(newFolder)
+                .isNotNull()
+                .exists()
+                .isDirectory();
 
         boolean isDeleted = FileHelper.deleteFolder(folderPath);
         File deletedFolder = new File(folderPath);
@@ -168,9 +174,10 @@ class FileHelperTests {
         boolean created = FileHelper.createFolder(folderPath);
         File newFolder = new File(folderPath);
         assertThat(created).isTrue();
-        assertThat(newFolder).isNotNull();
-        assertThat(newFolder).exists();
-        assertThat(newFolder).isDirectory();
+        assertThat(newFolder)
+                .isNotNull()
+                .exists()
+                .isDirectory();
 
         boolean isDeleted = FileHelper.deleteFolder(folderPath);
         File deletedFolder = new File(folderPath);
@@ -191,9 +198,10 @@ class FileHelperTests {
     void shouldZipFolder() {
         FileHelper.createFileWithContent(TEST_FOLDER + "/taskId/test.txt", "a test");
         File zipFile = FileHelper.zipFolder(TEST_FOLDER + "/taskId");
-        assertThat(zipFile).isNotNull();
-        assertThat(zipFile).exists();
-        assertThat(zipFile).isFile();
+        assertThat(zipFile)
+                .isNotNull()
+                .exists()
+                .isFile();
         assertThat(zipFile.getAbsolutePath()).isEqualTo(TEST_FOLDER + "/taskId.zip");
     }
 
@@ -236,26 +244,26 @@ class FileHelperTests {
     @Test
     void shouldNotDownloadFileWithEmptyUrl() {
         assertThat(FileHelper.downloadFile("", TEST_FOLDER, "file.txt")).isEmpty();
-        assertThat(new File(TEST_FOLDER).exists()).isFalse();
+        assertThat(new File(TEST_FOLDER)).doesNotExist();
     }
 
     @Test
     void shouldNotDownloadFileWithEmptyParentFolderPath() {
         assertThat(FileHelper.downloadFile(HTTP_URL, "", ICON_PNG)).isEmpty();
-        assertThat(new File(TEST_FOLDER).exists()).isFalse();
+        assertThat(new File(TEST_FOLDER)).doesNotExist();
     }
 
     @Test
     void shouldNotDownloadFileWithEmptyOutputFileName() {
         assertThat(FileHelper.downloadFile(HTTP_URL, TEST_FOLDER, "")).isEmpty();
-        assertThat(new File(TEST_FOLDER).exists()).isFalse();
+        assertThat(new File(TEST_FOLDER)).doesNotExist();
     }
 
     @Test
     void shouldNotDownloadFileWithBadUrl() {
         assertThat(FileHelper.downloadFile("http://bad-url", TEST_FOLDER, "file.txt"))
                 .isEmpty();
-        assertThat(new File(TEST_FOLDER).exists()).isFalse();
+        assertThat(new File(TEST_FOLDER)).doesNotExist();
     }
 
     @Test
@@ -343,19 +351,19 @@ class FileHelperTests {
     @Test
     void shouldRemoveZipExtension() {
         String fileName = FileHelper.removeZipExtension("/some/where/file.zip");
-        assertEquals("/some/where/file", fileName);
+        assertThat(fileName).isEqualTo("/some/where/file");
     }
 
     @Test
     void shouldNotRemoveZipExtensionSinceNoExtension() {
         String fileName = FileHelper.removeZipExtension("/some/where/file");
-        assertEquals(fileName, "");
+        assertThat(fileName).isEmpty();
     }
 
     @Test
     void shouldNotRemoveZipExtensionSinceWrongExtension() {
         String fileName = FileHelper.removeZipExtension("/some/where/file.bla");
-        assertEquals(fileName, "");
+        assertThat(fileName).isEmpty();
     }
 
 }
