@@ -16,6 +16,10 @@
 
 package com.iexec.common.precompute;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PreComputeUtils {
 
     /**
@@ -29,7 +33,5 @@ public class PreComputeUtils {
     public static final String INPUT_FILE_NAMES = "INPUT_FILE_NAMES";
     public static final String IEXEC_PRE_COMPUTE_OUT = "IEXEC_PRE_COMPUTE_OUT";
     // pre-compute writes its output in compute stage's input (/iexec_in).
-
-    private PreComputeUtils() {}
 
 }

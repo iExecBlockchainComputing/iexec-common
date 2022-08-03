@@ -17,16 +17,17 @@
 package com.iexec.common.docker.client;
 
 import com.github.dockerjava.api.exception.DockerException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class DockerClientFactory {
 
     private static final Map<String, DockerClientInstance> clientsMap = new HashMap<>();
-
-    private DockerClientFactory() {}
 
     /**
      * Get an unauthenticated Docker client instance connected to the default Docker

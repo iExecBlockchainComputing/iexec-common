@@ -16,6 +16,8 @@
 
 package com.iexec.common.security;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 
@@ -28,13 +30,12 @@ import static com.iexec.common.security.CipherHelper.*;
 import static com.iexec.common.utils.FileHelper.*;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EncryptionHelper {
 
     public static final String AES_KEY_RSA_FILENAME = "aes-key.rsa";
     public static final String ENCRYPTION_PREFIX = "encrypted-";
     public static final String DECRYPTION_PREFIX = "plain-";
-
-    private EncryptionHelper() {}
 
     /*
      *

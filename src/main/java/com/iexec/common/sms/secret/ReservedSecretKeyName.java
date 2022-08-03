@@ -16,7 +16,11 @@
 
 package com.iexec.common.sms.secret;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 @Deprecated(forRemoval = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReservedSecretKeyName {
 
     //result encryption
@@ -24,7 +28,5 @@ public class ReservedSecretKeyName {
     //result storage
     public static final String IEXEC_RESULT_DROPBOX_TOKEN = "iexec-result-dropbox-token";
     public static final String IEXEC_RESULT_IEXEC_IPFS_TOKEN = "iexec-result-iexec-ipfs-token";
-
-    private ReservedSecretKeyName() {}
 
 }

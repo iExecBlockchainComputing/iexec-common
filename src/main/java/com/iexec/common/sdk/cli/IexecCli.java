@@ -24,6 +24,8 @@ import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.docker.client.DockerClientFactory;
 import com.iexec.common.docker.client.DockerClientInstance;
 import com.iexec.common.sdk.broker.BrokerOrder;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -31,6 +33,7 @@ import org.json.JSONObject;
 import java.util.Optional;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IexecCli {
 
     private static final String IEXEC_CLI = "iexec-cli";
@@ -40,8 +43,6 @@ public class IexecCli {
     private static final String DEV_CHAIN_HUB = "0xBF6B2B07e47326B7c8bfCb4A5460bef9f0Fd2002";
 
     private static final DockerClientInstance dockerClient = DockerClientFactory.getDockerClientInstance();
-
-    private IexecCli() {}
 
     /**
      * Match order onchain by running "iexec order fill"

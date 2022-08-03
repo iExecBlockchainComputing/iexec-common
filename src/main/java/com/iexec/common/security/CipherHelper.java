@@ -16,6 +16,9 @@
 
 package com.iexec.common.security;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
@@ -27,9 +30,8 @@ import java.util.Base64;
 import static com.iexec.common.utils.FileHelper.readFile;
 
 @Deprecated
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CipherHelper {
-
-    private CipherHelper() {}
 
 
     /****************

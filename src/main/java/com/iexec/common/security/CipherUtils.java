@@ -17,6 +17,8 @@
 package com.iexec.common.security;
 
 import com.iexec.common.utils.FileHelper;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
@@ -38,9 +40,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CipherUtils {
-
-    private CipherUtils() {}
 
     // ###############
     // #     AES     #
