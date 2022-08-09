@@ -88,15 +88,15 @@ class DockerRunRequestTests {
         assertThat(request.getDevices().get(0).getcGroupPermissions())
                 .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);
         assertThat(request.getDevices().get(0).getPathInContainer())
-                .isEqualTo("/dev/sgx/enclave");
+                .isEqualTo("/dev/sgx_enclave");
         assertThat(request.getDevices().get(0).getPathOnHost())
-                .isEqualTo("/dev/sgx/enclave");
+                .isEqualTo("/dev/sgx_enclave");
         assertThat(request.getDevices().get(1).getcGroupPermissions())
                 .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);
         assertThat(request.getDevices().get(1).getPathInContainer())
-                .isEqualTo("/dev/sgx/provision");
+                .isEqualTo("/dev/sgx_provision");
         assertThat(request.getDevices().get(1).getPathOnHost())
-                .isEqualTo("/dev/sgx/provision");
+                .isEqualTo("/dev/sgx_provision");
     }
     // endregion
 

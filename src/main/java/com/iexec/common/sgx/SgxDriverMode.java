@@ -19,7 +19,7 @@ package com.iexec.common.sgx;
 public enum SgxDriverMode {
     NONE(),
     LEGACY("/dev/isgx"),
-    NATIVE("/dev/sgx/enclave", "/dev/sgx/provision");
+    NATIVE("/dev/sgx_enclave", "/dev/sgx_provision");
 
     private final String[] devices;
 
