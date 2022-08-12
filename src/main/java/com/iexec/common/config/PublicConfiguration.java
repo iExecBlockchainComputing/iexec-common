@@ -37,9 +37,6 @@ public class PublicConfiguration {
     // repos URLs
     private String resultRepositoryURL;
 
-    // address of the SMS
-    private String smsURL;
-
     private long askForReplicatePeriod;
     private String requiredWorkerVersion;
 }
