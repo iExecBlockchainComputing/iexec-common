@@ -178,12 +178,14 @@ class DealParamsTest {
                 .iexecResultEncryption(true)
                 .iexecResultStorageProvider(storageProvider)
                 .iexecResultStorageProxy("http://result-proxy.local:13200")
+                .iexecSmsUrl("http://sms.url")
                 .build();
         DealParams newParams = DealParams.createFromString(params.toJsonString());
         assertThat(newParams).isEqualTo(params);
         assertThat(newParams.getIexecArgs()).isNotBlank();
         assertThat(newParams.getIexecInputFiles()).isNotEmpty();
         assertThat(newParams.getIexecSecrets()).isNotEmpty();
+        assertThat(newParams.getIexecSmsUrl()).isNotEmpty();
     }
 
 }

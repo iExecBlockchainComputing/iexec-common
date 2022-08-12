@@ -60,6 +60,7 @@ class TaskDescriptionTest {
     public static final boolean IS_RESULT_ENCRYPTION = true;
     public static final String RESULT_STORAGE_PROVIDER = "resultStorageProvider";
     public static final String RESULT_STORAGE_PROXY = "resultStorageProxy";
+    public static final String SMS_URL = "smsUrl";
     public static final String TEE_POST_COMPUTE_IMAGE = "teePostComputeImage";
     public static final String TEE_POST_COMPUTE_FINGERPRINT = "teePostComputeFingerprint";
 
@@ -90,6 +91,7 @@ class TaskDescriptionTest {
                 .isResultEncryption(IS_RESULT_ENCRYPTION)
                 .resultStorageProvider(RESULT_STORAGE_PROVIDER)
                 .resultStorageProxy(RESULT_STORAGE_PROXY)
+                .smsUrl(SMS_URL)
                 .teePostComputeImage(TEE_POST_COMPUTE_IMAGE)
                 .teePostComputeFingerprint(TEE_POST_COMPUTE_FINGERPRINT)
                 .build();
@@ -141,6 +143,8 @@ class TaskDescriptionTest {
                 task.getResultStorageProvider());
         Assertions.assertEquals(RESULT_STORAGE_PROXY,
                 task.getResultStorageProxy());
+        Assertions.assertEquals(SMS_URL,
+                task.getSmsUrl());
         Assertions.assertEquals(TEE_POST_COMPUTE_IMAGE,
                 task.getTeePostComputeImage());
         Assertions.assertEquals(TEE_POST_COMPUTE_FINGERPRINT,
@@ -170,6 +174,7 @@ class TaskDescriptionTest {
                         .iexecDeveloperLoggerEnabled(DEVELOPER_LOGGER_ENABLED)
                         .iexecResultStorageProvider(RESULT_STORAGE_PROVIDER)
                         .iexecResultStorageProxy(RESULT_STORAGE_PROXY)
+                        .iexecSmsUrl(SMS_URL)
                         .iexecResultEncryption(IS_RESULT_ENCRYPTION)
                         .iexecTeePostComputeImage(TEE_POST_COMPUTE_IMAGE)
                         .iexecTeePostComputeFingerprint(TEE_POST_COMPUTE_FINGERPRINT)
@@ -236,6 +241,8 @@ class TaskDescriptionTest {
                 task.getResultStorageProvider());
         Assertions.assertEquals(RESULT_STORAGE_PROXY,
                 task.getResultStorageProxy());
+        Assertions.assertEquals(SMS_URL,
+                task.getSmsUrl());
         Assertions.assertEquals(TEE_POST_COMPUTE_IMAGE,
                 task.getTeePostComputeImage());
         Assertions.assertEquals(TEE_POST_COMPUTE_FINGERPRINT,

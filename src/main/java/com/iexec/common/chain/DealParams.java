@@ -121,6 +121,9 @@ public class DealParams {
     @JsonProperty("iexec_tee_post_compute_fingerprint")
     private String iexecTeePostComputeFingerprint;
 
+    @JsonProperty("iexec_sms_url")
+    private String iexecSmsUrl;
+
     /**
      * Creates an instance from a JSON string representation.
      * @param paramString data to create a DealParams instance.

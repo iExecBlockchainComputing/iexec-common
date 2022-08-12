@@ -62,6 +62,7 @@ public class TaskDescription {
     private boolean isResultEncryption;
     private String resultStorageProvider;
     private String resultStorageProxy;
+    private String smsUrl;
     private Map<String, String> secrets;
     private String teePostComputeImage;
     private String teePostComputeFingerprint;
@@ -182,6 +183,8 @@ public class TaskDescription {
                         .getIexecResultStorageProvider())
                 .resultStorageProxy(chainDeal.getParams()
                         .getIexecResultStorageProxy())
+                .smsUrl(chainDeal.getParams()
+                        .getIexecSmsUrl())
                 .secrets(chainDeal.getParams()
                         .getIexecSecrets())
                 .teePostComputeImage(chainDeal.getParams()

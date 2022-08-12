@@ -79,6 +79,7 @@ public enum ReplicateStatusCause {
     TEE_SESSION_GENERATION_NO_SESSION_REQUEST,
     TEE_SESSION_GENERATION_NO_TASK_DESCRIPTION,
     TEE_SESSION_GENERATION_GET_SESSION_FAILED,
+    TEE_SESSION_GENERATION_NO_SMS_FOR_TASK,
 
     TEE_SESSION_GENERATION_UNKNOWN_ISSUE,
     // endregion
@@ -152,6 +153,7 @@ public enum ReplicateStatusCause {
     // endregion
 
     // region miscellaneous
+    LAS_START_FAILED,
     ABORTED_BY_WORKER,
     CANNOT_REVEAL,
     UNKNOWN;
