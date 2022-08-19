@@ -16,15 +16,6 @@
 
 package com.iexec.common.chain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.chain.eip712.entity.Challenge;
 import com.iexec.common.chain.eip712.entity.EIP712Challenge;
@@ -32,7 +23,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.Hash;
 import org.web3j.crypto.WalletUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 class CredentialsAbstractServiceTests {
 
@@ -46,10 +47,42 @@ class CredentialsAbstractServiceTests {
             super(walletPassword, walletPath);
         }
 
+        public CredentialsServiceStub(Credentials credentials) throws Exception {
+            super(credentials);
+        }
+
         public CredentialsServiceStub() throws Exception {
             super();
         }
     }
+
+    // begin constructor (Credentials)
+
+    @Test
+    void shouldConstructFromCredentials() throws Exception {
+        Credentials credentials = Credentials.create(Hash.sha3(""));
+
+        CredentialsServiceStub credentialsService = new CredentialsServiceStub(credentials);
+        Credentials claimedCredentials = credentialsService.getCredentials();
+
+        assertThat(claimedCredentials).isEqualTo(credentials);
+        assertThat(claimedCredentials.getAddress()).isEqualTo("0x9cce34f7ab185c7aba1b7c8140d620b4bda941d6");
+    }
+
+    @Test
+    void shouldNotConstructFromNullCredentials() throws Exception {
+        Credentials credentials = mock(Credentials.class);
+        assertThrows(ExceptionInInitializerError.class, () -> new CredentialsServiceStub(credentials));
+    }
+
+    @Test
+    void shouldNotConstructFromInvalidCredentials() throws Exception {
+        Credentials credentials = mock(Credentials.class);
+        when(credentials.getAddress()).thenReturn("0xwrongFormat");
+        assertThrows(ExceptionInInitializerError.class, () -> new CredentialsServiceStub(credentials));
+    }
+
+    // begin constructor (String, String)
 
     @Test
     void shouldLoadCorrectCredentials() throws Exception {
@@ -83,6 +116,8 @@ class CredentialsAbstractServiceTests {
         String walletPath = createTempWallet(WALLET_PASS);
         assertThrows(CipherException.class, () -> new CredentialsServiceStub(wrongPass, walletPath));
     }
+
+    // begin EIP712Challenge
 
     @Test
     void shouldBuildAuthorizationTokenFromCredentials() throws Exception {
