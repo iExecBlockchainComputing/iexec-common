@@ -34,7 +34,7 @@ public abstract class CredentialsAbstractService {
 
     private final Credentials credentials;
 
-    public CredentialsAbstractService() throws Exception {
+    protected CredentialsAbstractService() throws Exception {
         try {
             ECKeyPair ecKeyPair = Keys.createEcKeyPair();
             credentials = Credentials.create(ecKeyPair);
@@ -45,7 +45,7 @@ public abstract class CredentialsAbstractService {
         }
     }
 
-    public CredentialsAbstractService(Credentials credentials) {
+    protected CredentialsAbstractService(Credentials credentials) {
         this.credentials = credentials;
         if (credentials != null
                 && EthAddress.validate(credentials.getAddress())) {
@@ -56,7 +56,7 @@ public abstract class CredentialsAbstractService {
         }
     }
 
-    public CredentialsAbstractService(String walletPassword, String walletPath) throws Exception {
+    protected CredentialsAbstractService(String walletPassword, String walletPath) throws Exception {
         try {
             credentials = WalletUtils.loadCredentials(walletPassword, walletPath);
             log.info("Loaded wallet credentials [address:{}] ", credentials.getAddress());
