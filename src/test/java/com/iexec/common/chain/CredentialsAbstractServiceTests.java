@@ -56,8 +56,7 @@ class CredentialsAbstractServiceTests {
         }
     }
 
-    // begin constructor (Credentials)
-
+    // region constructor (Credentials)
     @Test
     void shouldConstructFromCredentials() throws Exception {
         Credentials credentials = Credentials.create(Hash.sha3(""));
@@ -81,9 +80,9 @@ class CredentialsAbstractServiceTests {
         when(credentials.getAddress()).thenReturn("0xwrongFormat");
         assertThrows(ExceptionInInitializerError.class, () -> new CredentialsServiceStub(credentials));
     }
+    // endregion
 
-    // begin constructor (String, String)
-
+    // region constructor (String, String)
     @Test
     void shouldLoadCorrectCredentials() throws Exception {
         String walletPath = createTempWallet(WALLET_PASS);
@@ -116,9 +115,9 @@ class CredentialsAbstractServiceTests {
         String walletPath = createTempWallet(WALLET_PASS);
         assertThrows(CipherException.class, () -> new CredentialsServiceStub(wrongPass, walletPath));
     }
+    // endregion
 
-    // begin EIP712Challenge
-
+    // region EIP712Challenge
     @Test
     void shouldBuildAuthorizationTokenFromCredentials() throws Exception {
         final Challenge challenge = Challenge.builder().challenge("abcd").build();
@@ -138,6 +137,7 @@ class CredentialsAbstractServiceTests {
                 .isNotEmpty()
                 .isEqualTo(expectedToken);
     }
+    // endregion
 
 
     String createTempWallet(String password) throws Exception {
