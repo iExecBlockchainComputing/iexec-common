@@ -154,6 +154,8 @@ public enum ReplicateStatusCause {
 
     // region miscellaneous
     LAS_START_FAILED,
+    UNKNOWN_SMS,
+    GET_TEE_WORKFLOW_CONFIGURATION_FAILED,
     ABORTED_BY_WORKER,
     CANNOT_REVEAL,
     UNKNOWN;
