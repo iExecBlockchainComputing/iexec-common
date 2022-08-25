@@ -16,30 +16,25 @@
 
 package com.iexec.common.chain;
 
+import com.iexec.common.chain.eip712.EIP712Entity;
+import com.iexec.common.security.Signature;
+import com.iexec.common.utils.EthAddress;
+import com.iexec.common.utils.SignatureUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.web3j.crypto.*;
+import org.web3j.utils.Numeric;
+
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-
-import com.iexec.common.chain.eip712.EIP712Entity;
-import com.iexec.common.security.Signature;
-import com.iexec.common.utils.SignatureUtils;
-
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Keys;
-import org.web3j.crypto.WalletUtils;
-import org.web3j.utils.Numeric;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class CredentialsAbstractService {
 
     private final Credentials credentials;
 
-    public CredentialsAbstractService() throws Exception {
+    protected CredentialsAbstractService() throws Exception {
         try {
             ECKeyPair ecKeyPair = Keys.createEcKeyPair();
             credentials = Credentials.create(ecKeyPair);
@@ -50,7 +45,18 @@ public abstract class CredentialsAbstractService {
         }
     }
 
-    public CredentialsAbstractService(String walletPassword, String walletPath) throws Exception {
+    protected CredentialsAbstractService(Credentials credentials) {
+        this.credentials = credentials;
+        if (credentials != null
+                && EthAddress.validate(credentials.getAddress())) {
+            log.info("Loaded wallet credentials [address:{}] ",
+                    credentials.getAddress());
+        } else {
+            throw new ExceptionInInitializerError("Cannot create credential service");
+        }
+    }
+
+    protected CredentialsAbstractService(String walletPassword, String walletPath) throws Exception {
         try {
             credentials = WalletUtils.loadCredentials(walletPassword, walletPath);
             log.info("Loaded wallet credentials [address:{}] ", credentials.getAddress());
