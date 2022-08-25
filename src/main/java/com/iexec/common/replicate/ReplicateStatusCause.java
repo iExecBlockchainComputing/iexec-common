@@ -153,7 +153,7 @@ public enum ReplicateStatusCause {
     // endregion
 
     // region miscellaneous
-    LAS_START_FAILED,
+    TEE_PREPARATION_FAILED,
     UNKNOWN_SMS,
     GET_TEE_WORKFLOW_CONFIGURATION_FAILED,
     ABORTED_BY_WORKER,
