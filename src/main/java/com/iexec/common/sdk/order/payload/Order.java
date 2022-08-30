@@ -37,5 +37,15 @@ public abstract class Order {
     public boolean isSigned() {
         return sign != null && !sign.isEmpty();
     }
+
+    /**
+     * Converts all characters to Lowercase or returns empty
+     * @param s String to convert
+     * @return the String, converted to lowercase or an empty string
+     */
+    public String toLowerCase(String s) {
+        return s != null ? s.toLowerCase() : "";
+    }
+
 }
 

@@ -9,7 +9,7 @@ class RequestOrderTest {
     @Test
     void shouldSerializeEmptyMapWhenNoParameters() {
         DealParams params = DealParams.builder().build();
-        Assertions.assertEquals("{}", RequestOrder.toStringParams(params));
+        Assertions.assertEquals("{}", params.toJsonString());
     }
 
     @Test
@@ -18,7 +18,7 @@ class RequestOrderTest {
                 .iexecResultEncryption(false)
                 .iexecDeveloperLoggerEnabled(false)
                 .build();
-        Assertions.assertEquals("{}", RequestOrder.toStringParams(params));
+        Assertions.assertEquals("{}", params.toJsonString());
     }
 
 }

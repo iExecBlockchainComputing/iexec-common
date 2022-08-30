@@ -23,8 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigInteger;
 import java.util.Objects;
 
-import static com.iexec.common.sdk.order.OrderUtils.toLowerCase;
-
 @Data
 @Slf4j
 @EqualsAndHashCode(callSuper = true)

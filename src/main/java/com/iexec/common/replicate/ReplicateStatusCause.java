@@ -138,7 +138,12 @@ public enum ReplicateStatusCause {
     TEE_NOT_SUPPORTED,
     DETERMINISM_HASH_NOT_FOUND,
     ENCLAVE_SIGNATURE_NOT_FOUND,
+    /**
+     * @deprecated Use WORKERPOOL_AUTHORIZATION_NOT_FOUND instead
+     */
+    @Deprecated
     CONTRIBUTION_AUTHORIZATION_NOT_FOUND,
+    WORKERPOOL_AUTHORIZATION_NOT_FOUND,
     // endregion
 
     // region upload
