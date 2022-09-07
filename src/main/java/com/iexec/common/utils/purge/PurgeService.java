@@ -5,7 +5,7 @@ import java.util.List;
 public class PurgeService {
     private final List<Purgeable> services;
 
-    protected PurgeService(List<Purgeable> services) {
+    public PurgeService(List<Purgeable> services) {
         this.services = services;
     }
 
