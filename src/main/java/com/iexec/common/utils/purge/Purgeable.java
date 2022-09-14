@@ -1,5 +1,7 @@
 package com.iexec.common.utils.purge;
 
+import javax.annotation.PreDestroy;
+
 public interface Purgeable {
     /**
      * Purge a service from all data related to a task after its completion.
@@ -9,4 +11,11 @@ public interface Purgeable {
      * @return {@literal true} if the purge went well, false otherwise.
      */
     boolean purgeTask(String chainTaskId);
+
+    /**
+     * Purge a service from all task-related data.
+     * This can be called for example when the app shutdowns.
+     */
+    @PreDestroy
+    void purgeAllTasksData();
 }
