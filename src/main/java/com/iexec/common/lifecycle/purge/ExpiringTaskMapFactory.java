@@ -5,6 +5,8 @@ import net.jodah.expiringmap.ExpiringMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.iexec.common.utils.CategoriesUtils.LONGEST_TASK_TIMEOUT;
+
 /**
  * An expiring task map is defined as a map of {@link String} as keys
  * and any type as keys,
@@ -19,7 +21,7 @@ public class ExpiringTaskMapFactory {
     public static <T> Map<String, T> getExpiringTaskMap() {
         return ExpiringMap
                 .builder()
-                .expiration(100, TimeUnit.HOURS)
+                .expiration(LONGEST_TASK_TIMEOUT.getSeconds(), TimeUnit.SECONDS)
                 .build();
     }
 }
