@@ -1,4 +1,4 @@
-package com.iexec.common.utils.purge;
+package com.iexec.common.lifecycle.purge;
 
 import net.jodah.expiringmap.ExpiringMap;
 

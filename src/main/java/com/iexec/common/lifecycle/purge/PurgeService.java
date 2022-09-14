@@ -1,5 +1,6 @@
-package com.iexec.common.utils.purge;
+package com.iexec.common.lifecycle.purge;
 
+import com.iexec.common.lifecycle.purge.Purgeable;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

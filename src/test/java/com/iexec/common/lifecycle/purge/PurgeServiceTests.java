@@ -1,5 +1,7 @@
-package com.iexec.common.utils.purge;
+package com.iexec.common.lifecycle.purge;
 
+import com.iexec.common.lifecycle.purge.PurgeService;
+import com.iexec.common.lifecycle.purge.Purgeable;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

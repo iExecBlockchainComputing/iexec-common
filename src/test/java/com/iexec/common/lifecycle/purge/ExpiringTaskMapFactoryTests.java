@@ -1,5 +1,6 @@
-package com.iexec.common.utils.purge;
+package com.iexec.common.lifecycle.purge;
 
+import com.iexec.common.lifecycle.purge.ExpiringTaskMapFactory;
 import net.jodah.expiringmap.ExpiringMap;
 import org.junit.jupiter.api.Test;
 
