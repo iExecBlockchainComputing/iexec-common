@@ -38,5 +38,10 @@ class PurgeServiceTests {
             this.hasBeenPurged = true;
             return true;
         }
+
+        @Override
+        public void purgeAllTasksData() {
+            this.hasBeenPurged = true;
+        }
     }
 }
