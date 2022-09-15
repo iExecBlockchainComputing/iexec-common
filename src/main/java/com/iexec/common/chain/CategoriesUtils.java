@@ -1,4 +1,4 @@
-package com.iexec.common.utils;
+package com.iexec.common.chain;
 
 import java.time.Duration;
 
