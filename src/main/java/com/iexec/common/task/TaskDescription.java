@@ -118,6 +118,7 @@ public class TaskDescription {
 
     public String getAppCommand() {
         String appArgs = appEnclaveConfiguration.getEntrypoint();
+        //TODO: Add unit test
         if (!StringUtils.isEmpty(cmd)) {
             appArgs = appArgs + " " + cmd;
         }
