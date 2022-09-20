@@ -19,8 +19,12 @@ package com.iexec.common.tee;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.stream.Stream;
 
 import static com.iexec.common.utils.BytesUtils.toByte32HexString;
 
@@ -40,7 +44,7 @@ class TeeUtilsTests {
     @ValueSource(ints = {
             0b0011, // 0x3: Scone
             0b0101, // : 0x5: Gramine
-            0b11110011, // 0xf3: any + Scone
+            0b11110011, // 0xf3: any (above TEE runtime framework mask) + Scone
     })
     void isTeeTag(int tag) {
         Assertions.assertTrue(TeeUtils.isTeeTag(toByte32HexString(tag)));
@@ -50,7 +54,7 @@ class TeeUtilsTests {
     @ValueSource(ints = {
             0b0000, // 0x0: empty
             0b0001, // 0x1: missing TEE runtime framework
-            0b1001, // 0x7: not third TEE runtime framework ({Scone, Gramine, ?})
+            0b1001, // 0x9: no third TEE runtime framework existing for now ({Scone, Gramine, ?})
     })
     void isNotTeeTag(int tag) {
         Assertions.assertFalse(TeeUtils.isTeeTag(toByte32HexString(tag)));
@@ -59,7 +63,7 @@ class TeeUtilsTests {
     @ParameterizedTest
     @ValueSource(ints = {
             0b0011, // 0x3: Scone
-            0b11110011, // 0xf3: any + Scone
+            0b11110011, // 0xf3: any (above TEE runtime framework mask) + Scone
     })
     void hasTeeSconeInTag(int tag) {
         Assertions.assertTrue(TeeUtils.hasTeeSconeInTag(toByte32HexString(tag)));
@@ -73,7 +77,7 @@ class TeeUtilsTests {
     @ParameterizedTest
     @ValueSource(ints = {
             0b0101, // 0x5: Gramine
-            0b11110101, // 0xf5: any + Gramine
+            0b11110101, // 0xf5: any (above TEE runtime framework mask) + Gramine
     })
     void hasTeeGramineInTag(int tag) {
         Assertions.assertTrue(TeeUtils.hasTeeGramineInTag(toByte32HexString(tag)));
@@ -84,13 +88,20 @@ class TeeUtilsTests {
         Assertions.assertFalse(TeeUtils.hasTeeGramineInTag(toByte32HexString(0b0011))); // 0x3: Scone
     }
 
+    // ensures some bits are present within TEE runtime framework mask
+    static Stream<Arguments> validData() {
+        return Stream.of(
+                Arguments.of(0b0001, 0b0001),       // exact match
+                Arguments.of(0b0001, 0b11110001),   // contains
+                // ...
+                Arguments.of(0b1111, 0b1111),       // exact match
+                Arguments.of(0b1111, 0b11111111)    // contains
+        );
+    }
+
     @ParameterizedTest
-    @ValueSource(ints = {
-            0b0101, // 0xa: exact match
-            0b11110101, // 0xfa: contains
-    })
-    void hasTeeRuntimeFrameworkBitsInTag(int tag) {
-        int expectedBits = 0b0101; //0xa
+    @MethodSource("validData")
+    void hasTeeRuntimeFrameworkBitsInTag(int expectedBits, int tag) {
         Assertions.assertTrue(TeeUtils.hasTeeRuntimeFrameworkBitsInTag(expectedBits,
                 toByte32HexString(tag)));
     }

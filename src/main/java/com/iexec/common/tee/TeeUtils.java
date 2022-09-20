@@ -95,6 +95,7 @@ public class TeeUtils {
                 return teeEnclaveProvider.getValue();
             }
         }
+        //TODO: Add TeeEnclaveProvider.UNDEFINED
         return null;
     }
 
