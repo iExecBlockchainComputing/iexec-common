@@ -16,8 +16,10 @@
 
 package com.iexec.common.tee;
 
+//TODO: Rename to TeeEnclaveFramework
 public enum TeeEnclaveProvider {
 
-    SCONE
+    SCONE,
+    GRAMINE
 
 }

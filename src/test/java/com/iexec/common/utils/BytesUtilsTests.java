@@ -16,6 +16,7 @@
 
 package com.iexec.common.utils;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static com.iexec.common.utils.BytesUtils.*;
@@ -169,4 +170,11 @@ class BytesUtilsTests {
         assertThrows(IllegalArgumentException.class, () -> hexStringToBytes32(longHexString));
     }
 
+    @Test
+    void toByte32HexString() {
+        Assertions.assertEquals("0x0000000000000000000000000000000000000000000000000000000000000000",
+                BytesUtils.toByte32HexString(0));
+        Assertions.assertEquals("0x0000000000000000000000000000000000000000000000000000000000000001",
+                BytesUtils.toByte32HexString(1));
+    }
 }

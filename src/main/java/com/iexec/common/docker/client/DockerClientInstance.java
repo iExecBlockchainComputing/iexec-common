@@ -450,6 +450,7 @@ public class DockerClientInstance {
     }
 
     public boolean stopAndRemoveContainer(String containerName) {
+        // TODO: check `isContainerPresent(containerName)` instead
         return stopContainer(containerName)
                 && removeContainer(containerName);
     }

@@ -22,6 +22,7 @@ package com.iexec.common.task;
 import com.iexec.common.chain.*;
 import com.iexec.common.dapp.DappType;
 import com.iexec.common.tee.TeeEnclaveConfiguration;
+import com.iexec.common.tee.TeeEnclaveProvider;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import org.junit.jupiter.api.Assertions;
@@ -45,6 +46,7 @@ class TaskDescriptionTest {
     public static final String CMD = "cmd";
     public static final int MAX_EXECUTION_TIME = 1;
     public static final boolean IS_TEE_TASK = true;
+    public static final TeeEnclaveProvider TEE_ENCLAVE_PROVIDER = TeeEnclaveProvider.SCONE;
     public static final int BOT_SIZE = 1;
     public static final int BOT_FIRST = 2;
     public static final int TASK_IDX = 3;
@@ -58,6 +60,7 @@ class TaskDescriptionTest {
     public static final boolean IS_RESULT_ENCRYPTION = true;
     public static final String RESULT_STORAGE_PROVIDER = "resultStorageProvider";
     public static final String RESULT_STORAGE_PROXY = "resultStorageProxy";
+    public static final String SMS_URL = "smsUrl";
     public static final String TEE_POST_COMPUTE_IMAGE = "teePostComputeImage";
     public static final String TEE_POST_COMPUTE_FINGERPRINT = "teePostComputeFingerprint";
 
@@ -75,6 +78,7 @@ class TaskDescriptionTest {
                 .cmd(CMD)
                 .maxExecutionTime(MAX_EXECUTION_TIME)
                 .isTeeTask(IS_TEE_TASK)
+                .teeEnclaveProvider(TEE_ENCLAVE_PROVIDER)
                 .botSize(BOT_SIZE)
                 .botFirstIndex(BOT_FIRST)
                 .botIndex(TASK_IDX)
@@ -87,6 +91,7 @@ class TaskDescriptionTest {
                 .isResultEncryption(IS_RESULT_ENCRYPTION)
                 .resultStorageProvider(RESULT_STORAGE_PROVIDER)
                 .resultStorageProxy(RESULT_STORAGE_PROXY)
+                .smsUrl(SMS_URL)
                 .teePostComputeImage(TEE_POST_COMPUTE_IMAGE)
                 .teePostComputeFingerprint(TEE_POST_COMPUTE_FINGERPRINT)
                 .build();
@@ -112,6 +117,8 @@ class TaskDescriptionTest {
                 task.getMaxExecutionTime());
         Assertions.assertEquals(IS_TEE_TASK,
                 task.isTeeTask());
+        Assertions.assertEquals(TEE_ENCLAVE_PROVIDER,
+                task.getTeeEnclaveProvider());
         Assertions.assertEquals(TASK_IDX,
                 task.getBotIndex());
         Assertions.assertEquals(BOT_SIZE,
@@ -136,6 +143,8 @@ class TaskDescriptionTest {
                 task.getResultStorageProvider());
         Assertions.assertEquals(RESULT_STORAGE_PROXY,
                 task.getResultStorageProxy());
+        Assertions.assertEquals(SMS_URL,
+                task.getSmsUrl());
         Assertions.assertEquals(TEE_POST_COMPUTE_IMAGE,
                 task.getTeePostComputeImage());
         Assertions.assertEquals(TEE_POST_COMPUTE_FINGERPRINT,
@@ -165,6 +174,7 @@ class TaskDescriptionTest {
                         .iexecDeveloperLoggerEnabled(DEVELOPER_LOGGER_ENABLED)
                         .iexecResultStorageProvider(RESULT_STORAGE_PROVIDER)
                         .iexecResultStorageProxy(RESULT_STORAGE_PROXY)
+                        .iexecSmsUrl(SMS_URL)
                         .iexecResultEncryption(IS_RESULT_ENCRYPTION)
                         .iexecTeePostComputeImage(TEE_POST_COMPUTE_IMAGE)
                         .iexecTeePostComputeFingerprint(TEE_POST_COMPUTE_FINGERPRINT)
@@ -174,7 +184,7 @@ class TaskDescriptionTest {
                         .name(DATASET_NAME)
                         .uri(BytesUtils.bytesToString(DATASET_URI.getBytes(StandardCharsets.UTF_8)))
                         .checksum(DATASET_CHECKSUM).build())
-                .tag(TeeUtils.TEE_TAG)
+                .tag(TeeUtils.TEE_SCONE_ONLY_TAG) // any supported TEE tag
                 .chainCategory(ChainCategory.builder()
                         .maxExecutionTime(MAX_EXECUTION_TIME)
                         .build())
@@ -205,6 +215,8 @@ class TaskDescriptionTest {
                 task.getMaxExecutionTime());
         Assertions.assertEquals(IS_TEE_TASK,
                 task.isTeeTask());
+        Assertions.assertEquals(TEE_ENCLAVE_PROVIDER,
+                task.getTeeEnclaveProvider());
         Assertions.assertEquals(TASK_IDX,
                 task.getBotIndex());
         Assertions.assertEquals(BOT_SIZE,
@@ -229,6 +241,8 @@ class TaskDescriptionTest {
                 task.getResultStorageProvider());
         Assertions.assertEquals(RESULT_STORAGE_PROXY,
                 task.getResultStorageProxy());
+        Assertions.assertEquals(SMS_URL,
+                task.getSmsUrl());
         Assertions.assertEquals(TEE_POST_COMPUTE_IMAGE,
                 task.getTeePostComputeImage());
         Assertions.assertEquals(TEE_POST_COMPUTE_FINGERPRINT,

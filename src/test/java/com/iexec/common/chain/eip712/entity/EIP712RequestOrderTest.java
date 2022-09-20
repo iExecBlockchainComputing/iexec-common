@@ -46,7 +46,7 @@ class EIP712RequestOrderTest {
             .workerpoolmaxprice(BigInteger.ZERO)
             .requester("0x1ec09e1782a43a770d54e813379c730e0b29ad4b")
             .volume(BigInteger.ONE)
-            .tag(TeeUtils.TEE_TAG)
+            .tag(BytesUtils.toByte32HexString(0x1)) // any tag here
             .category(BigInteger.ZERO)
             .trust(BigInteger.ZERO)
             .beneficiary(BytesUtils.EMPTY_ADDRESS)
