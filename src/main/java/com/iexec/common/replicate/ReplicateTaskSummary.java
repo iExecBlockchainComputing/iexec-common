@@ -22,12 +22,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//TODO: Move to core-lib (along with TaskNotificationExtra)
+//TODO: Eventually move this to an iexec-core-library embedding DTOs
+// (Eventually move this along with TaskNotificationExtra & more)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReplicateDemandResponse {
+public class ReplicateTaskSummary {
 
     private WorkerpoolAuthorization workerpoolAuthorization;
     private String smsUrl;
