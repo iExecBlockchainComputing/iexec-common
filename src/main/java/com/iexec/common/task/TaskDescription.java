@@ -184,8 +184,6 @@ public class TaskDescription {
                         .getIexecResultStorageProvider())
                 .resultStorageProxy(chainDeal.getParams()
                         .getIexecResultStorageProxy())
-                .smsUrl(chainDeal.getParams()
-                        .getIexecSmsUrl())
                 .secrets(chainDeal.getParams()
                         .getIexecSecrets())
                 .teePostComputeImage(chainDeal.getParams()

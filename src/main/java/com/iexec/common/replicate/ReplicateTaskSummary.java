@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2022 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,23 @@
  * limitations under the License.
  */
 
-package com.iexec.common.notification;
+package com.iexec.common.replicate;
 
 import com.iexec.common.chain.WorkerpoolAuthorization;
-import com.iexec.common.task.TaskAbortCause;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+//TODO: Eventually move this to an iexec-core-library embedding DTOs
+// (Eventually move this along with TaskNotificationExtra & more)
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class TaskNotificationExtra {
+public class ReplicateTaskSummary {
 
     private WorkerpoolAuthorization workerpoolAuthorization;
     private String smsUrl;
 
-    // block number from which this notification makes sense
-    // (it is not used for all notification types)
-    private long blockNumber;
-
-    // The reason behind an "Abort" notification. Used only for
-    // Abort notifications.
-    private TaskAbortCause taskAbortCause;
 }

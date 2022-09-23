@@ -28,7 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 
 /**
  * The DealParams class represents runtime configurations provided for tasks computation.
@@ -120,9 +121,6 @@ public class DealParams {
     //Should be set by SDK
     @JsonProperty("iexec_tee_post_compute_fingerprint")
     private String iexecTeePostComputeFingerprint;
-
-    @JsonProperty("iexec_sms_url")
-    private String iexecSmsUrl;
 
     /**
      * Creates an instance from a JSON string representation.
