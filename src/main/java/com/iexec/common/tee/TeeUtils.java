@@ -27,6 +27,7 @@ public class TeeUtils {
 
     public static final int TEE_SCONE_BITS = 0b0011;
     public static final int TEE_GRAMINE_BITS = 0b0101;
+    /** @deprecated Use {@code TEE_BITS_TO_FRAMEWORK} instead */
     @Deprecated(forRemoval = false)
     private static final Map<Integer, TeeEnclaveProvider> TEE_BITS_TO_ENCLAVE_PROVIDER = Map.of(
             TEE_SCONE_BITS, TeeEnclaveProvider.SCONE,

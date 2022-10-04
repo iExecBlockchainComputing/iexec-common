@@ -16,7 +16,7 @@
 
 package com.iexec.common.tee;
 
-/** @deprecated */
+/** @deprecated Use {@link TeeFramework} instead */
 @Deprecated(forRemoval = false)
 public enum TeeEnclaveProvider {
 
