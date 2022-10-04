@@ -50,6 +50,7 @@ public class TaskDescription {
     private String cmd;
     private long maxExecutionTime;
     private boolean isTeeTask;
+    /** @deprecated */
     @Deprecated(forRemoval = false)
     private TeeEnclaveProvider teeEnclaveProvider;
     private TeeFramework teeFramework;

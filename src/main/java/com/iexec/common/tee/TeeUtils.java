@@ -93,7 +93,9 @@ public class TeeUtils {
      * @param hexTag tag of the deal
      * @return {@link TeeEnclaveProvider} matching given {@code hexTag}
      * or {@literal null} if tag is not a TEE tag or if there is no match.
+     * @deprecated
      */
+    @Deprecated(forRemoval = false)
     public static TeeEnclaveProvider getTeeEnclaveProvider(String hexTag) {
         for (Map.Entry<Integer, TeeEnclaveProvider> teeEnclaveProvider : TEE_BITS_TO_ENCLAVE_PROVIDER.entrySet()) {
             if (hasTeeRuntimeFrameworkBitsInTag(teeEnclaveProvider.getKey(), hexTag)) {
@@ -105,7 +107,7 @@ public class TeeUtils {
     }
 
     /**
-     * Returns enclave provider matching given {@code hexTag}.
+     * Returns TEE framework matching given {@code hexTag}.
      *
      * @param hexTag tag of the deal
      * @return {@link TeeFramework} matching given {@code hexTag}
