@@ -16,7 +16,7 @@
 
 package com.iexec.common.tee;
 
-@Deprecated(forRemoval = true)
+@Deprecated
 public enum TeeEnclaveProvider {
 
     SCONE,
