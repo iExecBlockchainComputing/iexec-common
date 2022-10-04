@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TeeEnclaveConfiguration {
 
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = false)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private TeeEnclaveProvider provider;
     private TeeFramework framework;
