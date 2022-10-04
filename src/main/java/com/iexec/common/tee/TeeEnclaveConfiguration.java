@@ -17,6 +17,7 @@
 package com.iexec.common.tee;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TeeEnclaveConfiguration {
 
+    @Deprecated(forRemoval = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private TeeEnclaveProvider provider;
+    private TeeFramework framework;
     private String version;
     private String entrypoint;
     private long heapSize;

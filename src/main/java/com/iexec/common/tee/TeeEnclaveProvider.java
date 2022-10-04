@@ -16,7 +16,7 @@
 
 package com.iexec.common.tee;
 
-//TODO: Rename to TeeEnclaveFramework
+@Deprecated(forRemoval = true)
 public enum TeeEnclaveProvider {
 
     SCONE,
