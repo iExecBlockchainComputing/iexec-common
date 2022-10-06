@@ -16,9 +16,7 @@
 
 package com.iexec.common.tee;
 
-/** @deprecated Use {@link TeeFramework} instead */
-@Deprecated(forRemoval = false)
-public enum TeeEnclaveProvider {
+public enum TeeFramework {
 
     SCONE,
     GRAMINE
