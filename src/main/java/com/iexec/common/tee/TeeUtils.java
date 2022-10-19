@@ -27,10 +27,6 @@ public class TeeUtils {
 
     public static final int TEE_SCONE_BITS = 0b0011;
     public static final int TEE_GRAMINE_BITS = 0b0101;
-    private static final Map<Integer, TeeEnclaveProvider> TEE_BITS_TO_ENCLAVE_PROVIDER = Map.of(
-            TEE_SCONE_BITS, TeeEnclaveProvider.SCONE,
-            TEE_GRAMINE_BITS, TeeEnclaveProvider.GRAMINE
-    );
     private static final Map<Integer, TeeFramework> TEE_BITS_TO_FRAMEWORK = Map.of(
             TEE_SCONE_BITS, TeeFramework.SCONE,
             TEE_GRAMINE_BITS, TeeFramework.GRAMINE
@@ -84,25 +80,6 @@ public class TeeUtils {
         return hexTag != null && Numeric.toBigInt(hexTag)
                 .and(BigInteger.valueOf(TEE_RUNTIME_FRAMEWORK_MASK))
                 .equals(BigInteger.valueOf(expectedBits));
-    }
-
-    /**
-     * Returns enclave provider matching given {@code hexTag}.
-     *
-     * @param hexTag tag of the deal
-     * @return {@link TeeEnclaveProvider} matching given {@code hexTag}
-     * or {@literal null} if tag is not a TEE tag or if there is no match.
-     * @deprecated
-     */
-    @Deprecated(forRemoval = false)
-    public static TeeEnclaveProvider getTeeEnclaveProvider(String hexTag) {
-        for (Map.Entry<Integer, TeeEnclaveProvider> teeEnclaveProvider : TEE_BITS_TO_ENCLAVE_PROVIDER.entrySet()) {
-            if (hasTeeRuntimeFrameworkBitsInTag(teeEnclaveProvider.getKey(), hexTag)) {
-                return teeEnclaveProvider.getValue();
-            }
-        }
-        //TODO: Add TeeEnclaveProvider.UNDEFINED
-        return null;
     }
 
     /**
