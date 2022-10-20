@@ -19,7 +19,6 @@ package com.iexec.common.task;
 import com.iexec.common.chain.ChainDeal;
 import com.iexec.common.dapp.DappType;
 import com.iexec.common.tee.TeeEnclaveConfiguration;
-import com.iexec.common.tee.TeeEnclaveProvider;
 import com.iexec.common.tee.TeeFramework;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
@@ -50,9 +49,6 @@ public class TaskDescription {
     private String cmd;
     private long maxExecutionTime;
     private boolean isTeeTask;
-    /** @deprecated */
-    @Deprecated(forRemoval = false)
-    private TeeEnclaveProvider teeEnclaveProvider;
     private TeeFramework teeFramework;
     private int botIndex;
     private int botSize;
@@ -178,8 +174,6 @@ public class TaskDescription {
                         .getMaxExecutionTime())
                 .isTeeTask(TeeUtils
                         .isTeeTag(tag))
-                .teeEnclaveProvider(TeeUtils
-                        .getTeeEnclaveProvider(tag))
                 .teeFramework(TeeUtils
                         .getTeeFramework(tag))
                 .developerLoggerEnabled(chainDeal.getParams()
