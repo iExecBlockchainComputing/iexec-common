@@ -20,23 +20,20 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public class TeeEnclaveConfiguration {
 
     @JsonAlias("provider")
-    private TeeFramework framework;
-    private String version;
-    private String entrypoint;
-    private long heapSize;
-    private String fingerprint;
+    TeeFramework framework;
+    String version;
+    String entrypoint;
+    long heapSize;
+    String fingerprint;
 
     public static TeeEnclaveConfiguration buildEnclaveConfigurationFromJsonString(String jsonString)
             throws JsonProcessingException {

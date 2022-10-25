@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-class TeeEnclaveConfigurationValidatorTest {
+class TeeEnclaveConfigurationValidatorTests {
 
     private static final String ENTRYPOINT = "entrypoint";
     private static final long HEAP = 1;
@@ -41,8 +41,11 @@ class TeeEnclaveConfigurationValidatorTest {
 
     @Test
     void hasEntrypointViolation() {
-        TeeEnclaveConfiguration enclaveConfig = getEnclaveConfig();
-        enclaveConfig.setEntrypoint("");
+        TeeEnclaveConfiguration enclaveConfig = TeeEnclaveConfiguration.builder()
+                .entrypoint("")
+                .heapSize(HEAP)
+                .fingerprint(FINGERPRINT)
+                .build();
         List<String> violations = new TeeEnclaveConfigurationValidator(enclaveConfig)
                 .validate();
         Assertions.assertEquals(1, violations.size());
@@ -51,8 +54,11 @@ class TeeEnclaveConfigurationValidatorTest {
 
     @Test
     void hasHeapSizeViolationSinceNegative() {
-        TeeEnclaveConfiguration enclaveConfig = getEnclaveConfig();
-        enclaveConfig.setHeapSize(-1);
+        TeeEnclaveConfiguration enclaveConfig = TeeEnclaveConfiguration.builder()
+                .entrypoint(ENTRYPOINT)
+                .heapSize(-1)
+                .fingerprint(FINGERPRINT)
+                .build();
         List<String> violations = new TeeEnclaveConfigurationValidator(enclaveConfig)
                 .validate();
         Assertions.assertEquals(1, violations.size());
@@ -61,8 +67,11 @@ class TeeEnclaveConfigurationValidatorTest {
 
     @Test
     void hasHeapSizeViolationSinceZero() {
-        TeeEnclaveConfiguration enclaveConfig = getEnclaveConfig();
-        enclaveConfig.setHeapSize(0);
+        TeeEnclaveConfiguration enclaveConfig = TeeEnclaveConfiguration.builder()
+                .entrypoint(ENTRYPOINT)
+                .heapSize(0)
+                .fingerprint(FINGERPRINT)
+                .build();
         List<String> violations = new TeeEnclaveConfigurationValidator(enclaveConfig)
                 .validate();
         Assertions.assertEquals(1, violations.size());
@@ -71,8 +80,11 @@ class TeeEnclaveConfigurationValidatorTest {
 
     @Test
     void hasFingerprintViolationSinceEmpty() {
-        TeeEnclaveConfiguration enclaveConfig = getEnclaveConfig();
-        enclaveConfig.setFingerprint("");
+        TeeEnclaveConfiguration enclaveConfig = TeeEnclaveConfiguration.builder()
+                .entrypoint(ENTRYPOINT)
+                .heapSize(HEAP)
+                .fingerprint("")
+                .build();
         List<String> violations = new TeeEnclaveConfigurationValidator(enclaveConfig)
                 .validate();
         Assertions.assertEquals(1, violations.size());
@@ -81,8 +93,11 @@ class TeeEnclaveConfigurationValidatorTest {
 
     @Test
     void hasFingerprintViolationSinceWrong() {
-        TeeEnclaveConfiguration enclaveConfig = getEnclaveConfig();
-        enclaveConfig.setFingerprint("badFingerprint");
+        TeeEnclaveConfiguration enclaveConfig = TeeEnclaveConfiguration.builder()
+                .entrypoint(ENTRYPOINT)
+                .heapSize(HEAP)
+                .fingerprint("badFingerPrint")
+                .build();
         List<String> violations = new TeeEnclaveConfigurationValidator(enclaveConfig)
                 .validate();
         Assertions.assertEquals(1, violations.size());
