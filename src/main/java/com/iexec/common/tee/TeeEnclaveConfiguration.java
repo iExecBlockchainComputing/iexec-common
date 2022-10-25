@@ -16,6 +16,7 @@
 
 package com.iexec.common.tee;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,6 +31,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TeeEnclaveConfiguration {
 
+    @JsonAlias("provider")
     private TeeFramework framework;
     private String version;
     private String entrypoint;
