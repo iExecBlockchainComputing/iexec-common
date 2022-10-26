@@ -33,7 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
-class TaskDescriptionTest {
+class TaskDescriptionTests {
 
     public static final String CHAIN_TASK_ID = "chainTaskId";
     public static final String REQUESTER = "requester";
@@ -42,7 +42,7 @@ class TaskDescriptionTest {
     public static final DappType APP_TYPE = DappType.DOCKER;
     public static final String APP_URI = "https://uri";
     public static final String APP_ADDRESS = "appAddress";
-    public static final TeeEnclaveConfiguration enclaveConfig = new TeeEnclaveConfiguration();
+    public static final TeeEnclaveConfiguration enclaveConfig = TeeEnclaveConfiguration.builder().build();
     public static final String CMD = "cmd";
     public static final int MAX_EXECUTION_TIME = 1;
     public static final boolean IS_TEE_TASK = true;

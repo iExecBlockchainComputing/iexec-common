@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class TeeEnclaveConfigurationTest {
+class TeeEnclaveConfigurationTests {
 
     public static final long KB = 1024;
     public static final long MB = 1024 * KB;
@@ -45,11 +45,24 @@ class TeeEnclaveConfigurationTest {
             "\"fingerprint\":\"" + FINGERPRINT + "\"" +
             "}";
 
+    private static final String OLD_JSON_FORMAT = "{" +
+            "\"provider\":\"" + FRAMEWORK + "\"," +
+            "\"version\":\"" + VERSION + "\"," +
+            "\"entrypoint\":\"" + ENTRYPOINT + "\"," +
+            "\"heapSize\":" + HEAP_SIZE + "," +
+            "\"fingerprint\":\"" + FINGERPRINT + "\"" +
+            "}";
+
     @Test
     void buildEnclaveConfigurationFromJsonString() throws JsonProcessingException {
         Assertions.assertEquals(ENCLAVE_CONFIGURATION,
-                TeeEnclaveConfiguration
-                        .buildEnclaveConfigurationFromJsonString(ENCLAVE_CONFIGURATION_JSON_STRING));
+                TeeEnclaveConfiguration.buildEnclaveConfigurationFromJsonString(ENCLAVE_CONFIGURATION_JSON_STRING));
+    }
+
+    @Test
+    void buildEnclaveConfigurationFromOldJsonString() throws JsonProcessingException {
+        Assertions.assertEquals(ENCLAVE_CONFIGURATION,
+                TeeEnclaveConfiguration.buildEnclaveConfigurationFromJsonString(OLD_JSON_FORMAT));
     }
 
     @Test
@@ -57,4 +70,5 @@ class TeeEnclaveConfigurationTest {
         Assertions.assertEquals(ENCLAVE_CONFIGURATION_JSON_STRING,
                 ENCLAVE_CONFIGURATION.toJsonString());
     }
+
 }
