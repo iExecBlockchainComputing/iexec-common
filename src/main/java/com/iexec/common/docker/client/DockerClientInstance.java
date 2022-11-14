@@ -19,6 +19,7 @@ package com.iexec.common.docker.client;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.exception.DockerException;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -161,18 +162,16 @@ public class DockerClientInstance {
         if (StringUtils.isBlank(volumeName)) {
             return false;
         }
-        if (!isVolumePresent(volumeName)) {
-            log.info("No docker volume to remove [name:{}]", volumeName);
-            return false;
-        }
         try (RemoveVolumeCmd removeVolumeCmd = getClient().removeVolumeCmd(volumeName)) {
             removeVolumeCmd.exec();
             log.info("Removed docker volume [name:{}]", volumeName);
             return true;
+        } catch (NotFoundException e) {
+            log.info("No docker volume to remove [name:{}]", volumeName);
         } catch (Exception e) {
             log.error("Error removing docker volume [name:{}]", volumeName, e);
-            return false;
         }
+        return false;
     }
     //endregion
 
@@ -233,19 +232,17 @@ public class DockerClientInstance {
             log.error("Invalid docker network name [name:{}]", networkName);
             return false;
         }
-        if (!isNetworkPresent(networkName)) {
-            log.info("No docker network to remove [name:{}]", networkName);
-            return false;
-        }
         try (RemoveNetworkCmd removeNetworkCmd =
                      getClient().removeNetworkCmd(networkName)) {
             removeNetworkCmd.exec();
             log.info("Removed docker network [name:{}]", networkName);
             return true;
+        } catch (NotFoundException e) {
+            log.info("No docker network to remove [name:{}]", networkName);
         } catch (Exception e) {
             log.error("Error removing docker network [name:{}]", networkName, e);
-            return false;
         }
+        return false;
     }
     //endregion
 
