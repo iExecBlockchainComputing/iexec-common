@@ -37,6 +37,7 @@ repositories {
 // 'api' configuration allows to expose dependencies with 'compile' scope in pom
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.6.2"))
     // web3j dependency
     api "org.web3j:core:4.7.0"
     
@@ -67,7 +68,7 @@ dependencies {
     // json
     implementation 'org.json:json:20201115'
 
-    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-classic'
 
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.hibernate.validator:hibernate-validator:6.0.13.Final'
@@ -94,6 +95,8 @@ dependencies {
     // mock-server
     testImplementation "org.mock-server:mockserver-client-java:$mockServerVersion"
     testImplementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
+    // spring-test for ReflectionTestUtils
+    testImplementation("org.springframework:spring-test")
 }
 
 
