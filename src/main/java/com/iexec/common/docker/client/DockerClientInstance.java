@@ -167,7 +167,7 @@ public class DockerClientInstance {
             log.info("Removed docker volume [name:{}]", volumeName);
             return true;
         } catch (NotFoundException e) {
-            log.info("No docker volume to remove [name:{}]", volumeName);
+            log.warn("No docker volume to remove [name:{}]", volumeName);
         } catch (Exception e) {
             log.error("Error removing docker volume [name:{}]", volumeName, e);
         }
@@ -238,7 +238,7 @@ public class DockerClientInstance {
             log.info("Removed docker network [name:{}]", networkName);
             return true;
         } catch (NotFoundException e) {
-            log.info("No docker network to remove [name:{}]", networkName);
+            log.warn("No docker network to remove [name:{}]", networkName);
         } catch (Exception e) {
             log.error("Error removing docker network [name:{}]", networkName, e);
         }
