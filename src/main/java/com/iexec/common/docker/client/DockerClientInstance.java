@@ -108,10 +108,7 @@ public class DockerClientInstance {
         return this.client;
     }
 
-    /*
-     * Docker volume
-     */
-
+    //region volume
     public synchronized boolean createVolume(String volumeName) {
         if (StringUtils.isBlank(volumeName)) {
             log.error("Invalid docker volume name [name:{}]", volumeName);
@@ -177,11 +174,9 @@ public class DockerClientInstance {
             return false;
         }
     }
+    //endregion
 
-    /*
-     * Docker network
-     */
-
+    //region network
     public synchronized String createNetwork(String networkName) {
         if (StringUtils.isBlank(networkName)) {
             log.error("Invalid docker network name [name:{}]", networkName);
@@ -252,11 +247,9 @@ public class DockerClientInstance {
             return false;
         }
     }
+    //endregion
 
-    /*
-     * Docker image
-     */
-
+    //region image
     /**
      * Pull docker image and timeout after 1 minute.
      * 
@@ -376,11 +369,9 @@ public class DockerClientInstance {
             return false;
         }
     }
+    //endregion
 
-    /*
-     * Docker container
-     */
-
+    //region container
     /**
      * Run a docker container with the specified config.
      * If maxExecutionTime is les or equal to 0, the container
@@ -838,10 +829,7 @@ public class DockerClientInstance {
                 .stderr(stderr.toString())
                 .build());
     }
-
-    /*
-     * Docker client
-     */
+    //endregion
 
     /**
      * Build a new docker client instance. If credentials are provided, an authentication
