@@ -30,6 +30,11 @@ abstract class AbstractDockerTests {
     DockerClientInstance dockerClientInstance = new DockerClientInstance();
     DockerClientInstance corruptClientInstance = getCorruptInstance();
 
+    /**
+     * Creates a DockerClient instance trying to communicate with a docker server on a non-existing endpoint.
+     * Every single call to this instance will provoke an exception.
+     * @return The faulty DockerClient instance
+     */
     DockerClientInstance getCorruptInstance() {
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withDockerHost("tcp://localhost:11111")
