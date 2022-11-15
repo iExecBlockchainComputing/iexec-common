@@ -19,6 +19,7 @@ package com.iexec.common.docker.client;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.exception.DockerException;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -108,10 +109,7 @@ public class DockerClientInstance {
         return this.client;
     }
 
-    /*
-     * Docker volume
-     */
-
+    //region volume
     public synchronized boolean createVolume(String volumeName) {
         if (StringUtils.isBlank(volumeName)) {
             log.error("Invalid docker volume name [name:{}]", volumeName);
@@ -164,24 +162,20 @@ public class DockerClientInstance {
         if (StringUtils.isBlank(volumeName)) {
             return false;
         }
-        if (!isVolumePresent(volumeName)) {
-            log.info("No docker volume to remove [name:{}]", volumeName);
-            return false;
-        }
         try (RemoveVolumeCmd removeVolumeCmd = getClient().removeVolumeCmd(volumeName)) {
             removeVolumeCmd.exec();
             log.info("Removed docker volume [name:{}]", volumeName);
             return true;
+        } catch (NotFoundException e) {
+            log.warn("No docker volume to remove [name:{}]", volumeName);
         } catch (Exception e) {
             log.error("Error removing docker volume [name:{}]", volumeName, e);
-            return false;
         }
+        return false;
     }
+    //endregion
 
-    /*
-     * Docker network
-     */
-
+    //region network
     public synchronized String createNetwork(String networkName) {
         if (StringUtils.isBlank(networkName)) {
             log.error("Invalid docker network name [name:{}]", networkName);
@@ -238,25 +232,21 @@ public class DockerClientInstance {
             log.error("Invalid docker network name [name:{}]", networkName);
             return false;
         }
-        if (!isNetworkPresent(networkName)) {
-            log.info("No docker network to remove [name:{}]", networkName);
-            return false;
-        }
         try (RemoveNetworkCmd removeNetworkCmd =
                      getClient().removeNetworkCmd(networkName)) {
             removeNetworkCmd.exec();
             log.info("Removed docker network [name:{}]", networkName);
             return true;
+        } catch (NotFoundException e) {
+            log.warn("No docker network to remove [name:{}]", networkName);
         } catch (Exception e) {
             log.error("Error removing docker network [name:{}]", networkName, e);
-            return false;
         }
+        return false;
     }
+    //endregion
 
-    /*
-     * Docker image
-     */
-
+    //region image
     /**
      * Pull docker image and timeout after 1 minute.
      * 
@@ -376,11 +366,9 @@ public class DockerClientInstance {
             return false;
         }
     }
+    //endregion
 
-    /*
-     * Docker container
-     */
-
+    //region container
     /**
      * Run a docker container with the specified config.
      * If maxExecutionTime is les or equal to 0, the container
@@ -838,10 +826,7 @@ public class DockerClientInstance {
                 .stderr(stderr.toString())
                 .build());
     }
-
-    /*
-     * Docker client
-     */
+    //endregion
 
     /**
      * Build a new docker client instance. If credentials are provided, an authentication
