@@ -37,7 +37,7 @@ repositories {
 // 'api' configuration allows to expose dependencies with 'compile' scope in pom
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.6.2"))
+    implementation platform("org.springframework.boot:spring-boot-dependencies:2.6.2")
     // web3j dependency
     api "org.web3j:core:4.7.0"
     
@@ -96,7 +96,7 @@ dependencies {
     testImplementation "org.mock-server:mockserver-client-java:$mockServerVersion"
     testImplementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
     // spring-test for ReflectionTestUtils
-    testImplementation("org.springframework:spring-test")
+    testImplementation "org.springframework:spring-test"
 }
 
 
