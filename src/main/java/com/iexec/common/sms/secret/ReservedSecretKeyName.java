@@ -16,6 +16,11 @@
 
 package com.iexec.common.sms.secret;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@Deprecated(forRemoval = true)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReservedSecretKeyName {
 
     //result encryption

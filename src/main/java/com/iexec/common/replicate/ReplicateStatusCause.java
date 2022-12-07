@@ -27,6 +27,7 @@ public enum ReplicateStatusCause {
     STAKE_TOO_LOW,
     OUT_OF_GAS,
     TASK_NOT_ACTIVE,
+    TASK_DESCRIPTION_INVALID,
     TASK_DESCRIPTION_NOT_FOUND,
     CONTRIBUTION_ALREADY_SET,
     CONSENSUS_REACHED,
@@ -135,7 +136,12 @@ public enum ReplicateStatusCause {
     TEE_NOT_SUPPORTED,
     DETERMINISM_HASH_NOT_FOUND,
     ENCLAVE_SIGNATURE_NOT_FOUND,
+    /**
+     * @deprecated Use WORKERPOOL_AUTHORIZATION_NOT_FOUND instead
+     */
+    @Deprecated
     CONTRIBUTION_AUTHORIZATION_NOT_FOUND,
+    WORKERPOOL_AUTHORIZATION_NOT_FOUND,
     // endregion
 
     // region upload

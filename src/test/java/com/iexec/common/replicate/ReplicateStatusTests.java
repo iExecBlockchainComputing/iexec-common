@@ -21,8 +21,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.iexec.common.replicate.ReplicateStatus.*;
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ReplicateStatusTests {
 
@@ -30,32 +29,32 @@ class ReplicateStatusTests {
     void shouldGetMissingStatuses() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTING);
 
-        assertEquals(missingStatuses.size(), 7);
-        assertEquals(missingStatuses.get(0), STARTING);
-        assertEquals(missingStatuses.get(1), STARTED);
-        assertEquals(missingStatuses.get(2), APP_DOWNLOADING);
-        assertEquals(missingStatuses.get(3), APP_DOWNLOADED);
-        assertEquals(missingStatuses.get(4), DATA_DOWNLOADING);
-        assertEquals(missingStatuses.get(5), DATA_DOWNLOADED);
-        assertEquals(missingStatuses.get(6), COMPUTING);
+        assertThat(missingStatuses).hasSize(7);
+        assertThat(missingStatuses.get(0)).isEqualTo(STARTING);
+        assertThat(missingStatuses.get(1)).isEqualTo(STARTED);
+        assertThat(missingStatuses.get(2)).isEqualTo(APP_DOWNLOADING);
+        assertThat(missingStatuses.get(3)).isEqualTo(APP_DOWNLOADED);
+        assertThat(missingStatuses.get(4)).isEqualTo(DATA_DOWNLOADING);
+        assertThat(missingStatuses.get(5)).isEqualTo(DATA_DOWNLOADED);
+        assertThat(missingStatuses.get(6)).isEqualTo(COMPUTING);
     }
 
     @Test
     void shouldNotGetMissingStatusesWhenFromGreaterThanTo() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(COMPUTING, CREATED);
-        assertEquals(missingStatuses.size(), 0);
+        assertThat(missingStatuses).isEmpty();
     }
 
     @Test
     void shouldNotGetMissingStatusesWhenFromEqualsTo() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, CREATED);
-        assertEquals(missingStatuses.size(), 0);
+        assertThat(missingStatuses).isEmpty();
     }
 
     @Test
     void shouldNotGetMissingStatusesIfFromOrToIsNotInSuccessList() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTE_FAILED);
-        assertEquals(missingStatuses.size(), 0);
+        assertThat(missingStatuses).isEmpty();
     }
 
     @Test
@@ -96,7 +95,7 @@ class ReplicateStatusTests {
                 WORKER_LOST
         );
 
-        runningFailures   .forEach(status -> assertTrue (ReplicateStatus.isFailedBeforeComputed(status)));
-        notRunningFailures.forEach(status -> assertFalse(ReplicateStatus.isFailedBeforeComputed(status)));
+        runningFailures   .forEach(status -> assertThat(ReplicateStatus.isFailedBeforeComputed(status)).isTrue());
+        notRunningFailures.forEach(status -> assertThat(ReplicateStatus.isFailedBeforeComputed(status)).isFalse());
     }
 }

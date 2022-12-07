@@ -19,14 +19,13 @@ package com.iexec.common.docker;
 import com.github.dockerjava.api.model.Device;
 import com.iexec.common.sgx.SgxDriverMode;
 import com.iexec.common.utils.ArgsUtils;
-import com.iexec.common.utils.SgxUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,7 +63,7 @@ public class DockerRunRequest {
      * @return A copy of defined binds or an empty list
      */
     public List<String> getBinds() {
-        return binds != null ? new ArrayList<>(binds) : List.of();
+        return binds != null ? new ArrayList<>(binds) : Collections.emptyList();
     }
 
     /**
@@ -72,7 +71,7 @@ public class DockerRunRequest {
      * @return A copy of defined devices or an empty list
      */
     public List<Device> getDevices() {
-        return devices != null ? new ArrayList<>(devices) : List.of();
+        return devices != null ? new ArrayList<>(devices) : Collections.emptyList();
     }
 
     public SgxDriverMode getSgxDriverMode() {
