@@ -705,6 +705,11 @@ class DockerContainerTests extends AbstractDockerTests {
     }
 
     @Test
+    void shouldNotRemoveContainerSinceNoContainer() {
+        assertThat(dockerClientInstance.removeContainer(getRandomString())).isFalse();
+    }
+
+    @Test
     void shouldNotRemoveContainerSinceRunning() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
