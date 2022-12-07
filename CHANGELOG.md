@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [[6.1.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.1.0) 2022-12-07
+
+* Display stack trace when zip of a folder fails.
+* Add `TASK_DESCRIPTION_INVALID` in `ReplicateStatusCause` to represent invalid task descriptions.
+* Miscellaneous code quality improvements.
+* Add `.sonarcloud.properties` configuration file.
+* Increments of jenkins-library up to version 2.2.3. Enable SonarCloud analyses on branches and Pull Requests.
+
 ## [[6.0.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.0.1) 2022-07-25
 
 * Fix test downloading resource over SSL.
