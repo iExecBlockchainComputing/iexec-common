@@ -84,9 +84,6 @@ class DockerClientInstanceTests {
     @Spy
     private DockerClientInstance dockerClientInstance = new DockerClientInstance();
 
-    @Spy
-    private DockerClient spiedClient = dockerClientInstance.getClient();
-
     private DockerClient corruptedClient = getCorruptedDockerClient();
 
     @BeforeEach
@@ -564,10 +561,6 @@ class DockerClientInstanceTests {
         return random;
     }
 
-    private void useRealDockerClient() {
-        when(dockerClientInstance.getClient()).thenCallRealMethod();
-    }
-
     private void useCorruptedDockerClient() {
         when(dockerClientInstance.getClient()).thenReturn(corruptedClient);
     }
@@ -584,9 +577,4 @@ class DockerClientInstanceTests {
         return DockerClientImpl.getInstance(config, httpClient);
     }
 
-    private void pullImageIfNecessary() {
-        if (dockerClientInstance.getImageId(ALPINE_LATEST).isEmpty()){
-            dockerClientInstance.pullImage(ALPINE_LATEST);
-        }
-    }
 }
