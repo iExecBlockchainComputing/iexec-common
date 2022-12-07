@@ -611,6 +611,11 @@ class DockerContainerTests extends AbstractDockerTests {
     }
 
     @Test
+    void shouldNotGetContainerSinceNoContainer() {
+        assertThat(dockerClientInstance.getContainerLogs(getRandomString())).isEmpty();
+    }
+
+    @Test
     void shouldNotGetContainerLogsSinceDockerCmdException() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();

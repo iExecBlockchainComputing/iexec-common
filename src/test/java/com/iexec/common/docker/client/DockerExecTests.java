@@ -53,6 +53,11 @@ class DockerExecTests extends AbstractDockerTests {
     }
 
     @Test
+    void shouldNotExecuteCommandSinceEmptyContainerName() throws InterruptedException {
+        assertThat(dockerClientInstance.exec("", "sh", "-c", "ls")).isEmpty();
+    }
+
+    @Test
     void shouldNotExecuteCommandSinceContainerNotFound() throws InterruptedException {
         String containerName = getRandomString();
         Optional<DockerLogs> logs =
