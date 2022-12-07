@@ -17,6 +17,7 @@
 package com.iexec.common.docker.client;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.exception.NotFoundException;
@@ -24,9 +25,8 @@ import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.core.NameParser;
-import com.github.dockerjava.core.command.ExecStartResultCallback;
-import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
+import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
 import com.iexec.common.docker.DockerLogs;
 import com.iexec.common.docker.DockerRunFinalStatus;
 import com.iexec.common.docker.DockerRunRequest;
@@ -36,11 +36,13 @@ import com.iexec.common.utils.WaitUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
@@ -48,7 +50,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
-@SuppressWarnings("deprecation") // ExecStartResultCallback
 public class DockerClientInstance {
 
     // default docker registry address
@@ -279,7 +280,7 @@ public class DockerClientInstance {
             return false;
         }
         try (PullImageCmd pullImageCmd =
-                    getClient().pullImageCmd(repoAndTag.repos)) {
+                     getClient().pullImageCmd(repoAndTag.repos)) {
             log.info("Pulling docker image [name:{}]", imageName);
             boolean isPulledBeforeTimeout = pullImageCmd
                     .withTag(repoAndTag.tag)
@@ -371,7 +372,7 @@ public class DockerClientInstance {
     //region container
     /**
      * Run a docker container with the specified config.
-     * If maxExecutionTime is les or equal to 0, the container
+     * If maxExecutionTime is less or equal to 0, the container
      * will run in detached mode, thus, we return immediately
      * without waiting for it to exit.
      * 
@@ -723,14 +724,26 @@ public class DockerClientInstance {
             log.error("Cannot get logs of inexistent docker container [name:{}]", containerName);
             return Optional.empty();
         }
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+        StringBuilder stdout = new StringBuilder();
+        StringBuilder stderr = new StringBuilder();
         try (LogContainerCmd logContainerCmd =
                     getClient().logContainerCmd(containerName)) {
             logContainerCmd
                     .withStdOut(true)
                     .withStdErr(true)
-                    .exec(new ExecStartResultCallback(stdout, stderr))
+                    .exec(new ResultCallback.Adapter<>() {
+                        @Override
+                        public void onNext(Frame object) {
+                            switch(object.getStreamType()) {
+                                case STDOUT:
+                                    stdout.append(new String(object.getPayload()));
+                                    break;
+                                case STDERR:
+                                    stderr.append(new String(object.getPayload()));
+                                    break;
+                            }
+                        }
+                    })
                     .awaitCompletion();
         } catch (Exception e) {
             log.error("Error getting docker container logs [name:{}]", containerName, e);
@@ -793,8 +806,10 @@ public class DockerClientInstance {
             return false;
         }
     }
+    //endregion
 
-    public Optional<DockerLogs> exec(String containerName, String... cmd) {
+    //region exec
+    public Optional<DockerLogs> exec(String containerName, String... cmd) throws InterruptedException {
         if (StringUtils.isBlank(containerName)) {
             return Optional.empty();
         }
@@ -803,20 +818,34 @@ public class DockerClientInstance {
                     containerName);
             return Optional.empty();
         }
+        StringBuilder stdout = new StringBuilder();
+        StringBuilder stderr = new StringBuilder();
         // create 'docker exec' command
-        ExecCreateCmdResponse execCreateCmdResponse = getClient().execCreateCmd(containerName)
-                .withAttachStderr(true)
-                .withAttachStdout(true)
-                .withCmd(cmd)
-                .exec();
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-        // run 'docker exec' command
-        try (ExecStartCmd execStartCmd = getClient().execStartCmd(execCreateCmdResponse.getId())) {
-            execStartCmd
-                    .exec(new ExecStartResultCallback(stdout, stderr))
-                    .awaitCompletion();
-        } catch (Exception e) {
+        try (ExecCreateCmd execCreateCmd = getClient().execCreateCmd(containerName)) {
+            ExecCreateCmdResponse execCreateCmdResponse = execCreateCmd
+                    .withAttachStderr(true)
+                    .withAttachStdout(true)
+                    .withCmd(cmd)
+                    .exec();
+            // run 'docker exec' command
+            try (ExecStartCmd execStartCmd = getClient().execStartCmd(execCreateCmdResponse.getId())) {
+                execStartCmd
+                        .exec(new ResultCallback.Adapter<>() {
+                            @Override
+                            public void onNext(Frame object) {
+                                switch(object.getStreamType()) {
+                                    case STDOUT:
+                                        stdout.append(new String(object.getPayload()));
+                                        break;
+                                    case STDERR:
+                                        stderr.append(new String(object.getPayload()));
+                                        break;
+                                }
+                            }
+                        })
+                        .awaitCompletion();
+            }
+        } catch (RuntimeException e) {
             log.error("Error running docker exec command [name:{}, cmd:{}]",
                     containerName, cmd, e);
             return Optional.empty();
