@@ -734,13 +734,10 @@ public class DockerClientInstance {
                     .exec(new ResultCallback.Adapter<>() {
                         @Override
                         public void onNext(Frame object) {
-                            switch(object.getStreamType()) {
-                                case STDOUT:
-                                    stdout.append(new String(object.getPayload()));
-                                    break;
-                                case STDERR:
-                                    stderr.append(new String(object.getPayload()));
-                                    break;
+                            if (object.getStreamType() == StreamType.STDOUT) {
+                                stdout.append(new String(object.getPayload()));
+                            } else if (object.getStreamType() == StreamType.STDERR) {
+                                stderr.append(new String(object.getPayload()));
                             }
                         }
                     })
@@ -833,13 +830,10 @@ public class DockerClientInstance {
                         .exec(new ResultCallback.Adapter<>() {
                             @Override
                             public void onNext(Frame object) {
-                                switch(object.getStreamType()) {
-                                    case STDOUT:
-                                        stdout.append(new String(object.getPayload()));
-                                        break;
-                                    case STDERR:
-                                        stderr.append(new String(object.getPayload()));
-                                        break;
+                                if (object.getStreamType() == StreamType.STDOUT) {
+                                    stdout.append(new String(object.getPayload()));
+                                } else if (object.getStreamType() == StreamType.STDERR) {
+                                    stderr.append(new String(object.getPayload()));
                                 }
                             }
                         })
