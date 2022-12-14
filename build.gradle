@@ -41,7 +41,7 @@ repositories {
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
     // web3j dependency
-    api "org.web3j:core:4.7.0"
+    api "org.web3j:core:4.8.9"
     
     // apache commons.lang3
     api "org.apache.commons:commons-lang3:3.9"
