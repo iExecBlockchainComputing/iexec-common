@@ -22,13 +22,36 @@ import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
+import com.iexec.common.docker.DockerRunRequest;
+import com.iexec.common.sgx.SgxDriverMode;
+import com.iexec.common.utils.IexecFileHelper;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 abstract class AbstractDockerTests {
 
+    static final String CHAIN_TASK_ID = "chainTaskId";
+    static final String ALPINE_LATEST = "alpine:latest";
+    static final String CMD = "cmd";
+    static final List<String> ENV = List.of("FOO=bar");
+    static final String DOCKER_NETWORK = "dockerTestsNetwork";
+    static final String SLASH_TMP = "/tmp";
+
+    @Spy
     DockerClientInstance dockerClientInstance = new DockerClientInstance();
+    @Spy
     DockerClientInstance corruptClientInstance = getCorruptInstance();
+
+    @BeforeEach
+    void beforeEach() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     /**
      * Creates a DockerClient instance trying to communicate with a docker server on a non-existing endpoint.
@@ -47,6 +70,23 @@ abstract class AbstractDockerTests {
         DockerClientInstance dockerClientInstance = new DockerClientInstance();
         ReflectionTestUtils.setField(dockerClientInstance, "client", corruptedDockerClient);
         return dockerClientInstance;
+    }
+
+    DockerRunRequest getDefaultDockerRunRequest(SgxDriverMode sgxDriverMode) {
+        return DockerRunRequest.builder()
+                .containerName(getRandomString())
+                .chainTaskId(CHAIN_TASK_ID)
+                .imageUri(ALPINE_LATEST)
+                .cmd(CMD)
+                .env(ENV)
+                .sgxDriverMode(sgxDriverMode)
+                .containerPort(1000)
+                .binds(Collections.singletonList(IexecFileHelper.SLASH_IEXEC_IN +
+                        ":" + IexecFileHelper.SLASH_IEXEC_OUT))
+                .maxExecutionTime(500000)
+                .dockerNetwork(DOCKER_NETWORK)
+                .workingDir(SLASH_TMP)
+                .build();
     }
 
     String getRandomString() {
