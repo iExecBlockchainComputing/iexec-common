@@ -66,9 +66,9 @@ abstract class AbstractDockerTests {
                 .dockerHost(config.getDockerHost())
                 .sslConfig(config.getSSLConfig())
                 .build();
-        DockerClient corruptedDockerClient = DockerClientImpl.getInstance(config, httpClient);
+        DockerClient corruptDockerClient = DockerClientImpl.getInstance(config, httpClient);
         DockerClientInstance dockerClientInstance = new DockerClientInstance();
-        ReflectionTestUtils.setField(dockerClientInstance, "client", corruptedDockerClient);
+        ReflectionTestUtils.setField(dockerClientInstance, "client", corruptDockerClient);
         return dockerClientInstance;
     }
 
