@@ -36,7 +36,7 @@ class DockerExecTests extends AbstractDockerTests {
 
     //region exec
     @Test
-    void shouldExecuteCommandInContainer() throws InterruptedException {
+    void shouldExecuteCommandInContainerWithStdout() throws InterruptedException {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 10'");
@@ -44,12 +44,32 @@ class DockerExecTests extends AbstractDockerTests {
         String cmd = "echo " + msg;
         dockerClientInstance.createContainer(request);
         dockerClientInstance.startContainer(containerName);
-
-        Optional<DockerLogs> logs =
-                dockerClientInstance.exec(containerName, "sh", "-c", cmd);
+        Optional<DockerLogs> logs = dockerClientInstance.exec(containerName, "sh", "-c", cmd);
         assertThat(logs).isPresent();
         assertThat(logs.get().getStdout().trim()).isEqualTo(msg);
+        assertThat(logs.get().getStderr().trim()).isEmpty();
         dockerClientInstance.stopAndRemoveContainer(containerName);
+    }
+
+    @Test
+    void shouldExecuteCommandInContainerWithStderr() throws InterruptedException {
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
+        String containerName = request.getContainerName();
+        request.setCmd("sh -c 'sleep 10'");
+        String msg = "Hello from Docker alpine!";
+        String cmd = "echo " + msg + " >&2";
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
+        Optional<DockerLogs> logs = dockerClientInstance.exec(containerName, "sh", "-c", cmd);
+        assertThat(logs).isPresent();
+        assertThat(logs.get().getStdout().trim()).isEmpty();
+        assertThat(logs.get().getStderr().trim()).isEqualTo(msg);
+        dockerClientInstance.stopAndRemoveContainer(containerName);
+    }
+
+    @Test
+    void shouldNotExecuteCommandSinceEmptyContainerName() throws InterruptedException {
+        assertThat(dockerClientInstance.exec("", "sh", "-c", "ls")).isEmpty();
     }
 
     @Test
