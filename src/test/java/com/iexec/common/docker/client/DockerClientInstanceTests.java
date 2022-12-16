@@ -281,11 +281,10 @@ class DockerClientInstanceTests {
     @Test
     void shouldCreateNetwork() {
         String networkName = getRandomString();
-        String networkId = dockerClientInstance.createNetwork(networkName);
-        assertThat(networkId).isNotEmpty();
+        assertThat(dockerClientInstance.createNetwork(networkName)).isNotEmpty();
         assertThat(dockerClientInstance.isNetworkPresent(networkName)).isTrue();
         // cleaning
-        dockerClientInstance.removeNetwork(networkId);
+        dockerClientInstance.removeNetwork(networkName);
     }
 
     @Test
@@ -297,10 +296,9 @@ class DockerClientInstanceTests {
     void shouldReturnExistingNetworkIdWenNetworkIsAlreadyPresent() {
         String networkName = getRandomString();
         String networkId = dockerClientInstance.createNetwork(networkName);
-        assertThat(dockerClientInstance.createNetwork(networkName)).isNotEmpty();
-        assertThat(dockerClientInstance.isNetworkPresent(networkName)).isTrue();
+        assertThat(dockerClientInstance.createNetwork(networkName)).isEqualTo(networkId);
         // cleaning
-        dockerClientInstance.removeNetwork(networkId);
+        dockerClientInstance.removeNetwork(networkName);
     }
 
     @Test
@@ -317,7 +315,7 @@ class DockerClientInstanceTests {
         String networkId = dockerClientInstance.createNetwork(networkName);
         assertThat(dockerClientInstance.getNetworkId(networkName)).isEqualTo(networkId);
         // cleaning
-        dockerClientInstance.removeNetwork(networkId);
+        dockerClientInstance.removeNetwork(networkName);
     }
 
     @Test
