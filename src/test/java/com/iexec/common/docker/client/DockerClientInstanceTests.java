@@ -815,6 +815,7 @@ class DockerClientInstanceTests {
         verify(dockerClientInstance).getContainerLogs(containerName);
         verify(dockerClientInstance, never()).removeContainer(containerName);
         // clean
+        doCallRealMethod().when(dockerClientInstance).stopContainer(containerName);
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
 
@@ -844,6 +845,7 @@ class DockerClientInstanceTests {
         verify(dockerClientInstance).getContainerLogs(containerName);
         verify(dockerClientInstance).removeContainer(containerName);
         // clean
+        doCallRealMethod().when(dockerClientInstance).removeContainer(containerName);
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
 
@@ -898,7 +900,7 @@ class DockerClientInstanceTests {
         assertThat(container2Id).isNotEmpty();
         assertThat(container2Id).isNotEqualTo(container1Id);
         // cleaning
-        dockerClientInstance.removeContainer(container2Id);
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
 
     @Test
@@ -911,7 +913,7 @@ class DockerClientInstanceTests {
         assertThat(container1Id).isNotEmpty();
         assertThat(container2Id).isEmpty();
         // cleaning
-        dockerClientInstance.removeContainer(container1Id);
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
 
     // buildHostConfigFromRunRequest
@@ -1043,7 +1045,7 @@ class DockerClientInstanceTests {
                         null,
                         dockerClientInstance.getClient()
                                 .createContainerCmd("repo/image:tag")
-                        );
+                );
         assertThat(actualCreateContainerCmd).isEmpty();
     }
 
@@ -1294,6 +1296,7 @@ class DockerClientInstanceTests {
         int exitCode = dockerClientInstance
                 .getContainerExitCode(request.getContainerName());
         assertThat(exitCode).isEqualTo(0);
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
 
     @Test
@@ -1364,10 +1367,12 @@ class DockerClientInstanceTests {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerClientInstance.createContainer(request);
         when(dockerClientInstance.getClient())
-                .thenCallRealMethod() // isContainerPresent
-                .thenReturn(corruptedClient);
+                .thenCallRealMethod()        // isContainerPresent
+                .thenReturn(corruptedClient) // logContainerCmd
+                .thenCallRealMethod();       // removeContainer
         assertThat(dockerClientInstance.getContainerLogs(request.getContainerName()))
                 .isEmpty();
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
 
     // stopContainer
@@ -1437,9 +1442,10 @@ class DockerClientInstanceTests {
         dockerClientInstance.createContainer(request);
         dockerClientInstance.startContainer(containerName);
         when(dockerClientInstance.getClient())
-                .thenCallRealMethod() // isContainerPresent
-                .thenCallRealMethod() // getContainerStatus
-                .thenReturn(corruptedClient);
+                .thenCallRealMethod()        // isContainerPresent
+                .thenCallRealMethod()        // getContainerStatus
+                .thenReturn(corruptedClient) // stopContainerCmd
+                .thenCallRealMethod();       // stopAndRemoveContainer
         assertThat(dockerClientInstance.stopContainer(containerName)).isFalse();
         // clean
         dockerClientInstance.stopAndRemoveContainer(containerName);
@@ -1489,8 +1495,9 @@ class DockerClientInstanceTests {
         dockerClientInstance.createContainer(request);
         dockerClientInstance.startContainer(containerName);
         when(dockerClientInstance.getClient())
-                .thenCallRealMethod() // isContainerPresent
-                .thenReturn(corruptedClient);
+                .thenCallRealMethod()        // isContainerPresent
+                .thenReturn(corruptedClient) // removeContainerCmd
+                .thenCallRealMethod();       // stopAndRemoveContainer
 
         assertThat(dockerClientInstance.removeContainer(containerName)).isFalse();
         // clean
@@ -1537,9 +1544,10 @@ class DockerClientInstanceTests {
         dockerClientInstance.createContainer(request);
         dockerClientInstance.startContainer(containerName);
         when(dockerClientInstance.getClient())
-                .thenCallRealMethod() // isContainerPresent
-                .thenCallRealMethod() // create command
-                .thenReturn(corruptedClient);
+                .thenCallRealMethod()        // isContainerPresent
+                .thenCallRealMethod()        // execCreateCmd
+                .thenReturn(corruptedClient) // execStartCmd
+                .thenCallRealMethod();       // stopAndRemoveContainer
 
         Optional<DockerLogs> logs = 
                 dockerClientInstance.exec(containerName, "sh", "-c", cmd);
