@@ -392,9 +392,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldFindImagePresent() {
-        dockerClientInstance.pullImage(ALPINE_LATEST);
         assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isTrue();
-        dockerClientInstance.removeImage(ALPINE_LATEST);
     }
 
     @Test
@@ -418,16 +416,16 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldPullImage() {
+        dockerClientInstance.removeImage(ALPINE_LATEST);
         assertThat(dockerClientInstance.pullImage(ALPINE_LATEST)).isTrue();
         assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isTrue();
-        dockerClientInstance.removeImage(ALPINE_LATEST);
     }
 
     @Test
     void shouldPullImageWithExplicitTimeout() {
+        dockerClientInstance.removeImage(ALPINE_LATEST);
         assertThat(dockerClientInstance.pullImage(ALPINE_LATEST, Duration.of(3, ChronoUnit.MINUTES))).isTrue();
         assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isTrue();
-        dockerClientInstance.removeImage(ALPINE_LATEST);
     }
 
     @Test
@@ -435,7 +433,7 @@ class DockerClientInstanceTests {
         dockerClientInstance.removeImage(ALPINE_LATEST);
         assertThat(dockerClientInstance.pullImage(ALPINE_LATEST, Duration.of(1, ChronoUnit.SECONDS))).isFalse();
         assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isFalse();
-        dockerClientInstance.removeImage(ALPINE_LATEST);
+        dockerClientInstance.pullImage(ALPINE_LATEST);
     }
 
     @Test
@@ -623,14 +621,8 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotRemoveImageByIdSinceDockerCmdException() {
-        dockerClientInstance.pullImage(ALPINE_LATEST);
-        dockerClientInstance.getImageId(ALPINE_LATEST);
-
         useCorruptedDockerClient();
         assertThat(dockerClientInstance.removeImage(ALPINE_LATEST)).isFalse();
-
-        // cleaning
-        dockerClientInstance.removeImage(ALPINE_LATEST);
     }
 
     /**
@@ -860,12 +852,10 @@ class DockerClientInstanceTests {
     @Test
     void shouldCreateContainer() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        dockerClientInstance.pullImage(request.getImageUri());
         String containerId = dockerClientInstance.createContainer(request);
         assertThat(containerId).isNotEmpty();
         // cleaning
         dockerClientInstance.removeContainer(request.getContainerName());
-        dockerClientInstance.removeImage(request.getImageUri());
     }
 
     @Test
@@ -901,7 +891,6 @@ class DockerClientInstanceTests {
     @Test
     void shouldCreateContainerAndRemoveExistingDuplicate() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        dockerClientInstance.pullImage(request.getImageUri());
         // create first container
         String container1Id = dockerClientInstance.createContainer(request);
         // create second container with same name (should replace previous one)
@@ -910,13 +899,11 @@ class DockerClientInstanceTests {
         assertThat(container2Id).isNotEqualTo(container1Id);
         // cleaning
         dockerClientInstance.removeContainer(container2Id);
-        dockerClientInstance.removeImage(request.getImageUri());
     }
 
     @Test
     void shouldNotCreateContainerSinceDuplicateIsPresent() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        dockerClientInstance.pullImage(request.getImageUri());
         // create first container
         String container1Id = dockerClientInstance.createContainer(request);
         // create second container with same name (should not replace previous one)
@@ -925,7 +912,6 @@ class DockerClientInstanceTests {
         assertThat(container2Id).isEmpty();
         // cleaning
         dockerClientInstance.removeContainer(container1Id);
-        dockerClientInstance.removeImage(request.getImageUri());
     }
 
     // buildHostConfigFromRunRequest
