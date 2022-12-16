@@ -34,6 +34,7 @@ import com.iexec.common.sgx.SgxDriverMode;
 import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.IexecFileHelper;
 import com.iexec.common.utils.SgxUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,6 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+@Slf4j
 @Tag("slow")
 class DockerClientInstanceTests {
 
@@ -95,14 +97,20 @@ class DockerClientInstanceTests {
 
     private DockerClient corruptedClient = getCorruptedDockerClient();
 
-    @BeforeEach
-    void beforeEach() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @BeforeAll
     static void beforeAll() {
         usedImages.forEach(imageName -> new DockerClientInstance().pullImage(imageName));
+    }
+
+    @BeforeEach
+    void beforeEach(TestInfo testInfo) {
+        log.info(">>> {}", testInfo.getDisplayName());
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void afterEach(TestInfo testInfo) {
+        log.info(">>> {}", testInfo.getDisplayName());
     }
 
     @AfterAll
