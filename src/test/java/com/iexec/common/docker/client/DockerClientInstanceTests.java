@@ -157,7 +157,7 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldGetAuthenticatedClientWithDockerIoRegistry() throws Exception {
+    void shouldGetAuthenticatedClientWithDockerIoRegistry() {
         String dockerIoUsername = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
         String dockerIoPassword = getEnvValue(DOCKERHUB_PASSWORD_ENV_NAME);
         DockerClientInstance instance = new DockerClientInstance(
@@ -222,7 +222,7 @@ class DockerClientInstanceTests {
     // isVolumePresent
 
     @Test
-    void ShouldFindVolumePresent() {
+    void shouldFindVolumePresent() {
         String volumeName = getRandomString();
         dockerClientInstance.createVolume(volumeName);
         assertThat(dockerClientInstance.isVolumePresent(volumeName)).isTrue();
