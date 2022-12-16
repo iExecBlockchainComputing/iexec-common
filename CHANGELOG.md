@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [[6.2.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.2.0) 2022-12-16
+
+* Update Web3j dependency to version [4.8.9](https://github.com/web3j/web3j/releases/tag/v4.8.9).
+* Add `CredentialsAbstractService` constructor from `Credentials`.
+
 ## [[6.1.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.1.0) 2022-12-07
 
 * Display stack trace when zip of a folder fails.
