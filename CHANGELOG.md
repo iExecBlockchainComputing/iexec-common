@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [[6.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.2.1) 2022-12-16
+## [[6.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.2.1) 2022-12-19
 
 * Improve Docker tests reentrancy.
 
