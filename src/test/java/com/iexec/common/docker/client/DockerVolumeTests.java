@@ -54,7 +54,7 @@ class DockerVolumeTests extends AbstractDockerTests {
 
     //region isVolumePresent
     @Test
-    void ShouldFindVolumePresent() {
+    void shouldFindVolumePresent() {
         String volumeName = getRandomString();
         dockerClientInstance.createVolume(volumeName);
         assertThat(dockerClientInstance.isVolumePresent(volumeName)).isTrue();
