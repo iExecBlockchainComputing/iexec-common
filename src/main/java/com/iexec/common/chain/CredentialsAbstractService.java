@@ -49,7 +49,7 @@ public abstract class CredentialsAbstractService {
         this.credentials = credentials;
         if (credentials != null
                 && EthAddress.validate(credentials.getAddress())) {
-            log.info("Loaded wallet credentials [address:{}] ",
+            log.info("Loaded wallet credentials [address:{}]",
                     credentials.getAddress());
         } else {
             throw new ExceptionInInitializerError("Cannot create credential service");
