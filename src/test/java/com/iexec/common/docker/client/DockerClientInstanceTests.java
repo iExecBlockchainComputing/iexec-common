@@ -34,6 +34,7 @@ import com.iexec.common.sgx.SgxDriverMode;
 import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.IexecFileHelper;
 import com.iexec.common.utils.SgxUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,9 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-// Disabling these tests as they are not UT.
-// They interact with the outer world and the CI/CD doesn't like that.
-@Disabled
+@Slf4j
 @Tag("slow")
 class DockerClientInstanceTests {
 
@@ -98,14 +97,20 @@ class DockerClientInstanceTests {
 
     private DockerClient corruptedClient = getCorruptedDockerClient();
 
-    @BeforeEach
-    void beforeEach() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @BeforeAll
     static void beforeAll() {
         usedImages.forEach(imageName -> new DockerClientInstance().pullImage(imageName));
+    }
+
+    @BeforeEach
+    void beforeEach(TestInfo testInfo) {
+        log.info(">>> {}", testInfo.getDisplayName());
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void afterEach(TestInfo testInfo) {
+        log.info(">>> {}", testInfo.getDisplayName());
     }
 
     @AfterAll
@@ -157,7 +162,7 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldGetAuthenticatedClientWithDockerIoRegistry() throws Exception {
+    void shouldGetAuthenticatedClientWithDockerIoRegistry() {
         String dockerIoUsername = getEnvValue(DOCKERHUB_USERNAME_ENV_NAME);
         String dockerIoPassword = getEnvValue(DOCKERHUB_PASSWORD_ENV_NAME);
         DockerClientInstance instance = new DockerClientInstance(
@@ -188,9 +193,7 @@ class DockerClientInstanceTests {
     //region isImagePresent
     @Test
     void shouldFindImagePresent() {
-        dockerClientInstance.pullImage(ALPINE_LATEST);
         assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isTrue();
-        dockerClientInstance.removeImage(ALPINE_LATEST);
     }
 
     @Test
@@ -214,16 +217,16 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldPullImage() {
+        dockerClientInstance.removeImage(ALPINE_LATEST);
         assertThat(dockerClientInstance.pullImage(ALPINE_LATEST)).isTrue();
         assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isTrue();
-        dockerClientInstance.removeImage(ALPINE_LATEST);
     }
 
     @Test
     void shouldPullImageWithExplicitTimeout() {
+        dockerClientInstance.removeImage(ALPINE_LATEST);
         assertThat(dockerClientInstance.pullImage(ALPINE_LATEST, Duration.of(3, ChronoUnit.MINUTES))).isTrue();
         assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isTrue();
-        dockerClientInstance.removeImage(ALPINE_LATEST);
     }
 
     @Test
@@ -231,7 +234,7 @@ class DockerClientInstanceTests {
         dockerClientInstance.removeImage(ALPINE_LATEST);
         assertThat(dockerClientInstance.pullImage(ALPINE_LATEST, Duration.of(1, ChronoUnit.SECONDS))).isFalse();
         assertThat(dockerClientInstance.isImagePresent(ALPINE_LATEST)).isFalse();
-        dockerClientInstance.removeImage(ALPINE_LATEST);
+        dockerClientInstance.pullImage(ALPINE_LATEST);
     }
 
     @Test
@@ -419,14 +422,8 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotRemoveImageByIdSinceDockerCmdException() {
-        dockerClientInstance.pullImage(ALPINE_LATEST);
-        dockerClientInstance.getImageId(ALPINE_LATEST);
-
         useCorruptedDockerClient();
         assertThat(dockerClientInstance.removeImage(ALPINE_LATEST)).isFalse();
-
-        // cleaning
-        dockerClientInstance.removeImage(ALPINE_LATEST);
     }
     //endregion
 
@@ -615,6 +612,7 @@ class DockerClientInstanceTests {
         verify(dockerClientInstance).getContainerLogs(containerName);
         verify(dockerClientInstance, never()).removeContainer(containerName);
         // clean
+        doCallRealMethod().when(dockerClientInstance).stopContainer(containerName);
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
 
@@ -644,6 +642,7 @@ class DockerClientInstanceTests {
         verify(dockerClientInstance).getContainerLogs(containerName);
         verify(dockerClientInstance).removeContainer(containerName);
         // clean
+        doCallRealMethod().when(dockerClientInstance).removeContainer(containerName);
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
     //endregion
@@ -652,12 +651,10 @@ class DockerClientInstanceTests {
     @Test
     void shouldCreateContainer() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        dockerClientInstance.pullImage(request.getImageUri());
         String containerId = dockerClientInstance.createContainer(request);
         assertThat(containerId).isNotEmpty();
         // cleaning
         dockerClientInstance.removeContainer(request.getContainerName());
-        dockerClientInstance.removeImage(request.getImageUri());
     }
 
     @Test
@@ -693,7 +690,6 @@ class DockerClientInstanceTests {
     @Test
     void shouldCreateContainerAndRemoveExistingDuplicate() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        dockerClientInstance.pullImage(request.getImageUri());
         // create first container
         String container1Id = dockerClientInstance.createContainer(request);
         // create second container with same name (should replace previous one)
@@ -701,14 +697,12 @@ class DockerClientInstanceTests {
         assertThat(container2Id).isNotEmpty();
         assertThat(container2Id).isNotEqualTo(container1Id);
         // cleaning
-        dockerClientInstance.removeContainer(container2Id);
-        dockerClientInstance.removeImage(request.getImageUri());
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
 
     @Test
     void shouldNotCreateContainerSinceDuplicateIsPresent() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        dockerClientInstance.pullImage(request.getImageUri());
         // create first container
         String container1Id = dockerClientInstance.createContainer(request);
         // create second container with same name (should not replace previous one)
@@ -716,8 +710,7 @@ class DockerClientInstanceTests {
         assertThat(container1Id).isNotEmpty();
         assertThat(container2Id).isEmpty();
         // cleaning
-        dockerClientInstance.removeContainer(container1Id);
-        dockerClientInstance.removeImage(request.getImageUri());
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
     //endregion
 
@@ -851,7 +844,7 @@ class DockerClientInstanceTests {
                         null,
                         dockerClientInstance.getClient()
                                 .createContainerCmd("repo/image:tag")
-                        );
+                );
         assertThat(actualCreateContainerCmd).isEmpty();
     }
     //endregion
@@ -1098,6 +1091,7 @@ class DockerClientInstanceTests {
         int exitCode = dockerClientInstance
                 .getContainerExitCode(request.getContainerName());
         assertThat(exitCode).isEqualTo(0);
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
 
     @Test
@@ -1168,10 +1162,12 @@ class DockerClientInstanceTests {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         dockerClientInstance.createContainer(request);
         when(dockerClientInstance.getClient())
-                .thenCallRealMethod() // isContainerPresent
-                .thenReturn(corruptedClient);
+                .thenCallRealMethod()        // isContainerPresent
+                .thenReturn(corruptedClient) // logContainerCmd
+                .thenCallRealMethod();       // removeContainer
         assertThat(dockerClientInstance.getContainerLogs(request.getContainerName()))
                 .isEmpty();
+        dockerClientInstance.removeContainer(request.getContainerName());
     }
     //endregion
 
@@ -1241,9 +1237,10 @@ class DockerClientInstanceTests {
         dockerClientInstance.createContainer(request);
         dockerClientInstance.startContainer(containerName);
         when(dockerClientInstance.getClient())
-                .thenCallRealMethod() // isContainerPresent
-                .thenCallRealMethod() // getContainerStatus
-                .thenReturn(corruptedClient);
+                .thenCallRealMethod()        // isContainerPresent
+                .thenCallRealMethod()        // getContainerStatus
+                .thenReturn(corruptedClient) // stopContainerCmd
+                .thenCallRealMethod();       // stopAndRemoveContainer
         assertThat(dockerClientInstance.stopContainer(containerName)).isFalse();
         // clean
         dockerClientInstance.stopAndRemoveContainer(containerName);
@@ -1293,8 +1290,9 @@ class DockerClientInstanceTests {
         dockerClientInstance.createContainer(request);
         dockerClientInstance.startContainer(containerName);
         when(dockerClientInstance.getClient())
-                .thenCallRealMethod() // isContainerPresent
-                .thenReturn(corruptedClient);
+                .thenCallRealMethod()        // isContainerPresent
+                .thenReturn(corruptedClient) // removeContainerCmd
+                .thenCallRealMethod();       // stopAndRemoveContainer
 
         assertThat(dockerClientInstance.removeContainer(containerName)).isFalse();
         // clean
@@ -1341,9 +1339,10 @@ class DockerClientInstanceTests {
         dockerClientInstance.createContainer(request);
         dockerClientInstance.startContainer(containerName);
         when(dockerClientInstance.getClient())
-                .thenCallRealMethod() // isContainerPresent
-                .thenCallRealMethod() // create command
-                .thenReturn(corruptedClient);
+                .thenCallRealMethod()        // isContainerPresent
+                .thenCallRealMethod()        // execCreateCmd
+                .thenReturn(corruptedClient) // execStartCmd
+                .thenCallRealMethod();       // stopAndRemoveContainer
 
         Optional<DockerLogs> logs = 
                 dockerClientInstance.exec(containerName, "sh", "-c", cmd);

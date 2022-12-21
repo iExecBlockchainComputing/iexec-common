@@ -47,7 +47,7 @@ class CredentialsAbstractServiceTests {
             super(walletPassword, walletPath);
         }
 
-        public CredentialsServiceStub(Credentials credentials) throws Exception {
+        public CredentialsServiceStub(Credentials credentials) {
             super(credentials);
         }
 
@@ -58,7 +58,7 @@ class CredentialsAbstractServiceTests {
 
     // region constructor (Credentials)
     @Test
-    void shouldConstructFromCredentials() throws Exception {
+    void shouldConstructFromCredentials() {
         Credentials credentials = Credentials.create(Hash.sha3(""));
 
         CredentialsServiceStub credentialsService = new CredentialsServiceStub(credentials);
@@ -69,13 +69,13 @@ class CredentialsAbstractServiceTests {
     }
 
     @Test
-    void shouldNotConstructFromNullCredentials() throws Exception {
+    void shouldNotConstructFromNullCredentials() {
         Credentials credentials = mock(Credentials.class);
         assertThrows(ExceptionInInitializerError.class, () -> new CredentialsServiceStub(credentials));
     }
 
     @Test
-    void shouldNotConstructFromInvalidCredentials() throws Exception {
+    void shouldNotConstructFromInvalidCredentials() {
         Credentials credentials = mock(Credentials.class);
         when(credentials.getAddress()).thenReturn("0xwrongFormat");
         assertThrows(ExceptionInInitializerError.class, () -> new CredentialsServiceStub(credentials));

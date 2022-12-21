@@ -1,6 +1,6 @@
 # iexec-common
 
-## Steps to genreate Java Wrappers for Smart Contacts
+## Steps to generate Java Wrappers for Smart Contracts
 
 ```
 git clone https://github.com/iExecBlockchainComputing/PoCo-dev/
@@ -24,3 +24,7 @@ web3j truffle generate ~/iexecdev/PoCo-dev/build/contracts/IexecInterfaceTokenAB
 epirus generate solidity generate --abiFile=$HOME/iexecdev/PoCo-dev/build/abi/IexecLibOrders_v5.json -o ~/iexecdev/iexec-common/src/main/java/ -p com.iexec.common.contract.generated
 
 ```
+
+## License
+
+iExec common code is released under the [Apache License 2.0](LICENSE).

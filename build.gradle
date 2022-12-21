@@ -15,11 +15,14 @@ targetCompatibility = 11
 ext {
     // ./gradlew build -Pdev
     isDev = project.hasProperty('dev')
-    gitBranch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
     // dependency versions
     dockerJavaVersion = '3.2.12'
     mockServerVersion = '5.11.2'
     openFeignVersion = '11.7'
+}
+
+if (!project.hasProperty('gitBranch')) {
+    ext.gitBranch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
 }
 
 if (gitBranch != 'main' && gitBranch != 'master' && ! (gitBranch ==~ '(release|hotfix|support)/.*')) {
@@ -39,7 +42,7 @@ repositories {
 dependencies {
     implementation platform("org.springframework.boot:spring-boot-dependencies:2.6.2")
     // web3j dependency
-    api "org.web3j:core:4.7.0"
+    api "org.web3j:core:4.8.9"
     
     // apache commons.lang3
     api "org.apache.commons:commons-lang3:3.9"
