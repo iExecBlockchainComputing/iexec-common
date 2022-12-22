@@ -3,6 +3,6 @@ buildJavaProject(
     buildInfo: getBuildInfo(),
     integrationTestsEnvVars: [],
     shouldPublishJars: true,
-    shouldPublishDockerImages: false,
-    notifyJobs: ['iexec-core', 'iexec-worker']
+    shouldPublishDockerImages: false
+    //notifyJobs: ['iexec-core', 'iexec-worker']
 )
