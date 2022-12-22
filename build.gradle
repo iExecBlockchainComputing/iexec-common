@@ -32,6 +32,13 @@ if (gitBranch != 'main' && gitBranch != 'master' && ! (gitBranch ==~ '(release|h
 repositories {
     mavenCentral()
     maven {
+        url = 'https://docker-regis-adm.iex.ec/repository/maven-public/'
+        credentials {
+            username nexusUser
+            password nexusPassword
+        }
+    }
+    maven {
         url "https://jitpack.io"
     }
 }
