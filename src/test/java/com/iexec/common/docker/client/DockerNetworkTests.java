@@ -30,7 +30,7 @@ class DockerNetworkTests extends AbstractDockerTests {
         assertThat(networkId).isNotEmpty();
         assertThat(dockerClientInstance.isNetworkPresent(networkName)).isTrue();
         // cleaning
-        dockerClientInstance.removeNetwork(networkId);
+        dockerClientInstance.removeNetwork(networkName);
     }
 
     @Test
@@ -45,7 +45,7 @@ class DockerNetworkTests extends AbstractDockerTests {
         assertThat(dockerClientInstance.createNetwork(networkName)).isNotEmpty();
         assertThat(dockerClientInstance.isNetworkPresent(networkName)).isTrue();
         // cleaning
-        dockerClientInstance.removeNetwork(networkId);
+        dockerClientInstance.removeNetwork(networkName);
     }
 
     @Test
@@ -61,7 +61,7 @@ class DockerNetworkTests extends AbstractDockerTests {
         String networkId = dockerClientInstance.createNetwork(networkName);
         assertThat(dockerClientInstance.getNetworkId(networkName)).isEqualTo(networkId);
         // cleaning
-        dockerClientInstance.removeNetwork(networkId);
+        dockerClientInstance.removeNetwork(networkName);
     }
 
     @Test
