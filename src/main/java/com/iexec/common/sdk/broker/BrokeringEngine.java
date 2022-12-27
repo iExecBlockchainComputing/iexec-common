@@ -40,7 +40,7 @@ public class BrokeringEngine {
         this.walletPassword = walletPassword;
     }
 
-    public String matchOrders(BrokerOrder brokerOrder, long deposit, boolean withDataset) {
+    public String matchOrders(BrokerOrder brokerOrder, long deposit, boolean withDataset) throws InterruptedException {
         if (brokerOrder == null) {
             throw new IllegalArgumentException("Broker order cannot be null");
         }

@@ -52,6 +52,7 @@ import java.util.concurrent.TimeoutException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @Slf4j
@@ -1295,58 +1296,6 @@ class DockerClientInstanceTests {
                 .thenCallRealMethod();       // stopAndRemoveContainer
 
         assertThat(dockerClientInstance.removeContainer(containerName)).isFalse();
-        // clean
-        dockerClientInstance.stopAndRemoveContainer(containerName);
-    }
-    //endregion
-
-    //region exec
-    @Test
-    void shouldExecuteCommandInContainer() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 10'");
-        String msg = "Hello from Docker alpine!";
-        String cmd = "echo " + msg;
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerName);
-
-        Optional<DockerLogs> logs = 
-                dockerClientInstance.exec(containerName, "sh", "-c", cmd);
-        assertThat(logs.isPresent()).isTrue();
-        assertThat(logs.get().getStdout().trim()).isEqualTo(msg);
-        // clean
-        dockerClientInstance.stopAndRemoveContainer(containerName);
-    }
-
-    @Test
-    void shouldNotExecuteCommandSinceContainerNotFound() {
-        // no container created
-        Optional<DockerLogs> logs = 
-                dockerClientInstance.exec(getRandomString(), "sh", "-c", "ls");
-        assertThat(logs).isEmpty();
-    }
-
-    @Test
-    void shouldNotExecuteCommandSinceDockerException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 10'");
-        String msg = "Hello from Docker alpine!";
-        String cmd = "echo " + msg;
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerName);
-        when(dockerClientInstance.getClient())
-                .thenCallRealMethod()        // isContainerPresent
-                .thenCallRealMethod()        // execCreateCmd
-                .thenReturn(corruptedClient) // execStartCmd
-                .thenCallRealMethod();       // stopAndRemoveContainer
-
-        Optional<DockerLogs> logs = 
-                dockerClientInstance.exec(containerName, "sh", "-c", cmd);
-        assertThat(logs).isEmpty();
         // clean
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }

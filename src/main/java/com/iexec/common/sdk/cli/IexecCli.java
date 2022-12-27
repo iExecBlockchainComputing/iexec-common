@@ -62,7 +62,7 @@ public class IexecCli {
             BrokerOrder brokerOrder,
             String walletContent,
             String walletPassword
-    ) {
+    ) throws InterruptedException {
         // start SDK container
         DockerRunRequest request = DockerRunRequest.builder()
                 .containerName(IEXEC_CLI)
@@ -135,7 +135,7 @@ public class IexecCli {
         return "iexec init --skip-wallet";
     }
 
-    private static void setupLocalChainConfig() {
+    private static void setupLocalChainConfig() throws InterruptedException {
         Optional<DockerLogs> catLogs =
                 dockerClient.exec(IEXEC_CLI, "sh", "-c", "cat chain.json");
         if (catLogs.isEmpty()
