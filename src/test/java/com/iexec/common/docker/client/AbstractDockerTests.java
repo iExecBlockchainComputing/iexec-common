@@ -99,6 +99,14 @@ abstract class AbstractDockerTests {
                 .build();
     }
 
+    String getEnvValue(String envVarName) {
+        return System.getenv(envVarName) != null ?
+                //Intellij envvar injection
+                System.getenv(envVarName) :
+                //gradle test -DdockerhubPassword=xxx
+                System.getProperty(envVarName);
+    }
+
     String getRandomString() {
         return RandomStringUtils.randomAlphanumeric(20);
     }

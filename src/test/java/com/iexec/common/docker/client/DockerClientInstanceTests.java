@@ -88,10 +88,6 @@ class DockerClientInstanceTests extends AbstractDockerTests {
             SHORT_LIBRARY_IMAGE, VERY_SHORT_LIBRARY_IMAGE, DOCKER_COM_CLASSIC_IMAGE,
             ALPINE_LATEST);
 
-
-    @Spy
-    private DockerClientInstance dockerClientInstance = new DockerClientInstance();
-
     @Spy
     private DockerClient spiedClient = dockerClientInstance.getClient();
 
@@ -112,23 +108,6 @@ class DockerClientInstanceTests extends AbstractDockerTests {
         instance.removeNetwork(DOCKER_NETWORK);
         // clean docker images
         usedImages.forEach(instance::removeImage);
-    }
-
-    DockerRunRequest getDefaultDockerRunRequest(SgxDriverMode sgxDriverMode) {
-        return DockerRunRequest.builder()
-                .containerName(getRandomString())
-                .chainTaskId(CHAIN_TASK_ID)
-                .imageUri(ALPINE_LATEST)
-                .cmd(CMD)
-                .env(ENV)
-                .sgxDriverMode(sgxDriverMode)
-                .containerPort(1000)
-                .binds(Collections.singletonList(IexecFileHelper.SLASH_IEXEC_IN +
-                        ":" + IexecFileHelper.SLASH_IEXEC_OUT))
-                .maxExecutionTime(500000)
-                .dockerNetwork(DOCKER_NETWORK)
-                .workingDir(SLASH_TMP)
-                .build();
     }
 
     //region DockerClientInstance
@@ -281,14 +260,6 @@ class DockerClientInstanceTests extends AbstractDockerTests {
         authClientInstance.removeImage(PRIVATE_IMAGE_NAME);
     }
     //endregion
-
-    private String getEnvValue(String envVarName) {
-        return System.getenv(envVarName) != null ?
-                //Intellij envvar injection
-                System.getenv(envVarName) :
-                //gradle test -DdockerhubPassword=xxx
-                System.getProperty(envVarName);
-    }
 
     //region getImageId
     @Test
