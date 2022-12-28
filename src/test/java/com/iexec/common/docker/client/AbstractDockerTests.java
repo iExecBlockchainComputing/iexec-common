@@ -25,8 +25,11 @@ import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
 import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.sgx.SgxDriverMode;
 import com.iexec.common.utils.IexecFileHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -34,6 +37,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 abstract class AbstractDockerTests {
 
     static final String CHAIN_TASK_ID = "chainTaskId";
@@ -49,8 +53,14 @@ abstract class AbstractDockerTests {
     DockerClientInstance corruptClientInstance = getCorruptInstance();
 
     @BeforeEach
-    void beforeEach() {
+    void beforeEach(TestInfo testInfo) {
+        log.info(">>> {}", testInfo.getDisplayName());
         MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void afterEach(TestInfo testInfo) {
+        log.info(">>> {}", testInfo.getDisplayName());
     }
 
     /**
