@@ -40,7 +40,6 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 import java.time.Duration;
@@ -57,7 +56,7 @@ import static org.mockito.Mockito.*;
 
 @Slf4j
 @Tag("slow")
-class DockerClientInstanceTests {
+class DockerClientInstanceTests extends AbstractDockerTests {
 
     private static final String CHAIN_TASK_ID = "chainTaskId";
     //classic
@@ -103,20 +102,8 @@ class DockerClientInstanceTests {
         usedImages.forEach(imageName -> new DockerClientInstance().pullImage(imageName));
     }
 
-    @BeforeEach
-    void beforeEach(TestInfo testInfo) {
-        log.info(">>> {}", testInfo.getDisplayName());
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @AfterEach
-    void afterEach(TestInfo testInfo) {
-        log.info(">>> {}", testInfo.getDisplayName());
-    }
-
     @AfterAll
     static void afterAll() {
-        System.out.println("Cleaning after all tests");
         DockerClientInstance instance = new DockerClientInstance();
         // clean containers
         usedRandomNames.forEach(instance::stopAndRemoveContainer);
@@ -1303,7 +1290,8 @@ class DockerClientInstanceTests {
 
     // tools
 
-    private String getRandomString() {
+    @Override
+    String getRandomString() {
         String random = RandomStringUtils.randomAlphanumeric(20);
         usedRandomNames.add(random);
         return random;
