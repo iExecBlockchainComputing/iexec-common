@@ -7,8 +7,6 @@ plugins {
 }
 
 group = 'com.iexec.common'
-sourceCompatibility = 11
-targetCompatibility = 11
 
 ext {
     // ./gradlew build -Pdev
@@ -107,8 +105,10 @@ dependencies {
     testImplementation "org.springframework:spring-test"
 }
 
-
 java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
     withJavadocJar()
     withSourcesJar()
 }
