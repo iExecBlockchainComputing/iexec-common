@@ -170,12 +170,11 @@ class DockerClientInstanceTests extends AbstractDockerTests {
 
     @Test
     void shouldNotFindImagePresentSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.isImagePresent("")).isFalse();
+        assertThat(corruptClientInstance.isImagePresent("")).isFalse();
     }
+    //endregion
 
-    // pull image
-
+    //region pullImage
     @Test
     void shouldPullImage() {
         dockerClientInstance.removeImage(ALPINE_LATEST);
@@ -230,8 +229,7 @@ class DockerClientInstanceTests extends AbstractDockerTests {
 
     @Test
     void shouldNotPullImageSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.pullImage(getRandomString())).isFalse();
+        assertThat(corruptClientInstance.pullImage(getRandomString())).isFalse();
     }
 
     /**
@@ -317,8 +315,7 @@ class DockerClientInstanceTests extends AbstractDockerTests {
 
     @Test
     void shouldNotGetImageIdSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getImageId(getRandomString())).isEmpty();
+        assertThat(corruptClientInstance.getImageId(getRandomString())).isEmpty();
     }
     //endregion
 
@@ -369,14 +366,13 @@ class DockerClientInstanceTests extends AbstractDockerTests {
     }
 
     @Test
-    void shouldRemoveImageByIdSinceEmptyName() {
+    void shouldNotRemoveImageByIdSinceEmptyName() {
         assertThat(dockerClientInstance.removeImage("")).isFalse();
     }
 
     @Test
     void shouldNotRemoveImageByIdSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.removeImage(ALPINE_LATEST)).isFalse();
+        assertThat(corruptClientInstance.removeImage(ALPINE_LATEST)).isFalse();
     }
     //endregion
 
@@ -742,8 +738,8 @@ class DockerClientInstanceTests extends AbstractDockerTests {
         request.setContainerPort(0);
 
         Optional<CreateContainerCmd> oActualCreateContainerCmd =
-        dockerClientInstance.buildCreateContainerCmdFromRunRequest(request,
-                createContainerCmd);
+                dockerClientInstance.buildCreateContainerCmdFromRunRequest(request,
+                        createContainerCmd);
         assertThat(oActualCreateContainerCmd).isPresent();
         CreateContainerCmd actualCreateContainerCmd = oActualCreateContainerCmd.get();
         assertThat(actualCreateContainerCmd.getName())
@@ -778,7 +774,7 @@ class DockerClientInstanceTests extends AbstractDockerTests {
         assertThat(actualCreateContainerCmd.getExposedPorts()).isNotNull();
         assertThat(actualCreateContainerCmd.getExposedPorts()[0].getPort())
                 .isEqualTo(1000);
-        assertThat(actualCreateContainerCmd.getWorkingDir()).isEqualTo(SLASH_TMP);        
+        assertThat(actualCreateContainerCmd.getWorkingDir()).isEqualTo(SLASH_TMP);
     }
 
     @Test
@@ -873,12 +869,7 @@ class DockerClientInstanceTests extends AbstractDockerTests {
     void shouldNotGetContainerNameSinceDockerCmdException() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerId = dockerClientInstance.createContainer(request);
-
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getContainerName(containerId)).isEmpty();
-
-        // cleaning
-        useRealDockerClient();
+        assertThat(corruptClientInstance.getContainerName(containerId)).isEmpty();
         dockerClientInstance.removeContainer(request.getContainerName());
     }
     //endregion
@@ -906,8 +897,7 @@ class DockerClientInstanceTests extends AbstractDockerTests {
 
     @Test
     void shouldNotGetContainerIdSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getContainerId(getRandomString())).isEmpty();
+        assertThat(corruptClientInstance.getContainerId(getRandomString())).isEmpty();
     }
     //endregion
 
@@ -932,8 +922,7 @@ class DockerClientInstanceTests extends AbstractDockerTests {
 
     @Test
     void shouldNotGetContainerStatusSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getContainerStatus(getRandomString())).isEmpty();
+        assertThat(corruptClientInstance.getContainerStatus(getRandomString())).isEmpty();
     }
     //endregion
 
@@ -966,12 +955,9 @@ class DockerClientInstanceTests extends AbstractDockerTests {
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
         dockerClientInstance.createContainer(request);
-
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.startContainer(containerName)).isFalse();
+        assertThat(corruptClientInstance.startContainer(containerName)).isFalse();
 
         // cleaning
-        useRealDockerClient();
         dockerClientInstance.stopContainer(containerName);
         dockerClientInstance.removeContainer(containerName);
     }
@@ -1049,8 +1035,7 @@ class DockerClientInstanceTests extends AbstractDockerTests {
 
     @Test
     void shouldNotGetContainerExitCodeSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getContainerExitCode(getRandomString()))
+        assertThat(corruptClientInstance.getContainerExitCode(getRandomString()))
                 .isEqualTo(-1);
     }
 
@@ -1260,14 +1245,6 @@ class DockerClientInstanceTests extends AbstractDockerTests {
         String random = RandomStringUtils.randomAlphanumeric(20);
         usedRandomNames.add(random);
         return random;
-    }
-
-    private void useRealDockerClient() {
-        when(dockerClientInstance.getClient()).thenCallRealMethod();
-    }
-
-    private void useCorruptedDockerClient() {
-        when(dockerClientInstance.getClient()).thenReturn(corruptedClient);
     }
 
     private DockerClient getCorruptedDockerClient() {
