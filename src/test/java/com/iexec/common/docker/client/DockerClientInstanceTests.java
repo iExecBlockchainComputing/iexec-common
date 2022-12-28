@@ -58,7 +58,6 @@ import static org.mockito.Mockito.*;
 @Tag("slow")
 class DockerClientInstanceTests extends AbstractDockerTests {
 
-    private static final String CHAIN_TASK_ID = "chainTaskId";
     //classic
     private static final String DOCKER_IO_CLASSIC_IMAGE = "docker.io/alpine/socat:latest";
     private static final String SHORT_CLASSIC_IMAGE = "alpine/socat:latest";
@@ -69,18 +68,13 @@ class DockerClientInstanceTests extends AbstractDockerTests {
     // deprecated
     private static final String DOCKER_COM_CLASSIC_IMAGE = "registry.hub.docker.com/alpine/socat:latest";
     // other
-    private static final String ALPINE_LATEST = "alpine:latest";
     private static final String ALPINE_BLABLA = "alpine:blabla";
     private static final String BLABLA_LATEST = "blabla:latest";
-    private static final String CMD = "cmd";
-    private static final List<String> ENV = List.of("FOO=bar");
     private static final String DOCKERHUB_USERNAME_ENV_NAME = "DOCKER_IO_USER";
     private static final String DOCKERHUB_PASSWORD_ENV_NAME = "DOCKER_IO_PASSWORD";
     private static final String PRIVATE_IMAGE_NAME = "iexechub/private-image:alpine-3.13";
-    private static final String DOCKER_NETWORK = "dockerTestsNetwork";
     private static final String DEVICE_PATH_IN_CONTAINER = "/dev/some-device-in-container";
     private static final String DEVICE_PATH_ON_HOST = "/dev/some-device-on-host";
-    private static final String SLASH_TMP = "/tmp";
 
     private static final List<String> usedRandomNames = new ArrayList<>();
     private static final List<String> usedImages = List.of(
