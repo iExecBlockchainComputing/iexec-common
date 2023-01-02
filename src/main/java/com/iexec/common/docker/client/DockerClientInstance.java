@@ -799,7 +799,7 @@ public class DockerClientInstance {
     //endregion
 
     //region exec
-    public Optional<DockerLogs> exec(String containerName, String... cmd) throws InterruptedException {
+    public Optional<DockerLogs> exec(String containerName, String... cmd) {
         if (StringUtils.isBlank(containerName)) {
             return Optional.empty();
         }
@@ -832,6 +832,9 @@ public class DockerClientInstance {
                         })
                         .awaitCompletion();
             }
+        } catch (InterruptedException e) {
+            log.warn("Docker exec command was interrupted", e);
+            Thread.currentThread().interrupt();
         } catch (RuntimeException e) {
             log.error("Error running docker exec command [name:{}, cmd:{}]",
                     containerName, cmd, e);
