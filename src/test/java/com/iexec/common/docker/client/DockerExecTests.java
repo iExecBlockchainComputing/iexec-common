@@ -23,8 +23,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.doReturn;
 
 class DockerExecTests extends AbstractDockerTests {
@@ -36,7 +42,7 @@ class DockerExecTests extends AbstractDockerTests {
 
     //region exec
     @Test
-    void shouldExecuteCommandInContainerWithStdout() throws InterruptedException {
+    void shouldExecuteCommandInContainerWithStdout() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 10'");
@@ -52,7 +58,7 @@ class DockerExecTests extends AbstractDockerTests {
     }
 
     @Test
-    void shouldExecuteCommandInContainerWithStderr() throws InterruptedException {
+    void shouldExecuteCommandInContainerWithStderr() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 10'");
@@ -68,12 +74,12 @@ class DockerExecTests extends AbstractDockerTests {
     }
 
     @Test
-    void shouldNotExecuteCommandSinceEmptyContainerName() throws InterruptedException {
+    void shouldNotExecuteCommandSinceEmptyContainerName() {
         assertThat(dockerClientInstance.exec("", "sh", "-c", "ls")).isEmpty();
     }
 
     @Test
-    void shouldNotExecuteCommandSinceContainerNotFound() throws InterruptedException {
+    void shouldNotExecuteCommandSinceContainerNotFound() {
         String containerName = getRandomString();
         Optional<DockerLogs> logs =
                 dockerClientInstance.exec(containerName, "sh", "-c", "ls");
@@ -81,7 +87,7 @@ class DockerExecTests extends AbstractDockerTests {
     }
 
     @Test
-    void shouldNotExecuteCommandSinceDockerException() throws InterruptedException {
+    void shouldNotExecuteCommandSinceDockerException() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 10'");
@@ -94,5 +100,24 @@ class DockerExecTests extends AbstractDockerTests {
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
     //endregion
+
+    @Test
+    void shouldInterruptThreadOnInterruptedException() {
+        //TODO retrieve and validate exec method output
+        ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
+        String containerName = request.getContainerName();
+        request.setCmd("sh -c 'sleep 30'");
+        String msg = "Hello from Docker alpine!";
+        String cmd = "sleep 10 && echo " + msg + " >&2";
+        dockerClientInstance.createContainer(request);
+        dockerClientInstance.startContainer(containerName);
+        Future<Optional<DockerLogs>> future = threadPool.submit(() -> dockerClientInstance.exec(containerName, "sh", "-c", cmd));
+        await().atMost(1, TimeUnit.SECONDS).until(() -> threadPool.getActiveCount() == 1);
+        future.cancel(true);
+        assertThat(future.isCancelled()).isTrue();
+        assertThatThrownBy(future::get).isInstanceOf(CancellationException.class);
+        dockerClientInstance.stopAndRemoveContainer(containerName);
+    }
 
 }
