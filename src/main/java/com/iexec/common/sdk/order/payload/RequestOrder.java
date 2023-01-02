@@ -18,13 +18,11 @@ package com.iexec.common.sdk.order.payload;
 
 import com.iexec.common.chain.DealParams;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigInteger;
 import java.util.Objects;
 
 @Data
-@Slf4j
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @NoArgsConstructor

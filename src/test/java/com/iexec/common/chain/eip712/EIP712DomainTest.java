@@ -19,7 +19,6 @@ package com.iexec.common.chain.eip712;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.utils.HashUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
@@ -29,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 class EIP712DomainTest {
 
     private static final String DOMAIN_NAME = "iExec Custom Module Domain";

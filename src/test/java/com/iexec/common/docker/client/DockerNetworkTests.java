@@ -41,7 +41,7 @@ class DockerNetworkTests extends AbstractDockerTests {
     @Test
     void shouldReturnExistingNetworkIdWenNetworkIsAlreadyPresent() {
         String networkName = getRandomString();
-        String networkId = dockerClientInstance.createNetwork(networkName);
+        dockerClientInstance.createNetwork(networkName);
         assertThat(dockerClientInstance.createNetwork(networkName)).isNotEmpty();
         assertThat(dockerClientInstance.isNetworkPresent(networkName)).isTrue();
         // cleaning
