@@ -21,6 +21,9 @@ import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.sgx.SgxDriverMode;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 
 import java.util.Optional;
 import java.util.concurrent.*;
@@ -30,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.doReturn;
 
+@ExtendWith(OutputCaptureExtension.class)
 class DockerExecTests extends AbstractDockerTests {
 
     @BeforeAll
@@ -37,7 +41,6 @@ class DockerExecTests extends AbstractDockerTests {
         new DockerClientInstance().pullImage(ALPINE_LATEST);
     }
 
-    //region exec
     @Test
     void shouldExecuteCommandInContainerWithStdout() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
@@ -96,11 +99,9 @@ class DockerExecTests extends AbstractDockerTests {
         assertThat(corruptClientInstance.exec(containerName, "sh", "-c", cmd)).isEmpty();
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
-    //endregion
 
     @Test
-    void shouldInterruptThreadOnInterruptedException() {
-        //TODO retrieve and validate exec method output
+    void shouldInterruptThreadOnInterruptedException(CapturedOutput output) {
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerName = request.getContainerName();
@@ -114,6 +115,7 @@ class DockerExecTests extends AbstractDockerTests {
         future.cancel(true);
         assertThat(future.isCancelled()).isTrue();
         assertThatThrownBy(future::get).isInstanceOf(CancellationException.class);
+        assertThat(output.getOut()).contains("Docker exec command was interrupted", "java.lang.InterruptedException: null");
         dockerClientInstance.stopAndRemoveContainer(containerName);
     }
 
