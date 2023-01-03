@@ -40,7 +40,6 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 import java.time.Duration;
@@ -57,9 +56,8 @@ import static org.mockito.Mockito.*;
 
 @Slf4j
 @Tag("slow")
-class DockerClientInstanceTests {
+class DockerClientInstanceTests extends AbstractDockerTests {
 
-    private static final String CHAIN_TASK_ID = "chainTaskId";
     //classic
     private static final String DOCKER_IO_CLASSIC_IMAGE = "docker.io/alpine/socat:latest";
     private static final String SHORT_CLASSIC_IMAGE = "alpine/socat:latest";
@@ -70,28 +68,19 @@ class DockerClientInstanceTests {
     // deprecated
     private static final String DOCKER_COM_CLASSIC_IMAGE = "registry.hub.docker.com/alpine/socat:latest";
     // other
-    private static final String ALPINE_LATEST = "alpine:latest";
     private static final String ALPINE_BLABLA = "alpine:blabla";
     private static final String BLABLA_LATEST = "blabla:latest";
-    private static final String CMD = "cmd";
-    private static final List<String> ENV = List.of("FOO=bar");
     private static final String DOCKERHUB_USERNAME_ENV_NAME = "DOCKER_IO_USER";
     private static final String DOCKERHUB_PASSWORD_ENV_NAME = "DOCKER_IO_PASSWORD";
     private static final String PRIVATE_IMAGE_NAME = "iexechub/private-image:alpine-3.13";
-    private static final String DOCKER_NETWORK = "dockerTestsNetwork";
     private static final String DEVICE_PATH_IN_CONTAINER = "/dev/some-device-in-container";
     private static final String DEVICE_PATH_ON_HOST = "/dev/some-device-on-host";
-    private static final String SLASH_TMP = "/tmp";
 
     private static final List<String> usedRandomNames = new ArrayList<>();
     private static final List<String> usedImages = List.of(
             DOCKER_IO_CLASSIC_IMAGE, SHORT_CLASSIC_IMAGE, DOCKER_IO_LIBRARY_IMAGE,
             SHORT_LIBRARY_IMAGE, VERY_SHORT_LIBRARY_IMAGE, DOCKER_COM_CLASSIC_IMAGE,
             ALPINE_LATEST);
-
-
-    @Spy
-    private DockerClientInstance dockerClientInstance = new DockerClientInstance();
 
     @Spy
     private DockerClient spiedClient = dockerClientInstance.getClient();
@@ -103,20 +92,8 @@ class DockerClientInstanceTests {
         usedImages.forEach(imageName -> new DockerClientInstance().pullImage(imageName));
     }
 
-    @BeforeEach
-    void beforeEach(TestInfo testInfo) {
-        log.info(">>> {}", testInfo.getDisplayName());
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @AfterEach
-    void afterEach(TestInfo testInfo) {
-        log.info(">>> {}", testInfo.getDisplayName());
-    }
-
     @AfterAll
     static void afterAll() {
-        System.out.println("Cleaning after all tests");
         DockerClientInstance instance = new DockerClientInstance();
         // clean containers
         usedRandomNames.forEach(instance::stopAndRemoveContainer);
@@ -125,23 +102,6 @@ class DockerClientInstanceTests {
         instance.removeNetwork(DOCKER_NETWORK);
         // clean docker images
         usedImages.forEach(instance::removeImage);
-    }
-
-    DockerRunRequest getDefaultDockerRunRequest(SgxDriverMode sgxDriverMode) {
-        return DockerRunRequest.builder()
-                .containerName(getRandomString())
-                .chainTaskId(CHAIN_TASK_ID)
-                .imageUri(ALPINE_LATEST)
-                .cmd(CMD)
-                .env(ENV)
-                .sgxDriverMode(sgxDriverMode)
-                .containerPort(1000)
-                .binds(Collections.singletonList(IexecFileHelper.SLASH_IEXEC_IN +
-                        ":" + IexecFileHelper.SLASH_IEXEC_OUT))
-                .maxExecutionTime(500000)
-                .dockerNetwork(DOCKER_NETWORK)
-                .workingDir(SLASH_TMP)
-                .build();
     }
 
     //region DockerClientInstance
@@ -210,12 +170,11 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotFindImagePresentSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.isImagePresent("")).isFalse();
+        assertThat(corruptClientInstance.isImagePresent("")).isFalse();
     }
+    //endregion
 
-    // pull image
-
+    //region pullImage
     @Test
     void shouldPullImage() {
         dockerClientInstance.removeImage(ALPINE_LATEST);
@@ -270,8 +229,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotPullImageSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.pullImage(getRandomString())).isFalse();
+        assertThat(corruptClientInstance.pullImage(getRandomString())).isFalse();
     }
 
     /**
@@ -294,14 +252,6 @@ class DockerClientInstanceTests {
         authClientInstance.removeImage(PRIVATE_IMAGE_NAME);
     }
     //endregion
-
-    private String getEnvValue(String envVarName) {
-        return System.getenv(envVarName) != null ?
-                //Intellij envvar injection
-                System.getenv(envVarName) :
-                //gradle test -DdockerhubPassword=xxx
-                System.getProperty(envVarName);
-    }
 
     //region getImageId
     @Test
@@ -365,8 +315,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotGetImageIdSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getImageId(getRandomString())).isEmpty();
+        assertThat(corruptClientInstance.getImageId(getRandomString())).isEmpty();
     }
     //endregion
 
@@ -417,14 +366,13 @@ class DockerClientInstanceTests {
     }
 
     @Test
-    void shouldRemoveImageByIdSinceEmptyName() {
+    void shouldNotRemoveImageByIdSinceEmptyName() {
         assertThat(dockerClientInstance.removeImage("")).isFalse();
     }
 
     @Test
     void shouldNotRemoveImageByIdSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.removeImage(ALPINE_LATEST)).isFalse();
+        assertThat(corruptClientInstance.removeImage(ALPINE_LATEST)).isFalse();
     }
     //endregion
 
@@ -790,8 +738,8 @@ class DockerClientInstanceTests {
         request.setContainerPort(0);
 
         Optional<CreateContainerCmd> oActualCreateContainerCmd =
-        dockerClientInstance.buildCreateContainerCmdFromRunRequest(request,
-                createContainerCmd);
+                dockerClientInstance.buildCreateContainerCmdFromRunRequest(request,
+                        createContainerCmd);
         assertThat(oActualCreateContainerCmd).isPresent();
         CreateContainerCmd actualCreateContainerCmd = oActualCreateContainerCmd.get();
         assertThat(actualCreateContainerCmd.getName())
@@ -826,7 +774,7 @@ class DockerClientInstanceTests {
         assertThat(actualCreateContainerCmd.getExposedPorts()).isNotNull();
         assertThat(actualCreateContainerCmd.getExposedPorts()[0].getPort())
                 .isEqualTo(1000);
-        assertThat(actualCreateContainerCmd.getWorkingDir()).isEqualTo(SLASH_TMP);        
+        assertThat(actualCreateContainerCmd.getWorkingDir()).isEqualTo(SLASH_TMP);
     }
 
     @Test
@@ -921,12 +869,7 @@ class DockerClientInstanceTests {
     void shouldNotGetContainerNameSinceDockerCmdException() {
         DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
         String containerId = dockerClientInstance.createContainer(request);
-
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getContainerName(containerId)).isEmpty();
-
-        // cleaning
-        useRealDockerClient();
+        assertThat(corruptClientInstance.getContainerName(containerId)).isEmpty();
         dockerClientInstance.removeContainer(request.getContainerName());
     }
     //endregion
@@ -954,8 +897,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotGetContainerIdSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getContainerId(getRandomString())).isEmpty();
+        assertThat(corruptClientInstance.getContainerId(getRandomString())).isEmpty();
     }
     //endregion
 
@@ -980,8 +922,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotGetContainerStatusSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getContainerStatus(getRandomString())).isEmpty();
+        assertThat(corruptClientInstance.getContainerStatus(getRandomString())).isEmpty();
     }
     //endregion
 
@@ -1014,12 +955,9 @@ class DockerClientInstanceTests {
         String containerName = request.getContainerName();
         request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
         dockerClientInstance.createContainer(request);
-
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.startContainer(containerName)).isFalse();
+        assertThat(corruptClientInstance.startContainer(containerName)).isFalse();
 
         // cleaning
-        useRealDockerClient();
         dockerClientInstance.stopContainer(containerName);
         dockerClientInstance.removeContainer(containerName);
     }
@@ -1097,8 +1035,7 @@ class DockerClientInstanceTests {
 
     @Test
     void shouldNotGetContainerExitCodeSinceDockerCmdException() {
-        useCorruptedDockerClient();
-        assertThat(dockerClientInstance.getContainerExitCode(getRandomString()))
+        assertThat(corruptClientInstance.getContainerExitCode(getRandomString()))
                 .isEqualTo(-1);
     }
 
@@ -1303,18 +1240,11 @@ class DockerClientInstanceTests {
 
     // tools
 
-    private String getRandomString() {
+    @Override
+    String getRandomString() {
         String random = RandomStringUtils.randomAlphanumeric(20);
         usedRandomNames.add(random);
         return random;
-    }
-
-    private void useRealDockerClient() {
-        when(dockerClientInstance.getClient()).thenCallRealMethod();
-    }
-
-    private void useCorruptedDockerClient() {
-        when(dockerClientInstance.getClient()).thenReturn(corruptedClient);
     }
 
     private DockerClient getCorruptedDockerClient() {

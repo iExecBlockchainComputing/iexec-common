@@ -101,6 +101,8 @@ dependencies {
     // mock-server
     testImplementation "org.mock-server:mockserver-client-java:$mockServerVersion"
     testImplementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
+    // spring-boot-test to capture test outputs
+    testImplementation "org.springframework.boot:spring-boot-test"
     // spring-test for ReflectionTestUtils
     testImplementation "org.springframework:spring-test"
 }
