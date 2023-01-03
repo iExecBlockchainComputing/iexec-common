@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.sdk.order.payload.AppOrder;
 import com.iexec.common.utils.BytesUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.ECKeyPair;

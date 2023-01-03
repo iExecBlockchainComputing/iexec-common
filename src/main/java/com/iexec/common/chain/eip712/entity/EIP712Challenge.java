@@ -20,7 +20,6 @@ import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.chain.eip712.TypeParam;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +30,6 @@ import java.util.List;
  * In the current implementation, {@link EIP712Domain} fields are {@code name}, {@code version} and {@code chainID}.
  * There is no {@code verifyingContract}.
  */
-@Slf4j
 @NoArgsConstructor
 public class EIP712Challenge extends EIP712Entity<Challenge> {
 

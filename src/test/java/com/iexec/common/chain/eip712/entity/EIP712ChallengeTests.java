@@ -21,9 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.chain.eip712.TypeParam;
 import com.iexec.common.utils.HashUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
@@ -32,7 +30,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 public class EIP712ChallengeTests {
 
     private static final ObjectMapper mapper = new ObjectMapper();
