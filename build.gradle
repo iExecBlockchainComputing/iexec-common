@@ -43,18 +43,18 @@ repositories {
 // 'api' configuration allows to expose dependencies with 'compile' scope in pom
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
-    implementation platform("org.springframework.boot:spring-boot-dependencies:2.6.14")
+    implementation platform('org.springframework.boot:spring-boot-dependencies:2.6.14')
     // web3j dependency
-    api "org.web3j:core:4.8.9"
+    api 'org.web3j:core:4.8.9'
     
     // apache commons.lang3
-    api "org.apache.commons:commons-lang3"
+    api 'org.apache.commons:commons-lang3'
 
     // feign
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
     api "io.github.openfeign:feign-slf4j:$openFeignVersion"
 
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     // multiaddresses (IPFS)
     implementation 'com.github.multiformats:java-multiaddr:1.3.1'
@@ -69,7 +69,7 @@ dependencies {
     implementation 'net.lingala.zip4j:zip4j:2.3.1'
 
     // google core libs
-    implementation "com.google.guava:guava:28.2-jre"
+    implementation 'com.google.guava:guava:28.2-jre'
 
     // json
     implementation 'org.json:json:20201115'
@@ -102,9 +102,9 @@ dependencies {
     testImplementation "org.mock-server:mockserver-client-java:$mockServerVersion"
     testImplementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
     // spring-boot-test to capture test outputs
-    testImplementation "org.springframework.boot:spring-boot-test"
+    testImplementation 'org.springframework.boot:spring-boot-test'
     // spring-test for ReflectionTestUtils
-    testImplementation "org.springframework:spring-test"
+    testImplementation 'org.springframework:spring-test'
 }
 
 java {
