@@ -48,7 +48,7 @@ dependencies {
     api "org.web3j:core:4.8.9"
     
     // apache commons.lang3
-    api "org.apache.commons:commons-lang3:3.9"
+    api "org.apache.commons:commons-lang3"
 
     // feign
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
