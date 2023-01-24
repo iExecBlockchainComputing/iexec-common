@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [[7.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v7.0.0) 2023
+
+### New Features
+* Add classes to support Gramine framework for TEE tasks.
+* Rename `TeeEnclaveProvider` to `TeeFramework`.
+* Add SMS URL to related task and replicate classes.
+* Rename `TeeEnclaveProvider` to `TeeFramework`.
+### Bug Fixes
+* Disable `notifyJobs` configuration in Jenkinsfile pipeline.
+* Resolve dependencies from internal Nexus.
+* Increase app creation gas limit.
+* Support `provider` alias for `framework` in `TeeEnclaveConfiguration`.
+### Quality
+* Rework Docker implementation and tests.
+* Remove `IexecCli` and `BrokeringEngine`.
+* Remove unused references.
+* Remove shadow JAR bundle.
+### Dependency Upgrades
+* Upgrade spring-boot-dependencies to 2.6.14.
+* Upgrade to Gradle 7.6.
+
 ## [[6.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.2.1) 2022-12-19
 
 * Improve Docker tests reentrancy.
