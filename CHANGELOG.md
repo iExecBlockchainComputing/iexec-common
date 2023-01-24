@@ -8,7 +8,6 @@ All notable changes to this project will be documented in this file.
 * Add classes to support Gramine framework for TEE tasks.
 * Rename `TeeEnclaveProvider` to `TeeFramework`.
 * Add SMS URL to related task and replicate classes.
-* Rename `TeeEnclaveProvider` to `TeeFramework`.
 ### Bug Fixes
 * Disable `notifyJobs` configuration in Jenkinsfile pipeline.
 * Resolve dependencies from internal Nexus.
