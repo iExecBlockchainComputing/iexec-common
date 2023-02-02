@@ -14,7 +14,7 @@ ext {
     // dependency versions
     dockerJavaVersion = '3.2.12'
     mockServerVersion = '5.11.2'
-    openFeignVersion = '11.7'
+    openFeignVersion = '11.10'
 }
 
 if (!project.hasProperty('gitBranch')) {
