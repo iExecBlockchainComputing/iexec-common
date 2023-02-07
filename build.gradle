@@ -14,7 +14,7 @@ ext {
     // dependency versions
     dockerJavaVersion = '3.2.12'
     mockServerVersion = '5.11.2'
-    openFeignVersion = '11.7'
+    openFeignVersion = '11.10'
 }
 
 if (!project.hasProperty('gitBranch')) {
@@ -57,7 +57,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
     // multiaddresses (IPFS)
-    implementation 'com.github.multiformats:java-multiaddr:1.3.1'
+    implementation 'com.github.multiformats:java-multiaddr:v1.4.1'
 
     //jaxb required with Java 11
     implementation 'javax.xml.bind:jaxb-api'
