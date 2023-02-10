@@ -39,7 +39,7 @@ class FileHelperTests {
             "cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
     // private static final String HTTP_FILENAME = "iExec-RLC-RLC-icon.png";
     private static final String HTTP_FILE_DIGEST =
-            "0x240987ee1480e8e0b1b26fa806810fea04021191a8e6d8ab6325c15fa61fa9b6";
+            "0x4d8401fd4484f07c202c0a2b9ce6907eabd69efae0cec3956f1a56a6b19a9daa";
     // https
     private static final String HTTPS_URL = "https://upload.wikimedia.org" +
             "/wikipedia/commons/thumb/6/65/600px_Black_bordered_HEX-0082D6.svg/600px-600px_Black_bordered_HEX-0082D6.svg.png";
