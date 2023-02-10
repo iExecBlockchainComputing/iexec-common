@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 * Resolve dependencies from internal Nexus.
 * Increase app creation gas limit.
 * Support `provider` alias for `framework` in `TeeEnclaveConfiguration`.
+* Update iconarchive RLC PNG hash in tests.
 ### Quality
 * Rework Docker implementation and tests.
 * Remove `IexecCli` and `BrokeringEngine`.
