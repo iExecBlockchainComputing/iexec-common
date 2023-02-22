@@ -27,7 +27,8 @@ public class TeeEnclaveConfigurationValidator {
 
     private final TeeEnclaveConfiguration teeEnclaveConfiguration;
 
-    public TeeEnclaveConfigurationValidator(@NonNull TeeEnclaveConfiguration teeEnclaveConfiguration) {
+    public TeeEnclaveConfigurationValidator(
+            @NonNull TeeEnclaveConfiguration teeEnclaveConfiguration) {
         this.teeEnclaveConfiguration = teeEnclaveConfiguration;
     }
 
@@ -48,12 +49,15 @@ public class TeeEnclaveConfigurationValidator {
      */
     public List<String> validate() {
         List<String> violations = new ArrayList<>();
-        if (StringUtils.isEmpty(teeEnclaveConfiguration.getEntrypoint())) {
-            violations.add("Empty entrypoint");
-        }
-        if (teeEnclaveConfiguration.getHeapSize() <= 0) {
-            violations.add("Empty or negative heap  size: "
-                    + teeEnclaveConfiguration.getHeapSize());
+        if (!TeeFramework.GRAMINE
+                .equals(teeEnclaveConfiguration.getFramework())) {
+            if (StringUtils.isEmpty(teeEnclaveConfiguration.getEntrypoint())) {
+                violations.add("Empty entrypoint");
+            }
+            if (teeEnclaveConfiguration.getHeapSize() <= 0) {
+                violations.add("Empty or negative heap  size: "
+                        + teeEnclaveConfiguration.getHeapSize());
+            }
         }
         String fingerprint = teeEnclaveConfiguration.getFingerprint();
         if (StringUtils.isEmpty(fingerprint)

@@ -53,6 +53,19 @@ class TeeEnclaveConfigurationValidatorTests {
     }
 
     @Test
+    void hasNotEntrypointAndHeapSizeViolationWithGramine() {
+        TeeEnclaveConfiguration enclaveConfig = TeeEnclaveConfiguration.builder()
+                .framework(TeeFramework.GRAMINE)
+                .entrypoint("")
+                .heapSize(0)
+                .fingerprint(FINGERPRINT)
+                .build();
+        List<String> violations = new TeeEnclaveConfigurationValidator(enclaveConfig)
+                .validate();
+        Assertions.assertEquals(0, violations.size());
+    }
+
+    @Test
     void hasHeapSizeViolationSinceNegative() {
         TeeEnclaveConfiguration enclaveConfig = TeeEnclaveConfiguration.builder()
                 .entrypoint(ENTRYPOINT)
