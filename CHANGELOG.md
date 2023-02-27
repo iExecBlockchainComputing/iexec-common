@@ -23,7 +23,7 @@ All notable changes to this project will be documented in this file.
 ### Dependency Upgrades
 * Upgrade spring-boot-dependencies to 2.6.14.
 * Upgrade feign dependencies to 11.10.
-* Upgrade java-multiaddr dependency to v1.4.1.
+* Upgrade java-multiaddr dependency to v1.4.6.
 * Upgrade to Gradle 7.6.
 
 ## [[6.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.2.1) 2022-12-19
