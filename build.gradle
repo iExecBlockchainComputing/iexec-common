@@ -57,7 +57,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
     // multiaddresses (IPFS)
-    implementation 'com.github.multiformats:java-multiaddr:v1.4.1'
+    implementation 'com.github.multiformats:java-multiaddr:v1.4.6'
 
     //jaxb required with Java 11
     implementation 'javax.xml.bind:jaxb-api'
