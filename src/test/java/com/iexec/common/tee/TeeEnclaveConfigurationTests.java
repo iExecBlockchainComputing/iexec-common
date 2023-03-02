@@ -20,25 +20,33 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class TeeEnclaveConfigurationTest {
+class TeeEnclaveConfigurationTests {
 
     public static final long KB = 1024;
     public static final long MB = 1024 * KB;
     public static final long GB = 1024 * MB;
-    public static final TeeEnclaveProvider PROVIDER = TeeEnclaveProvider.SCONE;
+    public static final TeeFramework FRAMEWORK = TeeFramework.SCONE;
     public static final String VERSION = "v1.0.0";
     public static final String ENTRYPOINT = "python /app/app.py";
     public static final long HEAP_SIZE = 4 * GB;
     public static final String FINGERPRINT = "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b";
     public static final TeeEnclaveConfiguration ENCLAVE_CONFIGURATION = TeeEnclaveConfiguration.builder()
-            .provider(PROVIDER)
+            .framework(FRAMEWORK)
             .version(VERSION)
             .entrypoint(ENTRYPOINT)
             .heapSize(HEAP_SIZE)
             .fingerprint(FINGERPRINT)
             .build();
     public static final String ENCLAVE_CONFIGURATION_JSON_STRING = "{" +
-            "\"provider\":\"" + PROVIDER + "\"," +
+            "\"framework\":\"" + FRAMEWORK + "\"," +
+            "\"version\":\"" + VERSION + "\"," +
+            "\"entrypoint\":\"" + ENTRYPOINT + "\"," +
+            "\"heapSize\":" + HEAP_SIZE + "," +
+            "\"fingerprint\":\"" + FINGERPRINT + "\"" +
+            "}";
+
+    private static final String OLD_JSON_FORMAT = "{" +
+            "\"provider\":\"" + FRAMEWORK + "\"," +
             "\"version\":\"" + VERSION + "\"," +
             "\"entrypoint\":\"" + ENTRYPOINT + "\"," +
             "\"heapSize\":" + HEAP_SIZE + "," +
@@ -48,8 +56,13 @@ class TeeEnclaveConfigurationTest {
     @Test
     void buildEnclaveConfigurationFromJsonString() throws JsonProcessingException {
         Assertions.assertEquals(ENCLAVE_CONFIGURATION,
-                TeeEnclaveConfiguration
-                        .buildEnclaveConfigurationFromJsonString(ENCLAVE_CONFIGURATION_JSON_STRING));
+                TeeEnclaveConfiguration.buildEnclaveConfigurationFromJsonString(ENCLAVE_CONFIGURATION_JSON_STRING));
+    }
+
+    @Test
+    void buildEnclaveConfigurationFromOldJsonString() throws JsonProcessingException {
+        Assertions.assertEquals(ENCLAVE_CONFIGURATION,
+                TeeEnclaveConfiguration.buildEnclaveConfigurationFromJsonString(OLD_JSON_FORMAT));
     }
 
     @Test
@@ -57,4 +70,5 @@ class TeeEnclaveConfigurationTest {
         Assertions.assertEquals(ENCLAVE_CONFIGURATION_JSON_STRING,
                 ENCLAVE_CONFIGURATION.toJsonString());
     }
+
 }

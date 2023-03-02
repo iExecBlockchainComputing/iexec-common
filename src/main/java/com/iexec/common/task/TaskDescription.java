@@ -19,6 +19,7 @@ package com.iexec.common.task;
 import com.iexec.common.chain.ChainDeal;
 import com.iexec.common.dapp.DappType;
 import com.iexec.common.tee.TeeEnclaveConfiguration;
+import com.iexec.common.tee.TeeFramework;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import com.iexec.common.utils.MultiAddressHelper;
@@ -48,6 +49,7 @@ public class TaskDescription {
     private String cmd;
     private long maxExecutionTime;
     private boolean isTeeTask;
+    private TeeFramework teeFramework;
     private int botIndex;
     private int botSize;
     private int botFirstIndex;
@@ -60,6 +62,7 @@ public class TaskDescription {
     private boolean isResultEncryption;
     private String resultStorageProvider;
     private String resultStorageProxy;
+    private String smsUrl;
     private Map<String, String> secrets;
     private String teePostComputeImage;
     private String teePostComputeFingerprint;
@@ -113,6 +116,15 @@ public class TaskDescription {
                 !StringUtils.isEmpty(teePostComputeFingerprint);
     }
 
+    public String getAppCommand() {
+        String appArgs = appEnclaveConfiguration.getEntrypoint();
+        //TODO: Add unit test
+        if (!StringUtils.isEmpty(cmd)) {
+            appArgs = appArgs + " " + cmd;
+        }
+        return appArgs;
+    }
+
     /**
      * Create a {@link TaskDescription} from the provided chain deal. This method
      * if preferred to constructors or the builder method.
@@ -139,6 +151,7 @@ public class TaskDescription {
             datasetName = chainDeal.getChainDataset().getName();
             datasetChecksum = chainDeal.getChainDataset().getChecksum();
         }
+        final String tag = chainDeal.getTag();
         return TaskDescription.builder()
                 .chainTaskId(chainTaskId)
                 .requester(chainDeal
@@ -160,7 +173,9 @@ public class TaskDescription {
                 .maxExecutionTime(chainDeal.getChainCategory()
                         .getMaxExecutionTime())
                 .isTeeTask(TeeUtils
-                        .isTeeTag(chainDeal.getTag()))
+                        .isTeeTag(tag))
+                .teeFramework(TeeUtils
+                        .getTeeFramework(tag))
                 .developerLoggerEnabled(chainDeal.getParams()
                         .isIexecDeveloperLoggerEnabled())
                 .isResultEncryption(chainDeal.getParams()

@@ -17,15 +17,17 @@
 package com.iexec.common.docker.client;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.exception.DockerException;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.core.NameParser;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
-import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
+import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
 import com.iexec.common.docker.DockerLogs;
 import com.iexec.common.docker.DockerRunFinalStatus;
 import com.iexec.common.docker.DockerRunRequest;
@@ -39,7 +41,10 @@ import java.io.ByteArrayOutputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
@@ -47,7 +52,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
-@SuppressWarnings("deprecation") // ExecStartResultCallback
 public class DockerClientInstance {
 
     // default docker registry address
@@ -108,10 +112,7 @@ public class DockerClientInstance {
         return this.client;
     }
 
-    /*
-     * Docker volume
-     */
-
+    //region volume
     public synchronized boolean createVolume(String volumeName) {
         if (StringUtils.isBlank(volumeName)) {
             log.error("Invalid docker volume name [name:{}]", volumeName);
@@ -164,24 +165,20 @@ public class DockerClientInstance {
         if (StringUtils.isBlank(volumeName)) {
             return false;
         }
-        if (!isVolumePresent(volumeName)) {
-            log.info("No docker volume to remove [name:{}]", volumeName);
-            return false;
-        }
         try (RemoveVolumeCmd removeVolumeCmd = getClient().removeVolumeCmd(volumeName)) {
             removeVolumeCmd.exec();
             log.info("Removed docker volume [name:{}]", volumeName);
             return true;
+        } catch (NotFoundException e) {
+            log.warn("No docker volume to remove [name:{}]", volumeName);
         } catch (Exception e) {
             log.error("Error removing docker volume [name:{}]", volumeName, e);
-            return false;
         }
+        return false;
     }
+    //endregion
 
-    /*
-     * Docker network
-     */
-
+    //region network
     public synchronized String createNetwork(String networkName) {
         if (StringUtils.isBlank(networkName)) {
             log.error("Invalid docker network name [name:{}]", networkName);
@@ -238,25 +235,21 @@ public class DockerClientInstance {
             log.error("Invalid docker network name [name:{}]", networkName);
             return false;
         }
-        if (!isNetworkPresent(networkName)) {
-            log.info("No docker network to remove [name:{}]", networkName);
-            return false;
-        }
         try (RemoveNetworkCmd removeNetworkCmd =
                      getClient().removeNetworkCmd(networkName)) {
             removeNetworkCmd.exec();
             log.info("Removed docker network [name:{}]", networkName);
             return true;
+        } catch (NotFoundException e) {
+            log.warn("No docker network to remove [name:{}]", networkName);
         } catch (Exception e) {
             log.error("Error removing docker network [name:{}]", networkName, e);
-            return false;
         }
+        return false;
     }
+    //endregion
 
-    /*
-     * Docker image
-     */
-
+    //region image
     /**
      * Pull docker image and timeout after 1 minute.
      * 
@@ -289,7 +282,7 @@ public class DockerClientInstance {
             return false;
         }
         try (PullImageCmd pullImageCmd =
-                    getClient().pullImageCmd(repoAndTag.repos)) {
+                     getClient().pullImageCmd(repoAndTag.repos)) {
             log.info("Pulling docker image [name:{}]", imageName);
             boolean isPulledBeforeTimeout = pullImageCmd
                     .withTag(repoAndTag.tag)
@@ -376,14 +369,12 @@ public class DockerClientInstance {
             return false;
         }
     }
+    //endregion
 
-    /*
-     * Docker container
-     */
-
+    //region container
     /**
      * Run a docker container with the specified config.
-     * If maxExecutionTime is les or equal to 0, the container
+     * If maxExecutionTime is less or equal to 0, the container
      * will run in detached mode, thus, we return immediately
      * without waiting for it to exit.
      * 
@@ -450,6 +441,7 @@ public class DockerClientInstance {
     }
 
     public boolean stopAndRemoveContainer(String containerName) {
+        // TODO: check `isContainerPresent(containerName)` instead
         return stopContainer(containerName)
                 && removeContainer(containerName);
     }
@@ -804,7 +796,9 @@ public class DockerClientInstance {
             return false;
         }
     }
+    //endregion
 
+    //region exec
     public Optional<DockerLogs> exec(String containerName, String... cmd) {
         if (StringUtils.isBlank(containerName)) {
             return Optional.empty();
@@ -814,20 +808,34 @@ public class DockerClientInstance {
                     containerName);
             return Optional.empty();
         }
+        StringBuilder stdout = new StringBuilder();
+        StringBuilder stderr = new StringBuilder();
         // create 'docker exec' command
-        ExecCreateCmdResponse execCreateCmdResponse = getClient().execCreateCmd(containerName)
-                .withAttachStderr(true)
-                .withAttachStdout(true)
-                .withCmd(cmd)
-                .exec();
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-        // run 'docker exec' command
-        try (ExecStartCmd execStartCmd = getClient().execStartCmd(execCreateCmdResponse.getId())) {
-            execStartCmd
-                    .exec(new ExecStartResultCallback(stdout, stderr))
-                    .awaitCompletion();
-        } catch (Exception e) {
+        try (ExecCreateCmd execCreateCmd = getClient().execCreateCmd(containerName)) {
+            ExecCreateCmdResponse execCreateCmdResponse = execCreateCmd
+                    .withAttachStderr(true)
+                    .withAttachStdout(true)
+                    .withCmd(cmd)
+                    .exec();
+            // run 'docker exec' command
+            try (ExecStartCmd execStartCmd = getClient().execStartCmd(execCreateCmdResponse.getId())) {
+                execStartCmd
+                        .exec(new ResultCallback.Adapter<>() {
+                            @Override
+                            public void onNext(Frame object) {
+                                if (object.getStreamType() == StreamType.STDOUT) {
+                                    stdout.append(new String(object.getPayload()));
+                                } else if (object.getStreamType() == StreamType.STDERR) {
+                                    stderr.append(new String(object.getPayload()));
+                                }
+                            }
+                        })
+                        .awaitCompletion();
+            }
+        } catch (InterruptedException e) {
+            log.warn("Docker exec command was interrupted", e);
+            Thread.currentThread().interrupt();
+        } catch (RuntimeException e) {
             log.error("Error running docker exec command [name:{}, cmd:{}]",
                     containerName, cmd, e);
             return Optional.empty();
@@ -837,10 +845,7 @@ public class DockerClientInstance {
                 .stderr(stderr.toString())
                 .build());
     }
-
-    /*
-     * Docker client
-     */
+    //endregion
 
     /**
      * Build a new docker client instance. If credentials are provided, an authentication

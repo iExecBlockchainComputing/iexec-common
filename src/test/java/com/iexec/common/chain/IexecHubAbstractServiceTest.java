@@ -18,7 +18,6 @@ package com.iexec.common.chain;
 
 import com.iexec.common.contract.generated.IexecHubContract;
 import com.iexec.common.task.TaskDescription;
-import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +39,7 @@ class IexecHubAbstractServiceTest {
 
     public static final int RETRY_DELAY = 10; //in ms
     public static final int MAX_RETRY = 3;
-    private final static String CHAIN_DEAL_ID = TeeUtils.TEE_TAG;
+    private final static String CHAIN_DEAL_ID = BytesUtils.toByte32HexString(0xa);
     private static String CHAIN_TASK_ID;
 
     @Mock

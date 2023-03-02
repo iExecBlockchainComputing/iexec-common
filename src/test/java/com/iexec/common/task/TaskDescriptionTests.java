@@ -22,6 +22,7 @@ package com.iexec.common.task;
 import com.iexec.common.chain.*;
 import com.iexec.common.dapp.DappType;
 import com.iexec.common.tee.TeeEnclaveConfiguration;
+import com.iexec.common.tee.TeeFramework;
 import com.iexec.common.tee.TeeUtils;
 import com.iexec.common.utils.BytesUtils;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
-class TaskDescriptionTest {
+class TaskDescriptionTests {
 
     public static final String CHAIN_TASK_ID = "chainTaskId";
     public static final String REQUESTER = "requester";
@@ -41,10 +42,11 @@ class TaskDescriptionTest {
     public static final DappType APP_TYPE = DappType.DOCKER;
     public static final String APP_URI = "https://uri";
     public static final String APP_ADDRESS = "appAddress";
-    public static final TeeEnclaveConfiguration enclaveConfig = new TeeEnclaveConfiguration();
+    public static final TeeEnclaveConfiguration enclaveConfig = TeeEnclaveConfiguration.builder().build();
     public static final String CMD = "cmd";
     public static final int MAX_EXECUTION_TIME = 1;
     public static final boolean IS_TEE_TASK = true;
+    public static final TeeFramework TEE_FRAMEWORK = TeeFramework.SCONE;
     public static final int BOT_SIZE = 1;
     public static final int BOT_FIRST = 2;
     public static final int TASK_IDX = 3;
@@ -75,6 +77,7 @@ class TaskDescriptionTest {
                 .cmd(CMD)
                 .maxExecutionTime(MAX_EXECUTION_TIME)
                 .isTeeTask(IS_TEE_TASK)
+                .teeFramework(TEE_FRAMEWORK)
                 .botSize(BOT_SIZE)
                 .botFirstIndex(BOT_FIRST)
                 .botIndex(TASK_IDX)
@@ -112,6 +115,8 @@ class TaskDescriptionTest {
                 task.getMaxExecutionTime());
         Assertions.assertEquals(IS_TEE_TASK,
                 task.isTeeTask());
+        Assertions.assertEquals(TEE_FRAMEWORK,
+                task.getTeeFramework());
         Assertions.assertEquals(TASK_IDX,
                 task.getBotIndex());
         Assertions.assertEquals(BOT_SIZE,
@@ -174,7 +179,7 @@ class TaskDescriptionTest {
                         .name(DATASET_NAME)
                         .uri(BytesUtils.bytesToString(DATASET_URI.getBytes(StandardCharsets.UTF_8)))
                         .checksum(DATASET_CHECKSUM).build())
-                .tag(TeeUtils.TEE_TAG)
+                .tag(TeeUtils.TEE_SCONE_ONLY_TAG) // any supported TEE tag
                 .chainCategory(ChainCategory.builder()
                         .maxExecutionTime(MAX_EXECUTION_TIME)
                         .build())
@@ -205,6 +210,8 @@ class TaskDescriptionTest {
                 task.getMaxExecutionTime());
         Assertions.assertEquals(IS_TEE_TASK,
                 task.isTeeTask());
+        Assertions.assertEquals(TEE_FRAMEWORK,
+                task.getTeeFramework());
         Assertions.assertEquals(TASK_IDX,
                 task.getBotIndex());
         Assertions.assertEquals(BOT_SIZE,

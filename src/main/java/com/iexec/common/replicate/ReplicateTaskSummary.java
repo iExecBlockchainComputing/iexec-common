@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 IEXEC BLOCKCHAIN TECH
+ * Copyright 2022 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-package com.iexec.common.tee;
+package com.iexec.common.replicate;
 
+import com.iexec.common.chain.WorkerpoolAuthorization;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Configuration of TEE workflow provided from the sms to the worker.
- * It contains:
- * - las image;
- * - pre-compute image, heap size and entrypoint;
- * - post-compute image, heap size and entrypoint.
- */
+//TODO: Eventually move this to an iexec-core-library embedding DTOs
+// (Eventually move this along with TaskNotificationExtra & more)
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeeWorkflowSharedConfiguration {
+@Builder
+public class ReplicateTaskSummary {
 
-    private String lasImage;
-    private String preComputeImage;
-    private long preComputeHeapSize;
-    private String preComputeEntrypoint;
-    private String postComputeImage;
-    private long postComputeHeapSize;
-    private String postComputeEntrypoint;
+    private WorkerpoolAuthorization workerpoolAuthorization;
+    private String smsUrl;
+
 }

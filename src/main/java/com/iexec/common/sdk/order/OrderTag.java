@@ -16,10 +16,17 @@
 
 package com.iexec.common.sdk.order;
 
+import com.iexec.common.tee.TeeUtils;
+import com.iexec.common.utils.BytesUtils;
+import lombok.Getter;
+
+//TODO: Eventually move from sdk package
+@Getter
 public enum OrderTag {
 
-    STANDARD("0x0000000000000000000000000000000000000000000000000000000000000000"),
-    TEE     ("0x0000000000000000000000000000000000000000000000000000000000000001");
+    STANDARD(BytesUtils.EMPTY_HEX_STRING_32),
+    TEE_SCONE(TeeUtils.TEE_SCONE_ONLY_TAG),
+    TEE_GRAMINE(TeeUtils.TEE_GRAMINE_ONLY_TAG);
 
     private final String value;
 

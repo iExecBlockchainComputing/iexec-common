@@ -16,8 +16,9 @@
 
 package com.iexec.common.tee;
 
-public enum TeeEnclaveProvider {
+public enum TeeFramework {
 
-    SCONE
+    SCONE,
+    GRAMINE
 
 }

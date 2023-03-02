@@ -31,6 +31,7 @@ import lombok.NoArgsConstructor;
 public class TaskNotificationExtra {
 
     private WorkerpoolAuthorization workerpoolAuthorization;
+    private String smsUrl;
 
     // block number from which this notification makes sense
     // (it is not used for all notification types)

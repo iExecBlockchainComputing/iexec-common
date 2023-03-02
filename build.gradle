@@ -1,16 +1,12 @@
 plugins {
     id 'java-library'
-    id 'eclipse'
+    id 'io.freefair.lombok' version '6.6.1'
     id 'jacoco'
     id 'org.sonarqube' version '3.3'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
-    id 'io.freefair.lombok' version '5.3.0'
 }
 
 group = 'com.iexec.common'
-sourceCompatibility = 11
-targetCompatibility = 11
 
 ext {
     // ./gradlew build -Pdev
@@ -18,7 +14,7 @@ ext {
     // dependency versions
     dockerJavaVersion = '3.2.12'
     mockServerVersion = '5.11.2'
-    openFeignVersion = '11.7'
+    openFeignVersion = '11.10'
 }
 
 if (!project.hasProperty('gitBranch')) {
@@ -32,6 +28,13 @@ if (gitBranch != 'main' && gitBranch != 'master' && ! (gitBranch ==~ '(release|h
 repositories {
     mavenCentral()
     maven {
+        url = 'https://docker-regis-adm.iex.ec/repository/maven-public/'
+        credentials {
+            username nexusUser
+            password nexusPassword
+        }
+    }
+    maven {
         url "https://jitpack.io"
     }
 }
@@ -40,23 +43,24 @@ repositories {
 // 'api' configuration allows to expose dependencies with 'compile' scope in pom
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
+    implementation platform('org.springframework.boot:spring-boot-dependencies:2.6.14')
     // web3j dependency
-    api "org.web3j:core:4.8.9"
-    
-    // apache commons.lang3
-    api "org.apache.commons:commons-lang3:3.9"
+    api 'org.web3j:core:4.8.9'
 
     // feign
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
     api "io.github.openfeign:feign-slf4j:$openFeignVersion"
 
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0"
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // apache commons.lang3
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
 
     // multiaddresses (IPFS)
-    implementation 'com.github.multiformats:java-multiaddr:1.3.1'
+    implementation 'com.github.multiformats:java-multiaddr:v1.4.6'
 
     //jaxb required with Java 11
-    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    implementation 'javax.xml.bind:jaxb-api'
 
     //args utils
     implementation 'org.apache.maven.shared:maven-shared-utils:3.2.1'
@@ -65,15 +69,15 @@ dependencies {
     implementation 'net.lingala.zip4j:zip4j:2.3.1'
 
     // google core libs
-    implementation "com.google.guava:guava:28.2-jre"
+    implementation 'com.google.guava:guava:28.2-jre'
 
     // json
     implementation 'org.json:json:20201115'
 
-    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-classic'
 
-    implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation 'org.hibernate.validator:hibernate-validator:6.0.13.Final'
+    implementation 'javax.validation:validation-api'
+    implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.glassfish:javax.el:3.0.0'
 
     // docker
@@ -85,22 +89,28 @@ dependencies {
     // failsafe
     implementation 'net.jodah:failsafe:2.4.4'
     //TODO Migrate from Awaitility to Failsafe everywhere
-    implementation 'org.awaitility:awaitility:4.1.1'
+    implementation 'org.awaitility:awaitility'
 
     // expiring map
     implementation 'net.jodah:expiringmap:0.5.10'
 
     // test
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:3.6.0'
-    testImplementation 'org.assertj:assertj-core:3.18.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
     // mock-server
     testImplementation "org.mock-server:mockserver-client-java:$mockServerVersion"
     testImplementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
+    // spring-boot-test to capture test outputs
+    testImplementation 'org.springframework.boot:spring-boot-test'
+    // spring-test for ReflectionTestUtils
+    testImplementation 'org.springframework:spring-test'
 }
 
-
 java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
     withJavadocJar()
     withSourcesJar()
 }
@@ -112,8 +122,8 @@ test {
         }
     }
     reports {
-        junitXml.enabled = true
-        html.enabled = true
+        junitXml.required = true
+        html.required = true
     }
 }
 
@@ -128,22 +138,11 @@ jacoco {
 // sonarqube code coverage requires jacoco XML report
 jacocoTestReport {
     reports {
-        xml.enabled true
+        xml.required = true
     }
 }
 tasks.test.finalizedBy    tasks.jacocoTestReport
 tasks.sonarqube.dependsOn tasks.jacocoTestReport
-
-// required if we want to embed web3j dependency inside
-shadowJar {
-    // classifier to produce 2 identified jar files
-    archiveClassifier.set('all')
-    // include source code in the jar
-    from sourceSets.main.allSource
-    // avoid duplicate application.properties import from jar and sources
-    duplicatesStrategy = 'exclude'
-}
-build.dependsOn(shadowJar)
 
 publishing {
     publications {

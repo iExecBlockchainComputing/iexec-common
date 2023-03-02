@@ -334,7 +334,7 @@ public abstract class Web3jAbstractService {
                 gasLimit = 500000;//seen 43721
                 break;
             case FUNC_CREATEAPP:
-                gasLimit = 800000;//700000 might not be enough
+                gasLimit = 900000;//800000 might not be enough
                 break;
             case FUNC_CREATEWORKERPOOL:
                 gasLimit = 700000;

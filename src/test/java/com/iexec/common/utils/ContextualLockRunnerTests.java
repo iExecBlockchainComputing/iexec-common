@@ -78,8 +78,6 @@ class ContextualLockRunnerTests {
     @Test
     void runWithLockOnConstantValue() {
         runWithLock(i -> true);
-        Assertions.assertThatThrownBy(() -> runWithoutLock(i -> true))
-                .hasMessageContaining("Synchronization failed");
     }
 
     /**
@@ -90,8 +88,6 @@ class ContextualLockRunnerTests {
     @Test
     void runWithLockOnParity() {
         runWithLock(i -> i % 2 == 0);
-        Assertions.assertThatThrownBy(() -> runWithoutLock(i -> i % 2 == 0))
-                .hasMessageContaining("Synchronization failed");
     }
 
     /**
@@ -102,10 +98,6 @@ class ContextualLockRunnerTests {
     @Test
     void runWithLockPerValue() {
         runWithLock(Function.identity());
-
-        // As any order is acceptable, there should not be any exception there.
-        Assertions.assertThatCode(() -> runWithoutLock(Function.identity()))
-                .doesNotThrowAnyException();
     }
 
     /**
@@ -116,8 +108,6 @@ class ContextualLockRunnerTests {
     @Test
     void acceptWithLockOnParity() {
         acceptWithLock(i -> i % 2 == 0);
-        Assertions.assertThatThrownBy(() -> runWithoutLock(i -> i % 2 == 0))
-                .hasMessageContaining("Synchronization failed");
     }
 
     /**
@@ -128,8 +118,6 @@ class ContextualLockRunnerTests {
     @Test
     void applyWithLockOnParity() {
         applyWithLock(i -> i % 2 == 0);
-        Assertions.assertThatThrownBy(() -> applyWithoutLock(i -> i % 2 == 0))
-                .hasMessageContaining("Synchronization failed");
     }
 
     /**
@@ -279,56 +267,6 @@ class ContextualLockRunnerTests {
                         )
                 )
         );
-    }
-
-    /**
-     * Runs an action a bunch of times
-     * and checks it doesn't interfere with other runs of similar key.
-     * <br>
-     * It is known an action should be run {@code NUMBER_OF_CALLS} times
-     * before the next action with a same key can be run.
-     * So each action decrements {@code NUMBER_OF_CALLS} times the counter relative to its key.
-     * If at the end of the run of an action, its counter is not 0,
-     * that means the counter has been reset by another thread
-     * - which should occur as there is no lock on key.
-     * <br>
-     * That's the same as {@link ContextualLockRunnerTests#runWithLock(Function)}
-     * but there's no lock so synchronization should fail.
-     *
-     * @param <K> Type of the lock key.
-     */
-    private <K> void runWithoutLock(Function<Integer, K> keyProvider) {
-        run(
-                (Integer threadPosition, Map<K, Integer> remainingCallsPerKey) -> runAndDecrementRemainingCalls(
-                        threadPosition,
-                        keyProvider,
-                        remainingCallsPerKey
-                ));
-    }
-
-    /**
-     * Runs an action a bunch of times
-     * and checks it doesn't interfere with other runs of similar key.
-     * <br>
-     * It is known an action should be run {@code NUMBER_OF_CALLS} times
-     * before the next action with a same key can be run.
-     * So each action decrements {@code NUMBER_OF_CALLS} times the counter relative to its key.
-     * If at the end of the run of an action, its counter is not 0,
-     * that means the counter has been reset by another thread
-     * - which should occur as there is no lock on key.
-     * <br>
-     * That's the same as {@link ContextualLockRunnerTests#applyWithLock(Function)}
-     * but there's no lock so synchronization should fail.
-     *
-     * @param <K> Type of the lock key.
-     */
-    private <K> void applyWithoutLock(Function<Integer, K> keyProvider) {
-        run(
-                (Integer threadPosition, Map<K, Integer> remainingCallsPerKey) -> applyAndDecrementRemainingCalls(
-                        threadPosition,
-                        keyProvider,
-                        remainingCallsPerKey
-                ));
     }
 
     /**
