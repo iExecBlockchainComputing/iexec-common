@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [[7.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v7.0.0) 2023
+## [[7.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v7.0.0) 2023-03-02
 
 ### New Features
 * Add classes to support Gramine framework for TEE tasks.
@@ -15,7 +15,9 @@ All notable changes to this project will be documented in this file.
 * Support `provider` alias for `framework` in `TeeEnclaveConfiguration`.
 * Ignore entrypoint and heap size during Gramine `TeeEnclaveConfiguration` validation.
 ### Quality
+* Introduce changelog.
 * Rework Docker implementation and tests.
+* Remove failed synchronization assertions in tests of `ContextualLockRunner`.
 * Remove `IexecCli` and `BrokeringEngine`.
 * Remove unused references.
 * Remove shadow JAR bundle.
