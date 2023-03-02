@@ -13,7 +13,6 @@ All notable changes to this project will be documented in this file.
 * Resolve dependencies from internal Nexus.
 * Increase app creation gas limit.
 * Support `provider` alias for `framework` in `TeeEnclaveConfiguration`.
-* Update iconarchive RLC PNG hash in tests.
 * Ignore entrypoint and heap size during Gramine `TeeEnclaveConfiguration` validation.
 ### Quality
 * Rework Docker implementation and tests.
@@ -25,6 +24,10 @@ All notable changes to this project will be documented in this file.
 * Upgrade feign dependencies to 11.10.
 * Upgrade java-multiaddr dependency to v1.4.6.
 * Upgrade to Gradle 7.6.
+
+## [[6.2.2]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.2.2) 2023-03-02
+
+* Update iconarchive RLC PNG hash in tests.
 
 ## [[6.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.2.1) 2022-12-19
 
