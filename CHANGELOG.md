@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [[6.2.2]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.2.2) 2023-03-02
+
+* Update iconarchive RLC PNG hash in tests.
+
 ## [[6.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v6.2.1) 2022-12-19
 
 * Improve Docker tests reentrancy.
