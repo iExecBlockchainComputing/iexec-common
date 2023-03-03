@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [[NEXT]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2023
 
+* Upgrade to `jenkins-library` 2.4.0 (#387).
 
 ## [[7.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v7.0.0) 2023-03-02
 
