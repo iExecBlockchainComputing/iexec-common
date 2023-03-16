@@ -51,6 +51,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * @deprecated Use <a href="http://github.com/iExecBlockchainComputing/iexec-commons-containers">iexec-commons-containers</a> instead.
+ */
+@Deprecated(forRemoval = true)
 @Slf4j
 public class DockerClientInstance {
 

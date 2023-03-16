@@ -24,6 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @deprecated Use <a href="http://github.com/iExecBlockchainComputing/iexec-commons-containers">iexec-commons-containers</a> instead.
+ */
+@Deprecated(forRemoval = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class DockerClientFactory {
 
