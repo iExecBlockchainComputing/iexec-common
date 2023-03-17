@@ -138,19 +138,6 @@ class DockerClientInstanceTests extends AbstractDockerTests {
     }
     //endregion
 
-    /**
-     * This test is temporarily disabled because of this error:
-     * toomanyrequests: too many failed login attempts for
-     * username or IP address.
-     */
-    @Test
-    @Disabled("toomanyrequests: too many failed login attempts for username or IP address")
-    void shouldFailToAuthenticateClientToRegistry() {
-        DockerException e = assertThrows(DockerException.class, () -> DockerClientFactory
-                .getDockerClientInstance(DockerClientInstance.DEFAULT_DOCKER_REGISTRY, "badUsername", "badPassword"));
-        assertThat(e.getHttpStatus()).isEqualTo(401);
-    }
-
     //region isImagePresent
     @Test
     void shouldFindImagePresent() {
