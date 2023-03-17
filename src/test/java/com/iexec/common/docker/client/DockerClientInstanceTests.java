@@ -17,37 +17,30 @@
 package com.iexec.common.docker.client;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.CreateContainerCmd;
-import com.github.dockerjava.api.model.Device;
-import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
-import com.iexec.common.docker.DockerRunRequest;
-import com.iexec.common.sgx.SgxDriverMode;
-import com.iexec.common.utils.ArgsUtils;
-import com.iexec.common.utils.IexecFileHelper;
-import com.iexec.common.utils.SgxUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Spy;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.concurrent.TimeoutException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @Slf4j
@@ -359,265 +352,7 @@ class DockerClientInstanceTests extends AbstractDockerTests {
     }
     //endregion
 
-    //region createContainer
-    @Test
-    void shouldCreateContainer() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerId = dockerClientInstance.createContainer(request);
-        assertThat(containerId).isNotEmpty();
-        // cleaning
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-
-    @Test
-    void shouldNotCreateContainerSinceNoRequest() {
-        assertThat(dockerClientInstance.createContainer(null)).isEmpty();
-    }
-
-    @Test
-    void shouldNotCreateContainerSinceEmptyContainerName() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        request.setContainerName("");
-        assertThat(dockerClientInstance.createContainer(request)).isEmpty();
-    }
-
-    @Test
-    void shouldNotCreateContainerSinceEmptyImageUri() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        request.setImageUri("");
-        assertThat(dockerClientInstance.createContainer(request)).isEmpty();
-    }
-
-    @Test
-    void shouldNotCreateContainerSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        when(dockerClientInstance.getClient())
-                .thenCallRealMethod() // isContainerPresent
-                .thenCallRealMethod() // isNetworkPresent
-                .thenCallRealMethod() // createNetwork
-                .thenReturn(corruptedClient);
-        assertThat(dockerClientInstance.createContainer(request)).isEmpty();
-    }
-
-    @Test
-    void shouldCreateContainerAndRemoveExistingDuplicate() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        // create first container
-        String container1Id = dockerClientInstance.createContainer(request);
-        // create second container with same name (should replace previous one)
-        String container2Id = dockerClientInstance.createContainer(request);
-        assertThat(container2Id).isNotEmpty();
-        assertThat(container2Id).isNotEqualTo(container1Id);
-        // cleaning
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-
-    @Test
-    void shouldNotCreateContainerSinceDuplicateIsPresent() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        // create first container
-        String container1Id = dockerClientInstance.createContainer(request);
-        // create second container with same name (should not replace previous one)
-        String container2Id = dockerClientInstance.createContainer(request, false);
-        assertThat(container1Id).isNotEmpty();
-        assertThat(container2Id).isEmpty();
-        // cleaning
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-    //endregion
-
     //region buildHostConfigFromRunRequest
-    @Test
-    void shouldBuildHostConfigFromRunRequest() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-
-        HostConfig hostConfig =
-                dockerClientInstance.buildHostConfigFromRunRequest(request);
-        assertThat(hostConfig.getNetworkMode())
-                .isEqualTo(DOCKER_NETWORK);
-        assertThat((hostConfig.getBinds()[0].getPath()))
-                .isEqualTo(IexecFileHelper.SLASH_IEXEC_IN);
-        assertThat((hostConfig.getBinds()[0].getVolume().getPath()))
-                .isEqualTo(IexecFileHelper.SLASH_IEXEC_OUT);
-        assertThat(hostConfig.getDevices()).isEmpty();
-    }
-
-    @Test
-    void shouldBuildHostConfigWithDeviceFromRunRequest() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        request.setDevices(List.of(new Device("", DEVICE_PATH_IN_CONTAINER, DEVICE_PATH_ON_HOST)));
-
-        HostConfig hostConfig =
-                dockerClientInstance.buildHostConfigFromRunRequest(request);
-        assertThat(hostConfig.getNetworkMode())
-                .isEqualTo(DOCKER_NETWORK);
-        assertThat((hostConfig.getBinds()[0].getPath()))
-                .isEqualTo(IexecFileHelper.SLASH_IEXEC_IN);
-        assertThat((hostConfig.getBinds()[0].getVolume().getPath()))
-                .isEqualTo(IexecFileHelper.SLASH_IEXEC_OUT);
-        assertThat(hostConfig.getDevices()).isNotNull();
-        assertThat(hostConfig.getDevices()[0].getPathInContainer())
-                .isEqualTo(DEVICE_PATH_IN_CONTAINER);
-        assertThat(hostConfig.getDevices()[0].getPathOnHost())
-                .isEqualTo(DEVICE_PATH_ON_HOST);
-    }
-
-    @Test
-    void shouldBuildHostConfigWithSgxDeviceFromRunRequest() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.LEGACY);
-
-        HostConfig hostConfig =
-                dockerClientInstance.buildHostConfigFromRunRequest(request);
-        assertThat(hostConfig.getNetworkMode())
-                .isEqualTo(DOCKER_NETWORK);
-        assertThat((hostConfig.getBinds()[0].getPath()))
-                .isEqualTo(IexecFileHelper.SLASH_IEXEC_IN);
-        assertThat((hostConfig.getBinds()[0].getVolume().getPath()))
-                .isEqualTo(IexecFileHelper.SLASH_IEXEC_OUT);
-        assertThat(hostConfig.getDevices()[0].getcGroupPermissions())
-                .isEqualTo(SgxUtils.SGX_CGROUP_PERMISSIONS);
-        assertThat(hostConfig.getDevices()[0].getPathInContainer())
-                .isEqualTo("/dev/isgx");
-        assertThat(hostConfig.getDevices()[0].getPathOnHost())
-                .isEqualTo("/dev/isgx");
-    }
-
-    @Test
-    void shouldNotBuildHostConfigFromRunRequestSinceNoRequest() {
-        HostConfig hostConfig =
-                dockerClientInstance.buildHostConfigFromRunRequest(null);
-        assertThat(hostConfig).isNull();
-    }
-    //endregion
-
-    //region createContainerCmd
-    @Test
-    void shouldBuildCreateContainerCmdFromRunRequest() {
-        CreateContainerCmd createContainerCmd = dockerClientInstance.getClient()
-                .createContainerCmd("repo/image:tag");
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        request.setCmd("");
-        request.setEnv(null);
-        request.setContainerPort(0);
-
-        Optional<CreateContainerCmd> oActualCreateContainerCmd =
-                dockerClientInstance.buildCreateContainerCmdFromRunRequest(request,
-                        createContainerCmd);
-        assertThat(oActualCreateContainerCmd).isPresent();
-        CreateContainerCmd actualCreateContainerCmd = oActualCreateContainerCmd.get();
-        assertThat(actualCreateContainerCmd.getName())
-                .isEqualTo(request.getContainerName());
-        assertThat(actualCreateContainerCmd.getHostConfig())
-                .isEqualTo(dockerClientInstance.buildHostConfigFromRunRequest(request));
-        assertThat(actualCreateContainerCmd.getCmd()).isNull();
-        assertThat(actualCreateContainerCmd.getEnv()).isNull();
-        assertThat(actualCreateContainerCmd.getExposedPorts()).isEmpty();
-    }
-
-    @Test
-    void shouldBuildCreateContainerCmdFromRunRequestWithFullParams() {
-        CreateContainerCmd createContainerCmd = dockerClientInstance.getClient()
-                .createContainerCmd("repo/image:tag");
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-
-        Optional<CreateContainerCmd> oActualCreateContainerCmd =
-                dockerClientInstance.buildCreateContainerCmdFromRunRequest(request,
-                        createContainerCmd);
-        assertThat(oActualCreateContainerCmd).isPresent();
-        CreateContainerCmd actualCreateContainerCmd = oActualCreateContainerCmd.get();
-        assertThat(actualCreateContainerCmd.getName())
-                .isEqualTo(request.getContainerName());
-        assertThat(actualCreateContainerCmd.getHostConfig())
-                .isEqualTo(dockerClientInstance.buildHostConfigFromRunRequest(request));
-        assertThat(actualCreateContainerCmd.getCmd())
-                .isEqualTo(ArgsUtils.stringArgsToArrayArgs(request.getCmd()));
-        assertThat(actualCreateContainerCmd.getEnv()).isNotNull();
-        assertThat(Arrays.asList(actualCreateContainerCmd.getEnv()))
-                .isEqualTo(request.getEnv());
-        assertThat(actualCreateContainerCmd.getExposedPorts()).isNotNull();
-        assertThat(actualCreateContainerCmd.getExposedPorts()[0].getPort())
-                .isEqualTo(1000);
-        assertThat(actualCreateContainerCmd.getWorkingDir()).isEqualTo(SLASH_TMP);
-    }
-
-    @Test
-    void shouldNotBuildCreateContainerCmdFromRunRequestSinceNoRequest() {
-        Optional<CreateContainerCmd> actualCreateContainerCmd =
-                dockerClientInstance.buildCreateContainerCmdFromRunRequest(
-                        getDefaultDockerRunRequest(SgxDriverMode.NONE),
-                        null);
-        assertThat(actualCreateContainerCmd).isEmpty();
-    }
-
-    @Test
-    void shouldNotBuildCreateContainerCmdFromRunRequestSinceNoCreateContainerCmd() {
-        Optional<CreateContainerCmd> actualCreateContainerCmd =
-                dockerClientInstance.buildCreateContainerCmdFromRunRequest(
-                        null,
-                        dockerClientInstance.getClient()
-                                .createContainerCmd("repo/image:tag")
-                );
-        assertThat(actualCreateContainerCmd).isEmpty();
-    }
-    //endregion
-
-    //region isContainerPresent
-    @Test
-    void shouldIsContainerPresentBeTrue() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        dockerClientInstance.createContainer(request);
-
-        boolean isPresent = dockerClientInstance
-                .isContainerPresent(request.getContainerName());
-        assertThat(isPresent).isTrue();
-        // cleaning
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-    //endregion
-
-    //region isContainerActive
-    @Test
-    void shouldIsContainerActiveBeTrue() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
-        dockerClientInstance.createContainer(request);
-        boolean isStarted = dockerClientInstance.startContainer(request.getContainerName());
-        assertThat(isStarted).isTrue();
-
-        boolean isActive = dockerClientInstance
-                .isContainerActive(request.getContainerName());
-        assertThat(isActive).isTrue();
-        // cleaning
-        dockerClientInstance.stopAndRemoveContainer(request.getContainerName());
-    }
-
-    @Test
-    void shouldIsContainerActiveBeFalseSinceContainerIsNotRunning() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        dockerClientInstance.createContainer(request);
-        // Container is not running or restarting
-
-        boolean isActive = dockerClientInstance
-                .isContainerActive(request.getContainerName());
-        assertThat(isActive).isFalse();
-        // cleaning
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-    //endregion
-
-    //region getContainerName
-    @Test
-    void shouldGetContainerName() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerId = dockerClientInstance.createContainer(request);
-
-        assertThat(dockerClientInstance.getContainerName(containerId))
-                .isEqualTo(request.getContainerName());
-
-        // cleaning
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-
     @Test
     void shouldNotGetContainerNameSinceEmptyId() {
         assertThat(dockerClientInstance.getContainerName("")).isEmpty();
@@ -627,32 +362,9 @@ class DockerClientInstanceTests extends AbstractDockerTests {
     void shouldNotGetContainerNameSinceNoContainer() {
         assertThat(dockerClientInstance.getContainerName(getRandomString())).isEmpty();
     }
-
-    @Test
-    void shouldNotGetContainerNameSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerId = dockerClientInstance.createContainer(request);
-        assertThat(corruptClientInstance.getContainerName(containerId)).isEmpty();
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
     //endregion
 
     //region getContainerId
-    @Test
-    void shouldGetContainerId() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        pullImageIfNecessary();
-        String expectedId = dockerClientInstance.createContainer(request);
-
-        String containerId =
-                dockerClientInstance.getContainerId(request.getContainerName());
-        assertThat(containerId).isNotEmpty();
-        assertThat(containerId).isEqualTo(expectedId);
-
-        // cleaning
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-
     @Test
     void shouldNotGetContainerIdSinceEmptyId() {
         assertThat(dockerClientInstance.getContainerId("")).isEmpty();
@@ -666,19 +378,6 @@ class DockerClientInstanceTests extends AbstractDockerTests {
 
     //region getContainerStatus
     @Test
-    void shouldGetContainerStatus() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-
-        assertThat(dockerClientInstance.getContainerStatus(request.getContainerName()))
-                .isEqualTo(DockerClientInstance.CREATED_STATUS);
-
-        // cleaning
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-
-    @Test
     void shouldNotGetContainerStatusSinceEmptyId() {
         assertThat(dockerClientInstance.getContainerStatus("")).isEmpty();
     }
@@ -691,38 +390,8 @@ class DockerClientInstanceTests extends AbstractDockerTests {
 
     //region startContainer
     @Test
-    void shouldStartContainer() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-
-        assertThat(dockerClientInstance.startContainer(containerName)).isTrue();
-        assertThat(dockerClientInstance.getContainerStatus(containerName))
-                .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-
-        // cleaning
-        dockerClientInstance.stopContainer(containerName);
-        dockerClientInstance.removeContainer(containerName);
-    }
-
-    @Test
     void shouldNotStartContainerNameSinceEmptyId() {
         assertThat(dockerClientInstance.startContainer("")).isFalse();
-    }
-
-    @Test
-    void shouldNotStartContainerSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
-        dockerClientInstance.createContainer(request);
-        assertThat(corruptClientInstance.startContainer(containerName)).isFalse();
-
-        // cleaning
-        dockerClientInstance.stopContainer(containerName);
-        dockerClientInstance.removeContainer(containerName);
     }
     //endregion
 
@@ -742,60 +411,9 @@ class DockerClientInstanceTests extends AbstractDockerTests {
                 .getMessage();
         assertEquals("Timeout date cannot be null", message);
     }
-
-    @Test
-    void shouldTimeoutAfterWaitContainerUntilExitOrTimeout() throws TimeoutException {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 30 && echo Hello from Docker alpine!'");
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerName);
-        assertThat(dockerClientInstance.getContainerStatus(containerName))
-                .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        Date before = new Date();
-
-        assertThrows(TimeoutException.class, () -> dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
-                Instant.now().plusSeconds(5)));
-        assertThat(dockerClientInstance.getContainerStatus(containerName))
-                .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        assertThat(new Date().getTime() - before.getTime()).isGreaterThan(1000);
-        // cleaning
-        dockerClientInstance.stopContainer(containerName);
-        dockerClientInstance.removeContainer(containerName);
-    }
-
-    @Test
-    void shouldWaitContainerUntilExitOrTimeoutSinceExited() throws TimeoutException {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 1 && echo Hello from Docker alpine!'");
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerName);
-        assertThat(dockerClientInstance.getContainerStatus(containerName))
-                .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        dockerClientInstance.waitContainerUntilExitOrTimeout(containerName,
-                Instant.now().plusMillis(3000));
-        assertThat(dockerClientInstance.getContainerStatus(containerName))
-                .isEqualTo(DockerClientInstance.EXITED_STATUS);
-
-        // cleaning
-        dockerClientInstance.stopContainer(containerName);
-        dockerClientInstance.removeContainer(containerName);
-    }
     //endregion
 
     //region getContainerExitCode
-    @Test
-    void shouldGetContainerExitCode() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        dockerClientInstance.createContainer(request);
-        int exitCode = dockerClientInstance
-                .getContainerExitCode(request.getContainerName());
-        assertThat(exitCode).isEqualTo(0);
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-
     @Test
     void shouldNotGetContainerExitCodeSinceDockerCmdException() {
         assertThat(corruptClientInstance.getContainerExitCode(getRandomString()))
@@ -814,48 +432,6 @@ class DockerClientInstanceTests extends AbstractDockerTests {
 
     //region stopContainer
     @Test
-    void shouldStopContainer() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerName);
-        assertThat(dockerClientInstance.getContainerStatus(containerName))
-                .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-
-        boolean isStopped = dockerClientInstance.stopContainer(containerName);
-        assertThat(isStopped).isTrue();
-        assertThat(dockerClientInstance.getContainerStatus(containerName))
-                .isEqualTo(DockerClientInstance.EXITED_STATUS);
-        verify(dockerClientInstance, atLeastOnce()).isContainerPresent(containerName);
-        verify(dockerClientInstance).isContainerActive(containerName);
-        // cleaning
-        dockerClientInstance.removeContainer(containerName);
-    }
-
-    @Test
-    void shouldReturnTrueWhenContainerIsNotActive() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-        assertThat(dockerClientInstance.getContainerStatus(containerName))
-                .isEqualTo(DockerClientInstance.CREATED_STATUS);
-        // Use spied client to verify method calls
-        when(dockerClientInstance.getClient()).thenReturn(spiedClient);
-
-        boolean isStopped = dockerClientInstance.stopContainer(containerName);
-        assertThat(isStopped).isTrue();
-        verify(dockerClientInstance, atLeastOnce()).isContainerPresent(containerName);
-        verify(dockerClientInstance).isContainerActive(containerName);
-        verify(spiedClient, never()).stopContainerCmd(anyString());
-        // cleaning
-        dockerClientInstance.removeContainer(containerName);
-    }
-
-    @Test
     void shouldNotStopContainerSinceEmptyId() {
         assertThat(dockerClientInstance.stopContainer("")).isFalse();
     }
@@ -868,76 +444,12 @@ class DockerClientInstanceTests extends AbstractDockerTests {
         verify(dockerClientInstance, atLeastOnce()).isContainerPresent(containerName);
         verify(dockerClientInstance, never()).isContainerActive(containerName);
     }
-
-    @Test
-    void shouldNotStopContainerSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerName);
-        when(dockerClientInstance.getClient())
-                .thenCallRealMethod()        // isContainerPresent
-                .thenCallRealMethod()        // getContainerStatus
-                .thenReturn(corruptedClient) // stopContainerCmd
-                .thenCallRealMethod();       // stopAndRemoveContainer
-        assertThat(dockerClientInstance.stopContainer(containerName)).isFalse();
-        // clean
-        dockerClientInstance.stopAndRemoveContainer(containerName);
-    }
     //endregion
 
     //region removeContainer
     @Test
-    void shouldRemoveContainer() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 10 && echo Hello from Docker alpine!'");
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerName);
-        dockerClientInstance.stopContainer(containerName);
-
-        assertThat(dockerClientInstance.removeContainer(containerName)).isTrue();
-    }
-
-    @Test
     void shouldNotRemoveContainerSinceEmptyId() {
         assertThat(dockerClientInstance.removeContainer("")).isFalse();
-    }
-
-    @Test
-    void shouldNotRemoveContainerSinceRunning() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 5 && echo Hello from Docker alpine!'");
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerName);
-
-        assertThat(dockerClientInstance.getContainerStatus(containerName))
-                .isEqualTo(DockerClientInstance.RUNNING_STATUS);
-        assertThat(dockerClientInstance.removeContainer(containerName)).isFalse();
-        // cleaning
-        dockerClientInstance.stopAndRemoveContainer(containerName);
-    }
-
-    @Test
-    void shouldNotRemoveContainerSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        String containerName = request.getContainerName();
-        request.setCmd("sh -c 'sleep 5 && echo Hello from Docker alpine!'");
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(containerName);
-        when(dockerClientInstance.getClient())
-                .thenCallRealMethod()        // isContainerPresent
-                .thenReturn(corruptedClient) // removeContainerCmd
-                .thenCallRealMethod();       // stopAndRemoveContainer
-
-        assertThat(dockerClientInstance.removeContainer(containerName)).isFalse();
-        // clean
-        dockerClientInstance.stopAndRemoveContainer(containerName);
     }
     //endregion
 

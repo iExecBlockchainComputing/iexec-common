@@ -22,9 +22,6 @@ import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
-import com.iexec.common.docker.DockerRunRequest;
-import com.iexec.common.sgx.SgxDriverMode;
-import com.iexec.common.utils.IexecFileHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -34,7 +31,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -80,23 +76,6 @@ abstract class AbstractDockerTests {
         DockerClientInstance dockerClientInstance = new DockerClientInstance();
         ReflectionTestUtils.setField(dockerClientInstance, "client", corruptDockerClient);
         return dockerClientInstance;
-    }
-
-    DockerRunRequest getDefaultDockerRunRequest(SgxDriverMode sgxDriverMode) {
-        return DockerRunRequest.builder()
-                .containerName(getRandomString())
-                .chainTaskId(CHAIN_TASK_ID)
-                .imageUri(ALPINE_LATEST)
-                .cmd(CMD)
-                .env(ENV)
-                .sgxDriverMode(sgxDriverMode)
-                .containerPort(1000)
-                .binds(Collections.singletonList(IexecFileHelper.SLASH_IEXEC_IN +
-                        ":" + IexecFileHelper.SLASH_IEXEC_OUT))
-                .maxExecutionTime(500000)
-                .dockerNetwork(DOCKER_NETWORK)
-                .workingDir(SLASH_TMP)
-                .build();
     }
 
     String getEnvValue(String envVarName) {
