@@ -29,6 +29,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @deprecated Use <a href="http://github.com/iExecBlockchainComputing/iexec-commons-containers">iexec-commons-containers</a> instead.
+ */
+@Deprecated(forRemoval = true)
 @Data
 @Builder
 @NoArgsConstructor

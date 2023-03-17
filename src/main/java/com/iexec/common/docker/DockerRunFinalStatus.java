@@ -16,6 +16,10 @@
 
 package com.iexec.common.docker;
 
+/**
+ * @deprecated Use <a href="http://github.com/iExecBlockchainComputing/iexec-commons-containers">iexec-commons-containers</a> instead.
+ */
+@Deprecated(forRemoval = true)
 public enum DockerRunFinalStatus {
     FAILED,
     TIMEOUT,
