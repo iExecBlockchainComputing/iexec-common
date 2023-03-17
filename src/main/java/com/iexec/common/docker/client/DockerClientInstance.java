@@ -17,7 +17,6 @@
 package com.iexec.common.docker.client;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.exception.NotFoundException;
@@ -25,17 +24,14 @@ import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.core.NameParser;
-import com.github.dockerjava.core.command.ExecStartResultCallback;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
-import com.iexec.common.docker.DockerLogs;
 import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.WaitUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -651,34 +647,6 @@ public class DockerClientInstance {
         }
     }
 
-    public Optional<DockerLogs> getContainerLogs(String containerName) {
-        if (StringUtils.isBlank(containerName)) {
-            log.error("Invalid docker container name [name:{}]", containerName);
-            return Optional.empty();
-        }
-        if (!isContainerPresent(containerName)) {
-            log.error("Cannot get logs of inexistent docker container [name:{}]", containerName);
-            return Optional.empty();
-        }
-        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-        try (LogContainerCmd logContainerCmd =
-                    getClient().logContainerCmd(containerName)) {
-            logContainerCmd
-                    .withStdOut(true)
-                    .withStdErr(true)
-                    .exec(new ExecStartResultCallback(stdout, stderr))
-                    .awaitCompletion();
-        } catch (Exception e) {
-            log.error("Error getting docker container logs [name:{}]", containerName, e);
-            return Optional.empty();
-        }
-        return Optional.of(DockerLogs.builder()
-                .stdout(stdout.toString())
-                .stderr(stderr.toString())
-                .build());
-    }
-
     /**
      * Stop a running docker container.
      * 
@@ -729,55 +697,6 @@ public class DockerClientInstance {
             log.error("Error removing docker container [name:{}]", containerName, e);
             return false;
         }
-    }
-    //endregion
-
-    //region exec
-    public Optional<DockerLogs> exec(String containerName, String... cmd) {
-        if (StringUtils.isBlank(containerName)) {
-            return Optional.empty();
-        }
-        if (!isContainerPresent(containerName)) {
-            log.error("Cannot run docker exec since container not found [name:{}]",
-                    containerName);
-            return Optional.empty();
-        }
-        StringBuilder stdout = new StringBuilder();
-        StringBuilder stderr = new StringBuilder();
-        // create 'docker exec' command
-        try (ExecCreateCmd execCreateCmd = getClient().execCreateCmd(containerName)) {
-            ExecCreateCmdResponse execCreateCmdResponse = execCreateCmd
-                    .withAttachStderr(true)
-                    .withAttachStdout(true)
-                    .withCmd(cmd)
-                    .exec();
-            // run 'docker exec' command
-            try (ExecStartCmd execStartCmd = getClient().execStartCmd(execCreateCmdResponse.getId())) {
-                execStartCmd
-                        .exec(new ResultCallback.Adapter<>() {
-                            @Override
-                            public void onNext(Frame object) {
-                                if (object.getStreamType() == StreamType.STDOUT) {
-                                    stdout.append(new String(object.getPayload()));
-                                } else if (object.getStreamType() == StreamType.STDERR) {
-                                    stderr.append(new String(object.getPayload()));
-                                }
-                            }
-                        })
-                        .awaitCompletion();
-            }
-        } catch (InterruptedException e) {
-            log.warn("Docker exec command was interrupted", e);
-            Thread.currentThread().interrupt();
-        } catch (RuntimeException e) {
-            log.error("Error running docker exec command [name:{}, cmd:{}]",
-                    containerName, cmd, e);
-            return Optional.empty();
-        }
-        return Optional.of(DockerLogs.builder()
-                .stdout(stdout.toString())
-                .stderr(stderr.toString())
-                .build());
     }
     //endregion
 

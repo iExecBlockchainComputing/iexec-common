@@ -25,7 +25,6 @@ import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
-import com.iexec.common.docker.DockerLogs;
 import com.iexec.common.docker.DockerRunRequest;
 import com.iexec.common.sgx.SgxDriverMode;
 import com.iexec.common.utils.ArgsUtils;
@@ -810,66 +809,6 @@ class DockerClientInstanceTests extends AbstractDockerTests {
         final String message = assertThrows(IllegalArgumentException.class, () -> dockerClientInstance.getContainerExitCode(containerName))
                 .getMessage();
         assertEquals("Container name cannot be blank", message);
-    }
-    //endregion
-
-    //region getContainerLogs
-    @Test
-    void shouldGetContainerLogsSinceStdout() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        request.setCmd("sh -c 'echo Hello from Docker alpine!'");
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(request.getContainerName());
-
-        Optional<DockerLogs> containerLogs =
-                dockerClientInstance.getContainerLogs(request.getContainerName());
-        assertThat(containerLogs).isPresent();
-        assertThat(containerLogs.get().getStdout()).contains("Hello from " +
-                "Docker alpine!");
-        assertThat(containerLogs.get().getStderr()).isEmpty();
-
-        // cleaning
-        dockerClientInstance.stopContainer(request.getContainerName());
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-
-    @Test
-    void shouldGetContainerLogsSinceStderr() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        request.setCmd("sh -c 'echo Hello from Docker alpine! >&2'");
-        pullImageIfNecessary();
-        dockerClientInstance.createContainer(request);
-        dockerClientInstance.startContainer(request.getContainerName());
-
-        Optional<DockerLogs> containerLogs =
-                dockerClientInstance.getContainerLogs(request.getContainerName());
-        assertThat(containerLogs).isPresent();
-        assertThat(containerLogs.get().getStdout()).isEmpty();
-        assertThat(containerLogs.get().getStderr()).contains("Hello from " +
-                "Docker alpine!");
-
-        // cleaning
-        dockerClientInstance.stopContainer(request.getContainerName());
-        dockerClientInstance.removeContainer(request.getContainerName());
-    }
-
-    @Test
-    void shouldNotGetContainerLogsSinceEmptyId() {
-        assertThat(dockerClientInstance.getContainerLogs("")).isEmpty();
-    }
-
-    @Test
-    void shouldNotGetContainerLogsSinceDockerCmdException() {
-        DockerRunRequest request = getDefaultDockerRunRequest(SgxDriverMode.NONE);
-        dockerClientInstance.createContainer(request);
-        when(dockerClientInstance.getClient())
-                .thenCallRealMethod()        // isContainerPresent
-                .thenReturn(corruptedClient) // logContainerCmd
-                .thenCallRealMethod();       // removeContainer
-        assertThat(dockerClientInstance.getContainerLogs(request.getContainerName()))
-                .isEmpty();
-        dockerClientInstance.removeContainer(request.getContainerName());
     }
     //endregion
 
