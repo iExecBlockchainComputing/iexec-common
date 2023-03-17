@@ -29,9 +29,7 @@ import com.github.dockerjava.core.command.ExecStartResultCallback;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
 import com.iexec.common.docker.DockerLogs;
-import com.iexec.common.docker.DockerRunFinalStatus;
 import com.iexec.common.docker.DockerRunRequest;
-import com.iexec.common.docker.DockerRunResponse;
 import com.iexec.common.utils.ArgsUtils;
 import com.iexec.common.utils.WaitUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -376,74 +374,6 @@ public class DockerClientInstance {
     //endregion
 
     //region container
-    /**
-     * Run a docker container with the specified config.
-     * If maxExecutionTime is less or equal to 0, the container
-     * will run in detached mode, thus, we return immediately
-     * without waiting for it to exit.
-     * 
-     * @param dockerRunRequest config of the run
-     * @return a response with metadata and success or failure
-     * status.
-     */
-    public DockerRunResponse run(DockerRunRequest dockerRunRequest) {
-        log.info("Running docker container [name:{}, image:{}, cmd:{}]",
-                dockerRunRequest.getContainerName(), dockerRunRequest.getImageUri(),
-                dockerRunRequest.getArrayArgsCmd());
-        DockerRunResponse dockerRunResponse = DockerRunResponse.builder()
-                .finalStatus(DockerRunFinalStatus.FAILED)
-                .containerExitCode(-1)
-                .build();
-        String containerName = dockerRunRequest.getContainerName();
-        // TODO choose to remove duplicate containers or not
-        if (createContainer(dockerRunRequest).isEmpty()) {
-            log.error("Failed to create container for docker run [name:{}]", containerName);
-            return dockerRunResponse;
-        }
-        if (!startContainer(containerName)) {
-            log.error("Failed to start container for docker run [name:{}]", containerName);
-            removeContainer(containerName);
-            return dockerRunResponse;
-        }
-        if (dockerRunRequest.getMaxExecutionTime() <= 0) {
-            // container will run until self-exited or explicitly-stopped
-            log.info("Docker container will run in detached mode [name:{}]", containerName);
-            dockerRunResponse.setFinalStatus(DockerRunFinalStatus.SUCCESS);
-            return dockerRunResponse;
-        }
-        Instant timeoutDate = Instant.now()
-                .plusMillis(dockerRunRequest.getMaxExecutionTime());
-        boolean isSuccessful;
-        try {
-            int exitCode = waitContainerUntilExitOrTimeout(containerName, timeoutDate);
-            dockerRunResponse.setContainerExitCode(exitCode);
-
-            isSuccessful = exitCode == 0L;
-            log.info("Finished running docker container [name:{}, isSuccessful:{}]",
-                    containerName, isSuccessful);
-            dockerRunResponse.setFinalStatus(
-                    isSuccessful
-                            ? DockerRunFinalStatus.SUCCESS
-                            : DockerRunFinalStatus.FAILED);
-        } catch (TimeoutException e) {
-            log.error(e.getMessage());
-            dockerRunResponse.setFinalStatus(DockerRunFinalStatus.TIMEOUT);
-            if (!stopContainer(containerName)) {
-                getContainerLogs(containerName).ifPresent(dockerRunResponse::setDockerLogs);
-                log.error("Failed to force-stop container after timeout [name:{}]", containerName);
-                return dockerRunResponse;
-            }
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());
-        }
-
-        getContainerLogs(containerName).ifPresent(dockerRunResponse::setDockerLogs);
-        if (!removeContainer(containerName)) {
-            log.warn("Failed to remove container after run [name:{}]", containerName);
-        }
-        return dockerRunResponse;
-    }
-
     public boolean stopAndRemoveContainer(String containerName) {
         // TODO: check `isContainerPresent(containerName)` instead
         return stopContainer(containerName)
