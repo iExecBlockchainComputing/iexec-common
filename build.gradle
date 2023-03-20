@@ -9,10 +9,6 @@ plugins {
 group = 'com.iexec.common'
 
 ext {
-    // ./gradlew build -Pdev
-    isDev = project.hasProperty('dev')
-    // dependency versions
-    dockerJavaVersion = '3.2.12'
     mockServerVersion = '5.11.2'
     openFeignVersion = '11.10'
 }
@@ -76,15 +72,10 @@ dependencies {
 
     implementation 'ch.qos.logback:logback-classic'
 
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
     implementation 'javax.validation:validation-api'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.glassfish:javax.el:3.0.0'
-
-    // docker
-    implementation "com.github.docker-java:docker-java:${dockerJavaVersion}"
-    // Using zerodep until docker client stops blocking after having called
-    // listContainersCmd() over httpclient5
-    implementation "com.github.docker-java:docker-java-transport-zerodep:${dockerJavaVersion}"
 
     // failsafe
     implementation 'net.jodah:failsafe:2.4.4'
@@ -116,11 +107,7 @@ java {
 }
 
 test {
-    useJUnitPlatform {
-        if (isDev) {
-            excludeTags 'slow'
-        }
-    }
+    useJUnitPlatform()
     reports {
         junitXml.required = true
         html.required = true
