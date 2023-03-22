@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Quality
 - Deprecate and remove custom Docker implementation in favor of `iexec-commons-containers`. (#388, #389, #390, #391, #392, #393, #394)
+- Remove `com.iexec.common.sms` package. (#395)
 ### Dependency Upgrades
 - Upgrade to `jenkins-library` 2.4.0. (#387)
 
