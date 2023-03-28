@@ -18,22 +18,21 @@ package com.iexec.common.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
 @Builder
+@Jacksonized
+@AllArgsConstructor
 public class WorkerModel {
-
-    private String name;
-    private String walletAddress;
-    private String os;
-    private String cpu;
-    private int cpuNb;
-    private int memorySize;
-    private boolean teeEnabled;
-    private boolean gpuEnabled;
+    String name;
+    String walletAddress;
+    String os;
+    String cpu;
+    int cpuNb;
+    int memorySize;
+    boolean teeEnabled;
+    boolean gpuEnabled;
 }
 

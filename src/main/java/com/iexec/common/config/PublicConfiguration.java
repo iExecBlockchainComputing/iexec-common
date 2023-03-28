@@ -18,26 +18,19 @@ package com.iexec.common.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
 @Builder
+@Jacksonized
+@AllArgsConstructor
 public class PublicConfiguration {
-
-    // blockchain
-    private String workerPoolAddress;
-    private String schedulerPublicAddress;
-
-    // blockchain adapter
-    private String blockchainAdapterUrl;
-
-    // repos URLs
-    private String resultRepositoryURL;
-
-    private long askForReplicatePeriod;
-    private String requiredWorkerVersion;
+    String workerPoolAddress;
+    String schedulerPublicAddress;
+    String blockchainAdapterUrl;
+    String resultRepositoryURL;
+    long askForReplicatePeriod;
+    String requiredWorkerVersion;
 }
 

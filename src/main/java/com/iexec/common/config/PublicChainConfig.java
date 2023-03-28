@@ -18,22 +18,22 @@ package com.iexec.common.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.Duration;
 
 /**
  * Represents public data related to the blockchain configuration.
  */
-@Data
+@Value
 @Builder
-@NoArgsConstructor
+@Jacksonized
 @AllArgsConstructor
 public class PublicChainConfig {
-    private Integer chainId;
-    private boolean isSidechain;
-    private String chainNodeUrl;
-    private String iexecHubContractAddress;
-    private Duration blockTime;
+    int chainId;
+    boolean sidechain;
+    String chainNodeUrl;
+    String iexecHubContractAddress;
+    Duration blockTime;
 }
