@@ -37,7 +37,7 @@ class EIP712AppOrderTest {
     private static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
     private static final AppOrder APP_ORDER = AppOrder.builder()
             .app("0x2EbD509d777B187E8394566bA6ec093B9dd73DF1")
-            .price(BigInteger.valueOf(0))
+            .appprice(BigInteger.valueOf(0))
             .volume(BigInteger.valueOf(1))
             .tag("0x0000000000000000000000000000000000000000000000000000000000000000")
             .datasetrestrict(BytesUtils.EMPTY_ADDRESS)
