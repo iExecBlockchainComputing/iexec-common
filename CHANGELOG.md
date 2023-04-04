@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Deprecate and remove custom Docker implementation in favor of `iexec-commons-containers`. (#388, #389, #390, #391, #392, #393, #394)
 - Remove `com.iexec.common.sms` package. (#395)
 - Immutable classes in `com.iexec.common.config` package. (#396)
+- Immutable classes in `com.iexec.common.sdk.order` package. (#397)
 ### Dependency Upgrades
 - Upgrade to `jenkins-library` 2.4.0. (#387)
 
