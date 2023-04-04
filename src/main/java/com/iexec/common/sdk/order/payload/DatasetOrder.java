@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,43 +16,48 @@
 
 package com.iexec.common.sdk.order.payload;
 
-import lombok.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.Value;
 
 import java.math.BigInteger;
 
-@Data
+@Value
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@NoArgsConstructor
+@JsonDeserialize(builder = DatasetOrder.DatasetOrderBuilder.class)
 public class DatasetOrder extends Order {
 
-    private String dataset;
-    private BigInteger datasetprice;
-    private String apprestrict;
-    private String workerpoolrestrict;
-    private String requesterrestrict;
+    String dataset;
+    BigInteger datasetprice;
+    String apprestrict;
+    String workerpoolrestrict;
+    String requesterrestrict;
 
     @Builder
-    public DatasetOrder(String dataset, BigInteger price, BigInteger volume, String tag,
-                    String salt, String sign, String apprestrict, String workerpoolrestrict,
-                    String requesterrestrict) {
+    DatasetOrder(
+            String dataset, BigInteger datasetprice, BigInteger volume, String tag,
+            String salt, String sign, String apprestrict, String workerpoolrestrict,
+            String requesterrestrict) {
         super(volume, tag, salt, sign);
         this.dataset = dataset;
-        this.datasetprice = price;
-        setApprestrict(apprestrict);
-        setWorkerpoolrestrict(workerpoolrestrict);
-        setRequesterrestrict(requesterrestrict);
-    }
-
-    public void setApprestrict(String apprestrict) {
+        this.datasetprice = datasetprice;
         this.apprestrict = toLowerCase(apprestrict);
-    }
-
-    public void setWorkerpoolrestrict(String workerpoolrestrict) {
         this.workerpoolrestrict = toLowerCase(workerpoolrestrict);
+        this.requesterrestrict = toLowerCase(requesterrestrict);
     }
 
-    public void setRequesterrestrict(String requesterrestrict) {
-        this.requesterrestrict = toLowerCase(requesterrestrict);
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class DatasetOrderBuilder{}
+
+    public DatasetOrder withSignature(String signature) {
+        return new DatasetOrder(
+                this.dataset, this.datasetprice,
+                this.volume, this.tag, this.salt, signature,
+                this.apprestrict, this.workerpoolrestrict, this.requesterrestrict
+        );
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,8 +54,7 @@ public class OrderSigner {
             log.error("Empty signature [appOrder:{}]", appOrder);
             return null;
         }
-        appOrder.setSign(signature);
-        return appOrder;
+        return appOrder.withSignature(signature);
     }
 
     public WorkerpoolOrder signWorkerpoolOrder(WorkerpoolOrder workerpoolOrder) {
@@ -68,8 +67,7 @@ public class OrderSigner {
             log.error("Empty signature [workerpoolOrder:{}]", workerpoolOrder);
             return null;
         }
-        workerpoolOrder.setSign(signature);
-        return workerpoolOrder;
+        return workerpoolOrder.withSignature(signature);
     }
 
     public DatasetOrder signDatasetOrder(DatasetOrder datasetOrder) {
@@ -82,8 +80,7 @@ public class OrderSigner {
             log.error("Empty signature [datasetOrder:{}]", datasetOrder);
             return null;
         }
-        datasetOrder.setSign(signature);
-        return datasetOrder;
+        return datasetOrder.withSignature(signature);
     }
 
     public RequestOrder signRequestOrder(RequestOrder requestOrder) {
@@ -96,7 +93,6 @@ public class OrderSigner {
             log.error("Empty signature [requestOrder:{}]", requestOrder);
             return null;
         }
-        requestOrder.setSign(signature);
-        return requestOrder;
+        return requestOrder.withSignature(signature);
     }
 }
