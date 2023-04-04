@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 IEXEC BLOCKCHAIN TECH
+ * Copyright 2021-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,26 @@
 
 package com.iexec.common.config;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 
 import java.time.Duration;
 
 /**
  * Represents public data related to the blockchain configuration.
  */
-@Data
+@Value
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonDeserialize(builder = PublicChainConfig.PublicChainConfigBuilder.class)
 public class PublicChainConfig {
-    private Integer chainId;
-    private boolean isSidechain;
-    private String chainNodeUrl;
-    private String iexecHubContractAddress;
-    private Duration blockTime;
+    int chainId;
+    boolean sidechain;
+    String chainNodeUrl;
+    String iexecHubContractAddress;
+    Duration blockTime;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class PublicChainConfigBuilder{}
 }
