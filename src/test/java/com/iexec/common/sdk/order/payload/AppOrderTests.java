@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2022 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,24 @@ package com.iexec.common.sdk.order.payload;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class DatasetOrderTest {
+@Slf4j
+class AppOrderTests {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void shouldSerializeAndDeserialize() throws JsonProcessingException {
-        DatasetOrder datasetOrder = DatasetOrder.builder().build();
-        String jsonString = mapper.writeValueAsString(datasetOrder);
+        AppOrder appOrder = AppOrder.builder().build();
+        String jsonString = mapper.writeValueAsString(appOrder);
         assertThat(jsonString).isEqualTo("{\"volume\":null,\"tag\":null,\"salt\":null,\"sign\":null," +
-                "\"dataset\":null,\"datasetprice\":null,\"apprestrict\":\"\",\"workerpoolrestrict\":\"\",\"requesterrestrict\":\"\"}");
-        DatasetOrder parsedDatasetOrder = mapper.readValue(jsonString, DatasetOrder.class);
-        assertThat(parsedDatasetOrder).usingRecursiveComparison().isEqualTo(datasetOrder);
+                "\"app\":null,\"appprice\":null,\"datasetrestrict\":\"\",\"workerpoolrestrict\":\"\",\"requesterrestrict\":\"\"}");
+        AppOrder parsedAppOrder = mapper.readValue(jsonString, AppOrder.class);
+        assertThat(parsedAppOrder).usingRecursiveComparison().isEqualTo(appOrder);
     }
 
 }
