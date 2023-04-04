@@ -16,13 +16,14 @@
 
 package com.iexec.common.config;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 
 @Value
 @Builder
-@Jacksonized
+@JsonDeserialize(builder = WorkerModel.WorkerModelBuilder.class)
 public class WorkerModel {
     String name;
     String walletAddress;
@@ -32,4 +33,7 @@ public class WorkerModel {
     int memorySize;
     boolean teeEnabled;
     boolean gpuEnabled;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class WorkerModelBuilder{}
 }

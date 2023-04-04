@@ -16,9 +16,10 @@
 
 package com.iexec.common.config;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 
 import java.time.Duration;
 
@@ -27,11 +28,14 @@ import java.time.Duration;
  */
 @Value
 @Builder
-@Jacksonized
+@JsonDeserialize(builder = PublicChainConfig.PublicChainConfigBuilder.class)
 public class PublicChainConfig {
     int chainId;
     boolean sidechain;
     String chainNodeUrl;
     String iexecHubContractAddress;
     Duration blockTime;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class PublicChainConfigBuilder{}
 }

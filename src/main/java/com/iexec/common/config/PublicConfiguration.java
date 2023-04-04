@@ -16,13 +16,14 @@
 
 package com.iexec.common.config;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 
 @Value
 @Builder
-@Jacksonized
+@JsonDeserialize(builder = PublicConfiguration.PublicConfigurationBuilder.class)
 public class PublicConfiguration {
     String workerPoolAddress;
     String schedulerPublicAddress;
@@ -30,5 +31,8 @@ public class PublicConfiguration {
     String resultRepositoryURL;
     long askForReplicatePeriod;
     String requiredWorkerVersion;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class PublicConfigurationBuilder{}
 }
 
