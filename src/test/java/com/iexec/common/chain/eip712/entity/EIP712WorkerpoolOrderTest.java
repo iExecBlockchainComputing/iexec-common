@@ -37,7 +37,7 @@ class EIP712WorkerpoolOrderTest {
     private static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
     private static final WorkerpoolOrder WORKERPOOL_ORDER = WorkerpoolOrder.builder()
             .workerpool("0x53Ef1328a96E40E125bca15b9a4da045C5e63E1A")
-            .price(BigInteger.ZERO)
+            .workerpoolprice(BigInteger.ZERO)
             .volume(BigInteger.ONE)
             .category(BigInteger.ZERO)
             .trust(BigInteger.ZERO)

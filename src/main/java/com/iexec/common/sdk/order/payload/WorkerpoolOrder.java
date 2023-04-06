@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,49 +16,61 @@
 
 package com.iexec.common.sdk.order.payload;
 
-import lombok.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.Value;
 
 import java.math.BigInteger;
 
-@Data
+@Value
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@NoArgsConstructor
+@JsonDeserialize(builder = WorkerpoolOrder.WorkerpoolOrderBuilder.class)
 public class WorkerpoolOrder extends Order {
 
-    private String workerpool;
-    private BigInteger workerpoolprice;
-    private BigInteger trust;
-    private BigInteger category;
-    private String apprestrict;
-    private String datasetrestrict;
-    private String requesterrestrict;
+    String workerpool;
+    BigInteger workerpoolprice;
+    BigInteger trust;
+    BigInteger category;
+    String apprestrict;
+    String datasetrestrict;
+    String requesterrestrict;
 
     @Builder
-    public WorkerpoolOrder(
-            String workerpool, BigInteger price, BigInteger volume,
-            String tag, BigInteger trust, BigInteger category,
-            String salt, String sign, String apprestrict,
-            String datasetrestrict, String requesterrestrict) {
+    WorkerpoolOrder(
+            String workerpool,
+            BigInteger workerpoolprice,
+            BigInteger volume,
+            String tag,
+            BigInteger trust,
+            BigInteger category,
+            String salt,
+            String sign,
+            String apprestrict,
+            String datasetrestrict,
+            String requesterrestrict) {
         super(volume, tag, salt, sign);
         this.workerpool = workerpool;
-        this.workerpoolprice = price;
+        this.workerpoolprice = workerpoolprice;
         this.trust = trust;
         this.category = category;
-        setApprestrict(apprestrict);
-        setDatasetrestrict(datasetrestrict);
-        setRequesterrestrict(requesterrestrict);
-    }
-
-    public void setApprestrict(String apprestrict) {
         this.apprestrict = toLowerCase(apprestrict);
-    }
-
-    public void setDatasetrestrict(String datasetrestrict) {
         this.datasetrestrict = toLowerCase(datasetrestrict);
+        this.requesterrestrict = toLowerCase(requesterrestrict);
     }
 
-    public void setRequesterrestrict(String requesterrestrict) {
-        this.requesterrestrict = toLowerCase(requesterrestrict);
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class WorkerpoolOrderBuilder{}
+
+    @Override
+    public WorkerpoolOrder withSignature(String signature) {
+        return new WorkerpoolOrder(
+                this.workerpool, this.workerpoolprice,
+                this.volume, this.tag, this.trust, this.category, this.salt, signature,
+                this.apprestrict, this.datasetrestrict, this.requesterrestrict
+        );
     }
 }

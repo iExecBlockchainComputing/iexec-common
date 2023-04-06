@@ -17,15 +17,14 @@
 package com.iexec.common.sdk.order.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.math.BigInteger;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Order {
 
     BigInteger volume;
@@ -46,6 +45,8 @@ public abstract class Order {
     public String toLowerCase(String s) {
         return s != null ? s.toLowerCase() : "";
     }
+
+    public abstract Order withSignature(String signature);
 
 }
 

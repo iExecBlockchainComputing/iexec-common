@@ -37,7 +37,7 @@ class EIP712DatasetOrderTest {
     private static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
     private static final DatasetOrder DATASET_ORDER = DatasetOrder.builder()
             .dataset("0x2550E5B60f48742aBce2275F34417e7cBf5AcA86")
-            .price(BigInteger.valueOf(0))
+            .datasetprice(BigInteger.valueOf(0))
             .volume(BigInteger.valueOf(1000000))
             .tag("0x0000000000000000000000000000000000000000000000000000000000000001")
             .apprestrict(BytesUtils.EMPTY_ADDRESS)
