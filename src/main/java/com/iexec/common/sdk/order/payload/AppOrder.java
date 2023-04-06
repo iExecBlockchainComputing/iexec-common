@@ -39,8 +39,14 @@ public class AppOrder extends Order {
 
     @Builder
     AppOrder(
-            String app, BigInteger appprice, BigInteger volume, String tag,
-            String salt, String sign, String datasetrestrict, String workerpoolrestrict,
+            String app,
+            BigInteger appprice,
+            BigInteger volume,
+            String tag,
+            String salt,
+            String sign,
+            String datasetrestrict,
+            String workerpoolrestrict,
             String requesterrestrict) {
         super(volume, tag, salt, sign);
         this.app = app;

@@ -39,8 +39,14 @@ public class DatasetOrder extends Order {
 
     @Builder
     DatasetOrder(
-            String dataset, BigInteger datasetprice, BigInteger volume, String tag,
-            String salt, String sign, String apprestrict, String workerpoolrestrict,
+            String dataset,
+            BigInteger datasetprice,
+            BigInteger volume,
+            String tag,
+            String salt,
+            String sign,
+            String apprestrict,
+            String workerpoolrestrict,
             String requesterrestrict) {
         super(volume, tag, salt, sign);
         this.dataset = dataset;

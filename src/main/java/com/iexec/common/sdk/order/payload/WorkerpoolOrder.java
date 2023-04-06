@@ -41,10 +41,17 @@ public class WorkerpoolOrder extends Order {
 
     @Builder
     WorkerpoolOrder(
-            String workerpool, BigInteger workerpoolprice, BigInteger volume,
-            String tag, BigInteger trust, BigInteger category,
-            String salt, String sign, String apprestrict,
-            String datasetrestrict, String requesterrestrict) {
+            String workerpool,
+            BigInteger workerpoolprice,
+            BigInteger volume,
+            String tag,
+            BigInteger trust,
+            BigInteger category,
+            String salt,
+            String sign,
+            String apprestrict,
+            String datasetrestrict,
+            String requesterrestrict) {
         super(volume, tag, salt, sign);
         this.workerpool = workerpool;
         this.workerpoolprice = workerpoolprice;

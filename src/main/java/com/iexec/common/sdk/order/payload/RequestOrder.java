@@ -46,7 +46,23 @@ public class RequestOrder extends Order {
     String params;
 
     @Builder
-    RequestOrder(String app, BigInteger appmaxprice, String dataset, BigInteger datasetmaxprice, String workerpool, BigInteger workerpoolmaxprice, String requester, BigInteger volume, String tag, BigInteger category, BigInteger trust, String beneficiary, String callback, String params, String salt, String sign) {
+    RequestOrder(
+            String app,
+            BigInteger appmaxprice,
+            String dataset,
+            BigInteger datasetmaxprice,
+            String workerpool,
+            BigInteger workerpoolmaxprice,
+            String requester,
+            BigInteger volume,
+            String tag,
+            BigInteger category,
+            BigInteger trust,
+            String beneficiary,
+            String callback,
+            String params,
+            String salt,
+            String sign) {
         super(volume, tag, salt, sign);
         this.app = toLowerCase(app);
         this.appmaxprice = appmaxprice;
