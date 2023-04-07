@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -214,7 +214,7 @@ class FileHelperTests {
         assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/icon.png");
         assertThat(new File(downloadedFilePath)).exists();
         // check that the correct file is downloaded
-        assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+        assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
                 .isEqualTo(HTTP_FILE_DIGEST);
     }
 
@@ -225,7 +225,7 @@ class FileHelperTests {
         assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/token.svg");
         assertThat(new File(TEST_FOLDER + "/token.svg")).exists();
         // check that the correct file is downloaded
-        assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+        assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
                 .isEqualTo(HTTPS_FILE_DIGEST);
     }
 
@@ -237,7 +237,7 @@ class FileHelperTests {
     //     assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/icon.png");
     //     assertThat(new File(TEST_FOLDER + "/icon.png")).exists();
     //     // check that the correct file is downloaded
-    //     assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+    //     assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
     //             .isEqualTo(REDIRECTION_FILE_DIGEST);
     // }
 
@@ -300,7 +300,7 @@ class FileHelperTests {
         assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/" + filename);
         assertThat(new File(TEST_FOLDER + "/" + filename)).exists();
         // check that the correct file is downloaded
-        assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+        assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
                 .isEqualTo(HTTP_FILE_DIGEST);
 
     }
@@ -312,7 +312,7 @@ class FileHelperTests {
         assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/" + filename);
         assertThat(new File(TEST_FOLDER + "/" + filename)).exists();
         // check that the correct file is downloaded
-        assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+        assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
                 .isEqualTo(HTTPS_FILE_DIGEST);
     }
 
@@ -324,7 +324,7 @@ class FileHelperTests {
     //     assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/" + filename);
     //     assertThat(new File(TEST_FOLDER + "/" + filename)).exists();
     //     // check that the correct file is downloaded
-    //     assertThat(HashUtils.sha256(new File(downloadedFilePath)))
+    //     assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
     //             .isEqualTo(REDIRECTION_FILE_DIGEST);
     // }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 IEXEC BLOCKCHAIN TECH
+ * Copyright 2022-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.chain.eip712.TypeParam;
-import com.iexec.common.utils.HashUtils;
+import com.iexec.commons.poco.utils.HashUtils;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
@@ -30,7 +30,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EIP712ChallengeTests {
+class EIP712ChallengeTests {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.sdk.order.payload.WorkerpoolOrder;
-import com.iexec.common.utils.BytesUtils;
+import com.iexec.commons.poco.utils.BytesUtils;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.ECKeyPair;
