@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Remove `com.iexec.common.sms` package. (#395)
 - Immutable classes in `com.iexec.common.config` package. (#396)
 - Immutable classes in `com.iexec.common.sdk.order` package. (#397)
+- Remove `IexecHubAbstractService` and `Web3jAbstractService`. (#399)
 ### Dependency Upgrades
 - Upgrade to `jenkins-library` 2.4.0. (#387)
 - New `iexec-commons-poco` 1.0.0 dependency. (#398)
