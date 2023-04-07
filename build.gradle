@@ -40,12 +40,13 @@ repositories {
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
     implementation platform('org.springframework.boot:spring-boot-dependencies:2.6.14')
-    // web3j dependency
-    api 'org.web3j:core:4.8.9'
 
     // feign
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
     api "io.github.openfeign:feign-slf4j:$openFeignVersion"
+
+    // iexec
+    implementation "com.iexec.commons:iexec-commons-poco:$iexecCommonsPocoVersion"
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 

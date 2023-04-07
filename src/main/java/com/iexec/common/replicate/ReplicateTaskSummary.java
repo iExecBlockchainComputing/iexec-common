@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 IEXEC BLOCKCHAIN TECH
+ * Copyright 2022-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.iexec.common.replicate;
 
-import com.iexec.common.chain.WorkerpoolAuthorization;
+import com.iexec.commons.poco.chain.WorkerpoolAuthorization;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
