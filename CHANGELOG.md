@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Immutable classes in `com.iexec.common.sdk.order` package. (#397)
 ### Dependency Upgrades
 - Upgrade to `jenkins-library` 2.4.0. (#387)
+- New `iexec-commons-poco` 1.0.0 dependency. (#398)
 
 ## [[7.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v7.0.0) 2023-03-02
 
