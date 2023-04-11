@@ -53,9 +53,6 @@ dependencies {
     // apache commons.lang3
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-    // multiaddresses (IPFS)
-    implementation 'com.github.multiformats:java-multiaddr:v1.4.6'
-
     //jaxb required with Java 11
     implementation 'javax.xml.bind:jaxb-api'
 
@@ -68,20 +65,12 @@ dependencies {
     // google core libs
     implementation 'com.google.guava:guava:28.2-jre'
 
-    // json
-    implementation 'org.json:json:20201115'
-
     implementation 'ch.qos.logback:logback-classic'
 
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
     implementation 'javax.validation:validation-api'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.glassfish:javax.el:3.0.0'
-
-    // failsafe
-    implementation 'net.jodah:failsafe:2.4.4'
-    //TODO Migrate from Awaitility to Failsafe everywhere
-    implementation 'org.awaitility:awaitility'
 
     // expiring map
     implementation 'net.jodah:expiringmap:0.5.10'
