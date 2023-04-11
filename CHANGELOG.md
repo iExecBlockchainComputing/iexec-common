@@ -9,10 +9,10 @@ All notable changes to this project will be documented in this file.
 - Remove `com.iexec.common.sms` package. (#395)
 - Immutable classes in `com.iexec.common.config` package. (#396)
 - Immutable classes in `com.iexec.common.sdk.order` package. (#397)
-- Clean `iexec-common` following `iexec-commons-poco` creation. (#399, #400, #401, #402, #403)
+- Clean `iexec-common` following `iexec-commons-poco` creation. (#399, #400, #401, #402, #403, #404)
 ### Dependency Upgrades
 - Upgrade to `jenkins-library` 2.4.0. (#387)
-- New `iexec-commons-poco` 1.0.0 dependency. (#398)
+- New `iexec-commons-poco` 1.0.2 dependency. (#398, #404)
 
 ## [[7.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v7.0.0) 2023-03-02
 
