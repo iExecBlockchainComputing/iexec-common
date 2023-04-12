@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [[NEXT]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2023
+## [[8.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.0.0) 2023-04-12
 
 ### Quality
 - Deprecate and remove custom Docker implementation in favor of `iexec-commons-containers`. (#388, #389, #390, #391, #392, #393, #394)
