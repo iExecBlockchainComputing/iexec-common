@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.order.payload;
+package com.iexec.common.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,18 +22,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class DatasetOrderTest {
+class WorkerModelTests {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void shouldSerializeAndDeserialize() throws JsonProcessingException {
-        DatasetOrder datasetOrder = DatasetOrder.builder().build();
-        String jsonString = mapper.writeValueAsString(datasetOrder);
-        assertThat(jsonString).isEqualTo("{\"volume\":null,\"tag\":null,\"salt\":null,\"sign\":null," +
-                "\"dataset\":null,\"datasetprice\":null,\"apprestrict\":\"\",\"workerpoolrestrict\":\"\",\"requesterrestrict\":\"\"}");
-        DatasetOrder parsedDatasetOrder = mapper.readValue(jsonString, DatasetOrder.class);
-        assertThat(parsedDatasetOrder).usingRecursiveComparison().isEqualTo(datasetOrder);
+        WorkerModel model = WorkerModel.builder().build();
+        String jsonString = mapper.writeValueAsString(model);
+        assertThat(jsonString).isEqualTo("{\"name\":null,\"walletAddress\":null,\"os\":null,\"cpu\":null," +
+                "\"cpuNb\":0,\"memorySize\":0,\"teeEnabled\":false,\"gpuEnabled\":false}");
+        WorkerModel parsedModel = mapper.readValue(jsonString, WorkerModel.class);
+        assertThat(parsedModel).isEqualTo(model);
     }
 
 }

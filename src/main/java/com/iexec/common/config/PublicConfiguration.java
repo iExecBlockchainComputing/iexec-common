@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,23 @@
 
 package com.iexec.common.config;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
 @Builder
+@JsonDeserialize(builder = PublicConfiguration.PublicConfigurationBuilder.class)
 public class PublicConfiguration {
+    String workerPoolAddress;
+    String schedulerPublicAddress;
+    String blockchainAdapterUrl;
+    String resultRepositoryURL;
+    long askForReplicatePeriod;
+    String requiredWorkerVersion;
 
-    // blockchain
-    private String workerPoolAddress;
-    private String schedulerPublicAddress;
-
-    // blockchain adapter
-    private String blockchainAdapterUrl;
-
-    // repos URLs
-    private String resultRepositoryURL;
-
-    private long askForReplicatePeriod;
-    private String requiredWorkerVersion;
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class PublicConfigurationBuilder{}
 }
 

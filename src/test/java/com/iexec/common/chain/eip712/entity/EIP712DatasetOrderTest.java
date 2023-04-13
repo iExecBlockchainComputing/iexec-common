@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.sdk.order.payload.DatasetOrder;
-import com.iexec.common.utils.BytesUtils;
+import com.iexec.commons.poco.utils.BytesUtils;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.ECKeyPair;
@@ -37,7 +37,7 @@ class EIP712DatasetOrderTest {
     private static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
     private static final DatasetOrder DATASET_ORDER = DatasetOrder.builder()
             .dataset("0x2550E5B60f48742aBce2275F34417e7cBf5AcA86")
-            .price(BigInteger.valueOf(0))
+            .datasetprice(BigInteger.valueOf(0))
             .volume(BigInteger.valueOf(1000000))
             .tag("0x0000000000000000000000000000000000000000000000000000000000000001")
             .apprestrict(BytesUtils.EMPTY_ADDRESS)

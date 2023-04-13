@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.iexec.common.sdk.order.payload;
+package com.iexec.common.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,18 +22,19 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class DatasetOrderTest {
+class PublicConfigurationTests {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void shouldSerializeAndDeserialize() throws JsonProcessingException {
-        DatasetOrder datasetOrder = DatasetOrder.builder().build();
-        String jsonString = mapper.writeValueAsString(datasetOrder);
-        assertThat(jsonString).isEqualTo("{\"volume\":null,\"tag\":null,\"salt\":null,\"sign\":null," +
-                "\"dataset\":null,\"datasetprice\":null,\"apprestrict\":\"\",\"workerpoolrestrict\":\"\",\"requesterrestrict\":\"\"}");
-        DatasetOrder parsedDatasetOrder = mapper.readValue(jsonString, DatasetOrder.class);
-        assertThat(parsedDatasetOrder).usingRecursiveComparison().isEqualTo(datasetOrder);
+        PublicConfiguration config = PublicConfiguration.builder().build();
+        String jsonString = mapper.writeValueAsString(config);
+        assertThat(jsonString).isEqualTo("{\"workerPoolAddress\":null,\"schedulerPublicAddress\":null," +
+                "\"blockchainAdapterUrl\":null,\"resultRepositoryURL\":null," +
+                "\"askForReplicatePeriod\":0,\"requiredWorkerVersion\":null}");
+        PublicConfiguration parsedConfig = mapper.readValue(jsonString, PublicConfiguration.class);
+        assertThat(parsedConfig).isEqualTo(config);
     }
 
 }

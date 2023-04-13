@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 IEXEC BLOCKCHAIN TECH
+ * Copyright 2021-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License),Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.iexec.common.utils;
 
-import com.iexec.common.task.TaskDescription;
+import com.iexec.commons.poco.task.TaskDescription;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

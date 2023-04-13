@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@
 package com.iexec.common.worker.result;
 
 import com.iexec.common.result.ComputedFile;
+import com.iexec.common.utils.FileHashUtils;
 import com.iexec.common.utils.FileHelper;
-import com.iexec.common.utils.HashUtils;
+import com.iexec.commons.poco.utils.HashUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Hash;
 
@@ -99,7 +100,7 @@ public class ResultUtils {
             return "";
         }
 
-        return HashUtils.getFileTreeSha256(hostDeterministicOutputPath);
+        return FileHashUtils.getFileTreeSha256(hostDeterministicOutputPath);
     }
 
     public static String computeResultHash(String chainTaskId, String resultDigest) {

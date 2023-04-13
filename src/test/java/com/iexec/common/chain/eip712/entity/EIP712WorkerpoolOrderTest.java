@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iexec.common.chain.eip712.EIP712Domain;
 import com.iexec.common.sdk.order.payload.WorkerpoolOrder;
-import com.iexec.common.utils.BytesUtils;
+import com.iexec.commons.poco.utils.BytesUtils;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.ECKeyPair;
@@ -37,7 +37,7 @@ class EIP712WorkerpoolOrderTest {
     private static final EIP712Domain DOMAIN = new EIP712Domain(133, "0x3eca1B216A7DF1C7689aEb259fFB83ADFB894E7f");
     private static final WorkerpoolOrder WORKERPOOL_ORDER = WorkerpoolOrder.builder()
             .workerpool("0x53Ef1328a96E40E125bca15b9a4da045C5e63E1A")
-            .price(BigInteger.ZERO)
+            .workerpoolprice(BigInteger.ZERO)
             .volume(BigInteger.ONE)
             .category(BigInteger.ZERO)
             .trust(BigInteger.ZERO)

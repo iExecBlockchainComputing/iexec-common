@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,24 @@
 
 package com.iexec.common.config;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
 @Builder
+@JsonDeserialize(builder = WorkerModel.WorkerModelBuilder.class)
 public class WorkerModel {
+    String name;
+    String walletAddress;
+    String os;
+    String cpu;
+    int cpuNb;
+    int memorySize;
+    boolean teeEnabled;
+    boolean gpuEnabled;
 
-    private String name;
-    private String walletAddress;
-    private String os;
-    private String cpu;
-    private int cpuNb;
-    private int memorySize;
-    private boolean teeEnabled;
-    private boolean gpuEnabled;
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class WorkerModelBuilder{}
 }
-

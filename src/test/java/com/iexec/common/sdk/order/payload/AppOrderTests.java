@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package com.iexec.common.chain;
+package com.iexec.common.sdk.order.payload;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class WorkerpoolAuthorizationTests {
+@Slf4j
+class AppOrderTests {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    void shouldSerializeAndDeserializeWorkerpoolAuthorization() throws JsonProcessingException {
-        WorkerpoolAuthorization wpAuthorization = WorkerpoolAuthorization.builder()
-                .chainTaskId("walletAddress")
-                .chainTaskId("chainTaskId")
-                .chainTaskId("enclaveChallenge")
-                .build();
-        String jsonString = mapper.writeValueAsString(wpAuthorization);
-        WorkerpoolAuthorization deserializedWpAuthorization = mapper.readValue(jsonString, WorkerpoolAuthorization.class);
-        assertThat(deserializedWpAuthorization).usingRecursiveComparison().isEqualTo(wpAuthorization);
+    void shouldSerializeAndDeserialize() throws JsonProcessingException {
+        AppOrder appOrder = AppOrder.builder().build();
+        String jsonString = mapper.writeValueAsString(appOrder);
+        assertThat(jsonString).isEqualTo("{\"volume\":null,\"tag\":null,\"salt\":null,\"sign\":null," +
+                "\"app\":null,\"appprice\":null,\"datasetrestrict\":\"\",\"workerpoolrestrict\":\"\",\"requesterrestrict\":\"\"}");
+        AppOrder parsedAppOrder = mapper.readValue(jsonString, AppOrder.class);
+        assertThat(parsedAppOrder).usingRecursiveComparison().isEqualTo(appOrder);
     }
 
 }

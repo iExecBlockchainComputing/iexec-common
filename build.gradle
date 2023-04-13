@@ -9,10 +9,6 @@ plugins {
 group = 'com.iexec.common'
 
 ext {
-    // ./gradlew build -Pdev
-    isDev = project.hasProperty('dev')
-    // dependency versions
-    dockerJavaVersion = '3.2.12'
     mockServerVersion = '5.11.2'
     openFeignVersion = '11.10'
 }
@@ -44,20 +40,18 @@ repositories {
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
     implementation platform('org.springframework.boot:spring-boot-dependencies:2.6.14')
-    // web3j dependency
-    api 'org.web3j:core:4.8.9'
 
     // feign
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
     api "io.github.openfeign:feign-slf4j:$openFeignVersion"
 
+    // iexec
+    implementation "com.iexec.commons:iexec-commons-poco:$iexecCommonsPocoVersion"
+
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     // apache commons.lang3
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
-
-    // multiaddresses (IPFS)
-    implementation 'com.github.multiformats:java-multiaddr:v1.4.6'
+    implementation 'org.apache.commons:commons-lang3'
 
     //jaxb required with Java 11
     implementation 'javax.xml.bind:jaxb-api'
@@ -71,25 +65,12 @@ dependencies {
     // google core libs
     implementation 'com.google.guava:guava:28.2-jre'
 
-    // json
-    implementation 'org.json:json:20201115'
-
     implementation 'ch.qos.logback:logback-classic'
 
+    implementation 'javax.annotation:javax.annotation-api'
     implementation 'javax.validation:validation-api'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.glassfish:javax.el:3.0.0'
-
-    // docker
-    implementation "com.github.docker-java:docker-java:${dockerJavaVersion}"
-    // Using zerodep until docker client stops blocking after having called
-    // listContainersCmd() over httpclient5
-    implementation "com.github.docker-java:docker-java-transport-zerodep:${dockerJavaVersion}"
-
-    // failsafe
-    implementation 'net.jodah:failsafe:2.4.4'
-    //TODO Migrate from Awaitility to Failsafe everywhere
-    implementation 'org.awaitility:awaitility'
 
     // expiring map
     implementation 'net.jodah:expiringmap:0.5.10'
@@ -116,11 +97,7 @@ java {
 }
 
 test {
-    useJUnitPlatform {
-        if (isDev) {
-            excludeTags 'slow'
-        }
-    }
+    useJUnitPlatform()
     reports {
         junitXml.required = true
         html.required = true

@@ -22,18 +22,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-class DatasetOrderTest {
+class WorkerpoolOrderTests {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     void shouldSerializeAndDeserialize() throws JsonProcessingException {
-        DatasetOrder datasetOrder = DatasetOrder.builder().build();
-        String jsonString = mapper.writeValueAsString(datasetOrder);
+        WorkerpoolOrder workerpoolOrder = WorkerpoolOrder.builder().build();
+        String jsonString = mapper.writeValueAsString(workerpoolOrder);
         assertThat(jsonString).isEqualTo("{\"volume\":null,\"tag\":null,\"salt\":null,\"sign\":null," +
-                "\"dataset\":null,\"datasetprice\":null,\"apprestrict\":\"\",\"workerpoolrestrict\":\"\",\"requesterrestrict\":\"\"}");
-        DatasetOrder parsedDatasetOrder = mapper.readValue(jsonString, DatasetOrder.class);
-        assertThat(parsedDatasetOrder).usingRecursiveComparison().isEqualTo(datasetOrder);
+                "\"workerpool\":null,\"workerpoolprice\":null,\"trust\":null,\"category\":null,\"apprestrict\":\"\",\"datasetrestrict\":\"\",\"requesterrestrict\":\"\"}");
+        WorkerpoolOrder parsedWorkerpoolOrder = mapper.readValue(jsonString, WorkerpoolOrder.class);
+        assertThat(parsedWorkerpoolOrder).usingRecursiveComparison().isEqualTo(workerpoolOrder);
     }
 
 }
