@@ -63,24 +63,8 @@ public enum ReplicateStatus {
         return getSuccessStatuses().contains(status);
     }
 
-    public static boolean isFailure(ReplicateStatus status) {
-        return getFailureStatuses().contains(status);
-    }
-
     public static boolean isFailedBeforeComputed(ReplicateStatus status) {
         return status.ordinal() < COMPUTED.ordinal() && getFailureStatuses().contains(status);
-    }
-
-    public static boolean isCompletable(ReplicateStatus status) {
-        return getCompletableStatuses().contains(status);
-    }
-
-    public static boolean isFailable(ReplicateStatus status) {
-        return getFailableStatuses().contains(status);
-    }
-
-    public static boolean isAbortable(ReplicateStatus status) {
-        return getAbortableStatuses().contains(status);
     }
 
     public static boolean isRecoverable(ReplicateStatus status) {
@@ -262,25 +246,6 @@ public enum ReplicateStatus {
             default:
                 return null;
         }
-    }
-
-    public static List<ReplicateStatus> getStatusesBeforeContributed() {
-        return Arrays.asList(
-                CREATED,
-                STARTING,
-                START_FAILED,
-                STARTED,
-                APP_DOWNLOADING,
-                APP_DOWNLOAD_FAILED,
-                APP_DOWNLOADED,
-                DATA_DOWNLOADING,
-                DATA_DOWNLOAD_FAILED,
-                DATA_DOWNLOADED,
-                COMPUTING,
-                COMPUTE_FAILED,
-                COMPUTED,
-                CONTRIBUTING,
-                CONTRIBUTE_FAILED);
     }
 
     public static List<ReplicateStatus> getMissingStatuses(ReplicateStatus from, ReplicateStatus to) {
