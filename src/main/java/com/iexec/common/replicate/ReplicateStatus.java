@@ -66,6 +66,7 @@ public enum ReplicateStatus {
         return getSuccessStatuses().contains(status);
     }
 
+    @Deprecated(forRemoval = true)
     public static boolean isFailure(ReplicateStatus status) {
         return getFailureStatuses().contains(status);
     }
@@ -74,14 +75,17 @@ public enum ReplicateStatus {
         return status.ordinal() < COMPUTED.ordinal() && getFailureStatuses().contains(status);
     }
 
+    @Deprecated(forRemoval = true)
     public static boolean isCompletable(ReplicateStatus status) {
         return getCompletableStatuses().contains(status);
     }
 
+    @Deprecated(forRemoval = true)
     public static boolean isFailable(ReplicateStatus status) {
         return getFailableStatuses().contains(status);
     }
 
+    @Deprecated(forRemoval = true)
     public static boolean isAbortable(ReplicateStatus status) {
         return getAbortableStatuses().contains(status);
     }
@@ -130,6 +134,7 @@ public enum ReplicateStatus {
      * Statuses that should be updated
      * to COMPLETED at the end of a task. 
      */
+    @Deprecated(forRemoval = true)
     public static List<ReplicateStatus> getCompletableStatuses() {
         return Arrays.asList(
                 REVEALED,
@@ -281,6 +286,7 @@ public enum ReplicateStatus {
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static List<ReplicateStatus> getStatusesBeforeContributed() {
         return Arrays.asList(
                 CREATED,
@@ -313,6 +319,7 @@ public enum ReplicateStatus {
         return statuses.subList(statuses.indexOf(from) + 1, statuses.indexOf(to) + 1);
     }
 
+    @Deprecated(forRemoval = true)
     public static List<ReplicateStatus> getSuccessStatusesBeforeComputed() {
         return Arrays.asList(
                 CREATED,
