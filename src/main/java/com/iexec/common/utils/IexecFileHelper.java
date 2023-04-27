@@ -56,7 +56,7 @@ public class IexecFileHelper {
 
         if (jsonString.isEmpty()) {
             log.error("Failed to read compute file (invalid path) [chainTaskId:{}, computedFilePath:{}]",
-                    chainTaskId, computedFileDir);
+                    chainTaskId, computedFilePath);
             return null;
         }
 
