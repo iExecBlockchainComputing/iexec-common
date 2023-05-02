@@ -138,7 +138,6 @@ public enum ReplicateStatus {
                 RESULT_UPLOADING,
                 RESULT_UPLOAD_FAILED,
                 RESULT_UPLOADED,
-                CONTRIBUTE_AND_FINALIZE_ONGOING,
                 CONTRIBUTE_AND_FINALIZE_DONE,
                 COMPLETING,
                 COMPLETE_FAILED);
