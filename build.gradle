@@ -22,6 +22,7 @@ if (gitBranch != 'main' && gitBranch != 'master' && ! (gitBranch ==~ '(release|h
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven {
         url = 'https://docker-regis-adm.iex.ec/repository/maven-public/'
