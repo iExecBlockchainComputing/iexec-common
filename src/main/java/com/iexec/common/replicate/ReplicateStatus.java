@@ -169,7 +169,6 @@ public enum ReplicateStatus {
                 REVEALING,
                 REVEAL_FAILED,
                 CONTRIBUTE_AND_FINALIZE_ONGOING,
-                CONTRIBUTE_AND_FINALIZE_DONE,
                 CONTRIBUTE_AND_FINALIZE_FAILED,
                 ABORTED);
     }
