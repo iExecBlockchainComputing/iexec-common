@@ -49,6 +49,9 @@ public enum ReplicateStatus {
     RESULT_UPLOADING,
     RESULT_UPLOAD_FAILED,
     RESULT_UPLOADED,
+    CONTRIBUTE_AND_FINALIZE_ONGOING,
+    CONTRIBUTE_AND_FINALIZE_FAILED,
+    CONTRIBUTE_AND_FINALIZE_DONE,
     COMPLETING,
     COMPLETE_FAILED,
     COMPLETED,
@@ -102,6 +105,8 @@ public enum ReplicateStatus {
                 CONTRIBUTED,
                 REVEALING,
                 REVEALED,
+                CONTRIBUTE_AND_FINALIZE_ONGOING,
+                CONTRIBUTE_AND_FINALIZE_DONE,
                 COMPLETING,
                 COMPLETED));
     }
@@ -116,6 +121,7 @@ public enum ReplicateStatus {
                 REVEAL_FAILED,
                 RESULT_UPLOAD_REQUEST_FAILED,
                 RESULT_UPLOAD_FAILED,
+                CONTRIBUTE_AND_FINALIZE_FAILED,
                 COMPLETE_FAILED,
                 FAILED);
     }
@@ -132,6 +138,7 @@ public enum ReplicateStatus {
                 RESULT_UPLOADING,
                 RESULT_UPLOAD_FAILED,
                 RESULT_UPLOADED,
+                CONTRIBUTE_AND_FINALIZE_DONE,
                 COMPLETING,
                 COMPLETE_FAILED);
     }
@@ -160,6 +167,8 @@ public enum ReplicateStatus {
                 CONTRIBUTED,
                 REVEALING,
                 REVEAL_FAILED,
+                CONTRIBUTE_AND_FINALIZE_ONGOING,
+                CONTRIBUTE_AND_FINALIZE_FAILED,
                 ABORTED);
     }
 
@@ -198,6 +207,9 @@ public enum ReplicateStatus {
                 RESULT_UPLOADING,
                 RESULT_UPLOAD_FAILED,           // can complete later
                 RESULT_UPLOADED,
+                CONTRIBUTE_AND_FINALIZE_ONGOING,
+                CONTRIBUTE_AND_FINALIZE_DONE,
+                CONTRIBUTE_AND_FINALIZE_FAILED,
                 COMPLETING,
                 RECOVERING);
     }
@@ -249,6 +261,9 @@ public enum ReplicateStatus {
                 RESULT_UPLOADING,
                 RESULT_UPLOAD_FAILED,
                 RESULT_UPLOADED,
+                CONTRIBUTE_AND_FINALIZE_ONGOING,
+                CONTRIBUTE_AND_FINALIZE_FAILED,
+                CONTRIBUTE_AND_FINALIZE_DONE,
                 COMPLETING,
                 COMPLETE_FAILED);
     }
@@ -311,7 +326,8 @@ public enum ReplicateStatus {
     public static List<ReplicateStatus> getUncompletableStatuses() {
         return Arrays.asList(
                 CONTRIBUTE_FAILED,
-                REVEAL_FAILED
+                REVEAL_FAILED,
+                CONTRIBUTE_AND_FINALIZE_FAILED
                 //RESULT_UPLOAD_REQUEST_FAILED, // still good if don't upload
                 //RESULT_UPLOAD_FAILED,         //still good if don't upload
         );
