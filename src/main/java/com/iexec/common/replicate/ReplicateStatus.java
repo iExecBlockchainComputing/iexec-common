@@ -45,7 +45,6 @@ public enum ReplicateStatus {
     REVEAL_FAILED,
     REVEALED,
     RESULT_UPLOAD_REQUESTED,
-    RESULT_UPLOAD_REQUEST_FAILED,
     RESULT_UPLOADING,
     RESULT_UPLOAD_FAILED,
     RESULT_UPLOADED,
@@ -119,7 +118,6 @@ public enum ReplicateStatus {
                 COMPUTE_FAILED,
                 CONTRIBUTE_FAILED,
                 REVEAL_FAILED,
-                RESULT_UPLOAD_REQUEST_FAILED,
                 RESULT_UPLOAD_FAILED,
                 CONTRIBUTE_AND_FINALIZE_FAILED,
                 COMPLETE_FAILED,
@@ -134,7 +132,6 @@ public enum ReplicateStatus {
         return Arrays.asList(
                 REVEALED,
                 RESULT_UPLOAD_REQUESTED,
-                RESULT_UPLOAD_REQUEST_FAILED,
                 RESULT_UPLOADING,
                 RESULT_UPLOAD_FAILED,
                 RESULT_UPLOADED,
@@ -203,7 +200,6 @@ public enum ReplicateStatus {
                 REVEALING,
                 REVEALED,
                 RESULT_UPLOAD_REQUESTED,
-                RESULT_UPLOAD_REQUEST_FAILED,   // can complete later
                 RESULT_UPLOADING,
                 RESULT_UPLOAD_FAILED,           // can complete later
                 RESULT_UPLOADED,
@@ -257,7 +253,6 @@ public enum ReplicateStatus {
                 REVEAL_FAILED,
                 REVEALED,
                 RESULT_UPLOAD_REQUESTED,
-                RESULT_UPLOAD_REQUEST_FAILED,
                 RESULT_UPLOADING,
                 RESULT_UPLOAD_FAILED,
                 RESULT_UPLOADED,
@@ -328,7 +323,6 @@ public enum ReplicateStatus {
                 CONTRIBUTE_FAILED,
                 REVEAL_FAILED,
                 CONTRIBUTE_AND_FINALIZE_FAILED
-                //RESULT_UPLOAD_REQUEST_FAILED, // still good if don't upload
                 //RESULT_UPLOAD_FAILED,         //still good if don't upload
         );
     }
