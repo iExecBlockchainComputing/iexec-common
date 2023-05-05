@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### New Features
 - Add `CONTRIBUTE_AND_FINALIZE` replicate statuses. (#408)
+- Add `contributeAndFinalize` related values to `ReplicateStatusCause`. (#411)
 ### Bug Fixes
 - Log `computedFilePath` instead of `computedFileDir`. (#409)
 ### Quality
