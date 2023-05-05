@@ -83,13 +83,13 @@ public enum ReplicateStatusCause {
     TEE_SESSION_GENERATION_UNKNOWN_ISSUE,
     // endregion
 
-    // region computation
+    // region compute
     APP_NOT_FOUND_LOCALLY,
     APP_COMPUTE_FAILED,
     APP_COMPUTE_TIMEOUT,
     // endregion
 
-    // region pre-computation
+    // region pre-computate
     PRE_COMPUTE_INVALID_ENCLAVE_CONFIGURATION,
     PRE_COMPUTE_INVALID_ENCLAVE_HEAP_CONFIGURATION,
     PRE_COMPUTE_IMAGE_MISSING,
@@ -113,7 +113,7 @@ public enum ReplicateStatusCause {
     PRE_COMPUTE_FAILED_UNKNOWN_ISSUE, //exit 1 (unknown)
     // endregion
 
-    // region post computation
+    // region post-compute
     POST_COMPUTE_IMAGE_MISSING,
     POST_COMPUTE_TASK_ID_MISSING, // exit 3
     POST_COMPUTE_EXIT_REPORTING_FAILED, // exit 2
@@ -138,16 +138,16 @@ public enum ReplicateStatusCause {
     TEE_NOT_SUPPORTED,
     DETERMINISM_HASH_NOT_FOUND,
     ENCLAVE_SIGNATURE_NOT_FOUND,
-    /**
-     * @deprecated Use WORKERPOOL_AUTHORIZATION_NOT_FOUND instead
-     */
-    @Deprecated
-    CONTRIBUTION_AUTHORIZATION_NOT_FOUND,
     WORKERPOOL_AUTHORIZATION_NOT_FOUND,
     // endregion
 
     // region upload
     RESULT_LINK_MISSING,
+    // endregion
+
+    // region contributeAndFinalize
+    TRUST_NOT_1,
+    TASK_ALREADY_CONTRIBUTED,
     // endregion
 
     // region timeout
