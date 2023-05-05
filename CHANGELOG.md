@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 - Add `CONTRIBUTE_AND_FINALIZE` replicate statuses. (#408)
 ### Bug Fixes
 - Log `computedFilePath` instead of `computedFileDir`. (#409)
+### Quality
+- Clean unused `ReplicateStatus#RESULT_UPLOAD_REQUEST_FAILED`. (#410)
 
 ## [[8.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.0.0) 2023-04-12
 

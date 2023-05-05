@@ -82,7 +82,6 @@ class ReplicateStatusTests {
                 REVEAL_FAILED,
                 REVEALED,
                 RESULT_UPLOAD_REQUESTED,
-                RESULT_UPLOAD_REQUEST_FAILED,
                 RESULT_UPLOADING,
                 RESULT_UPLOAD_FAILED,
                 RESULT_UPLOADED,
