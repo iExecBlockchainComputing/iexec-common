@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 - Log `computedFilePath` instead of `computedFileDir`. (#409)
 ### Quality
 - Clean unused `ReplicateStatus#RESULT_UPLOAD_REQUEST_FAILED`. (#410)
+### Dependency Upgrades
+- Upgrade to `iexec-commons-poco` 2.0.0. (#412)
 
 ## [[8.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.0.0) 2023-04-12
 
