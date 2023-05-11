@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [[8.1.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2023-05-11
+## [[8.1.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.1.0) 2023-05-11
 
 ### New Features
 - Add `CONTRIBUTE_AND_FINALIZE` replicate statuses. (#408)
