@@ -25,6 +25,7 @@ import lombok.Value;
 
 import java.math.BigInteger;
 
+@Deprecated(forRemoval = true)
 @Value
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)

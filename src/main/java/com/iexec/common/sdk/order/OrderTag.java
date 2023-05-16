@@ -22,6 +22,7 @@ import lombok.Getter;
 
 //TODO: Eventually move from sdk package
 @Getter
+@Deprecated(forRemoval = true)
 public enum OrderTag {
 
     STANDARD(BytesUtils.EMPTY_HEX_STRING_32),

@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.web3j.crypto.ECKeyPair;
 
 @Slf4j
+@Deprecated(forRemoval = true)
 public class OrderSigner {
 
     private final EIP712Domain eip712Domain;
