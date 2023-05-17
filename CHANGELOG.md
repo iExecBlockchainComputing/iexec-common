@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## [[NEXT]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2023
 
+### Quality
+- Mark classes from `com.iexec.common.sdk.order`, `com.iexec.common.sdk.order.payload` and `com.iexec.common.chain.eip712` packages deprecated. (#414 #415)
+
+## [[8.1.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.1.0) 2023-05-11
+
+### New Features
+- Add `CONTRIBUTE_AND_FINALIZE` replicate statuses. (#408)
+- Add `contributeAndFinalize` related values to `ReplicateStatusCause`. (#411)
+### Bug Fixes
+- Log `computedFilePath` instead of `computedFileDir`. (#409)
+### Quality
+- Clean unused `ReplicateStatus#RESULT_UPLOAD_REQUEST_FAILED`. (#410)
+### Dependency Upgrades
+- Upgrade to `iexec-commons-poco` 2.0.0. (#412)
+
 ## [[8.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.0.0) 2023-04-12
 
 ### Quality

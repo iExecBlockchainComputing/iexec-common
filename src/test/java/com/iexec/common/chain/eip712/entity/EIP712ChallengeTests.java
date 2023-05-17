@@ -18,8 +18,8 @@ package com.iexec.common.chain.eip712.entity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.iexec.common.chain.eip712.EIP712Domain;
-import com.iexec.common.chain.eip712.TypeParam;
+import com.iexec.commons.poco.eip712.EIP712Domain;
+import com.iexec.commons.poco.eip712.TypeParam;
 import com.iexec.commons.poco.utils.HashUtils;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.Hash;

@@ -17,10 +17,10 @@
 package com.iexec.common.sdk.broker;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.iexec.common.sdk.order.payload.AppOrder;
-import com.iexec.common.sdk.order.payload.DatasetOrder;
-import com.iexec.common.sdk.order.payload.RequestOrder;
-import com.iexec.common.sdk.order.payload.WorkerpoolOrder;
+import com.iexec.commons.poco.order.AppOrder;
+import com.iexec.commons.poco.order.DatasetOrder;
+import com.iexec.commons.poco.order.RequestOrder;
+import com.iexec.commons.poco.order.WorkerpoolOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

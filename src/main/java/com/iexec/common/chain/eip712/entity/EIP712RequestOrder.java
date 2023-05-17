@@ -16,16 +16,20 @@
 
 package com.iexec.common.chain.eip712.entity;
 
-import com.iexec.common.chain.eip712.EIP712Domain;
-import com.iexec.common.chain.eip712.EIP712Entity;
-import com.iexec.common.chain.eip712.TypeParam;
-import com.iexec.common.sdk.order.payload.RequestOrder;
+import com.iexec.commons.poco.eip712.EIP712Domain;
+import com.iexec.commons.poco.eip712.EIP712Entity;
+import com.iexec.commons.poco.eip712.TypeParam;
+import com.iexec.commons.poco.order.RequestOrder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @deprecated Use {@link com.iexec.commons.poco.eip712.entity.EIP712RequestOrder}
+ */
+@Deprecated(forRemoval = true)
 @Getter
 @NoArgsConstructor
 public class EIP712RequestOrder extends EIP712Entity<RequestOrder> {

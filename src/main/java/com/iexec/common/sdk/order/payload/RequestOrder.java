@@ -26,6 +26,10 @@ import lombok.Value;
 import java.math.BigInteger;
 import java.util.Objects;
 
+/**
+ * @deprecated Use {@link com.iexec.commons.poco.order.RequestOrder}
+ */
+@Deprecated(forRemoval = true)
 @Value
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
