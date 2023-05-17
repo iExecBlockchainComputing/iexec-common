@@ -16,15 +16,15 @@
 
 package com.iexec.common.sdk.order;
 
-import com.iexec.common.chain.eip712.EIP712Domain;
-import com.iexec.common.chain.eip712.entity.EIP712AppOrder;
-import com.iexec.common.chain.eip712.entity.EIP712DatasetOrder;
-import com.iexec.common.chain.eip712.entity.EIP712RequestOrder;
-import com.iexec.common.chain.eip712.entity.EIP712WorkerpoolOrder;
-import com.iexec.common.sdk.order.payload.AppOrder;
-import com.iexec.common.sdk.order.payload.DatasetOrder;
-import com.iexec.common.sdk.order.payload.RequestOrder;
-import com.iexec.common.sdk.order.payload.WorkerpoolOrder;
+import com.iexec.commons.poco.eip712.EIP712Domain;
+import com.iexec.commons.poco.eip712.entity.EIP712AppOrder;
+import com.iexec.commons.poco.eip712.entity.EIP712DatasetOrder;
+import com.iexec.commons.poco.eip712.entity.EIP712RequestOrder;
+import com.iexec.commons.poco.eip712.entity.EIP712WorkerpoolOrder;
+import com.iexec.commons.poco.order.AppOrder;
+import com.iexec.commons.poco.order.DatasetOrder;
+import com.iexec.commons.poco.order.RequestOrder;
+import com.iexec.commons.poco.order.WorkerpoolOrder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.crypto.ECKeyPair;
