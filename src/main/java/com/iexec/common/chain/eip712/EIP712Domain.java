@@ -36,7 +36,9 @@ import java.util.stream.Collectors;
  * <li> represent the domain structure as string like {@code EIP712Domain(string name,string version,unit256 chainId)}
  * <li> compute the {@code domainSeparator}, the hash of the concatenation of the domain structure hash and the hash of field values
  * </ul>
+ * @deprecated USe {@link com.iexec.commons.poco.eip712.EIP712Domain}
  */
+@Deprecated(forRemoval = true)
 @Getter
 public class EIP712Domain {
 
