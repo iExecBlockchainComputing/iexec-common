@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Quality
 - Mark classes from `com.iexec.common.sdk.order` and `com.iexec.common.sdk.order.payload` packages deprecated. (#414)
+- Mark classes from `com.iexec.common.chain.eip712` package deprecated. (#415)
 
 ## [[8.1.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.1.0) 2023-05-11
 
