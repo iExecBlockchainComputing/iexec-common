@@ -16,8 +16,8 @@
 
 package com.iexec.common.chain;
 
-import com.iexec.common.chain.eip712.EIP712Entity;
 import com.iexec.common.utils.EthAddress;
+import com.iexec.commons.poco.eip712.EIP712Entity;
 import com.iexec.commons.poco.security.Signature;
 import com.iexec.commons.poco.utils.SignatureUtils;
 import lombok.extern.slf4j.Slf4j;

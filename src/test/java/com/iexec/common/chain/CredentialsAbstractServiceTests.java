@@ -16,9 +16,9 @@
 
 package com.iexec.common.chain;
 
-import com.iexec.common.chain.eip712.EIP712Domain;
-import com.iexec.common.chain.eip712.entity.Challenge;
-import com.iexec.common.chain.eip712.entity.EIP712Challenge;
+import com.iexec.commons.poco.eip712.EIP712Domain;
+import com.iexec.commons.poco.eip712.entity.Challenge;
+import com.iexec.commons.poco.eip712.entity.EIP712Challenge;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.web3j.crypto.CipherException;
