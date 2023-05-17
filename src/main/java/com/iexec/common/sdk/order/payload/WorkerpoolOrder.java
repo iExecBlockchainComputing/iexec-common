@@ -25,6 +25,9 @@ import lombok.Value;
 
 import java.math.BigInteger;
 
+/**
+ * @deprecated Use {@link com.iexec.commons.poco.order.WorkerpoolOrder}
+ */
 @Deprecated(forRemoval = true)
 @Value
 @EqualsAndHashCode(callSuper = true)

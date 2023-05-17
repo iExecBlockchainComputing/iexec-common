@@ -20,7 +20,9 @@ import com.iexec.commons.poco.tee.TeeUtils;
 import com.iexec.commons.poco.utils.BytesUtils;
 import lombok.Getter;
 
-//TODO: Eventually move from sdk package
+/**
+ * @deprecated Use {@link com.iexec.commons.poco.order.OrderTag}
+ */
 @Getter
 @Deprecated(forRemoval = true)
 public enum OrderTag {

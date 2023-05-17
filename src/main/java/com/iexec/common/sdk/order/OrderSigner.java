@@ -29,6 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.web3j.crypto.ECKeyPair;
 
+/**
+ * @deprecated Use {@link com.iexec.commons.poco.eip712.OrderSigner}
+ */
 @Slf4j
 @Deprecated(forRemoval = true)
 public class OrderSigner {
