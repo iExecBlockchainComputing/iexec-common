@@ -16,9 +16,9 @@
 
 package com.iexec.common.chain.eip712.entity;
 
-import com.iexec.common.chain.eip712.EIP712Domain;
-import com.iexec.common.chain.eip712.EIP712Entity;
-import com.iexec.common.chain.eip712.TypeParam;
+import com.iexec.commons.poco.eip712.EIP712Domain;
+import com.iexec.commons.poco.eip712.EIP712Entity;
+import com.iexec.commons.poco.eip712.TypeParam;
 import lombok.NoArgsConstructor;
 
 import java.util.Collections;
@@ -29,7 +29,9 @@ import java.util.List;
  * <p>
  * In the current implementation, {@link EIP712Domain} fields are {@code name}, {@code version} and {@code chainID}.
  * There is no {@code verifyingContract}.
+ * @deprecated Use {@link com.iexec.commons.poco.eip712.entity.EIP712Challenge}
  */
+@Deprecated(forRemoval = true)
 @NoArgsConstructor
 public class EIP712Challenge extends EIP712Entity<Challenge> {
 

@@ -26,6 +26,10 @@ import org.web3j.crypto.ECKeyPair;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @deprecated Use {@link com.iexec.commons.poco.eip712.EIP712Entity}
+ */
+@Deprecated(forRemoval = true)
 @NoArgsConstructor
 public abstract class EIP712Entity<M> implements EIP712<M> {
 

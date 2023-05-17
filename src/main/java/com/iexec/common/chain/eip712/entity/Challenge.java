@@ -23,7 +23,9 @@ import lombok.NoArgsConstructor;
 
 /**
  * Represents the Challenge type in an EIP-712 compliant challenge.
+ * @deprecated Use {@link com.iexec.commons.poco.eip712.entity.Challenge}
  */
+@Deprecated(forRemoval = true)
 @Data
 @Builder
 @AllArgsConstructor
