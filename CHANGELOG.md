@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [[NEXT]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2023
 
-### Quality
+### Quality
 - Mark classes from `com.iexec.common.sdk.order`, `com.iexec.common.sdk.order.payload` and `com.iexec.common.chain.eip712` packages deprecated. (#414 #415)
+- Clean `ReplicateStatus` unused methods. (#407)
 
 ## [[8.1.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.1.0) 2023-05-11
 
