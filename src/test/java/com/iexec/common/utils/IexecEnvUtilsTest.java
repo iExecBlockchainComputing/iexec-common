@@ -83,7 +83,7 @@ class IexecEnvUtilsTest {
                         "IEXEC_IN=/iexec_in",
                         "IEXEC_OUT=/iexec_out",
                         "IEXEC_DATASET_ADDRESS=datasetAddress",
-                        "IEXEC_DATASET_FILENAME=datasetName",
+                        "IEXEC_DATASET_FILENAME=datasetAddress",
                         "IEXEC_INPUT_FILES_FOLDER=/iexec_in",
                         "IEXEC_BOT_SIZE=1",
                         "IEXEC_BOT_FIRST_INDEX=0",
@@ -105,7 +105,7 @@ class IexecEnvUtilsTest {
                 map.get("IEXEC_OUT"));
         Assertions.assertEquals(taskDescription.getDatasetAddress(),
                 map.get("IEXEC_DATASET_ADDRESS"));
-        Assertions.assertEquals(taskDescription.getDatasetName(),
+        Assertions.assertEquals(taskDescription.getDatasetAddress(),
                 map.get("IEXEC_DATASET_FILENAME"));
         Assertions.assertEquals(String.valueOf(taskDescription.getBotSize()),
                 map.get("IEXEC_BOT_SIZE"));
