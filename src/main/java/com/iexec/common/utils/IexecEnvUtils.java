@@ -97,7 +97,7 @@ public class IexecEnvUtils {
         map.put(IEXEC_OUT, IexecFileHelper.SLASH_IEXEC_OUT);
         // dataset
         map.put(IEXEC_DATASET_ADDRESS, taskDescription.getDatasetAddress());
-        map.put(IEXEC_DATASET_FILENAME, taskDescription.getDatasetName());
+        map.put(IEXEC_DATASET_FILENAME, taskDescription.getDatasetAddress());
         // BoT
         map.put(IEXEC_BOT_SIZE, String.valueOf(taskDescription.getBotSize()));
         map.put(IEXEC_BOT_FIRST_INDEX, String.valueOf(taskDescription.getBotFirstIndex()));
