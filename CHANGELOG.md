@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [[NEXT]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2023
+## [[8.2.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.2.0) 2023-06-05
 
 ### Bug Fixes
 - Always use DatasetAddress in `IEXEC_DATASET_FILENAME` environment variable. (#416)
