@@ -16,7 +16,7 @@
 
 package com.iexec.common.sdk.order.markeplace;
 
-import com.iexec.common.sdk.order.payload.AppOrder;
+import com.iexec.commons.poco.order.AppOrder;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
