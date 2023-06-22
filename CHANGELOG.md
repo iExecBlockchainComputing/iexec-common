@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [[8.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.2.1) 2023-06-23
+
+### Dependency Upgrades
+- Upgrade to `iexec-commons-poco` 3.0.4. (#420)
+
 ## [[8.2.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.2.0) 2023-06-05
 
 ### Bug Fixes
