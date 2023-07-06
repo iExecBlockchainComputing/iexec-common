@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [[NEXT]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2023
 
+### New Features
+- Add new `POST_COMPUTE_TOO_LONG_RESULT_FILE_NAME` replicate status cause. (#422)
+
 ## [[8.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.2.1) 2023-06-23
 
 ### Dependency Upgrades
