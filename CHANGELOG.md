@@ -6,12 +6,15 @@ All notable changes to this project will be documented in this file.
 
 ### New Features
 - Add new `POST_COMPUTE_TOO_LONG_RESULT_FILE_NAME` replicate status cause. (#422)
+### Quality
+- Upgrade to Gradle 8.2.1 with up-to-date plugins. (#424)
+### Dependency Upgrades
+- Upgrade to Spring Boot 2.7.14. (#423)
 
 ## [[8.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.2.1) 2023-06-23
 
 ### Dependency Upgrades
 - Upgrade to `iexec-commons-poco` 3.0.4. (#420)
-- Upgrade to Spring Boot 2.7.14. (#423)
 
 ## [[8.2.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.2.0) 2023-06-05
 
