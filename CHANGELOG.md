@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependency Upgrades
 - Upgrade to `iexec-commons-poco` 3.0.4. (#420)
+- Upgrade to Spring Boot 2.7.14. (#423)
 
 ## [[8.2.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.2.0) 2023-06-05
 
