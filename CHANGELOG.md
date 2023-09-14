@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade to Gradle 8.2.1 with up-to-date plugins. (#424)
 ### Dependency Upgrades
 - Upgrade to Spring Boot 2.7.14. (#423)
+- Upgrade to `jenkins-library` 2.7.3. (#425)
 
 ## [[8.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.2.1) 2023-06-23
 
