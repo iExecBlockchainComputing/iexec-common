@@ -50,6 +50,9 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+    // commons-io
+    implementation 'commons-io:commons-io:2.13.0'
+
     // apache commons-lang3
     implementation 'org.apache.commons:commons-lang3'
 
