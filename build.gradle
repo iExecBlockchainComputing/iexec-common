@@ -50,14 +50,14 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-    // apache commons.lang3
+    // commons-io
+    implementation 'commons-io:commons-io:2.13.0'
+
+    // apache commons-lang3
     implementation 'org.apache.commons:commons-lang3'
 
     //jaxb required with Java 11
     implementation 'javax.xml.bind:jaxb-api'
-
-    //args utils
-    implementation 'org.apache.maven.shared:maven-shared-utils:3.2.1'
 
     // zip
     implementation 'net.lingala.zip4j:zip4j:2.3.1'
