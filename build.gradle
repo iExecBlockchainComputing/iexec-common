@@ -1,8 +1,8 @@
 plugins {
     id 'java-library'
-    id 'io.freefair.lombok' version '6.6.1'
+    id 'io.freefair.lombok' version '8.2.2'
     id 'jacoco'
-    id 'org.sonarqube' version '3.3'
+    id 'org.sonarqube' version '4.2.1.3168'
     id 'maven-publish'
 }
 
@@ -39,7 +39,7 @@ repositories {
 // 'api' configuration allows to expose dependencies with 'compile' scope in pom
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
-    implementation platform('org.springframework.boot:spring-boot-dependencies:2.6.14')
+    implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.14')
 
     // feign
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
@@ -50,14 +50,14 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-    // apache commons.lang3
+    // commons-io
+    implementation 'commons-io:commons-io:2.13.0'
+
+    // apache commons-lang3
     implementation 'org.apache.commons:commons-lang3'
 
     //jaxb required with Java 11
     implementation 'javax.xml.bind:jaxb-api'
-
-    //args utils
-    implementation 'org.apache.maven.shared:maven-shared-utils:3.2.1'
 
     // zip
     implementation 'net.lingala.zip4j:zip4j:2.3.1'
@@ -77,6 +77,7 @@ dependencies {
 
     // test
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation 'org.mockito:mockito-junit-jupiter'
     testImplementation 'org.assertj:assertj-core'
     // mock-server
@@ -104,14 +105,11 @@ test {
     }
 }
 
-task itest {
+tasks.register('itest') {
     group 'Verification'
     description 'Runs the integration tests.'
 }
 
-jacoco {
-    toolVersion = "0.8.7"
-}
 // sonarqube code coverage requires jacoco XML report
 jacocoTestReport {
     reports {

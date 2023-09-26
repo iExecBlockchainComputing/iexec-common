@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [[8.3.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.3.0) 2023-09-26
+
+### New Features
+- Add new `POST_COMPUTE_TOO_LONG_RESULT_FILE_NAME` replicate status cause. (#422)
+### Quality
+- Upgrade to Gradle 8.2.1 with up-to-date plugins. (#424)
+- Delete `ArgsUtils`, `SgxUtils` and `SgxDriverMode` classes moved to `iexec-commons-containers`. (#426)
+### Dependency Upgrades
+- Upgrade to Spring Boot 2.7.14. (#423)
+- Upgrade to `jenkins-library` 2.7.3. (#425)
+- Remove `maven-shared-utils` dependency. (#426)
+- Add `commons-io` 2.13.0. (#426)
+- Upgrade to `iexec-commons-poco` 3.1.0. (#427)
+
 ## [[8.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.2.1) 2023-06-23
 
 ### Dependency Upgrades
@@ -11,7 +25,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 - Always use DatasetAddress in `IEXEC_DATASET_FILENAME` environment variable. (#416)
-### Quality
+### Quality
 - Mark classes from `com.iexec.common.sdk.order`, `com.iexec.common.sdk.order.payload` and `com.iexec.common.chain.eip712` packages deprecated. (#414 #415)
 ### Dependency Upgrades
 - Upgrade to `iexec-commons-poco` 3.0.0. (#417)
