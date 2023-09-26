@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade to `jenkins-library` 2.7.3. (#425)
 - Remove `maven-shared-utils` dependency. (#426)
 - Add `commons-io` 2.13.0. (#426)
+- Upgrade to `iexec-commons-poco` 3.1.0. (#427)
 
 ## [[8.2.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.2.1) 2023-06-23
 
