@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Remove deprecated `OrderSigner` class and `OrderTag` enum. (#430)
 - Remove deprecated `com.iexec.common.chain.eip712.entity` package. (#431)
 - Remove deprecated `com.iexec.common.chain.eip712` package. (#432)
+- Remove deprecated `com.iexec.common.sdk.order.payload` package. (#433)
 
 ## [[8.3.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.3.0) 2023-09-26
 
