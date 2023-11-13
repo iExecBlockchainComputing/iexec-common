@@ -1,7 +1,5 @@
-@Library('global-jenkins-library@2.7.3') _
+@Library('global-jenkins-library@2.7.4') _
 buildJavaProject(
-    buildInfo: getBuildInfo(),
-    integrationTestsEnvVars: [],
     shouldPublishJars: true,
     shouldPublishDockerImages: false
 )
