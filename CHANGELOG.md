@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Dependency Upgrades
 
+- Upgrade to Spring Boot 2.7.17. (#435)
 - Upgrade to `jenkins-library` 2.7.4. (#434)
 
 ## [[8.3.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.3.0) 2023-09-26
