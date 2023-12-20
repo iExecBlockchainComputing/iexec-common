@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [[NEXT]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2023
 
+## [[8.3.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.3.1) 2023-12-20
+
 ### Bug Fixes
 
 - Remove deprecated `OrderSigner` class and `OrderTag` enum. (#430)
