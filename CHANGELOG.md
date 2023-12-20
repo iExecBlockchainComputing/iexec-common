@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 - Upgrade to Spring Boot 2.7.17. (#435)
 - Upgrade to `jenkins-library` 2.7.4. (#434)
+- Upgrade to `iexec-commons-poco` 3.2.0. (#436)
 
 ## [[8.3.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.3.0) 2023-09-26
 
