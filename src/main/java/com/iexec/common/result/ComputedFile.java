@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,17 @@ package com.iexec.common.result;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(builder = ComputedFile.ComputedFileBuilder.class)
 public class ComputedFile {
 
     @JsonProperty("deterministic-output-path")
@@ -44,5 +45,12 @@ public class ComputedFile {
 
     @JsonProperty("enclave-signature")
     private String enclaveSignature;
+
+    @JsonProperty("error-message")
+    private String errorMessage;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class ComputedFileBuilder {
+    }
 
 }
