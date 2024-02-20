@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [[NEXT]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2023
 
+### New Feature
+
+- Add `enclaveSignature` field to `ResultModel`. (#439)
+
+### Quality
+
+- Make `ResultModel` instances immutables. (#439)
+
 ## [[8.3.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.3.1) 2023-12-20
 
 ### Bug Fixes
