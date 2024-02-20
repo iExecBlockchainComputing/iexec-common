@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,31 @@
 
 package com.iexec.common.result;
 
-
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.iexec.commons.poco.utils.BytesUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@AllArgsConstructor
+@JsonDeserialize(builder = ResultModel.ResultModelBuilder.class)
 public class ResultModel {
 
-    private String chainTaskId;
-    private String image;
-    private String cmd;
-    private byte[] zip;
-    private String deterministHash;
+    @Builder.Default
+    private final String chainTaskId = BytesUtils.EMPTY_ADDRESS;
+    private final String image;
+    private final String cmd;
+    @Builder.Default
+    private final byte[] zip = new byte[0];
+    private final String deterministHash;
+    @Builder.Default
+    private final String enclaveSignature = BytesUtils.EMPTY_ADDRESS;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class ResultModelBuilder {
+    }
 
 }
