@@ -31,6 +31,7 @@ public class ResultModel {
 
     //TODO move this to commons-poco
     public static final String EMPTY_CHAIN_ID = Numeric.toHexString(new byte[32]);
+    // An ethereum signature is 65 bytes long with R, S and V parts (32 bytes + 32 bytes + 1 byte)
     public static final String EMPTY_WEB3_SIG = Numeric.toHexString(new byte[65]);
 
     @Builder.Default
