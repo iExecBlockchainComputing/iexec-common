@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021-2024 IEXEC BLOCKCHAIN TECH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.iexec.common.security;
 
 import com.iexec.common.utils.FileHelper;
@@ -74,7 +90,7 @@ class CipherUtilsTests {
     void shouldStripIvFromEncryptedData() {
         byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
         byte[] strippedData = CipherUtils.stripIvFromEncryptedData(encryptedData);
-        assertThat(encryptedData.length).isEqualTo(strippedData.length + 16);
+        assertThat(encryptedData).hasSize(strippedData.length + 16);
     }
 
     @Test
@@ -152,7 +168,7 @@ class CipherUtilsTests {
     @Test
     void shouldEncryptDataWithRsa() throws Exception {
         byte[] plainData = FileHelper.readAllBytes(RSA_PLAIN_DATA_FILE);
-        Optional<KeyPair> keyPair = 
+        Optional<KeyPair> keyPair =
                 CipherUtils.readRsaKeyPair(RSA_PUB_KEY_FILE, RSA_PRIV_KEY_FILE);
         byte[] encryptedData =
                 CipherUtils.rsaEncrypt(plainData, keyPair.get().getPublic());
@@ -165,7 +181,7 @@ class CipherUtilsTests {
     void shouldDecryptDataWithRsa() throws Exception {
         byte[] plainData = FileHelper.readAllBytes(RSA_PLAIN_DATA_FILE);
         byte[] encryptedData = FileHelper.readAllBytes(RSA_ENC_DATA_FILE);
-        Optional<KeyPair> keyPair = 
+        Optional<KeyPair> keyPair =
                 CipherUtils.readRsaKeyPair(RSA_PUB_KEY_FILE, RSA_PRIV_KEY_FILE);
         byte[] decryptedData =
                 CipherUtils.rsaDecrypt(encryptedData, keyPair.get().getPrivate());
