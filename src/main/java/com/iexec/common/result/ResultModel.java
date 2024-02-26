@@ -18,10 +18,10 @@ package com.iexec.common.result;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.iexec.commons.poco.utils.BytesUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.web3j.utils.Numeric;
 
 @Data
 @Builder
@@ -29,15 +29,19 @@ import lombok.Data;
 @JsonDeserialize(builder = ResultModel.ResultModelBuilder.class)
 public class ResultModel {
 
+    //TODO move this to commons-poco
+    public static final String EMPTY_CHAIN_ID = Numeric.toHexString(new byte[32]);
+    public static final String EMPTY_WEB3_SIG = Numeric.toHexString(new byte[65]);
+
     @Builder.Default
-    private final String chainTaskId = BytesUtils.EMPTY_ADDRESS;
+    private final String chainTaskId = EMPTY_CHAIN_ID;
     private final String image;
     private final String cmd;
     @Builder.Default
     private final byte[] zip = new byte[0];
     private final String deterministHash;
     @Builder.Default
-    private final String enclaveSignature = BytesUtils.EMPTY_ADDRESS;
+    private final String enclaveSignature = EMPTY_WEB3_SIG;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class ResultModelBuilder {

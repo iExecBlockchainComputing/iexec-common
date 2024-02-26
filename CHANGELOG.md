@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### New Feature
 
-- Add `enclaveSignature` field to `ResultModel`. (#439)
+- Add `enclaveSignature` field to `ResultModel`. (#439 #441)
 - Add `error-message` field to `ComputedFile`. (#440)
 
 ### Quality
