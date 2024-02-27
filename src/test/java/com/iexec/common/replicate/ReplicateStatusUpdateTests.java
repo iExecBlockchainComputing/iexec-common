@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 IEXEC BLOCKCHAIN TECH
+ * Copyright 2022-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.Date;
 import static com.iexec.common.replicate.ReplicateStatus.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ReplicateStatusUpdateTests {
+class ReplicateStatusUpdateTests {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -37,7 +37,7 @@ public class ReplicateStatusUpdateTests {
         String expectedString = "{"
                 + "\"status\":\"CREATED\","
                 + "\"modifier\":\"POOL_MANAGER\","
-                + "\"date\":" + date.getTime() +","
+                + "\"date\":" + date.getTime() + ","
                 + "\"details\":null,"
                 + "\"success\":true"
                 + "}";

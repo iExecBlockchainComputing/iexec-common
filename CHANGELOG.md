@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [[8.4.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.4.0) 2024-02-27
+
+### New Feature
+
+- Add `enclaveSignature` field to `ResultModel`. (#439 #441)
+- Add `error-message` field to `ComputedFile`. (#440)
+
+### Bug Fixes
+
+- Remove sonar code smells in tests. (#442)
+
+### Quality
+
+- Make `ResultModel` instances immutables. (#439)
+- Remove unused code related to blockchain adapter and time management. (#443)
+
 ## [[8.3.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.3.1) 2023-12-20
 
 ### Bug Fixes
