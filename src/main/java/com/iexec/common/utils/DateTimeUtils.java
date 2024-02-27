@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,14 @@
 
 package com.iexec.common.utils;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Calendar;
 import java.util.Date;
 
-@Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateTimeUtils {
-
-    private DateTimeUtils(){
-            throw new UnsupportedOperationException();
-    }
 
     public static Date addMinutesToDate(Date date, int minutes) {
         Calendar calendar = Calendar.getInstance();
@@ -37,16 +34,5 @@ public class DateTimeUtils {
 
     public static long now() {
         return new Date().getTime();
-    }
-
-    // No usage found for the moment
-    @Deprecated(forRemoval = true)
-    public static boolean sleep(long ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException e) {
-            log.error("Interrupted sleep");
-        }
-        return true;
     }
 }
