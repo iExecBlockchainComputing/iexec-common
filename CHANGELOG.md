@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Add `enclaveSignature` field to `ResultModel`. (#439 #441)
 - Add `error-message` field to `ComputedFile`. (#440)
 
+### Bug Fixes
+
+- Remove sonar code smells in tests. (#442)
+
 ### Quality
 
 - Make `ResultModel` instances immutables. (#439)
