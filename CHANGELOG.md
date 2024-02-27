@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Quality
 
 - Make `ResultModel` instances immutables. (#439)
+- Remove unused code related to blockchain adapter and time management. (#443)
 
 ## [[8.3.1]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.3.1) 2023-12-20
 
