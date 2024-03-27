@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [[NEXT]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2024
 
+### New Features
+
+- Add `ConfigServerClient` feign client to fetch configuration remotely. (#446)
+
 ## [[8.4.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.4.0) 2024-02-27
 
-### New Feature
+### New Features
 
 - Add `enclaveSignature` field to `ResultModel`. (#439 #441)
 - Add `error-message` field to `ComputedFile`. (#440)

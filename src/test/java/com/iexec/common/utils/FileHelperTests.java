@@ -45,7 +45,7 @@ class FileHelperTests {
             "/wikipedia/commons/thumb/6/65/600px_Black_bordered_HEX-0082D6.svg/600px-600px_Black_bordered_HEX-0082D6.svg.png";
     // private static final String HTTPS_FILENAME = "token.svg";
     private static final String HTTPS_FILE_DIGEST =
-            "0x7ee6112553cfa9ef3fd9311f55d6543f959a969700cfd39499f8775b4201739b";
+            "0xa7e1a706b2d60dad840c56594662deb37061815fd3ae2a04c1ca6328b0683fe6";
     // redirection
     // private static final String REDIRECTION_URL = "https://goo.gl/t8JxoX";
     // private static final String REDIRECTION_FILE_DIGEST = "TODO";
