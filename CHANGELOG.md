@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### New Features
 
 - Add `ConfigServerClient` feign client to fetch configuration remotely. (#446)
+- Add `ConfigServerClientBuilder` helper class to create feign client instances. (#447)
 
 ## [[8.4.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.4.0) 2024-02-27
 
