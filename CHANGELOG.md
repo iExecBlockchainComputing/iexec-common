@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Add `ConfigServerClient` feign client to fetch configuration remotely. (#446)
 - Add `ConfigServerClientBuilder` helper class to create feign client instances. (#447)
 
+### Quality
+
+- Configure Gradle JVM Test Suite Plugin. (#448)
+
 ## [[8.4.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.4.0) 2024-02-27
 
 ### New Features
