@@ -27,6 +27,8 @@ import lombok.Value;
 public class PublicConfiguration {
     String workerPoolAddress;
     String schedulerPublicAddress;
+    @Deprecated
+    String blockchainAdapterUrl;
     String configServerUrl;
     String resultRepositoryURL;
     long askForReplicatePeriod;

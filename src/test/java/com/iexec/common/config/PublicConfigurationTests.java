@@ -31,10 +31,45 @@ class PublicConfigurationTests {
         PublicConfiguration config = PublicConfiguration.builder().build();
         String jsonString = mapper.writeValueAsString(config);
         assertThat(jsonString).isEqualTo("{\"workerPoolAddress\":null,\"schedulerPublicAddress\":null," +
-                "\"configServerUrl\":null,\"resultRepositoryURL\":null," +
+                "\"blockchainAdapterUrl\":null,\"configServerUrl\":null,\"resultRepositoryURL\":null," +
                 "\"askForReplicatePeriod\":0,\"requiredWorkerVersion\":null}");
         PublicConfiguration parsedConfig = mapper.readValue(jsonString, PublicConfiguration.class);
         assertThat(parsedConfig).isEqualTo(config);
     }
 
+    @Test
+    void shouldDeserializeWhenBlockchainAdapterUrlIsPresentButConfigServerUrlNot() throws JsonProcessingException {
+
+        String jsonString = "{\"workerPoolAddress\":null,\"schedulerPublicAddress\":null," +
+                "\"blockchainAdapterUrl\":\"http://localhost:8080\",\"resultRepositoryURL\":null," +
+                "\"askForReplicatePeriod\":0,\"requiredWorkerVersion\":null}";
+
+        PublicConfiguration parsedConfig = mapper.readValue(jsonString, PublicConfiguration.class);
+        assertThat(parsedConfig.getBlockchainAdapterUrl()).isEqualTo("http://localhost:8080");
+        assertThat(parsedConfig.getConfigServerUrl()).isNull();
+    }
+
+    @Test
+    void shouldDeserializeWhenConfigServerUrlIsPresentButBlockchainAdapterUrlNot() throws JsonProcessingException {
+
+        String jsonString = "{\"workerPoolAddress\":null,\"schedulerPublicAddress\":null," +
+                "\"configServerUrl\":\"http://localhost:8080\",\"resultRepositoryURL\":null," +
+                "\"askForReplicatePeriod\":0,\"requiredWorkerVersion\":null}";
+
+        PublicConfiguration parsedConfig = mapper.readValue(jsonString, PublicConfiguration.class);
+        assertThat(parsedConfig.getConfigServerUrl()).isEqualTo("http://localhost:8080");
+        assertThat(parsedConfig.getBlockchainAdapterUrl()).isNull();
+    }
+
+    @Test
+    void shouldDeserializeWhenConfigServerUrlAndBlockchainAdapterUrlArePresent() throws JsonProcessingException {
+
+        String jsonString = "{\"workerPoolAddress\":null,\"schedulerPublicAddress\":null," +
+                "\"configServerUrl\":\"http://localhost:8080\",\"blockchainAdapterUrl\":\"http://localhost:8082\",\"resultRepositoryURL\":null," +
+                "\"askForReplicatePeriod\":0,\"requiredWorkerVersion\":null}";
+
+        PublicConfiguration parsedConfig = mapper.readValue(jsonString, PublicConfiguration.class);
+        assertThat(parsedConfig.getConfigServerUrl()).isEqualTo("http://localhost:8080");
+        assertThat(parsedConfig.getBlockchainAdapterUrl()).isEqualTo("http://localhost:8082");
+    }
 }
