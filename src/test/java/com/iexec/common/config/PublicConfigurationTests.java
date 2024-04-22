@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2023-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ class PublicConfigurationTests {
         PublicConfiguration config = PublicConfiguration.builder().build();
         String jsonString = mapper.writeValueAsString(config);
         assertThat(jsonString).isEqualTo("{\"workerPoolAddress\":null,\"schedulerPublicAddress\":null," +
-                "\"blockchainAdapterUrl\":null,\"resultRepositoryURL\":null," +
+                "\"configServerUrl\":null,\"resultRepositoryURL\":null," +
                 "\"askForReplicatePeriod\":0,\"requiredWorkerVersion\":null}");
         PublicConfiguration parsedConfig = mapper.readValue(jsonString, PublicConfiguration.class);
         assertThat(parsedConfig).isEqualTo(config);

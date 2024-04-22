@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,13 @@ import lombok.Value;
 public class PublicConfiguration {
     String workerPoolAddress;
     String schedulerPublicAddress;
-    String blockchainAdapterUrl;
+    String configServerUrl;
     String resultRepositoryURL;
     long askForReplicatePeriod;
     String requiredWorkerVersion;
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static class PublicConfigurationBuilder{}
+    public static class PublicConfigurationBuilder {
+    }
 }
 
