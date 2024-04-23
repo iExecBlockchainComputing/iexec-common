@@ -22,10 +22,10 @@ import lombok.Builder;
 import lombok.Value;
 
 /**
- * The {@code blockchainAdapterUrl} and {@code configServerUrl} fields are repetitive,
+ * The {@link #blockchainAdapterUrl} and {@link #configServerUrl} fields are repetitive,
  * so if both are populated, they must contain the same value.
  * Duplicating these fields ensures worker/scheduler compatibility on different v8 versions.
- * In v9, the {@code blockchainAdapterUrl} field will be removed.
+ * In v9, the {@link #blockchainAdapterUrl} field will be removed.
  */
 @Value
 @Builder
