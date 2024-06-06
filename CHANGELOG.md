@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Add `ConfigServerClient` feign client to fetch configuration remotely. (#446)
 - Add `ConfigServerClientBuilder` helper class to create feign client instances. (#447)
 - Rename `blockchainAdapterUrl` to `configServerUrl` in `PublicConfiguration` class. (#451)
+- Add `PRE_COMPUTE_MISSING_ENCLAVE_CONFIGURATION` and `POST_COMPUTE_MALFORMED_ENCRYPTION_PUBLIC_KEY` statuses to `ReplicateStatusCause`. (#453)
 
 ### Quality
 
