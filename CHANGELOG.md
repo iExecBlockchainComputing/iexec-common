@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 - Configure Gradle JVM Test Suite Plugin. (#448)
 - Remove `ReplicateActionResponse` and `ReplicateTaskSummary` classes. (#452)
+- Remove `DateTimeUtils`, `EthAddress` and `VersionUtils` classes. (#454)
 
 ### Dependency Upgrades
 
