@@ -16,10 +16,11 @@
 
 package com.iexec.common.chain;
 
-import com.iexec.common.utils.EthAddress;
 import com.iexec.commons.poco.eip712.EIP712Entity;
 import com.iexec.commons.poco.security.Signature;
+import com.iexec.commons.poco.utils.EthAddress;
 import com.iexec.commons.poco.utils.SignatureUtils;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.*;
 import org.web3j.utils.Numeric;
@@ -29,6 +30,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+@Getter
 @Slf4j
 public abstract class CredentialsAbstractService {
 
@@ -66,13 +68,9 @@ public abstract class CredentialsAbstractService {
         }
     }
 
-    public Credentials getCredentials() {
-        return credentials;
-    }
-
-    /* 
-    * Signs messages with Ethereum prefix
-    */
+    /**
+     * Signs messages with Ethereum prefix
+     */
     public Signature hashAndSignMessage(String message) {
         String hexPrivateKey = Numeric.toHexStringWithPrefix(credentials.getEcKeyPair().getPrivateKey());
         return SignatureUtils.signMessageHashAndGetSignature(message, hexPrivateKey);
