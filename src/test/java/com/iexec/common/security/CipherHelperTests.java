@@ -17,20 +17,22 @@
 package com.iexec.common.security;
 
 import com.iexec.commons.poco.utils.BytesUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.Hash;
 
 import java.security.KeyPair;
-import java.util.Random;
-
+import java.security.SecureRandom;
 
 import static com.iexec.common.security.CipherHelper.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class CipherHelperTests {
 
     private static final int KB = 1000;
     private static final int MB = 1000 * KB;
+
+    private final SecureRandom random = new SecureRandom();
 
     @Test
     void shouldEncryptAndDecryptWithAes() {
@@ -42,10 +44,8 @@ class CipherHelperTests {
 
         byte[] data = aesDecrypt(encryptedOriginalData, aesKey);
 
-        assertEquals(
-                BytesUtils.bytesToString(Hash.sha3(originalData)),
-                BytesUtils.bytesToString(Hash.sha3(data))
-        );
+        assertThat(BytesUtils.bytesToString(Hash.sha3(data)))
+                .isEqualTo(BytesUtils.bytesToString(Hash.sha3(originalData)));
     }
 
     @Test
@@ -58,10 +58,8 @@ class CipherHelperTests {
 
         byte[] data = rsaDecrypt(encryptedOriginalData, rsaKeys.getPrivate());
 
-        assertEquals(
-                BytesUtils.bytesToString(Hash.sha3(originalData)),
-                BytesUtils.bytesToString(Hash.sha3(data))
-        );
+        assertThat(BytesUtils.bytesToString(Hash.sha3(data)))
+                .isEqualTo(BytesUtils.bytesToString(Hash.sha3(originalData)));
     }
 
     @Test
@@ -74,21 +72,48 @@ class CipherHelperTests {
                 keyDirPath + "/test_rsa_key.pub",
                 keyDirPath + "/test_rsa_key");
 
+        assertThat(rsaKeys).isNotNull();
         byte[] encryptedOriginalData = rsaEncrypt(originalData, rsaKeys.getPublic());
 
         byte[] data = rsaDecrypt(encryptedOriginalData, rsaKeys.getPrivate());
 
-        assertEquals(
-                BytesUtils.bytesToString(Hash.sha3(originalData)),
-                BytesUtils.bytesToString(Hash.sha3(data))
-        );
+        assertThat(BytesUtils.bytesToString(Hash.sha3(data)))
+                .isEqualTo(BytesUtils.bytesToString(Hash.sha3(originalData)));
     }
+
+    // region errors
+    @Test
+    void shouldFailToAesEncryptWithBadKey() {
+        final byte[] data = getRandomByteArray(1024);
+        final byte[] key = new byte[0];
+        assertThat(aesEncrypt(data, key)).isNull();
+    }
+
+    @Test
+    void shouldFailToAesDecryptWithBadKey() {
+        final byte[] data = getRandomByteArray(1024);
+        final byte[] key = new byte[0];
+        assertThat(aesDecrypt(data, key)).isNull();
+    }
+
+    @Test
+    void errorExtractingRsaKeys() {
+        final String weirdCharacters = RandomStringUtils.randomAlphanumeric(256);
+        assertThat(plainText2RsaPrivateKey(weirdCharacters)).isNull();
+        assertThat(plainText2RsaPublicKey(weirdCharacters)).isNull();
+    }
+
+    @Test
+    void shouldNotGetRsaKeyPair() {
+        assertThat(getRsaKeyPair(null, null)).isNull();
+        assertThat(getRsaKeyPair("", "")).isNull();
+    }
+    // endregion
 
     private byte[] getRandomByteArray(int size) {
         byte[] randomByteArray = new byte[size];
-        new Random().nextBytes(randomByteArray);
+        random.nextBytes(randomByteArray);
         return randomByteArray;
     }
-
 
 }

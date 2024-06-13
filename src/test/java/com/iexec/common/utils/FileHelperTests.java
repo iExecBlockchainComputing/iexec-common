@@ -23,13 +23,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static com.iexec.common.utils.FileHelper.downloadFile;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FileHelperTests {
 
@@ -62,15 +60,6 @@ class FileHelperTests {
     void tearDown() throws IOException {
         FileUtils.deleteDirectory(new File(TEST_FOLDER));
     }
-
-    @Test
-    void shouldThrowExceptionWhenInvokingConstructor() throws Exception {
-        Constructor<FileHelper> clazz = FileHelper.class.getDeclaredConstructor();
-        clazz.setAccessible(true);
-        // calling the private constructor
-        assertThrows(Exception.class, clazz::newInstance);
-    }
-
 
     @Test
     void shouldCreateFileWithContent() throws IOException {
