@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,11 @@ package com.iexec.common.security;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.crypto.*;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
@@ -34,15 +35,11 @@ import static com.iexec.common.utils.FileHelper.readFile;
 public class CipherHelper {
 
 
-    /****************
-     *
-     *  AES material
-     *
-     * **************/
+    // region AES
 
-    /*
+    /**
      * Generate AES key
-     * */
+     */
     public static byte[] generateAesKey(int size) {
         byte[] encodedKey = null;
         try {
@@ -50,7 +47,7 @@ public class CipherHelper {
             generator.init(size); // The AES key size in number of bits
             SecretKey secKey = generator.generateKey();
             encodedKey = Base64.getEncoder().encode(secKey.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return encodedKey;
@@ -60,11 +57,11 @@ public class CipherHelper {
         return generateAesKey(128);
     }
 
-    /*
+    /**
      * AES encryption
-     *
+     * <p>
      * For large files: https://stackoverflow.com/a/34004582
-     * */
+     */
     public static byte[] aesEncrypt(byte[] data, byte[] aesKey) {
         byte[] encryptedData = null;
         try {
@@ -76,15 +73,15 @@ public class CipherHelper {
             aesCipher.init(Cipher.ENCRYPT_MODE, originalKey);
             byte[] byteCipherText = aesCipher.doFinal(data);
             encryptedData = Base64.getEncoder().encode(byteCipherText);
-        } catch (IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return encryptedData;
     }
 
-    /*
+    /**
      * AES decryption
-     * */
+     */
     public static byte[] aesDecrypt(byte[] encryptedData, byte[] aesKey) {
         byte[] decryptedData = null;
         try {
@@ -95,21 +92,19 @@ public class CipherHelper {
             Cipher aesCipher = Cipher.getInstance("AES");
             aesCipher.init(Cipher.DECRYPT_MODE, originalKey);
             decryptedData = aesCipher.doFinal(Base64.getDecoder().decode(encryptedData));//heap size issues after 500MB
-        } catch (IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return decryptedData;
     }
 
-    /****************
-     *
-     *  RSA material
-     *
-     * **************/
+    // endregion
 
-    /*
+    // region RSA
+
+    /**
      * Generate RSA keys
-     * */
+     */
     public static KeyPair generateRsaKeys(int size) {
         KeyPair keyPair = null;
         try {
@@ -117,7 +112,7 @@ public class CipherHelper {
             keyPairGenerator.initialize(size);
             keyPair = keyPairGenerator.generateKeyPair();
             return keyPair;
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return keyPair;
@@ -127,39 +122,39 @@ public class CipherHelper {
         return generateRsaKeys(2048);
     }
 
-    /*
+    /**
      * RSA encryption
-     * */
+     */
     public static byte[] rsaDecrypt(byte[] encryptedData, PrivateKey privateKey) {
         byte[] rsaDecryptedAesKey = null;
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             rsaDecryptedAesKey = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return rsaDecryptedAesKey;
     }
 
-    /*
+    /**
      * RSA decryption
-     * */
+     */
     public static byte[] rsaEncrypt(byte[] data, PublicKey publicKey) {
         byte[] rsaEncryptedAesKey = null;
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             rsaEncryptedAesKey = Base64.getEncoder().encode(cipher.doFinal(data));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return rsaEncryptedAesKey;
     }
 
-    /*
-     * Read RSA keyPair from files
-     * */
+    /**
+     * Read RSA key pair from files
+     */
     public static KeyPair getRsaKeyPair(String publicKeyPath, String privateKeyPath) {
         String plainTextRsaPub = readFile(publicKeyPath);
         String plainTextRsaPriv = readFile(privateKeyPath);
@@ -173,10 +168,10 @@ public class CipherHelper {
 
         return null;
     }
-    
-    /*
-     * Read RSA publicKey from fileBytes
-     * */
+
+    /**
+     * Read RSA public key from file bytes
+     */
     public static PublicKey plainText2RsaPublicKey(String plainTextRsaPub) {
         PublicKey publicKey = null;
         try {
@@ -191,15 +186,15 @@ public class CipherHelper {
             KeyFactory kf = KeyFactory.getInstance("RSA");
 
             publicKey = kf.generatePublic(spec);
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return publicKey;
     }
 
-    /*
-     * Read RSA privateKey from file
-     * */
+    /**
+     * Read RSA private key from file
+     */
     public static PrivateKey plainText2RsaPrivateKey(String plainTextRsaPriv) {
         PrivateKey privateKey = null;
         try {
@@ -214,10 +209,12 @@ public class CipherHelper {
             KeyFactory kf = KeyFactory.getInstance("RSA");
 
             privateKey = kf.generatePrivate(spec);
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return privateKey;
     }
+
+    // endregion
 
 }
