@@ -16,6 +16,8 @@
 
 package com.iexec.common.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -35,26 +37,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileHelper {
-
-    @Deprecated(forRemoval = true)
-    public static final String SLASH_IEXEC_OUT = File.separator + "iexec_out";
-    @Deprecated(forRemoval = true)
-    public static final String SLASH_IEXEC_IN = File.separator + "iexec_in";
-    @Deprecated(forRemoval = true)
-    public static final String SLASH_OUTPUT = File.separator + "output";
-    @Deprecated(forRemoval = true)
-    public static final String SLASH_INPUT = File.separator + "input";
-
-    private FileHelper() {
-        throw new UnsupportedOperationException();
-    }
 
     public static String readFile(String filePath) {
         try {
             byte[] content = Files.readAllBytes(Paths.get(filePath));
             return new String(content);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Failed to read file [filePath:{}]", filePath);
         }
         return "";

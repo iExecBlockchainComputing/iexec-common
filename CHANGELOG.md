@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 - Rename `blockchainAdapterUrl` to `configServerUrl` in `PublicConfiguration` class. (#451)
 - Add `PRE_COMPUTE_MISSING_ENCLAVE_CONFIGURATION` and `POST_COMPUTE_MALFORMED_ENCRYPTION_PUBLIC_KEY` statuses to `ReplicateStatusCause`. (#453)
 
+### Bug Fixes
+
+- Catch all exceptions in `CipherHelper`. (#455)
+
 ### Quality
 
 - Configure Gradle JVM Test Suite Plugin. (#448)
