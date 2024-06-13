@@ -106,15 +106,14 @@ public class CipherHelper {
      * Generate RSA keys
      */
     public static KeyPair generateRsaKeys(int size) {
-        KeyPair keyPair = null;
         try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(size);
-            keyPair = keyPairGenerator.generateKeyPair();
+            return keyPairGenerator.generateKeyPair();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return keyPair;
+        return null;
     }
 
     public static KeyPair generateRsaKeys() {
@@ -155,8 +154,8 @@ public class CipherHelper {
      * Read RSA key pair from files
      */
     public static KeyPair getRsaKeyPair(String publicKeyPath, String privateKeyPath) {
-        String plainTextRsaPub = readFile(publicKeyPath);
-        String plainTextRsaPriv = readFile(privateKeyPath);
+        final String plainTextRsaPub = readFile(publicKeyPath);
+        final String plainTextRsaPriv = readFile(privateKeyPath);
 
         if (!plainTextRsaPub.isEmpty() && !plainTextRsaPriv.isEmpty()) {
             return new KeyPair(
@@ -172,46 +171,40 @@ public class CipherHelper {
      * Read RSA public key from file bytes
      */
     public static PublicKey plainText2RsaPublicKey(String plainTextRsaPub) {
-        PublicKey publicKey = null;
         try {
-            //String base64Key = new String(publicKeyBytes);
             plainTextRsaPub = plainTextRsaPub
                     .replace("\n", "")
                     .replace("-----BEGIN PUBLIC KEY-----", "")
                     .replace("-----END PUBLIC KEY-----", "");
-            byte[] decodedKey = Base64.getDecoder().decode(plainTextRsaPub.getBytes());
+            final byte[] decodedKey = Base64.getDecoder().decode(plainTextRsaPub.getBytes());
+            final X509EncodedKeySpec spec = new X509EncodedKeySpec(decodedKey);
 
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(decodedKey);
-            KeyFactory kf = KeyFactory.getInstance("RSA");
-
-            publicKey = kf.generatePublic(spec);
+            return KeyFactory.getInstance("RSA")
+                    .generatePublic(spec);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return publicKey;
+        return null;
     }
 
     /**
      * Read RSA private key from file
      */
     public static PrivateKey plainText2RsaPrivateKey(String plainTextRsaPriv) {
-        PrivateKey privateKey = null;
         try {
             plainTextRsaPriv = plainTextRsaPriv
                     .replace("\n", "")
                     .replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "");
-            byte[] decodedKey = Base64.getDecoder().decode(plainTextRsaPriv.getBytes());
+            final byte[] decodedKey = Base64.getDecoder().decode(plainTextRsaPriv.getBytes());
+            final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decodedKey);
 
-            PKCS8EncodedKeySpec spec =
-                    new PKCS8EncodedKeySpec(decodedKey);
-            KeyFactory kf = KeyFactory.getInstance("RSA");
-
-            privateKey = kf.generatePrivate(spec);
+            return KeyFactory.getInstance("RSA")
+                    .generatePrivate(spec);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return privateKey;
+        return null;
     }
 
     // endregion
