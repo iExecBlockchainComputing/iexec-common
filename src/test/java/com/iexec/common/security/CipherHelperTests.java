@@ -83,17 +83,29 @@ class CipherHelperTests {
 
     // region errors
     @Test
-    void shouldFailToAesEncryptWithBadKey() {
+    void shouldFailToAesEncryptWithEmptyKey() {
         final byte[] data = getRandomByteArray(1024);
         final byte[] key = new byte[0];
         assertThat(aesEncrypt(data, key)).isNull();
     }
 
     @Test
-    void shouldFailToAesDecryptWithBadKey() {
+    void shouldFailToAesDecryptWithEmptyKey() {
         final byte[] data = getRandomByteArray(1024);
         final byte[] key = new byte[0];
         assertThat(aesDecrypt(data, key)).isNull();
+    }
+
+    @Test
+    void shouldFailToRsaEncryptWithNullKey() {
+        final byte[] data = getRandomByteArray(256);
+        assertThat(rsaEncrypt(data, null)).isNull();
+    }
+
+    @Test
+    void shouldFailToRsaDecryptWithNullKey() {
+        final byte[] data = getRandomByteArray(256);
+        assertThat(rsaDecrypt(data, null)).isNull();
     }
 
     @Test

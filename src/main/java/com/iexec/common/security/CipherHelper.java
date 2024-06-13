@@ -111,7 +111,6 @@ public class CipherHelper {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(size);
             keyPair = keyPairGenerator.generateKeyPair();
-            return keyPair;
         } catch (Exception e) {
             e.printStackTrace();
         }
