@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
+ * Copyright 2024-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package com.iexec.common.utils;
+package com.iexec.common.config;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import feign.Logger;
+import org.junit.jupiter.api.Test;
 
-import java.util.Calendar;
-import java.util.Date;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class DateTimeUtils {
-
-    public static Date addMinutesToDate(Date date, int minutes) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MINUTE, minutes);
-        return calendar.getTime();
-    }
-
-    public static long now() {
-        return new Date().getTime();
+class ConfigServerClientTests {
+    @Test
+    void instantiationTest() {
+        assertThat(ConfigServerClientBuilder.getInstance(Logger.Level.HEADERS, "localhost"))
+                .isNotNull();
     }
 }

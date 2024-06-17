@@ -2,9 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## [[8.5.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.5.0) 2024-06-17
+
+### New Features
+
+- Add `ConfigServerClient` feign client to fetch configuration remotely. (#446)
+- Add `ConfigServerClientBuilder` helper class to create feign client instances. (#447)
+- Rename `blockchainAdapterUrl` to `configServerUrl` in `PublicConfiguration` class. (#451)
+- Add `PRE_COMPUTE_MISSING_ENCLAVE_CONFIGURATION` and `POST_COMPUTE_MALFORMED_ENCRYPTION_PUBLIC_KEY` statuses to `ReplicateStatusCause`. (#453)
+
+### Bug Fixes
+
+- Catch all exceptions in `CipherHelper`. (#455)
+
+### Quality
+
+- Configure Gradle JVM Test Suite Plugin. (#448)
+- Remove `ReplicateActionResponse` and `ReplicateTaskSummary` classes. (#452)
+- Remove `DateTimeUtils`, `EthAddress` and `VersionUtils` classes. (#454)
+- Remove `CredentialsAbstractService` class. (#456)
+
+### Dependency Upgrades
+
+- Upgrade to Gradle 8.7. (#449)
+- Upgrade to Spring Boot 2.7.18. (#450)
+- Upgrade to `iexec-commons-poco` 4.1.0. (#457)
+
 ## [[8.4.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.4.0) 2024-02-27
 
-### New Feature
+### New Features
 
 - Add `enclaveSignature` field to `ResultModel`. (#439 #441)
 - Add `error-message` field to `ComputedFile`. (#440)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2024-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package com.iexec.common.utils;
+package com.iexec.common.config;
 
-public class VersionUtils {
+import com.iexec.common.utils.FeignBuilder;
+import feign.Logger;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-    private VersionUtils() {
-        throw new UnsupportedOperationException();
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ConfigServerClientBuilder {
+    public static ConfigServerClient getInstance(final Logger.Level logLevel, final String url) {
+        return FeignBuilder.createBuilder(logLevel)
+                .target(ConfigServerClient.class, url);
     }
-
-    public static boolean isSnapshot(String version) {
-        return version.contains("NEXT");
-    }
-
 }

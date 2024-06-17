@@ -1,8 +1,8 @@
 plugins {
     id 'java-library'
-    id 'io.freefair.lombok' version '8.2.2'
+    id 'io.freefair.lombok' version '8.6'
     id 'jacoco'
-    id 'org.sonarqube' version '4.2.1.3168'
+    id 'org.sonarqube' version '5.0.0.4638'
     id 'maven-publish'
 }
 
@@ -17,11 +17,12 @@ if (!project.hasProperty('gitBranch')) {
     ext.gitBranch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
 }
 
-if (gitBranch != 'main' && gitBranch != 'master' && ! (gitBranch ==~ '(release|hotfix|support)/.*')) {
+if (gitBranch != 'main' && gitBranch != 'master' && !(gitBranch ==~ '(release|hotfix|support)/.*')) {
     version += '-NEXT-SNAPSHOT'
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven {
         url = 'https://docker-regis-adm.iex.ec/repository/maven-public/'
@@ -35,11 +36,15 @@ repositories {
     }
 }
 
+//configurations.configureEach {
+//    resolutionStrategy.failOnVersionConflict()
+//}
+
 // java-library plugin defines 'api' configuration
 // 'api' configuration allows to expose dependencies with 'compile' scope in pom
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
-    implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.17')
+    implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.18')
 
     // feign
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
@@ -74,19 +79,6 @@ dependencies {
 
     // expiring map
     implementation 'net.jodah:expiringmap:0.5.10'
-
-    // test
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation 'org.mockito:mockito-junit-jupiter'
-    testImplementation 'org.assertj:assertj-core'
-    // mock-server
-    testImplementation "org.mock-server:mockserver-client-java:$mockServerVersion"
-    testImplementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
-    // spring-boot-test to capture test outputs
-    testImplementation 'org.springframework.boot:spring-boot-test'
-    // spring-test for ReflectionTestUtils
-    testImplementation 'org.springframework:spring-test'
 }
 
 java {
@@ -99,8 +91,29 @@ java {
     withSourcesJar()
 }
 
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+            dependencies {
+                implementation 'org.junit.jupiter:junit-jupiter'
+                implementation 'org.mockito:mockito-junit-jupiter'
+                implementation 'org.assertj:assertj-core'
+                // mock-server
+                implementation "org.mock-server:mockserver-client-java:$mockServerVersion"
+                implementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
+                // spring-test for ReflectionTestUtils
+                implementation 'org.springframework:spring-test'
+            }
+        }
+    }
+}
+
+tasks.withType(Test).configureEach {
+    finalizedBy jacocoTestReport
+}
+
 test {
-    useJUnitPlatform()
     reports {
         junitXml.required = true
         html.required = true
@@ -118,7 +131,6 @@ jacocoTestReport {
         xml.required = true
     }
 }
-tasks.test.finalizedBy    tasks.jacocoTestReport
 tasks.sonarqube.dependsOn tasks.jacocoTestReport
 
 publishing {

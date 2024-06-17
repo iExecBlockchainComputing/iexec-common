@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,18 +21,30 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Value;
 
+/**
+ * The {@link #blockchainAdapterUrl} and {@link #configServerUrl} fields are repetitive,
+ * so if both are populated, they must contain the same value.
+ * Duplicating these fields ensures worker/scheduler compatibility on different v8 versions.
+ * In v9, the {@link #blockchainAdapterUrl} field will be removed.
+ */
 @Value
 @Builder
 @JsonDeserialize(builder = PublicConfiguration.PublicConfigurationBuilder.class)
 public class PublicConfiguration {
     String workerPoolAddress;
     String schedulerPublicAddress;
+    /**
+     * @deprecated Use {@link PublicConfiguration#configServerUrl} instead.
+     */
+    @Deprecated(forRemoval = true)
     String blockchainAdapterUrl;
+    String configServerUrl;
     String resultRepositoryURL;
     long askForReplicatePeriod;
     String requiredWorkerVersion;
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static class PublicConfigurationBuilder{}
+    public static class PublicConfigurationBuilder {
+    }
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2024-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-package com.iexec.common.replicate;
+package com.iexec.common.config;
 
-import com.iexec.commons.poco.chain.WorkerpoolAuthorization;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import feign.RequestLine;
 
-//TODO: Eventually move this to an iexec-core-library embedding DTOs
-// (Eventually move this along with TaskNotificationExtra & more)
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class ReplicateTaskSummary {
-
-    private WorkerpoolAuthorization workerpoolAuthorization;
-    private String smsUrl;
-
+public interface ConfigServerClient {
+    @RequestLine("GET /config/chain")
+    PublicChainConfig getPublicChainConfig();
 }
