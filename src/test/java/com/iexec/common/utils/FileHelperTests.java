@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ class FileHelperTests {
             "/wikipedia/commons/thumb/6/65/600px_Black_bordered_HEX-0082D6.svg/600px-600px_Black_bordered_HEX-0082D6.svg.png";
     // private static final String HTTPS_FILENAME = "token.svg";
     private static final String HTTPS_FILE_DIGEST =
-            "0xa7e1a706b2d60dad840c56594662deb37061815fd3ae2a04c1ca6328b0683fe6";
+            "0x45a4b7a3666f3885f3e5ac0e8c865c6f841890d2beb8d279c2bab9578403e05f";
     // redirection
     // private static final String REDIRECTION_URL = "https://goo.gl/t8JxoX";
     // private static final String REDIRECTION_FILE_DIGEST = "TODO";
