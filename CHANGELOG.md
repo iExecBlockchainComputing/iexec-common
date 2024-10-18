@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 - Update `HTTPS_FILE_DIGEST` in `FileHelperTests`. (#460)
 
+### Dependency Upgrades
+
+- Upgrade to Gradle 8.10.2. (#461)
+
 ## [[8.5.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.5.0) 2024-06-17
 
 ### New Features
