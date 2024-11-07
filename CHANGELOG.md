@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Quality
 
 - Update `HTTPS_FILE_DIGEST` in `FileHelperTests`. (#460)
+- Refactor `IexecEnvUtils` to use `dealParams` instead of deprecated `TaskDescription` fields. (#462)
 
 ### Dependency Upgrades
 
