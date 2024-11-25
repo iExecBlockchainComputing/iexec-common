@@ -56,16 +56,15 @@ public class IexecEnvUtils {
      * @return a key-value map containing each environment variable and its associated value
      */
     public static Map<String, String> getAllIexecEnv(final TaskDescription taskDescription) {
-        final List<String> inputFiles = taskDescription.getDealParams().getIexecInputFiles();
         final Map<String, String> envMap = new HashMap<>();
         envMap.putAll(getComputeStageEnvMap(taskDescription));
         envMap.put(IEXEC_DATASET_URL, taskDescription.getDatasetUri());
         envMap.put(IEXEC_DATASET_CHECKSUM, taskDescription.getDatasetChecksum());
-        if (inputFiles == null) {
+        if (!taskDescription.containsInputFiles()) {
             return envMap;
         }
         int index = 1;
-        for (String inputFileUrl : inputFiles) {
+        for (String inputFileUrl : taskDescription.getDealParams().getIexecInputFiles()) {
             envMap.put(IEXEC_INPUT_FILE_URL_PREFIX + index, inputFileUrl);
             index++;
         }
@@ -81,7 +80,6 @@ public class IexecEnvUtils {
      * @return a key-value map containing each environment variable and its associated value
      */
     public static Map<String, String> getComputeStageEnvMap(final TaskDescription taskDescription) {
-        final List<String> inputFiles = taskDescription.getDealParams().getIexecInputFiles();
         final Map<String, String> map = new HashMap<>();
         map.put(IEXEC_TASK_ID, taskDescription.getChainTaskId());
         map.put(IEXEC_IN, IexecFileHelper.SLASH_IEXEC_IN);
@@ -90,14 +88,16 @@ public class IexecEnvUtils {
         map.put(IEXEC_DATASET_ADDRESS, taskDescription.getDatasetAddress());
         map.put(IEXEC_DATASET_FILENAME, taskDescription.getDatasetAddress());
         // input files
-        int nbFiles = inputFiles == null ? 0 : inputFiles.size();
-        map.put(IEXEC_INPUT_FILES_NUMBER, String.valueOf(nbFiles));
-        map.put(IEXEC_INPUT_FILES_FOLDER, IexecFileHelper.SLASH_IEXEC_IN);
-        if (nbFiles == 0) {
+        if (!taskDescription.containsInputFiles()) {
+            map.put(IEXEC_INPUT_FILES_NUMBER, "0");
             return map;
         }
+        // We are sure input files are present
+        final List<String> inputFiles = taskDescription.getDealParams().getIexecInputFiles();
+        map.put(IEXEC_INPUT_FILES_FOLDER, IexecFileHelper.SLASH_IEXEC_IN);
+        map.put(IEXEC_INPUT_FILES_NUMBER, String.valueOf(inputFiles.size()));
         int index = 1;
-        for (String inputFileUrl : inputFiles) {
+        for (final String inputFileUrl : inputFiles) {
             map.put(IEXEC_INPUT_FILE_NAME_PREFIX + index, FilenameUtils.getName(inputFileUrl));
             index++;
         }
