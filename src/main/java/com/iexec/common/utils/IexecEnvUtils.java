@@ -68,7 +68,7 @@ public class IexecEnvUtils {
             return envMap;
         }
         int index = 1;
-        for (String inputFileUrl : taskDescription.getDealParams().getIexecInputFiles()) {
+        for (final String inputFileUrl : taskDescription.getDealParams().getIexecInputFiles()) {
             envMap.put(IEXEC_INPUT_FILE_URL_PREFIX + index, inputFileUrl);
             index++;
         }
