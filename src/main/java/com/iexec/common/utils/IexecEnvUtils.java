@@ -36,6 +36,10 @@ public class IexecEnvUtils {
     public static final String IEXEC_TASK_ID = "IEXEC_TASK_ID";
     public static final String IEXEC_IN = "IEXEC_IN";
     public static final String IEXEC_OUT = "IEXEC_OUT";
+    // BoT
+    public static final String IEXEC_BOT_TASK_INDEX = "IEXEC_BOT_TASK_INDEX";
+    public static final String IEXEC_BOT_SIZE = "IEXEC_BOT_SIZE";
+    public static final String IEXEC_BOT_FIRST_INDEX = "IEXEC_BOT_FIRST_INDEX";
     // dataset
     public static final String IEXEC_DATASET_ADDRESS = "IEXEC_DATASET_ADDRESS";
     public static final String IEXEC_DATASET_URL = "IEXEC_DATASET_URL";
@@ -78,12 +82,17 @@ public class IexecEnvUtils {
      *
      * @param taskDescription The description of the task
      * @return a key-value map containing each environment variable and its associated value
+     * @see <a href="https://protocol.docs.iex.ec/for-developers/technical-references/application-io#runtime-variables"></a>
      */
     public static Map<String, String> getComputeStageEnvMap(final TaskDescription taskDescription) {
         final Map<String, String> map = new HashMap<>();
         map.put(IEXEC_TASK_ID, taskDescription.getChainTaskId());
         map.put(IEXEC_IN, IexecFileHelper.SLASH_IEXEC_IN);
         map.put(IEXEC_OUT, IexecFileHelper.SLASH_IEXEC_OUT);
+        // BoT
+        map.put(IEXEC_BOT_SIZE, String.valueOf(taskDescription.getBotSize()));
+        map.put(IEXEC_BOT_FIRST_INDEX, String.valueOf(taskDescription.getBotFirstIndex()));
+        map.put(IEXEC_BOT_TASK_INDEX, String.valueOf(taskDescription.getBotIndex()));
         // dataset
         map.put(IEXEC_DATASET_ADDRESS, taskDescription.getDatasetAddress());
         map.put(IEXEC_DATASET_FILENAME, taskDescription.getDatasetAddress());

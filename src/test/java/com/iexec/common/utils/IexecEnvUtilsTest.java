@@ -86,6 +86,8 @@ class IexecEnvUtilsTest {
                 .chainTaskId(CHAIN_TASK_ID)
                 .datasetAddress(DATASET_ADDRESS)
                 .datasetName(DATASET_NAME)
+                .botSize(1)
+                .botFirstIndex(0)
                 .dealParams(DealParams.builder().build())
                 .build();
         final Map<String, String> map = getComputeStageEnvMap(taskDescription);
@@ -102,6 +104,8 @@ class IexecEnvUtilsTest {
                 .chainTaskId(CHAIN_TASK_ID)
                 .datasetAddress(DATASET_ADDRESS)
                 .datasetName(DATASET_NAME)
+                .botSize(1)
+                .botFirstIndex(0)
                 .dealParams(dealParams)
                 .build();
         final Map<String, String> map = getComputeStageEnvMap(taskDescription);
@@ -121,17 +125,22 @@ class IexecEnvUtilsTest {
                 .chainTaskId(CHAIN_TASK_ID)
                 .datasetName(DATASET_NAME)
                 .datasetAddress(DATASET_ADDRESS)
+                .botSize(1)
+                .botFirstIndex(0)
                 .dealParams(dealParams)
                 .build();
-        final List<String> expected = Arrays
-                .asList("IEXEC_TASK_ID=chainTaskId",
-                        "IEXEC_IN=/iexec_in",
-                        "IEXEC_OUT=/iexec_out",
-                        "IEXEC_DATASET_ADDRESS=datasetAddress",
-                        "IEXEC_DATASET_FILENAME=datasetAddress",
-                        "IEXEC_INPUT_FILES_FOLDER=/iexec_in",
-                        "IEXEC_INPUT_FILES_NUMBER=1",
-                        "IEXEC_INPUT_FILE_NAME_1=filename");
+        final List<String> expected = Arrays.asList(
+                "IEXEC_TASK_ID=chainTaskId",
+                "IEXEC_IN=/iexec_in",
+                "IEXEC_OUT=/iexec_out",
+                "IEXEC_DATASET_ADDRESS=datasetAddress",
+                "IEXEC_DATASET_FILENAME=datasetAddress",
+                "IEXEC_BOT_SIZE=1",
+                "IEXEC_BOT_FIRST_INDEX=0",
+                "IEXEC_BOT_TASK_INDEX=0",
+                "IEXEC_INPUT_FILES_FOLDER=/iexec_in",
+                "IEXEC_INPUT_FILES_NUMBER=1",
+                "IEXEC_INPUT_FILE_NAME_1=filename");
         final List<String> actual = getComputeStageEnvList(taskDescription);
         Collections.sort(expected);
         Collections.sort(actual);
