@@ -26,13 +26,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Provides environment variables for worker {@code AppComputeService} and SMS {@code SecretSessionBaseService}
+ *
+ * @see <a href="https://protocol.docs.iex.ec/for-developers/technical-references/application-io#runtime-variables">
+ * Runtime variables in protocol documentation</a>
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IexecEnvUtils {
 
-    /*
-     * Env variables that will be injected in the containers of a task computation.
-     * They are used in worker AppComputeService and sms SecretSessionBaseService.
-     */
     public static final String IEXEC_TASK_ID = "IEXEC_TASK_ID";
     public static final String IEXEC_IN = "IEXEC_IN";
     public static final String IEXEC_OUT = "IEXEC_OUT";
@@ -52,12 +54,14 @@ public class IexecEnvUtils {
     public static final String IEXEC_INPUT_FILE_URL_PREFIX = "IEXEC_INPUT_FILE_URL_";
 
     /**
-     * Get compute stage environment variables plus other additional ones
-     * used by the pre-compute stage (e.g. IEXEC_DATASET_URL,
-     * IEXEC_DATASET_CHECKSUM, IEXEC_INPUT_FILE_URL_1, ...etc).
+     * Get compute stage environment variables plus additional ones used by the pre-compute stage
+     * <p>
+     * Pre-compute stage specific variables:
+     * IEXEC_DATASET_URL, IEXEC_DATASET_CHECKSUM, IEXEC_INPUT_FILE_URL_1, ...
      *
      * @param taskDescription The description of the task
-     * @return a key-value map containing each environment variable and its associated value
+     * @return A key-value map containing each environment variable and its associated value
+     * @see #getComputeStageEnvMap(TaskDescription)
      */
     public static Map<String, String> getAllIexecEnv(final TaskDescription taskDescription) {
         final Map<String, String> envMap = new HashMap<>();
@@ -76,13 +80,13 @@ public class IexecEnvUtils {
     }
 
     /**
-     * Get environment variables available for the compute stage
-     * (e.g. IEXEC_TASK_ID, IEXEC_IN, IEXEC_OUT,
-     * IEXEC_DATASET_FILENAME, IEXEC_INPUT_FILE_NAME_1, ...etc).
+     * Get environment variables available for the compute stage.
+     * <p>
+     * Compute stage specific variables :
+     * IEXEC_TASK_ID, IEXEC_IN, IEXEC_OUT, IEXEC_DATASET_FILENAME, IEXEC_INPUT_FILE_NAME_1, ...
      *
      * @param taskDescription The description of the task
-     * @return a key-value map containing each environment variable and its associated value
-     * @see <a href="https://protocol.docs.iex.ec/for-developers/technical-references/application-io#runtime-variables"></a>
+     * @return A key-value map containing each environment variable and its associated value
      */
     public static Map<String, String> getComputeStageEnvMap(final TaskDescription taskDescription) {
         final Map<String, String> map = new HashMap<>();
@@ -114,10 +118,11 @@ public class IexecEnvUtils {
     }
 
     /**
-     * Returns compute stage environment variable for docker-java API.
+     * Get compute stage environment variable for docker-java API.
      *
      * @param taskDescription The description of the task
-     * @return a list of KEY=VALUE strings corresponding to environment variables to run a standard app
+     * @return A list of KEY=VALUE strings corresponding to environment variables to run a standard app
+     * @see #getComputeStageEnvMap(TaskDescription)
      */
     public static List<String> getComputeStageEnvList(final TaskDescription taskDescription) {
         List<String> list = new ArrayList<>();
