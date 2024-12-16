@@ -36,6 +36,7 @@ class IexecEnvUtilsTest {
     private static final String DATASET_CHECKSUM = "datasetChecksum";
     private static final String DATASET_ADDRESS = "datasetAddress";
     private static final String INPUT_FILE_1 = "http://host/filename";
+    private static final String INPUT_FILE_NAME_1 = FileHashUtils.createFileNameFromUri(INPUT_FILE_1);
 
     // region getAllIexecEnv
     @Test
@@ -75,7 +76,7 @@ class IexecEnvUtilsTest {
         checkComputeStageMap(map, taskDescription);
         assertEquals("1", map.get("IEXEC_INPUT_FILES_NUMBER"));
         assertEquals(IexecFileHelper.SLASH_IEXEC_IN, map.get("IEXEC_INPUT_FILES_FOLDER"));
-        assertEquals("filename", map.get("IEXEC_INPUT_FILE_NAME_1"));
+        assertEquals(INPUT_FILE_NAME_1, map.get("IEXEC_INPUT_FILE_NAME_1"));
     }
     // endregion
 
@@ -112,7 +113,7 @@ class IexecEnvUtilsTest {
         checkComputeStageMap(map, taskDescription);
         assertEquals("1", map.get("IEXEC_INPUT_FILES_NUMBER"));
         assertEquals(IexecFileHelper.SLASH_IEXEC_IN, map.get("IEXEC_INPUT_FILES_FOLDER"));
-        assertEquals("filename", map.get("IEXEC_INPUT_FILE_NAME_1"));
+        assertEquals(INPUT_FILE_NAME_1, map.get("IEXEC_INPUT_FILE_NAME_1"));
     }
     // endregion
 
@@ -140,7 +141,7 @@ class IexecEnvUtilsTest {
                 "IEXEC_BOT_TASK_INDEX=0",
                 "IEXEC_INPUT_FILES_FOLDER=/iexec_in",
                 "IEXEC_INPUT_FILES_NUMBER=1",
-                "IEXEC_INPUT_FILE_NAME_1=filename");
+                "IEXEC_INPUT_FILE_NAME_1=" + INPUT_FILE_NAME_1);
         final List<String> actual = getComputeStageEnvList(taskDescription);
         Collections.sort(expected);
         Collections.sort(actual);
