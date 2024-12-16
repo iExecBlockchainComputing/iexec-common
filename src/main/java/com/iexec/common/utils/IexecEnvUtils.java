@@ -19,7 +19,6 @@ package com.iexec.common.utils;
 import com.iexec.commons.poco.task.TaskDescription;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,7 +110,7 @@ public class IexecEnvUtils {
         map.put(IEXEC_INPUT_FILES_NUMBER, String.valueOf(inputFiles.size()));
         int index = 1;
         for (final String inputFileUrl : inputFiles) {
-            map.put(IEXEC_INPUT_FILE_NAME_PREFIX + index, FilenameUtils.getName(inputFileUrl));
+            map.put(IEXEC_INPUT_FILE_NAME_PREFIX + index, FileHashUtils.createFileNameFromUri(inputFileUrl));
             index++;
         }
         return map;
