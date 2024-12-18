@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Dependency Upgrades
 
 - Upgrade to Gradle 8.10.2. (#461)
+- Upgrade to `iexec-commons-poco` 4.2.0. (#464)
 
 ## [[8.5.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.5.0) 2024-06-17
 
