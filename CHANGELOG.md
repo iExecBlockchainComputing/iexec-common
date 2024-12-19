@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [[8.6.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.6.0) 2024-12-19
+
+### New Features
+
+- Add `createFileNameFromUri` to `FileHashUtils`, use it in `IexecEnvUtils`. (#463)
+
+### Quality
+
+- Update `HTTPS_FILE_DIGEST` in `FileHelperTests`. (#460)
+- Refactor `IexecEnvUtils` to use `dealParams` instead of deprecated `TaskDescription` fields. (#462)
+
+### Dependency Upgrades
+
+- Upgrade to Gradle 8.10.2. (#461)
+- Upgrade to `iexec-commons-poco` 4.2.0. (#464)
+
 ## [[8.5.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.5.0) 2024-06-17
 
 ### New Features
