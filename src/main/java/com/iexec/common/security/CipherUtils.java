@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,16 @@
 package com.iexec.common.security;
 
 import com.iexec.common.utils.FileHelper;
+import jakarta.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.*;
@@ -49,7 +48,7 @@ public class CipherUtils {
 
     /**
      * Generate a 256 bits AES key.
-     * 
+     *
      * @return 256 bits key if success,
      * empty byte array otherwise.
      */
@@ -60,7 +59,7 @@ public class CipherUtils {
     /**
      * Generate an AES symmetric key with the
      * given size.
-     * 
+     *
      * @param size
      * @return Generated AES key if success,
      * empty byte array otherwise.
@@ -79,6 +78,7 @@ public class CipherUtils {
 
     /**
      * Generate a 16 bytes initialization vector.
+     *
      * @return generated binary IV.
      */
     public static byte[] generateIv() {
@@ -88,6 +88,7 @@ public class CipherUtils {
     /**
      * Generate an initialization vector with
      * the given size.
+     *
      * @param size
      * @return generated binary IV.
      */
@@ -101,7 +102,7 @@ public class CipherUtils {
      * Extract IV (initialization vector) from the
      * encrypted data. The IV occupies the first
      * 16 bytes of the data.
-     * 
+     *
      * @param dataWithIv
      * @return Extracted 16 bytes IV
      */
@@ -112,7 +113,7 @@ public class CipherUtils {
     /**
      * Remove prepended IV (initialization vector)
      * from the encrypted data.
-     * 
+     *
      * @param dataWithIv
      * @return a new array without the IV.
      */
@@ -123,7 +124,7 @@ public class CipherUtils {
     /**
      * Concatenate IV (initialization vector) to the
      * beginning of the encrypted data.
-     * 
+     *
      * @param iv
      * @param encryptedData
      * @return
@@ -146,12 +147,11 @@ public class CipherUtils {
      * Note: PKCS5Padding is equivalent to PKCS7Padding
      * <p>
      * Ref: https://stackoverflow.com/a/10194082/7631879
-     * 
+     *
      * @param plainData to encrypt
      * @param base64Key Base64 encoded AES key
      * @return encrypted data prepended with the IV.
      * @throws GeneralSecurityException
-     * 
      * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
     public static byte[] aesEncrypt(byte[] plainData, byte[] base64Key)
@@ -170,18 +170,17 @@ public class CipherUtils {
      * Note: PKCS5Padding is equivalent to PKCS7Padding
      * <p>
      * Ref: https://stackoverflow.com/a/10194082/7631879
-     * 
+     *
      * @param plainData to encrypt
      * @param key
-     * @param iv initialization vector
+     * @param iv        initialization vector
      * @return Encrypted data
      * @throws GeneralSecurityException
-     * 
      * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
     public static byte[] aesEncrypt(
-            @Nonnull byte[] plainData, 
-            @Nonnull byte[] key, 
+            @Nonnull byte[] plainData,
+            @Nonnull byte[] key,
             @Nonnull byte[] iv) throws GeneralSecurityException {
         Objects.requireNonNull(plainData, "data cannot be null");
         Objects.requireNonNull(key, "AES key cannot be null");
@@ -202,14 +201,13 @@ public class CipherUtils {
      * Note: PKCS5Padding is equivalent to PKCS7Padding
      * <p>
      * Ref: https://stackoverflow.com/a/10194082/7631879
-     * 
+     *
      * @param ivAndEncryptedData to decrypt
-     * @param base64Key Base64 encoded AES key
+     * @param base64Key          Base64 encoded AES key
      * @return Decrypted data
      * @throws GeneralSecurityException
      * @throws IllegalArgumentException if the data's length
-     * is less than 16 bytes.
-     * 
+     *                                  is less than 16 bytes.
      * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
     public static byte[] aesDecrypt(byte[] ivAndEncryptedData, byte[] base64Key)
@@ -231,7 +229,7 @@ public class CipherUtils {
      * Note: PKCS5Padding is equivalent to PKCS7Padding
      * <p>
      * Ref: https://stackoverflow.com/a/10194082/7631879
-     * 
+     *
      * @param plainData
      * @param key
      * @param iv
@@ -258,7 +256,7 @@ public class CipherUtils {
 
     /**
      * Generate 2048 bits RSA key pair.
-     * 
+     *
      * @return Optional of generated key pair
      * if success, empty optional otherwise.
      */
@@ -268,7 +266,7 @@ public class CipherUtils {
 
     /**
      * Generate RSA key pair with the given size.
-     * 
+     *
      * @param size in bits
      * @return Optional of generated key pair if
      * success, empty optional otherwise.
@@ -287,28 +285,28 @@ public class CipherUtils {
 
     /**
      * RSA-Encrypt data with the public key.
-     * 
+     *
      * @param plainData to encrypt
      * @param publicKey
      * @return encrypted data
      * @throws GeneralSecurityException
      */
-   public static byte[] rsaEncrypt(
-            @Nonnull byte[] plainData, 
+    public static byte[] rsaEncrypt(
+            @Nonnull byte[] plainData,
             @Nonnull PublicKey publicKey) throws GeneralSecurityException {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         return cipher.doFinal(plainData);
-   }
+    }
 
-   /**
-    * RSA-Decrypt data with the private key.
-    *
-    * @param encryptedData
-    * @param privateKey
-    * @return
-    * @throws GeneralSecurityException
-    */
+    /**
+     * RSA-Decrypt data with the private key.
+     *
+     * @param encryptedData
+     * @param privateKey
+     * @return
+     * @throws GeneralSecurityException
+     */
     public static byte[] rsaDecrypt(
             @Nonnull byte[] encryptedData,
             @Nonnull PrivateKey privateKey) throws GeneralSecurityException {
@@ -319,7 +317,7 @@ public class CipherUtils {
 
     /**
      * Read RSA key pair from files.
-     * 
+     *
      * @param publicKeyFilepath
      * @param privateKeyFilepath
      * @return Optional of keyPair if success,
@@ -339,10 +337,10 @@ public class CipherUtils {
         KeyPair keyPair = new KeyPair(publicKey.get(), privateKey.get());
         return Optional.of(keyPair);
     }
-    
+
     /**
      * Get RSA public key from Base64 string.
-     * 
+     *
      * @param base64RsaPublicKey
      * @return Optional of publicKey is success,
      * empty optional otherwise.
@@ -365,6 +363,7 @@ public class CipherUtils {
 
     /**
      * Get RSA private key from Base64 text.
+     *
      * @param base64RsaPrivateKey
      * @return Optional of privateKey if success,
      * empty optional otherwise.

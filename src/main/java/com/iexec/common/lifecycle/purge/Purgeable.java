@@ -1,6 +1,6 @@
 package com.iexec.common.lifecycle.purge;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 public interface Purgeable {
     /**

@@ -18,9 +18,8 @@ package com.iexec.common.chain.validation;
 
 import com.iexec.commons.poco.utils.BytesUtils;
 import com.iexec.commons.poco.utils.EthAddress;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class EthereumNonZeroAddressValidator
         implements ConstraintValidator<ValidNonZeroEthereumAddress, String> {
