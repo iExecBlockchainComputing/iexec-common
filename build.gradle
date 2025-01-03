@@ -96,9 +96,9 @@ testing {
         test {
             useJUnitJupiter()
             dependencies {
+                implementation 'org.assertj:assertj-core'
                 implementation 'org.junit.jupiter:junit-jupiter'
                 implementation 'org.mockito:mockito-junit-jupiter'
-                implementation 'org.assertj:assertj-core'
                 // mock-server
                 implementation "org.mock-server:mockserver-client-java:$mockServerVersion"
                 implementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
