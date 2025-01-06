@@ -6,15 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Quality
 
-- Update source and target compatibility to Java 17. (#467)
-- Migrated to Jakarta EE APIs. (#467)
+- Upgrade source and target compatibility to Java 17. (#467)
 
 ### Dependency Upgrades
 
-- Update Spring Boot to `3.0.13`. (#467)
-- Update Google Guava to `32.1.3-jre`. (#467)
-- Update Zip4j ot `2.11.5`. (#467)
-- Update `org.glassfish:javax.el:3.0.0` to `org.glassfish:jakarta.el:5.0.0-M1`. (#467)
+- Upgrade to Spring Boot `3.0.13`. (#467)
+- Upgrade to Google Guava `32.1.3-jre`. (#467)
+- Upgrade to Zip4j `2.11.5`. (#467)
+- Upgrade to `org.glassfish:jakarta.el:5.0.0-M1`. (#467)
 
 ## [[8.6.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.6.0) 2024-12-19
 
