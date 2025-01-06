@@ -75,7 +75,7 @@ dependencies {
     implementation 'jakarta.annotation:jakarta.annotation-api'
     implementation 'jakarta.validation:jakarta.validation-api'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.glassfish:jakarta.el:5.0.0'
+    implementation 'org.glassfish.expressly:expressly:5.0.0'
 
     // expiring map
     implementation 'net.jodah:expiringmap:0.5.10'
