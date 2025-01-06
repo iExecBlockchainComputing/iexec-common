@@ -75,7 +75,6 @@ dependencies {
     implementation 'jakarta.annotation:jakarta.annotation-api'
     implementation 'jakarta.validation:jakarta.validation-api'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.glassfish.expressly:expressly:5.0.0'
 
     // expiring map
     implementation 'net.jodah:expiringmap:0.5.10'
@@ -96,6 +95,7 @@ testing {
         test {
             useJUnitJupiter()
             dependencies {
+                runtimeOnly('org.glassfish.expressly:expressly:5.0.0')
                 implementation 'org.assertj:assertj-core'
                 implementation 'org.mockito:mockito-junit-jupiter'
                 // mock-server
