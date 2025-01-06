@@ -10,7 +10,7 @@ group = 'com.iexec.common'
 
 ext {
     mockServerVersion = '5.11.2'
-    openFeignVersion = '11.10'
+    openFeignVersion = '12.5'
 }
 
 if (!project.hasProperty('gitBranch')) {
