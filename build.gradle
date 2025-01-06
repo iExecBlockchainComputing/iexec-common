@@ -10,7 +10,7 @@ group = 'com.iexec.common'
 
 ext {
     mockServerVersion = '5.11.2'
-    openFeignVersion = '11.10'
+    openFeignVersion = '12.5'
 }
 
 if (!project.hasProperty('gitBranch')) {
@@ -44,7 +44,7 @@ repositories {
 // 'api' configuration allows to expose dependencies with 'compile' scope in pom
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
-    implementation platform('org.springframework.boot:spring-boot-dependencies:2.7.18')
+    implementation platform('org.springframework.boot:spring-boot-dependencies:3.0.13')
 
     // feign
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
@@ -61,21 +61,20 @@ dependencies {
     // apache commons-lang3
     implementation 'org.apache.commons:commons-lang3'
 
-    //jaxb required with Java 11
-    implementation 'javax.xml.bind:jaxb-api'
+    // xml binding for java 17
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api'
 
     // zip
-    implementation 'net.lingala.zip4j:zip4j:2.3.1'
+    implementation 'net.lingala.zip4j:zip4j:2.11.5'
 
     // google core libs
-    implementation 'com.google.guava:guava:28.2-jre'
+    implementation 'com.google.guava:guava:32.1.3-jre'
 
     implementation 'ch.qos.logback:logback-classic'
 
-    implementation 'javax.annotation:javax.annotation-api'
-    implementation 'javax.validation:validation-api'
+    implementation 'jakarta.annotation:jakarta.annotation-api'
+    implementation 'jakarta.validation:jakarta.validation-api'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.glassfish:javax.el:3.0.0'
 
     // expiring map
     implementation 'net.jodah:expiringmap:0.5.10'
@@ -85,8 +84,8 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
-    sourceCompatibility = "11"
-    targetCompatibility = "11"
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
     withJavadocJar()
     withSourcesJar()
 }
@@ -96,14 +95,15 @@ testing {
         test {
             useJUnitJupiter()
             dependencies {
-                implementation 'org.junit.jupiter:junit-jupiter'
-                implementation 'org.mockito:mockito-junit-jupiter'
                 implementation 'org.assertj:assertj-core'
+                implementation 'org.mockito:mockito-junit-jupiter'
                 // mock-server
                 implementation "org.mock-server:mockserver-client-java:$mockServerVersion"
                 implementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
                 // spring-test for ReflectionTestUtils
                 implementation 'org.springframework:spring-test'
+
+                runtimeOnly 'org.glassfish.expressly:expressly:5.0.0'
             }
         }
     }

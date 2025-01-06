@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 IEXEC BLOCKCHAIN TECH
+ * Copyright 2022-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,21 @@
 
 package com.iexec.common.chain.validation;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = EthereumNonZeroAddressValidator.class)
-@Target({ ElementType.METHOD, ElementType.FIELD })
+@Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidNonZeroEthereumAddress {
     String message() default "Invalid non-zero Ethereum address";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
