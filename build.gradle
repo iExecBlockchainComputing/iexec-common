@@ -95,7 +95,6 @@ testing {
         test {
             useJUnitJupiter()
             dependencies {
-                runtimeOnly('org.glassfish.expressly:expressly:5.0.0')
                 implementation 'org.assertj:assertj-core'
                 implementation 'org.mockito:mockito-junit-jupiter'
                 // mock-server
@@ -103,6 +102,8 @@ testing {
                 implementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
                 // spring-test for ReflectionTestUtils
                 implementation 'org.springframework:spring-test'
+
+                runtimeOnly 'org.glassfish.expressly:expressly:5.0.0'
             }
         }
     }
