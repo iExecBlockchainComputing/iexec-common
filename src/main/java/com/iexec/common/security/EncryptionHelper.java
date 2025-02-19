@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Base64;
+import java.util.Optional;
 
-import static com.iexec.common.security.CipherHelper.*;
+import static com.iexec.common.security.CipherUtils.*;
 import static com.iexec.common.utils.FileHelper.*;
 
 @Slf4j
@@ -55,7 +59,7 @@ public class EncryptionHelper {
      * Returns: folder or zip path
      *
      * */
-    public static String encryptData(String inDataFilePath, String plainTextRsaPub, boolean produceZip) {
+    public static String encryptData(String inDataFilePath, String plainTextRsaPub, boolean produceZip) throws GeneralSecurityException, IOException {
         String inDataFilename = FilenameUtils.getName(inDataFilePath);
         String outEncryptedDataFilename = inDataFilename + ".aes";
 
@@ -74,8 +78,9 @@ public class EncryptionHelper {
             log.error("Failed to encryptData (generateAesKey error) [inDataFilePath:{}]", inDataFilePath);
             return "";
         }
-        // Encrypt data with AES key
-        byte[] encryptedData = aesEncrypt(data, aesKey);
+        // Encrypt data with Base64 AES key
+        byte[] base64AesKey = Base64.getEncoder().encode(aesKey);
+        byte[] encryptedData = aesEncrypt(data, base64AesKey);
         if (encryptedData == null) {
             log.error("Failed to encryptData (aesEncrypt error) [inDataFilePath:{}]", inDataFilePath);
             return "";
@@ -93,13 +98,13 @@ public class EncryptionHelper {
             return "";
         }
         // Get RSA public key
-        PublicKey rsaPublicKey = plainText2RsaPublicKey(plainTextRsaPub);
-        if (rsaPublicKey == null) {
+        Optional<PublicKey> rsaPublicKey = base64ToRsaPublicKey(plainTextRsaPub);
+        if (rsaPublicKey.isEmpty()) {
             log.error("Failed to encryptData (getRsaPublicKey error) [inDataFilePath:{}]", inDataFilePath);
             return "";
         }
         // Encrypt AES key with RSA public key
-        byte[] encryptedAesKey = rsaEncrypt(aesKey, rsaPublicKey);
+        byte[] encryptedAesKey = rsaEncrypt(aesKey, rsaPublicKey.get());
         if (encryptedAesKey == null) {
             log.error("Failed to encryptData (rsaEncrypt error) [inDataFilePath:{}]", inDataFilePath);
             return "";
@@ -144,7 +149,7 @@ public class EncryptionHelper {
      * Returns: clear data path (zip here)
      *
      * */
-    public static String decryptData(String encryptedDataFilePath, String plainTextRsaPriv) {
+    public static String decryptData(String encryptedDataFilePath, String plainTextRsaPriv) throws GeneralSecurityException {
         String encryptedResultFolder = Paths.get(encryptedDataFilePath).getParent().toString();
         String outClearDataFilename = DECRYPTION_PREFIX + FilenameUtils.getBaseName(encryptedDataFilePath);
         String outClearDataFilePath = encryptedResultFolder + "/../" + outClearDataFilename;
@@ -156,13 +161,13 @@ public class EncryptionHelper {
             return "";
         }
         // Get RSA private key
-        PrivateKey rsaPrivateKey = plainText2RsaPrivateKey(plainTextRsaPriv);
-        if (rsaPrivateKey == null) {
+        Optional<PrivateKey> rsaPrivateKey = base64ToRsaPrivateKey(plainTextRsaPriv);
+        if (rsaPrivateKey.isEmpty()) {
             log.error("Failed to decryptData (rsaPrivateKey error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";
         }
         // Decrypt encrypted AES key
-        byte[] aesKey = rsaDecrypt(encryptedAesKey, rsaPrivateKey);
+        byte[] aesKey = rsaDecrypt(encryptedAesKey, rsaPrivateKey.get());
         if (aesKey == null) {
             log.error("Failed to decryptData (aesKey error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";
@@ -179,8 +184,9 @@ public class EncryptionHelper {
             log.error("Failed to decryptData (encryptedData error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";
         }
-        // Decrypt data with AES key
-        byte[] clearData = aesDecrypt(encryptedData, aesKey);
+        // Decrypt data with Base64 AES key
+        byte[] base64AesKey = Base64.getEncoder().encode(aesKey);
+        byte[] clearData = aesDecrypt(encryptedData, base64AesKey);
         if (clearData == null) {
             log.error("Failed to decryptData (clearData error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";

@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Breaking API changes
 
 - Remove PublicConfiguration class moved to iexec-core-library. (#468)
+- Use a safer AES implementation to encrypt result. (#470)
 
 ### Dependency Upgrades
 

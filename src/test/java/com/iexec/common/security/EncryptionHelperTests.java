@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@ import com.iexec.commons.poco.utils.BytesUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.web3j.crypto.Hash;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import static com.iexec.common.utils.FileHelper.readAllBytes;
 import static com.iexec.common.utils.FileHelper.readFile;
@@ -45,7 +48,7 @@ class EncryptionHelperTests {
     }
 
     @Test
-    void shouldEncryptAndDecrypt() {
+    void shouldEncryptAndDecrypt() throws GeneralSecurityException, IOException {
         removeOldFiles();
         String inDataFileName = "result-0xabc.zip";
 
