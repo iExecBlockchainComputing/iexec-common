@@ -36,15 +36,11 @@ repositories {
     }
 }
 
-//configurations.configureEach {
-//    resolutionStrategy.failOnVersionConflict()
-//}
-
 // java-library plugin defines 'api' configuration
 // 'api' configuration allows to expose dependencies with 'compile' scope in pom
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
-    implementation platform('org.springframework.boot:spring-boot-dependencies:3.0.13')
+    implementation platform('org.springframework.boot:spring-boot-dependencies:3.3.8')
 
     // feign
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
@@ -88,6 +84,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
     withJavadocJar()
     withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add('-parameters')
 }
 
 testing {
