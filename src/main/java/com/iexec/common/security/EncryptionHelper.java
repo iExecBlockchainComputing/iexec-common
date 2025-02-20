@@ -27,7 +27,6 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.Base64;
 import java.util.Optional;
 
 import static com.iexec.common.security.CipherUtils.*;
@@ -79,8 +78,7 @@ public class EncryptionHelper {
             return "";
         }
         // Encrypt data with Base64 AES key
-        byte[] base64AesKey = Base64.getEncoder().encode(aesKey);
-        byte[] encryptedData = aesEncrypt(data, base64AesKey);
+        byte[] encryptedData = aesEncrypt(data, aesKey);
         if (encryptedData == null) {
             log.error("Failed to encryptData (aesEncrypt error) [inDataFilePath:{}]", inDataFilePath);
             return "";
@@ -185,8 +183,7 @@ public class EncryptionHelper {
             return "";
         }
         // Decrypt data with Base64 AES key
-        byte[] base64AesKey = Base64.getEncoder().encode(aesKey);
-        byte[] clearData = aesDecrypt(encryptedData, base64AesKey);
+        byte[] clearData = aesDecrypt(encryptedData, aesKey);
         if (clearData == null) {
             log.error("Failed to decryptData (clearData error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";

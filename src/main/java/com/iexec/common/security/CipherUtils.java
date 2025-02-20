@@ -149,18 +149,17 @@ public class CipherUtils {
      * Ref: https://stackoverflow.com/a/10194082/7631879
      *
      * @param plainData to encrypt
-     * @param base64Key Base64 encoded AES key
+     * @param key       AES key
      * @return encrypted data prepended with the IV.
      * @throws GeneralSecurityException
      * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
-    public static byte[] aesEncrypt(byte[] plainData, byte[] base64Key)
+    public static byte[] aesEncrypt(byte[] plainData, byte[] key)
             throws GeneralSecurityException, IOException {
         Objects.requireNonNull(plainData, "Data cannot be null");
-        Objects.requireNonNull(base64Key, "Base64 AES key cannot be null");
+        Objects.requireNonNull(key, "AES key cannot be null");
         byte[] iv = generateIv();
-        byte[] decodeKey = Base64.getDecoder().decode(base64Key);
-        byte[] encryptedData = aesEncrypt(plainData, decodeKey, iv);
+        byte[] encryptedData = aesEncrypt(plainData, key, iv);
         return prependIvToEncryptedData(iv, encryptedData);
     }
 
@@ -203,24 +202,23 @@ public class CipherUtils {
      * Ref: https://stackoverflow.com/a/10194082/7631879
      *
      * @param ivAndEncryptedData to decrypt
-     * @param base64Key          Base64 encoded AES key
+     * @param key                AES key
      * @return Decrypted data
      * @throws GeneralSecurityException
      * @throws IllegalArgumentException if the data's length
      *                                  is less than 16 bytes.
      * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
-    public static byte[] aesDecrypt(byte[] ivAndEncryptedData, byte[] base64Key)
+    public static byte[] aesDecrypt(byte[] ivAndEncryptedData, byte[] key)
             throws GeneralSecurityException {
         Objects.requireNonNull(ivAndEncryptedData, "Data cannot be null");
-        Objects.requireNonNull(base64Key, "Base64 AES key cannot be null");
+        Objects.requireNonNull(key, "Base64 AES key cannot be null");
         if (ivAndEncryptedData.length < 16) {
             throw new IllegalArgumentException("Data cannot be less than 16 bytes");
         }
-        byte[] decodedKey = Base64.getDecoder().decode(base64Key);
         byte[] iv = getIvFromEncryptedData(ivAndEncryptedData);
         byte[] data = stripIvFromEncryptedData(ivAndEncryptedData);
-        return aesDecrypt(data, decodedKey, iv);
+        return aesDecrypt(data, key, iv);
     }
 
     /**
