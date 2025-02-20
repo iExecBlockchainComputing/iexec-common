@@ -42,8 +42,8 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CipherUtils {
 
-    private final static String NOT_NULL_DATA = "Data cannot be null";
-    private final static String NOT_NULL_AES_KEY = "AES key cannot be null";
+    private static final String NOT_NULL_DATA = "Data cannot be null";
+    private static final String NOT_NULL_AES_KEY = "AES key cannot be null";
 
     // ###############
     // #     AES     #
