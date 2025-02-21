@@ -62,7 +62,7 @@ public class EncryptionHelper {
         final String inDataFilename = FilenameUtils.getName(inDataFilePath);
         final String outEncryptedDataFilename = inDataFilename + ".aes";
 
-        final String workDir = Paths.get(inDataFilePath).getParent().toString(); //"/tmp/scone";
+        final String workDir = Paths.get(inDataFilePath).getParent().toString();
         final String outEncDir = workDir + "/" + ENCRYPTION_PREFIX + FilenameUtils.removeExtension(inDataFilename); //location of future encrypted files (./encrypted-0x1_result)
 
         // Get data to encrypt

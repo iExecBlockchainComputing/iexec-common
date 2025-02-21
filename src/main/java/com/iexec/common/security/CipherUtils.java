@@ -184,7 +184,7 @@ public class CipherUtils {
     private static byte[] aesEncrypt(
             final byte[] plainData,
             final byte[] key,
-            final @Nonnull byte[] iv) throws GeneralSecurityException {
+            @Nonnull final byte[] iv) throws GeneralSecurityException {
         Objects.requireNonNull(plainData, NOT_NULL_DATA);
         Objects.requireNonNull(key, NOT_NULL_AES_KEY);
         Objects.requireNonNull(iv, "IV cannot be null");
@@ -239,9 +239,9 @@ public class CipherUtils {
      * @throws GeneralSecurityException if a security related error occurs.
      */
     private static byte[] aesDecrypt(
-            final @Nonnull byte[] plainData,
+            @Nonnull final byte[] plainData,
             final byte[] key,
-            final @Nonnull byte[] iv) throws GeneralSecurityException {
+            @Nonnull final byte[] iv) throws GeneralSecurityException {
         Objects.requireNonNull(plainData, NOT_NULL_DATA);
         Objects.requireNonNull(key, NOT_NULL_AES_KEY);
         Objects.requireNonNull(iv, "IV cannot be null");
@@ -294,8 +294,8 @@ public class CipherUtils {
      * @throws GeneralSecurityException if an error occurs during RSA encryption.
      */
     public static byte[] rsaEncrypt(
-            final @Nonnull byte[] plainData,
-            final @Nonnull PublicKey publicKey) throws GeneralSecurityException {
+            @Nonnull final byte[] plainData,
+            @Nonnull final PublicKey publicKey) throws GeneralSecurityException {
         final Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         return cipher.doFinal(plainData);
@@ -310,8 +310,8 @@ public class CipherUtils {
      * @throws GeneralSecurityException if an error occurs during RSA decryption.
      */
     public static byte[] rsaDecrypt(
-            final @Nonnull byte[] encryptedData,
-            final @Nonnull PrivateKey privateKey) throws GeneralSecurityException {
+            @Nonnull final byte[] encryptedData,
+            @Nonnull final PrivateKey privateKey) throws GeneralSecurityException {
         final Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return cipher.doFinal(encryptedData);
