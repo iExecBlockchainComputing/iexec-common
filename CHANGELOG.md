@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Breaking API changes
 
 - Remove PublicConfiguration class moved to iexec-core-library. (#468)
-- Use a safer AES implementation to encrypt result. (#470)
+- Migrate from AES ECB 128-bit to AES CBC 256-bit in `EncryptionHelper`. (#470)
 - Removed base64 manipulation for AES key. (#470)
 
 ### Dependency Upgrades

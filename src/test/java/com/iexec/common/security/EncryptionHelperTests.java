@@ -50,15 +50,15 @@ class EncryptionHelperTests {
     @Test
     void shouldEncryptAndDecrypt() throws GeneralSecurityException, IOException {
         removeOldFiles();
-        String inDataFileName = "result-0xabc.zip";
+        final String inDataFileName = "result-0xabc.zip";
 
         // Encryption side
-        String originalDataHash = BytesUtils.bytesToString(Hash.sha3(readAllBytes(DOT_SLASH + inDataFileName)));
-        String encryptedResultFolder = EncryptionHelper.encryptData(DOT_SLASH + inDataFileName, plainTextRsaPublicKey, false);
+        final String originalDataHash = BytesUtils.bytesToString(Hash.sha3(readAllBytes(DOT_SLASH + inDataFileName)));
+        final String encryptedResultFolder = EncryptionHelper.encryptData(DOT_SLASH + inDataFileName, plainTextRsaPublicKey, false);
 
         // Decryption side
-        String clearDataPath = EncryptionHelper.decryptData(encryptedResultFolder + "/" + inDataFileName + ".aes", plainTextRsaPrivateKey);
-        String clearDataHash = BytesUtils.bytesToString(Hash.sha3(readAllBytes(clearDataPath)));
+        final String clearDataPath = EncryptionHelper.decryptData(encryptedResultFolder + "/" + inDataFileName + ".aes", plainTextRsaPrivateKey);
+        final String clearDataHash = BytesUtils.bytesToString(Hash.sha3(readAllBytes(clearDataPath)));
 
         removeOldFiles();// comment this if you want to see created files
         assertEquals(originalDataHash, clearDataHash);

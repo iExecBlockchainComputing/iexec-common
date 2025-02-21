@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2024 IEXEC BLOCKCHAIN TECH
+ * Copyright 2021-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,52 +50,52 @@ class CipherUtilsTests {
 
     @Test
     void shouldGenerate256AesKey() {
-        byte[] aesKey = CipherUtils.generateAesKey();
+        final byte[] aesKey = CipherUtils.generateAesKey();
         assertThat(aesKey).hasSize(32);
     }
 
     @Test
     void shouldGenerateDifferent256AesKey() {
-        byte[] aesKey1 = CipherUtils.generateAesKey();
-        byte[] aesKey2 = CipherUtils.generateAesKey();
+        final byte[] aesKey1 = CipherUtils.generateAesKey();
+        final byte[] aesKey2 = CipherUtils.generateAesKey();
         assertThat(aesKey1).isNotEqualTo(aesKey2);
     }
 
     @Test
     void shouldGenerateAesKeyWithGivenSize() {
-        byte[] aesKey = CipherUtils.generateAesKey(128);
+        final byte[] aesKey = CipherUtils.generateAesKey(128);
         assertThat(aesKey).hasSize(16);
     }
 
     @Test
     void shouldGenerateIvWithSize16bytes() {
-        byte[] iv = CipherUtils.generateIv();
+        final byte[] iv = CipherUtils.generateIv();
         assertThat(iv).hasSize(16);
     }
 
     @Test
     void shouldGenerateDifferentIvs() {
-        byte[] iv1 = CipherUtils.generateIv();
-        byte[] iv2 = CipherUtils.generateIv();
+        final byte[] iv1 = CipherUtils.generateIv();
+        final byte[] iv2 = CipherUtils.generateIv();
         assertThat(iv1).isNotEqualTo(iv2);
     }
 
     @Test
     void shouldGet16BytesIvFromEncryptedData() {
-        byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
+        final byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
         assertThat(CipherUtils.getIvFromEncryptedData(encryptedData)).hasSize(16);
     }
 
     @Test
     void shouldStripIvFromEncryptedData() {
-        byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
-        byte[] strippedData = CipherUtils.stripIvFromEncryptedData(encryptedData);
+        final byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
+        final byte[] strippedData = CipherUtils.stripIvFromEncryptedData(encryptedData);
         assertThat(encryptedData).hasSize(strippedData.length + 16);
     }
 
     @Test
     void shouldGenerateIvWithGivenSize() {
-        byte[] iv = CipherUtils.generateIv(32);
+        final byte[] iv = CipherUtils.generateIv(32);
         assertThat(iv).hasSize(32);
     }
 
@@ -103,23 +103,23 @@ class CipherUtilsTests {
 
     @Test
     void shouldEncryptAndDecryptDataWithAesKey() throws Exception {
-        byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
-        byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
-        byte[] decodeKey = Base64.getDecoder().decode(base64Key);
-        byte[] encryptedData = CipherUtils.aesEncrypt(plainData, decodeKey);
-        byte[] decryptedData = CipherUtils.aesDecrypt(encryptedData, decodeKey);
+        final byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
+        final byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
+        final byte[] decodeKey = Base64.getDecoder().decode(base64Key);
+        final byte[] encryptedData = CipherUtils.aesEncrypt(plainData, decodeKey);
+        final byte[] decryptedData = CipherUtils.aesDecrypt(encryptedData, decodeKey);
         assertThat(decryptedData).isEqualTo(plainData);
     }
 
     @Test
     void shouldEncryptDataWithDifferentIvs() throws Exception {
-        byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
-        byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
-        byte[] decodeKey = Base64.getDecoder().decode(base64Key);
-        byte[] encryptedData1 = CipherUtils.aesEncrypt(plainData, decodeKey);
-        byte[] iv1 = CipherUtils.getIvFromEncryptedData(encryptedData1);
-        byte[] encryptedData2 = CipherUtils.aesEncrypt(plainData, decodeKey);
-        byte[] iv2 = CipherUtils.getIvFromEncryptedData(encryptedData2);
+        final byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
+        final byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
+        final byte[] decodeKey = Base64.getDecoder().decode(base64Key);
+        final byte[] encryptedData1 = CipherUtils.aesEncrypt(plainData, decodeKey);
+        final byte[] iv1 = CipherUtils.getIvFromEncryptedData(encryptedData1);
+        final byte[] encryptedData2 = CipherUtils.aesEncrypt(plainData, decodeKey);
+        final byte[] iv2 = CipherUtils.getIvFromEncryptedData(encryptedData2);
         assertThat(encryptedData1).isNotEqualTo(encryptedData2);
         assertThat(iv1).isNotEqualTo(iv2);
     }
@@ -128,18 +128,18 @@ class CipherUtilsTests {
 
     @Test
     void shouldDecryptDataEncryptedWithSdk() throws Exception {
-        byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
-        byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
-        byte[] decodeKey = Base64.getDecoder().decode(base64Key);
-        byte[] sdkEncryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
-        byte[] decryptedData = CipherUtils.aesDecrypt(sdkEncryptedData, decodeKey);
+        final byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
+        final byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
+        final byte[] decodeKey = Base64.getDecoder().decode(base64Key);
+        final byte[] sdkEncryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
+        final byte[] decryptedData = CipherUtils.aesDecrypt(sdkEncryptedData, decodeKey);
         assertThat(decryptedData).isEqualTo(plainData);
     }
 
     @Test
     void shouldNotDecryptDataWithBadKey() {
-        byte[] badKey = Base64.getEncoder().encode(CipherUtils.generateAesKey());
-        byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
+        final byte[] badKey = Base64.getEncoder().encode(CipherUtils.generateAesKey());
+        final byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
         Assertions.assertThrows(
                 GeneralSecurityException.class,
                 () -> CipherUtils.aesDecrypt(encryptedData, badKey));
@@ -147,15 +147,15 @@ class CipherUtilsTests {
 
     @Test
     void shouldNotDecryptDataWithBadIv() throws Exception {
-        byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
-        byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
-        byte[] decodeKey = Base64.getDecoder().decode(base64Key);
-        byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
-        byte[] strippedData = CipherUtils.stripIvFromEncryptedData(encryptedData);
-        byte[] badIv = CipherUtils.generateIv();
-        byte[] encryptedDataWithBadIv =
+        final byte[] plainData = FileHelper.readAllBytes(AES_PLAIN_DATA_FILE);
+        final byte[] base64Key = FileHelper.readAllBytes(AES_KEY_FILE);
+        final byte[] decodeKey = Base64.getDecoder().decode(base64Key);
+        final byte[] encryptedData = FileHelper.readAllBytes(AES_ENC_DATA_FILE);
+        final byte[] strippedData = CipherUtils.stripIvFromEncryptedData(encryptedData);
+        final byte[] badIv = CipherUtils.generateIv();
+        final byte[] encryptedDataWithBadIv =
                 CipherUtils.prependIvToEncryptedData(badIv, strippedData);
-        byte[] badDecryptedData =
+        final byte[] badDecryptedData =
                 CipherUtils.aesDecrypt(encryptedDataWithBadIv, decodeKey);
         assertThat(badDecryptedData).isNotEqualTo(plainData);
     }
@@ -171,31 +171,31 @@ class CipherUtilsTests {
 
     @Test
     void shouldEncryptDataWithRsa() throws Exception {
-        byte[] plainData = FileHelper.readAllBytes(RSA_PLAIN_DATA_FILE);
-        Optional<KeyPair> keyPair =
+        final byte[] plainData = FileHelper.readAllBytes(RSA_PLAIN_DATA_FILE);
+        final Optional<KeyPair> keyPair =
                 CipherUtils.readRsaKeyPair(RSA_PUB_KEY_FILE, RSA_PRIV_KEY_FILE);
-        byte[] encryptedData =
+        final byte[] encryptedData =
                 CipherUtils.rsaEncrypt(plainData, keyPair.get().getPublic());
-        byte[] decryptedData =
+        final byte[] decryptedData =
                 CipherUtils.rsaDecrypt(encryptedData, keyPair.get().getPrivate());
         assertThat(decryptedData).isEqualTo(plainData);
     }
 
     @Test
     void shouldDecryptDataWithRsa() throws Exception {
-        byte[] plainData = FileHelper.readAllBytes(RSA_PLAIN_DATA_FILE);
-        byte[] encryptedData = FileHelper.readAllBytes(RSA_ENC_DATA_FILE);
-        Optional<KeyPair> keyPair =
+        final byte[] plainData = FileHelper.readAllBytes(RSA_PLAIN_DATA_FILE);
+        final byte[] encryptedData = FileHelper.readAllBytes(RSA_ENC_DATA_FILE);
+        final Optional<KeyPair> keyPair =
                 CipherUtils.readRsaKeyPair(RSA_PUB_KEY_FILE, RSA_PRIV_KEY_FILE);
-        byte[] decryptedData =
+        final byte[] decryptedData =
                 CipherUtils.rsaDecrypt(encryptedData, keyPair.get().getPrivate());
         assertThat(decryptedData).isEqualTo(plainData);
     }
 
     @Test
     void shouldDecodeBase64RsaPublicKeyToRsaPublicKey() {
-        String base64RsaPub = FileHelper.readFile(RSA_PUB_KEY_FILE);
-        Optional<PublicKey> publicKey = CipherUtils.base64ToRsaPublicKey(base64RsaPub);
+        final String base64RsaPub = FileHelper.readFile(RSA_PUB_KEY_FILE);
+        final Optional<PublicKey> publicKey = CipherUtils.base64ToRsaPublicKey(base64RsaPub);
         byte[] expectedKey = Base64.getDecoder().decode(
                 "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAvrUmRuLWu/2o7r/1Iohq" +
                         "zFBSPOwOLXVRhf8AQ8CrfgedZpMKwxnYI8PbZwOhXJH36KfMTrxQV4whXejVj67C" +
@@ -214,10 +214,10 @@ class CipherUtilsTests {
 
     @Test
     void shouldDecodeBase64RsaPrivateKeyToRsaPrivateKey() {
-        String base64RsaPriv = FileHelper.readFile(RSA_PRIV_KEY_FILE);
-        Optional<PrivateKey> privateKey =
+        final String base64RsaPriv = FileHelper.readFile(RSA_PRIV_KEY_FILE);
+        final Optional<PrivateKey> privateKey =
                 CipherUtils.base64ToRsaPrivateKey(base64RsaPriv);
-        byte[] expectedKey = Base64.getDecoder().decode(
+        final byte[] expectedKey = Base64.getDecoder().decode(
                 "MIIJRQIBADANBgkqhkiG9w0BAQEFAASCCS8wggkrAgEAAoICAQC+tSZG4ta7/aju" +
                         "v/UiiGrMUFI87A4tdVGF/wBDwKt+B51mkwrDGdgjw9tnA6Fckffop8xOvFBXjCFd" +
                         "6NWPrsLVnYAt/Q6n/y7Ilyuc1dNrFpV/ixXgSm3LSGrcoeSdIG2rRHwJJZHXFHwN" +
