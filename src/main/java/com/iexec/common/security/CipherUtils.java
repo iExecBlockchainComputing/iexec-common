@@ -50,7 +50,7 @@ public class CipherUtils {
     // ###############
 
     /**
-     * Generate a 256 bits AES key.
+     * Generate a 256-bits AES key.
      *
      * @return 256 bits key if success,
      * empty byte array otherwise.
