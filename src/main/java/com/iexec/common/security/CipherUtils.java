@@ -160,8 +160,6 @@ public class CipherUtils {
      */
     public static byte[] aesEncrypt(final byte[] plainData, final byte[] key)
             throws GeneralSecurityException, IOException {
-        Objects.requireNonNull(plainData, NOT_NULL_DATA);
-        Objects.requireNonNull(key, NOT_NULL_AES_KEY);
         final byte[] iv = generateIv();
         final byte[] encryptedData = aesEncrypt(plainData, key, iv);
         return prependIvToEncryptedData(iv, encryptedData);
@@ -184,7 +182,7 @@ public class CipherUtils {
     private static byte[] aesEncrypt(
             final byte[] plainData,
             final byte[] key,
-            @Nonnull final byte[] iv) throws GeneralSecurityException {
+            final byte[] iv) throws GeneralSecurityException {
         Objects.requireNonNull(plainData, NOT_NULL_DATA);
         Objects.requireNonNull(key, NOT_NULL_AES_KEY);
         Objects.requireNonNull(iv, "IV cannot be null");
@@ -215,8 +213,6 @@ public class CipherUtils {
      */
     public static byte[] aesDecrypt(final byte[] ivAndEncryptedData, final byte[] key)
             throws GeneralSecurityException {
-        Objects.requireNonNull(ivAndEncryptedData, NOT_NULL_DATA);
-        Objects.requireNonNull(key, "Base64 AES key cannot be null");
         if (ivAndEncryptedData.length < 16) {
             throw new IllegalArgumentException("Data cannot be less than 16 bytes");
         }
@@ -239,9 +235,9 @@ public class CipherUtils {
      * @throws GeneralSecurityException if a security related error occurs.
      */
     private static byte[] aesDecrypt(
-            @Nonnull final byte[] plainData,
+            final byte[] plainData,
             final byte[] key,
-            @Nonnull final byte[] iv) throws GeneralSecurityException {
+            final byte[] iv) throws GeneralSecurityException {
         Objects.requireNonNull(plainData, NOT_NULL_DATA);
         Objects.requireNonNull(key, NOT_NULL_AES_KEY);
         Objects.requireNonNull(iv, "IV cannot be null");
