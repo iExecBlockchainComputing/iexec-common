@@ -1,5 +1,5 @@
 /*
- * Copyright 2021-2024 IEXEC BLOCKCHAIN TECH
+ * Copyright 2021-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License),Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ class IexecEnvUtilsTest {
 
     private static final String CHAIN_TASK_ID = "chainTaskId";
     private static final String DATASET_URL = "datasetUrl";
-    private static final String DATASET_NAME = "datasetName";
     private static final String DATASET_CHECKSUM = "datasetChecksum";
     private static final String DATASET_ADDRESS = "datasetAddress";
     private static final String INPUT_FILE_1 = "http://host/filename";
@@ -46,7 +45,6 @@ class IexecEnvUtilsTest {
                 .datasetAddress(DATASET_ADDRESS)
                 .datasetUri(DATASET_URL)
                 .datasetChecksum(DATASET_CHECKSUM)
-                .datasetName(DATASET_NAME)
                 .dealParams(DealParams.builder().build())
                 .build();
         final Map<String, String> map = getAllIexecEnv(taskDescription);
@@ -66,7 +64,6 @@ class IexecEnvUtilsTest {
                 .datasetAddress(DATASET_ADDRESS)
                 .datasetUri(DATASET_URL)
                 .datasetChecksum(DATASET_CHECKSUM)
-                .datasetName(DATASET_NAME)
                 .dealParams(dealParams)
                 .build();
         final Map<String, String> map = getAllIexecEnv(taskDescription);
@@ -86,7 +83,6 @@ class IexecEnvUtilsTest {
         final TaskDescription taskDescription = TaskDescription.builder()
                 .chainTaskId(CHAIN_TASK_ID)
                 .datasetAddress(DATASET_ADDRESS)
-                .datasetName(DATASET_NAME)
                 .botSize(1)
                 .botFirstIndex(0)
                 .dealParams(DealParams.builder().build())
@@ -104,7 +100,6 @@ class IexecEnvUtilsTest {
         final TaskDescription taskDescription = TaskDescription.builder()
                 .chainTaskId(CHAIN_TASK_ID)
                 .datasetAddress(DATASET_ADDRESS)
-                .datasetName(DATASET_NAME)
                 .botSize(1)
                 .botFirstIndex(0)
                 .dealParams(dealParams)
@@ -124,7 +119,6 @@ class IexecEnvUtilsTest {
                 .build();
         final TaskDescription taskDescription = TaskDescription.builder()
                 .chainTaskId(CHAIN_TASK_ID)
-                .datasetName(DATASET_NAME)
                 .datasetAddress(DATASET_ADDRESS)
                 .botSize(1)
                 .botFirstIndex(0)
