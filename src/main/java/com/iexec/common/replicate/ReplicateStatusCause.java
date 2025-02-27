@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 
 package com.iexec.common.replicate;
-
-import com.iexec.commons.poco.task.TaskAbortCause;
 
 public enum ReplicateStatusCause {
 
@@ -165,15 +163,4 @@ public enum ReplicateStatusCause {
     CANNOT_REVEAL,
     UNKNOWN;
     // endregion
-
-    public static ReplicateStatusCause getReplicateAbortCause(TaskAbortCause taskAbortCause) {
-        switch (taskAbortCause) {
-            case CONSENSUS_REACHED:
-                return ReplicateStatusCause.CONSENSUS_REACHED;
-            case CONTRIBUTION_TIMEOUT:
-                return ReplicateStatusCause.CONTRIBUTION_TIMEOUT;
-            default:
-                return ReplicateStatusCause.UNKNOWN;
-        }
-    }
 }
