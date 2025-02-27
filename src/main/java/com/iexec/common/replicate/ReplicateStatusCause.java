@@ -16,8 +16,6 @@
 
 package com.iexec.common.replicate;
 
-import com.iexec.commons.poco.task.TaskAbortCause;
-
 public enum ReplicateStatusCause {
 
     // region chain
@@ -165,15 +163,4 @@ public enum ReplicateStatusCause {
     CANNOT_REVEAL,
     UNKNOWN;
     // endregion
-
-    public static ReplicateStatusCause getReplicateAbortCause(TaskAbortCause taskAbortCause) {
-        switch (taskAbortCause) {
-            case CONSENSUS_REACHED:
-                return ReplicateStatusCause.CONSENSUS_REACHED;
-            case CONTRIBUTION_TIMEOUT:
-                return ReplicateStatusCause.CONTRIBUTION_TIMEOUT;
-            default:
-                return ReplicateStatusCause.UNKNOWN;
-        }
-    }
 }

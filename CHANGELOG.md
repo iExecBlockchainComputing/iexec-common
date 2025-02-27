@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - Migrate from AES ECB 128-bit to AES CBC 256-bit in `EncryptionHelper`. (#470)
 - Remove base64 manipulation for AES key. (#470)
 - Move `WorkerModel` from `iexec-common` to `iexec-core-library`. (#471)
+- Remove conversion method from `ReplicateStatusCause`, it has been moved to `TaskAbortCause` in `iexec-core-library`. (#472)
 
 ### Dependency Upgrades
 
