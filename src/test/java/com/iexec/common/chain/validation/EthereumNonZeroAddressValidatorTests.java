@@ -32,7 +32,7 @@ class EthereumNonZeroAddressValidatorTests {
     private static Validator validator;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 

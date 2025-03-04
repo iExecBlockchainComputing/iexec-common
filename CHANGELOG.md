@@ -4,9 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [[NEXT]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/vNEXT) 2025
 
+### New Features
+
+- Gather pre and post compute environment variables in new `TeeSessionEnvironmentVariable` Enum. (#473)
+- Add new pre-compute required causes to `ReplicateCauseStatus`. (#474)
+
 ### Quality
 
 - Upgrade source and target compatibility to Java 17. (#467)
+- Fix 3 SonarQubeCloud issues. (#474)
 
 ### Breaking API changes
 
@@ -15,6 +21,9 @@ All notable changes to this project will be documented in this file.
 - Remove base64 manipulation for AES key. (#470)
 - Move `WorkerModel` from `iexec-common` to `iexec-core-library`. (#471)
 - Remove conversion method from `ReplicateStatusCause`, it has been moved to `TaskAbortCause` in `iexec-core-library`. (#472)
+- Remove pre and post compute environment variables from `PreComputeUtils`, `IexecEnvUtils` and `ResultUtils`. (#473)
+- Rename some constants in `ReplicateStatusCause` Enum after they are no more post compute specific. (#473)
+- Transform `ExitMessage` to a Java Record. (#473)
 
 ### Dependency Upgrades
 
