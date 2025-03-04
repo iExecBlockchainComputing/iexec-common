@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EncryptionHelperTests {
 
-    private final static String DOT_SLASH = "./src/test/resources/security/";
+    private static final String DOT_SLASH = "./src/test/resources/security/";
     private String plainTextRsaPublicKey;
     private String plainTextRsaPrivateKey;
 
