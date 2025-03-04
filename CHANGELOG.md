@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### New Features
 
 - Gather pre and post compute environment variables in new `TeeSessionEnvironmentVariable` Enum. (#473)
+- Add new pre-compute required causes to `ReplicateCauseStatus`. (#474)
 
 ### Quality
 
