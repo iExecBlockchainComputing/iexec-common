@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package com.iexec.common.worker.result;
 import com.iexec.common.result.ComputedFile;
 import com.iexec.common.utils.FileHashUtils;
 import com.iexec.common.utils.FileHelper;
-import com.iexec.commons.poco.utils.HashUtils;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Hash;
 
@@ -27,28 +28,8 @@ import java.io.File;
 import java.nio.file.Path;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResultUtils {
-
-    /*
-     * Following env vars are required by iexec-sms and tee-worker-post-compute
-     * */
-    // result
-    public static final String RESULT_TASK_ID = "RESULT_TASK_ID";
-    //result encryption
-    public static final String RESULT_ENCRYPTION = "RESULT_ENCRYPTION";
-    public static final String RESULT_ENCRYPTION_PUBLIC_KEY = "RESULT_ENCRYPTION_PUBLIC_KEY";//BASE64
-    //result storage
-    public static final String RESULT_STORAGE_PROVIDER = "RESULT_STORAGE_PROVIDER";
-    public static final String RESULT_STORAGE_PROXY = "RESULT_STORAGE_PROXY";
-    public static final String RESULT_STORAGE_TOKEN = "RESULT_STORAGE_TOKEN";
-    public static final String RESULT_STORAGE_CALLBACK = "RESULT_STORAGE_CALLBACK";
-    //result sign
-    public static final String RESULT_SIGN_WORKER_ADDRESS = "RESULT_SIGN_WORKER_ADDRESS";
-    public static final String RESULT_SIGN_TEE_CHALLENGE_PRIVATE_KEY = "RESULT_SIGN_TEE_CHALLENGE_PRIVATE_KEY";
-
-    private ResultUtils() {
-        throw new UnsupportedOperationException();
-    }
 
     public static String computeWeb3ResultDigest(ComputedFile computedFile) {
         if (computedFile == null) {
@@ -101,14 +82,6 @@ public class ResultUtils {
         }
 
         return FileHashUtils.getFileTreeSha256(hostDeterministicOutputPath);
-    }
-
-    public static String computeResultHash(String chainTaskId, String resultDigest) {
-        return HashUtils.concatenateAndHash(chainTaskId, resultDigest);
-    }
-
-    public static String computeResultSeal(String walletAddress, String chainTaskId, String resultDigest) {
-        return HashUtils.concatenateAndHash(walletAddress, chainTaskId, resultDigest);
     }
 
     public static String zipIexecOut(String iexecOutPath) {
