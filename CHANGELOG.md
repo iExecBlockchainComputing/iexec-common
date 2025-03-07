@@ -25,6 +25,7 @@ All notable changes to this project will be documented in this file.
 - Rename some constants in `ReplicateStatusCause` Enum after they are no more post compute specific. (#473)
 - Transform `ExitMessage` to a Java Record. (#473)
 - Remove `com.iexec.common.sdk.marketplace` and `com.iexec.common.sdk.order` packages. (#475)
+- Remove `com.iexec.common.sdk.cli` package. (#476)
 
 ### Dependency Upgrades
 
