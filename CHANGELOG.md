@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 - Gather pre and post compute environment variables in new `TeeSessionEnvironmentVariable` Enum. (#473)
 - Add new pre-compute required causes to `ReplicateCauseStatus`. (#474)
 
+### Bug Fixes
+
+- Update `deleteFolder` in `FileHelper` to return `true` when folder does not exist. (#479)
+
 ### Quality
 
 - Upgrade source and target compatibility to Java 17. (#467)

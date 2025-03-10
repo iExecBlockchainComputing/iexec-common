@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,6 +115,7 @@ class FileHelperTests {
                 .isDirectory();
     }
 
+    // region delete file or folder
     @Test
     void shouldDeleteFile() {
         String filePath = TEST_FOLDER + "/test.txt";
@@ -175,13 +176,14 @@ class FileHelperTests {
     }
 
     @Test
-    void shouldNotDeleteNonExistingFolder() {
+    void shouldDoNothingWhenNonExistingFolder() {
         String folderPath = TEST_FOLDER + "/folder";
         boolean isDeleted = FileHelper.deleteFolder(folderPath);
         File deletedFolder = new File(folderPath);
-        assertThat(isDeleted).isFalse();
+        assertThat(isDeleted).isTrue();
         assertThat(deletedFolder).doesNotExist();
     }
+    // endregion
 
     @Test
     void shouldZipFolder() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -184,19 +184,6 @@ public class FileHelper {
                 Paths.get(fileUri).getFileName().toString());
     }
 
-    /**
-     * Download file
-     * @deprecated
-     * <p> Use {@link FileHelper#downloadFile(String, String, String)} instead.
-     * @param fileUri URI of the file
-     * @param directoryPath directory path where the file will be downloaded
-     * @return true if successful download
-     */
-    @Deprecated(forRemoval = true)
-    public static boolean downloadFileInDirectory(String fileUri, String directoryPath){
-        return !downloadFile(fileUri, directoryPath).isEmpty();
-    }
-
     public static boolean exists(String path) {
         Objects.requireNonNull(path, "Path must not be null");
         return new File(path).exists();
@@ -218,21 +205,26 @@ public class FileHelper {
         return false;
     }
 
-    public static boolean deleteFolder(String folderPath) {
-        File folder = new File(folderPath);
+    /**
+     * Delete a folder recursively with its content.
+     *
+     * @param folderPath The folder to delete
+     * @return Whether the folder still exists after the operation or not
+     */
+    public static boolean deleteFolder(final String folderPath) {
+        final File folder = new File(folderPath);
         if (!folder.exists()) {
-            log.info("Folder doesn't exist so can't be deleted [path:{}]", folderPath);
-            return false;
+            log.info("Folder does not exist, nothing to delete [path:{}]", folderPath);
+            return true;
         }
 
         try {
             FileUtils.deleteDirectory(folder);
             log.info("Folder has been deleted [path:{}]", folderPath);
-            return true;
         } catch (IOException e) {
-            log.error("Problem when trying to delete the folder [path:{}]", folderPath);
+            log.error("Problem when trying to delete the folder [path:{}]", folderPath, e);
         }
-        return false;
+        return !folder.exists();
     }
 
     public static File zipFolder(String folderPath) {
