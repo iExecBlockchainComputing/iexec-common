@@ -17,7 +17,6 @@ All notable changes to this project will be documented in this file.
 
 - Upgrade source and target compatibility to Java 17. (#467)
 - Fix 3 SonarQube Cloud issues. (#474)
-- Harmonize YML internal variables to proper case. (#480)
 
 ### Breaking API changes
 
@@ -32,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - Remove `com.iexec.common.sdk.marketplace` and `com.iexec.common.sdk.order` packages. (#475)
 - Remove `com.iexec.common.sdk.cli` package. (#476)
 - Remove `com.iexec.common.contribution` package. (#477)
+- Move ValidNonZeroEthereumAddress from common to commons-poco. (#480)
 
 ### Dependency Upgrades
 
