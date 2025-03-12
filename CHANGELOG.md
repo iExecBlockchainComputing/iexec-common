@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 
 - Upgrade source and target compatibility to Java 17. (#467)
 - Fix 3 SonarQube Cloud issues. (#474)
+- Harmonize YML internal variables to proper case. (#480)
 
 ### Breaking API changes
 
