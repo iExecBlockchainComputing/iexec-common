@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - Remove `com.iexec.common.sdk.marketplace` and `com.iexec.common.sdk.order` packages. (#475)
 - Remove `com.iexec.common.sdk.cli` package. (#476)
 - Remove `com.iexec.common.contribution` package. (#477)
+- Move `ValidNonZeroEthereumAddress` from `iexec-common` to `iexec-commons-poco`. (#480)
 
 ### Dependency Upgrades
 

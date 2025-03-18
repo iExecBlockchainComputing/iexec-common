@@ -69,8 +69,6 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic'
 
     implementation 'jakarta.annotation:jakarta.annotation-api'
-    implementation 'jakarta.validation:jakarta.validation-api'
-    implementation 'org.hibernate.validator:hibernate-validator'
 
     // expiring map
     implementation 'net.jodah:expiringmap:0.5.10'
@@ -102,8 +100,6 @@ testing {
                 implementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
                 // spring-test for ReflectionTestUtils
                 implementation 'org.springframework:spring-test'
-
-                runtimeOnly 'org.glassfish.expressly:expressly:5.0.0'
             }
         }
     }
