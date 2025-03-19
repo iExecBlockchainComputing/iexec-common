@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,12 @@ package com.iexec.common.result;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 import org.web3j.utils.Numeric;
 
-@Data
+@Value
 @Builder
-@AllArgsConstructor
 @JsonDeserialize(builder = ResultModel.ResultModelBuilder.class)
 public class ResultModel {
 
@@ -35,14 +33,16 @@ public class ResultModel {
     public static final String EMPTY_WEB3_SIG = Numeric.toHexString(new byte[65]);
 
     @Builder.Default
-    private final String chainTaskId = EMPTY_CHAIN_ID;
-    private final String image;
-    private final String cmd;
+    String chainTaskId = EMPTY_CHAIN_ID;
+    String dealId;
+    int taskIndex;
+    String image;
+    String cmd;
     @Builder.Default
-    private final byte[] zip = new byte[0];
-    private final String deterministHash;
+    byte[] zip = new byte[0];
+    String deterministHash;
     @Builder.Default
-    private final String enclaveSignature = EMPTY_WEB3_SIG;
+    String enclaveSignature = EMPTY_WEB3_SIG;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class ResultModelBuilder {

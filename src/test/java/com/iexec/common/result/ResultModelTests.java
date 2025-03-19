@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2024 IEXEC BLOCKCHAIN TECH
+ * Copyright 2024-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,12 @@ class ResultModelTests {
         ResultModel resultModel = ResultModel.builder().build();
         String jsonString = mapper.writeValueAsString(resultModel);
         assertThat(jsonString).isEqualTo("{\"chainTaskId\":\"" + EMPTY_CHAIN_ID + "\"," +
-                "\"image\":null,\"cmd\":null,\"zip\":\"\",\"deterministHash\":null," +
+                "\"dealId\":null,\"taskIndex\":0,\"image\":null,\"cmd\":null,\"zip\":\"\",\"deterministHash\":null," +
                 "\"enclaveSignature\":\"" + EMPTY_WEB3_SIG + "\"}");
         ResultModel parsedResultModel = mapper.readValue(jsonString, ResultModel.class);
         assertThat(parsedResultModel).usingRecursiveComparison().isEqualTo(resultModel);
         assertThat(resultModel).hasToString(
-                "ResultModel(chainTaskId=" + EMPTY_CHAIN_ID + ", image=null, cmd=null, zip=[]"
+                "ResultModel(chainTaskId=" + EMPTY_CHAIN_ID + ", dealId=null, taskIndex=0, image=null, cmd=null, zip=[]"
                         + ", deterministHash=null, enclaveSignature=" + EMPTY_WEB3_SIG + ")"
         );
     }
