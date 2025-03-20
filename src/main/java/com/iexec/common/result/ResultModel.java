@@ -22,7 +22,6 @@ import lombok.Builder;
 import lombok.Value;
 import org.web3j.utils.Numeric;
 
-import static com.iexec.commons.poco.utils.BytesUtils.BYTES_32_SIZE;
 import static com.iexec.commons.poco.utils.BytesUtils.EMPTY_HEX_STRING_32;
 
 @Value
@@ -39,7 +38,7 @@ public class ResultModel {
     @Builder.Default
     String dealId = EMPTY_HEX_STRING_32;
     @Builder.Default
-    int taskIndex = BYTES_32_SIZE;
+    int taskIndex = 0;
     String image;
     String cmd;
     @Builder.Default
