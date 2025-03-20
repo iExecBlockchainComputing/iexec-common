@@ -18,10 +18,12 @@ package com.iexec.common.result;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.iexec.commons.poco.utils.BytesUtils;
 import lombok.Builder;
 import lombok.Value;
 import org.web3j.utils.Numeric;
+
+import static com.iexec.commons.poco.utils.BytesUtils.BYTES_32_SIZE;
+import static com.iexec.commons.poco.utils.BytesUtils.EMPTY_HEX_STRING_32;
 
 @Value
 @Builder
@@ -29,18 +31,15 @@ import org.web3j.utils.Numeric;
 public class ResultModel {
 
     //TODO move this to commons-poco
-    public static final String EMPTY_CHAIN_ID = Numeric.toHexString(new byte[32]);
     // An ethereum signature is 65 bytes long with R, S and V parts (32 bytes + 32 bytes + 1 byte)
     public static final String EMPTY_WEB3_SIG = Numeric.toHexString(new byte[65]);
-    public static final String EMPTY_DEAL_ID = BytesUtils.EMPTY_HEX_STRING_32;
-    public static final int DEFAULT_TASK_INDEX = BytesUtils.BYTES_32_SIZE;
 
     @Builder.Default
-    String chainTaskId = EMPTY_CHAIN_ID;
+    String chainTaskId = EMPTY_HEX_STRING_32;
     @Builder.Default
-    String dealId = EMPTY_DEAL_ID;
+    String dealId = EMPTY_HEX_STRING_32;
     @Builder.Default
-    int taskIndex = DEFAULT_TASK_INDEX;
+    int taskIndex = BYTES_32_SIZE;
     String image;
     String cmd;
     @Builder.Default

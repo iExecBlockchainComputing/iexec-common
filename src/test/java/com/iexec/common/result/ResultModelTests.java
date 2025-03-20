@@ -20,7 +20,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
-import static com.iexec.common.result.ResultModel.*;
+import static com.iexec.common.result.ResultModel.EMPTY_WEB3_SIG;
+import static com.iexec.commons.poco.utils.BytesUtils.BYTES_32_SIZE;
+import static com.iexec.commons.poco.utils.BytesUtils.EMPTY_HEX_STRING_32;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ResultModelTests {
@@ -31,15 +33,15 @@ class ResultModelTests {
     void shouldSerializeAndDeserialize() throws JsonProcessingException {
         ResultModel resultModel = ResultModel.builder().build();
         String jsonString = mapper.writeValueAsString(resultModel);
-        assertThat(jsonString).isEqualTo("{\"chainTaskId\":\"" + EMPTY_CHAIN_ID + "\"," +
-                "\"dealId\":\"" + EMPTY_DEAL_ID + "\",\"taskIndex\":" + DEFAULT_TASK_INDEX +
+        assertThat(jsonString).isEqualTo("{\"chainTaskId\":\"" + EMPTY_HEX_STRING_32 + "\"," +
+                "\"dealId\":\"" + EMPTY_HEX_STRING_32 + "\",\"taskIndex\":" + BYTES_32_SIZE +
                 ",\"image\":null,\"cmd\":null,\"zip\":\"\",\"deterministHash\":null," +
                 "\"enclaveSignature\":\"" + EMPTY_WEB3_SIG + "\"}");
         ResultModel parsedResultModel = mapper.readValue(jsonString, ResultModel.class);
         assertThat(parsedResultModel).usingRecursiveComparison().isEqualTo(resultModel);
         assertThat(resultModel).hasToString(
-                "ResultModel(chainTaskId=" + EMPTY_CHAIN_ID + ", dealId=" + EMPTY_DEAL_ID +
-                        ", taskIndex=" + DEFAULT_TASK_INDEX + ", image=null, cmd=null, zip=[]"
+                "ResultModel(chainTaskId=" + EMPTY_HEX_STRING_32 + ", dealId=" + EMPTY_HEX_STRING_32 +
+                        ", taskIndex=" + BYTES_32_SIZE + ", image=null, cmd=null, zip=[]"
                         + ", deterministHash=null, enclaveSignature=" + EMPTY_WEB3_SIG + ")"
         );
     }
