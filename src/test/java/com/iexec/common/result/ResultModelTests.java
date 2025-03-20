@@ -20,8 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
-import static com.iexec.common.result.ResultModel.EMPTY_CHAIN_ID;
-import static com.iexec.common.result.ResultModel.EMPTY_WEB3_SIG;
+import static com.iexec.common.result.ResultModel.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ResultModelTests {
@@ -33,12 +32,14 @@ class ResultModelTests {
         ResultModel resultModel = ResultModel.builder().build();
         String jsonString = mapper.writeValueAsString(resultModel);
         assertThat(jsonString).isEqualTo("{\"chainTaskId\":\"" + EMPTY_CHAIN_ID + "\"," +
-                "\"dealId\":null,\"taskIndex\":0,\"image\":null,\"cmd\":null,\"zip\":\"\",\"deterministHash\":null," +
+                "\"dealId\":\"" + EMPTY_DEAL_ID + "\",\"taskIndex\":" + DEFAULT_TASK_INDEX +
+                ",\"image\":null,\"cmd\":null,\"zip\":\"\",\"deterministHash\":null," +
                 "\"enclaveSignature\":\"" + EMPTY_WEB3_SIG + "\"}");
         ResultModel parsedResultModel = mapper.readValue(jsonString, ResultModel.class);
         assertThat(parsedResultModel).usingRecursiveComparison().isEqualTo(resultModel);
         assertThat(resultModel).hasToString(
-                "ResultModel(chainTaskId=" + EMPTY_CHAIN_ID + ", dealId=null, taskIndex=0, image=null, cmd=null, zip=[]"
+                "ResultModel(chainTaskId=" + EMPTY_CHAIN_ID + ", dealId=" + EMPTY_DEAL_ID +
+                        ", taskIndex=" + DEFAULT_TASK_INDEX + ", image=null, cmd=null, zip=[]"
                         + ", deterministHash=null, enclaveSignature=" + EMPTY_WEB3_SIG + ")"
         );
     }
