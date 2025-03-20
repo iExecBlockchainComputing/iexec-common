@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2024 IEXEC BLOCKCHAIN TECH
+ * Copyright 2024-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
-import static com.iexec.common.result.ResultModel.EMPTY_CHAIN_ID;
 import static com.iexec.common.result.ResultModel.EMPTY_WEB3_SIG;
+import static com.iexec.commons.poco.utils.BytesUtils.EMPTY_HEX_STRING_32;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ResultModelTests {
@@ -32,13 +32,15 @@ class ResultModelTests {
     void shouldSerializeAndDeserialize() throws JsonProcessingException {
         ResultModel resultModel = ResultModel.builder().build();
         String jsonString = mapper.writeValueAsString(resultModel);
-        assertThat(jsonString).isEqualTo("{\"chainTaskId\":\"" + EMPTY_CHAIN_ID + "\"," +
-                "\"image\":null,\"cmd\":null,\"zip\":\"\",\"deterministHash\":null," +
+        assertThat(jsonString).isEqualTo("{\"chainTaskId\":\"" + EMPTY_HEX_STRING_32 + "\"," +
+                "\"dealId\":\"" + EMPTY_HEX_STRING_32 + "\",\"taskIndex\":0" +
+                ",\"image\":null,\"cmd\":null,\"zip\":\"\",\"deterministHash\":null," +
                 "\"enclaveSignature\":\"" + EMPTY_WEB3_SIG + "\"}");
         ResultModel parsedResultModel = mapper.readValue(jsonString, ResultModel.class);
         assertThat(parsedResultModel).usingRecursiveComparison().isEqualTo(resultModel);
         assertThat(resultModel).hasToString(
-                "ResultModel(chainTaskId=" + EMPTY_CHAIN_ID + ", image=null, cmd=null, zip=[]"
+                "ResultModel(chainTaskId=" + EMPTY_HEX_STRING_32 + ", dealId=" + EMPTY_HEX_STRING_32 +
+                        ", taskIndex=0" + ", image=null, cmd=null, zip=[]"
                         + ", deterministHash=null, enclaveSignature=" + EMPTY_WEB3_SIG + ")"
         );
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,31 +18,34 @@ package com.iexec.common.result;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 import org.web3j.utils.Numeric;
 
-@Data
+import static com.iexec.commons.poco.utils.BytesUtils.EMPTY_HEX_STRING_32;
+
+@Value
 @Builder
-@AllArgsConstructor
 @JsonDeserialize(builder = ResultModel.ResultModelBuilder.class)
 public class ResultModel {
 
     //TODO move this to commons-poco
-    public static final String EMPTY_CHAIN_ID = Numeric.toHexString(new byte[32]);
     // An ethereum signature is 65 bytes long with R, S and V parts (32 bytes + 32 bytes + 1 byte)
     public static final String EMPTY_WEB3_SIG = Numeric.toHexString(new byte[65]);
 
     @Builder.Default
-    private final String chainTaskId = EMPTY_CHAIN_ID;
-    private final String image;
-    private final String cmd;
+    String chainTaskId = EMPTY_HEX_STRING_32;
     @Builder.Default
-    private final byte[] zip = new byte[0];
-    private final String deterministHash;
+    String dealId = EMPTY_HEX_STRING_32;
     @Builder.Default
-    private final String enclaveSignature = EMPTY_WEB3_SIG;
+    int taskIndex = 0;
+    String image;
+    String cmd;
+    @Builder.Default
+    byte[] zip = new byte[0];
+    String deterministHash;
+    @Builder.Default
+    String enclaveSignature = EMPTY_WEB3_SIG;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class ResultModelBuilder {

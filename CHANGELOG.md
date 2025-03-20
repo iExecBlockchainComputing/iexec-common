@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Gather pre and post compute environment variables in new `TeeSessionEnvironmentVariable` Enum. (#473)
 - Add new pre-compute required causes to `ReplicateCauseStatus`. (#474)
+- Turn `ResultModel` into an immutable class and add `dealId`/`taskIndex` fields. (#481)
 
 ### Bug Fixes
 
