@@ -33,11 +33,11 @@ All notable changes to this project will be documented in this file.
 - Remove `com.iexec.common.sdk.cli` package. (#476)
 - Remove `com.iexec.common.contribution` package. (#477)
 - Move `ValidNonZeroEthereumAddress` from `iexec-common` to `iexec-commons-poco`. (#480)
+- Remove `NetworkUtils` class and clean dependencies. (#481)
 
 ### Dependency Upgrades
 
 - Upgrade to Java 17. (#467)
-- Upgrade to Google Guava 32.1.3-jre. (#467)
 - Upgrade to Zip4j 2.11.5. (#467)
 - Upgrade to Expressly 5.0.0. (#467)
 - Upgrade to Spring Boot 3.3.8. (#469)

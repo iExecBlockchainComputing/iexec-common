@@ -57,16 +57,8 @@ dependencies {
     // apache commons-lang3
     implementation 'org.apache.commons:commons-lang3'
 
-    // xml binding for java 17
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api'
-
     // zip
     implementation 'net.lingala.zip4j:zip4j:2.11.5'
-
-    // google core libs
-    implementation 'com.google.guava:guava:32.1.3-jre'
-
-    implementation 'ch.qos.logback:logback-classic'
 
     implementation 'jakarta.annotation:jakarta.annotation-api'
 
@@ -98,8 +90,8 @@ testing {
                 // mock-server
                 implementation "org.mock-server:mockserver-client-java:$mockServerVersion"
                 implementation "org.mock-server:mockserver-junit-jupiter:$mockServerVersion"
-                // spring-test for ReflectionTestUtils
-                implementation 'org.springframework:spring-test'
+                // runtime dependencies
+                runtimeOnly 'ch.qos.logback:logback-classic'
             }
         }
     }
