@@ -33,7 +33,7 @@ All notable changes to this project will be documented in this file.
 - Remove `com.iexec.common.sdk.cli` package. (#476)
 - Remove `com.iexec.common.contribution` package. (#477)
 - Move `ValidNonZeroEthereumAddress` from `iexec-common` to `iexec-commons-poco`. (#480)
-- Remove `NetworkUtils` class and clean dependencies. (#481)
+- Remove `NetworkUtils` class and clean dependencies. (#482)
 
 ### Dependency Upgrades
 
