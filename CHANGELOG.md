@@ -41,6 +41,7 @@ All notable changes to this project will be documented in this file.
 - Upgrade to Zip4j 2.11.5. (#467)
 - Upgrade to Expressly 5.0.0. (#467)
 - Upgrade to Spring Boot 3.3.8. (#469)
+- Upgrade to `iexec-commons-poco` 4.3.0. (#483)
 
 ## [[8.6.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.6.0) 2024-12-19
 
