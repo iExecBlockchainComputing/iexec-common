@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
+## [[9.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v9.0.0) 2025-03-27
+
+### New Features
+
+- Gather pre and post compute environment variables in new `TeeSessionEnvironmentVariable` Enum. (#473)
+- Add new pre-compute required causes to `ReplicateCauseStatus`. (#474)
+- Turn `ResultModel` into an immutable class and add `dealId`/`taskIndex` fields. (#481)
+
+### Bug Fixes
+
+- Update `deleteFolder` in `FileHelper` to return `true` when folder does not exist. (#479)
+
+### Quality
+
+- Upgrade source and target compatibility to Java 17. (#467)
+- Fix 3 SonarQube Cloud issues. (#474)
+
+### Breaking API changes
+
+- Remove PublicConfiguration class moved to iexec-core-library. (#468)
+- Migrate from AES ECB 128-bit to AES CBC 256-bit in `EncryptionHelper`. (#470)
+- Remove base64 manipulation for AES key. (#470)
+- Move `WorkerModel` from `iexec-common` to `iexec-core-library`. (#471)
+- Remove conversion method from `ReplicateStatusCause`, it has been moved to `TaskAbortCause` in `iexec-core-library`. (#472)
+- Remove pre and post compute environment variables from `PreComputeUtils`, `IexecEnvUtils` and `ResultUtils`. (#473)
+- Rename some constants in `ReplicateStatusCause` Enum after they are no more post compute specific. (#473)
+- Transform `ExitMessage` to a Java Record. (#473)
+- Remove `com.iexec.common.sdk.marketplace` and `com.iexec.common.sdk.order` packages. (#475)
+- Remove `com.iexec.common.sdk.cli` package. (#476)
+- Remove `com.iexec.common.contribution` package. (#477)
+- Move `ValidNonZeroEthereumAddress` from `iexec-common` to `iexec-commons-poco`. (#480)
+- Remove `NetworkUtils` class and clean dependencies. (#482)
+
+### Dependency Upgrades
+
+- Upgrade to Java 17. (#467)
+- Upgrade to Zip4j 2.11.5. (#467)
+- Upgrade to Expressly 5.0.0. (#467)
+- Upgrade to Spring Boot 3.3.8. (#469)
+- Upgrade to `iexec-commons-poco` 5.0.0. (#483)
+
 ## [[8.6.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v8.6.0) 2024-12-19
 
 ### New Features

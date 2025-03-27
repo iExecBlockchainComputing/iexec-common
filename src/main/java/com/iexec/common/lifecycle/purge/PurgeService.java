@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 IEXEC BLOCKCHAIN TECH
+ * Copyright 2022-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.iexec.common.lifecycle.purge;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class PurgeService {
@@ -28,11 +27,12 @@ public class PurgeService {
     public PurgeService(List<Purgeable> services) {
         this.services = services;
         log.info("The following services are registered to be purged on task completion: {}",
-                services.stream().map(Purgeable::getClass).collect(Collectors.toList()));
+                services.stream().map(Purgeable::getClass).toList());
     }
 
     /**
      * On each registered service, calls {@link Purgeable#purgeTask(String)} with given chain task ID.
+     *
      * @param chainTaskId Task ID whose data should be purged from registered services.
      * @return {@literal true} if there's no more reference to task data in all registered services,
      * {@literal false} otherwise.

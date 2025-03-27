@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,16 @@
 package com.iexec.common.security;
 
 import com.iexec.common.utils.FileHelper;
+import jakarta.annotation.Nonnull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Nonnull;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.*;
@@ -43,13 +42,16 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CipherUtils {
 
+    private static final String NOT_NULL_DATA = "Data cannot be null";
+    private static final String NOT_NULL_AES_KEY = "AES key cannot be null";
+
     // ###############
     // #     AES     #
     // ###############
 
     /**
-     * Generate a 256 bits AES key.
-     * 
+     * Generate a 256-bit AES key.
+     *
      * @return 256 bits key if success,
      * empty byte array otherwise.
      */
@@ -60,16 +62,16 @@ public class CipherUtils {
     /**
      * Generate an AES symmetric key with the
      * given size.
-     * 
-     * @param size
+     *
+     * @param size The AES key size in number of bits
      * @return Generated AES key if success,
      * empty byte array otherwise.
      */
-    public static byte[] generateAesKey(int size) {
+    public static byte[] generateAesKey(final int size) {
         try {
-            KeyGenerator generator = KeyGenerator.getInstance("AES");
-            generator.init(size); // The AES key size in number of bits
-            SecretKey secKey = generator.generateKey();
+            final KeyGenerator generator = KeyGenerator.getInstance("AES");
+            generator.init(size);
+            final SecretKey secKey = generator.generateKey();
             return secKey.getEncoded();
         } catch (NoSuchAlgorithmException e) {
             log.error("Failed to generate AES key", e);
@@ -79,6 +81,7 @@ public class CipherUtils {
 
     /**
      * Generate a 16 bytes initialization vector.
+     *
      * @return generated binary IV.
      */
     public static byte[] generateIv() {
@@ -88,11 +91,12 @@ public class CipherUtils {
     /**
      * Generate an initialization vector with
      * the given size.
-     * @param size
+     *
+     * @param size The IV size in bytes
      * @return generated binary IV.
      */
-    public static byte[] generateIv(int size) {
-        byte[] iv = new byte[size];
+    public static byte[] generateIv(final int size) {
+        final byte[] iv = new byte[size];
         new SecureRandom().nextBytes(iv);
         return iv;
     }
@@ -101,37 +105,38 @@ public class CipherUtils {
      * Extract IV (initialization vector) from the
      * encrypted data. The IV occupies the first
      * 16 bytes of the data.
-     * 
-     * @param dataWithIv
-     * @return Extracted 16 bytes IV
+     *
+     * @param dataWithIv Encrypted data
+     * @return Extracted 16 bytes IV (0 -> 15)
      */
-    public static byte[] getIvFromEncryptedData(byte[] dataWithIv) {
-        return Arrays.copyOfRange(dataWithIv, 0, 16); // 0 -> 15;
+    public static byte[] getIvFromEncryptedData(final byte[] dataWithIv) {
+        return Arrays.copyOfRange(dataWithIv, 0, 16);
     }
 
     /**
      * Remove prepended IV (initialization vector)
      * from the encrypted data.
-     * 
-     * @param dataWithIv
+     *
+     * @param dataWithIv Encrypted data
      * @return a new array without the IV.
      */
-    public static byte[] stripIvFromEncryptedData(byte[] dataWithIv) {
+    public static byte[] stripIvFromEncryptedData(final byte[] dataWithIv) {
         return Arrays.copyOfRange(dataWithIv, 16, dataWithIv.length);
     }
 
     /**
      * Concatenate IV (initialization vector) to the
      * beginning of the encrypted data.
-     * 
-     * @param iv
-     * @param encryptedData
-     * @return
-     * @throws IOException
+     *
+     * @param iv            Initialization vector
+     * @param encryptedData Encrypted data
+     * @return IV prepended to the encrypted data as an array of bytes.
+     * @throws IOException if an I/O error occurs during
+     *                     the write operations.
      */
-    public static byte[] prependIvToEncryptedData(byte[] iv, byte[] encryptedData)
+    public static byte[] prependIvToEncryptedData(final byte[] iv, final byte[] encryptedData)
             throws IOException {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        final ByteArrayOutputStream result = new ByteArrayOutputStream();
         result.write(iv);
         result.write(encryptedData);
         return result.toByteArray();
@@ -145,22 +150,18 @@ public class CipherUtils {
      * <p>
      * Note: PKCS5Padding is equivalent to PKCS7Padding
      * <p>
-     * Ref: https://stackoverflow.com/a/10194082/7631879
-     * 
+     * Ref: <a href="https://stackoverflow.com/a/10194082/7631879">https://stackoverflow.com/a/10194082/7631879</a>
+     *
      * @param plainData to encrypt
-     * @param base64Key Base64 encoded AES key
+     * @param key       AES key
      * @return encrypted data prepended with the IV.
-     * @throws GeneralSecurityException
-     * 
+     * @throws GeneralSecurityException if an error occurs during AES encryption.
      * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
-    public static byte[] aesEncrypt(byte[] plainData, byte[] base64Key)
+    public static byte[] aesEncrypt(final byte[] plainData, final byte[] key)
             throws GeneralSecurityException, IOException {
-        Objects.requireNonNull(plainData, "Data cannot be null");
-        Objects.requireNonNull(base64Key, "Base64 AES key cannot be null");
-        byte[] iv = generateIv();
-        byte[] decodeKey = Base64.getDecoder().decode(base64Key);
-        byte[] encryptedData = aesEncrypt(plainData, decodeKey, iv);
+        final byte[] iv = generateIv();
+        final byte[] encryptedData = aesEncrypt(plainData, key, iv);
         return prependIvToEncryptedData(iv, encryptedData);
     }
 
@@ -169,26 +170,25 @@ public class CipherUtils {
      * <p>
      * Note: PKCS5Padding is equivalent to PKCS7Padding
      * <p>
-     * Ref: https://stackoverflow.com/a/10194082/7631879
-     * 
+     * Ref: <a href="https://stackoverflow.com/a/10194082/7631879">https://stackoverflow.com/a/10194082/7631879</a>
+     *
      * @param plainData to encrypt
-     * @param key
-     * @param iv initialization vector
+     * @param key       AES key
+     * @param iv        Initialization vector
      * @return Encrypted data
-     * @throws GeneralSecurityException
-     * 
+     * @throws GeneralSecurityException if an errors occurs during AES encryption.
      * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
-    public static byte[] aesEncrypt(
-            @Nonnull byte[] plainData, 
-            @Nonnull byte[] key, 
-            @Nonnull byte[] iv) throws GeneralSecurityException {
-        Objects.requireNonNull(plainData, "data cannot be null");
-        Objects.requireNonNull(key, "AES key cannot be null");
+    private static byte[] aesEncrypt(
+            final byte[] plainData,
+            final byte[] key,
+            final byte[] iv) throws GeneralSecurityException {
+        Objects.requireNonNull(plainData, NOT_NULL_DATA);
+        Objects.requireNonNull(key, NOT_NULL_AES_KEY);
         Objects.requireNonNull(iv, "IV cannot be null");
-        SecretKey secretKey = new SecretKeySpec(key, "AES");
-        IvParameterSpec ivParam = new IvParameterSpec(iv);
-        Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        final SecretKey secretKey = new SecretKeySpec(key, "AES");
+        final IvParameterSpec ivParam = new IvParameterSpec(iv);
+        final Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         aesCipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParam);
         return aesCipher.doFinal(plainData);
     }
@@ -201,28 +201,24 @@ public class CipherUtils {
      * <p>
      * Note: PKCS5Padding is equivalent to PKCS7Padding
      * <p>
-     * Ref: https://stackoverflow.com/a/10194082/7631879
-     * 
+     * Ref: <a href="https://stackoverflow.com/a/10194082/7631879">https://stackoverflow.com/a/10194082/7631879</a>
+     *
      * @param ivAndEncryptedData to decrypt
-     * @param base64Key Base64 encoded AES key
+     * @param key                AES key
      * @return Decrypted data
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException if an error occurs during AES decryption.
      * @throws IllegalArgumentException if the data's length
-     * is less than 16 bytes.
-     * 
+     *                                  is less than 16 bytes.
      * @see <a href="https://stackoverflow.com/a/34004582">AES encryption on file over 1GB</a> for large files
      */
-    public static byte[] aesDecrypt(byte[] ivAndEncryptedData, byte[] base64Key)
+    public static byte[] aesDecrypt(final byte[] ivAndEncryptedData, final byte[] key)
             throws GeneralSecurityException {
-        Objects.requireNonNull(ivAndEncryptedData, "Data cannot be null");
-        Objects.requireNonNull(base64Key, "Base64 AES key cannot be null");
         if (ivAndEncryptedData.length < 16) {
             throw new IllegalArgumentException("Data cannot be less than 16 bytes");
         }
-        byte[] decodedKey = Base64.getDecoder().decode(base64Key);
-        byte[] iv = getIvFromEncryptedData(ivAndEncryptedData);
-        byte[] data = stripIvFromEncryptedData(ivAndEncryptedData);
-        return aesDecrypt(data, decodedKey, iv);
+        final byte[] iv = getIvFromEncryptedData(ivAndEncryptedData);
+        final byte[] data = stripIvFromEncryptedData(ivAndEncryptedData);
+        return aesDecrypt(data, key, iv);
     }
 
     /**
@@ -230,24 +226,24 @@ public class CipherUtils {
      * <p>
      * Note: PKCS5Padding is equivalent to PKCS7Padding
      * <p>
-     * Ref: https://stackoverflow.com/a/10194082/7631879
-     * 
-     * @param plainData
-     * @param key
-     * @param iv
-     * @return
-     * @throws GeneralSecurityException
+     * Ref: <a href="https://stackoverflow.com/a/10194082/7631879">https://stackoverflow.com/a/10194082/7631879</a>
+     *
+     * @param plainData Data to decrypt
+     * @param key       AES key
+     * @param iv        Initialization vector
+     * @return Decrypted data
+     * @throws GeneralSecurityException if a security related error occurs.
      */
-    public static byte[] aesDecrypt(
-            @Nonnull byte[] plainData,
-            @Nonnull byte[] key,
-            @Nonnull byte[] iv) throws GeneralSecurityException {
-        Objects.requireNonNull(plainData, "Data cannot be null");
-        Objects.requireNonNull(key, "AES key cannot be null");
+    private static byte[] aesDecrypt(
+            final byte[] plainData,
+            final byte[] key,
+            final byte[] iv) throws GeneralSecurityException {
+        Objects.requireNonNull(plainData, NOT_NULL_DATA);
+        Objects.requireNonNull(key, NOT_NULL_AES_KEY);
         Objects.requireNonNull(iv, "IV cannot be null");
-        SecretKey secretKey = new SecretKeySpec(key, "AES");
-        IvParameterSpec ivParam = new IvParameterSpec(iv);
-        Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        final SecretKey secretKey = new SecretKeySpec(key, "AES");
+        final IvParameterSpec ivParam = new IvParameterSpec(iv);
+        final Cipher aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         aesCipher.init(Cipher.DECRYPT_MODE, secretKey, ivParam);
         return aesCipher.doFinal(plainData);  // heap size issues after 500MB
     }
@@ -258,7 +254,7 @@ public class CipherUtils {
 
     /**
      * Generate 2048 bits RSA key pair.
-     * 
+     *
      * @return Optional of generated key pair
      * if success, empty optional otherwise.
      */
@@ -268,14 +264,14 @@ public class CipherUtils {
 
     /**
      * Generate RSA key pair with the given size.
-     * 
+     *
      * @param size in bits
      * @return Optional of generated key pair if
      * success, empty optional otherwise.
      */
-    public static Optional<KeyPair> generateRsaKeyPair(int size) {
+    public static Optional<KeyPair> generateRsaKeyPair(final int size) {
         try {
-            KeyPairGenerator keyPairGenerator =
+            final KeyPairGenerator keyPairGenerator =
                     KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(size);
             return Optional.of(keyPairGenerator.generateKeyPair());
@@ -287,75 +283,75 @@ public class CipherUtils {
 
     /**
      * RSA-Encrypt data with the public key.
-     * 
-     * @param plainData to encrypt
-     * @param publicKey
+     *
+     * @param plainData Data to encrypt
+     * @param publicKey Public RSA key to encrypt with
      * @return encrypted data
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException if an error occurs during RSA encryption.
      */
-   public static byte[] rsaEncrypt(
-            @Nonnull byte[] plainData, 
-            @Nonnull PublicKey publicKey) throws GeneralSecurityException {
-        Cipher cipher = Cipher.getInstance("RSA");
+    public static byte[] rsaEncrypt(
+            @Nonnull final byte[] plainData,
+            @Nonnull final PublicKey publicKey) throws GeneralSecurityException {
+        final Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         return cipher.doFinal(plainData);
-   }
+    }
 
-   /**
-    * RSA-Decrypt data with the private key.
-    *
-    * @param encryptedData
-    * @param privateKey
-    * @return
-    * @throws GeneralSecurityException
-    */
+    /**
+     * RSA-Decrypt data with the private key.
+     *
+     * @param encryptedData Encrypted data to decrypt
+     * @param privateKey    Private RSA key to decrypt with
+     * @return decrypted data
+     * @throws GeneralSecurityException if an error occurs during RSA decryption.
+     */
     public static byte[] rsaDecrypt(
-            @Nonnull byte[] encryptedData,
-            @Nonnull PrivateKey privateKey) throws GeneralSecurityException {
-        Cipher cipher = Cipher.getInstance("RSA");
+            @Nonnull final byte[] encryptedData,
+            @Nonnull final PrivateKey privateKey) throws GeneralSecurityException {
+        final Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return cipher.doFinal(encryptedData);
     }
 
     /**
      * Read RSA key pair from files.
-     * 
-     * @param publicKeyFilepath
-     * @param privateKeyFilepath
+     *
+     * @param publicKeyFilepath  Path to the public key file
+     * @param privateKeyFilepath Path to the private key file
      * @return Optional of keyPair if success,
      * empty optional otherwise.
      */
-    public static Optional<KeyPair> readRsaKeyPair(String publicKeyFilepath, String privateKeyFilepath) {
-        String base64RsaPub = FileHelper.readFile(publicKeyFilepath);
-        String base64RsaPriv = FileHelper.readFile(privateKeyFilepath);
+    public static Optional<KeyPair> readRsaKeyPair(final String publicKeyFilepath, final String privateKeyFilepath) {
+        final String base64RsaPub = FileHelper.readFile(publicKeyFilepath);
+        final String base64RsaPriv = FileHelper.readFile(privateKeyFilepath);
         if (base64RsaPub.isEmpty() || base64RsaPriv.isEmpty()) {
             return Optional.empty();
         }
-        Optional<PublicKey> publicKey = base64ToRsaPublicKey(base64RsaPub);
-        Optional<PrivateKey> privateKey = base64ToRsaPrivateKey(base64RsaPriv);
+        final Optional<PublicKey> publicKey = base64ToRsaPublicKey(base64RsaPub);
+        final Optional<PrivateKey> privateKey = base64ToRsaPrivateKey(base64RsaPriv);
         if (publicKey.isEmpty() || privateKey.isEmpty()) {
             return Optional.empty();
         }
-        KeyPair keyPair = new KeyPair(publicKey.get(), privateKey.get());
+        final KeyPair keyPair = new KeyPair(publicKey.get(), privateKey.get());
         return Optional.of(keyPair);
     }
-    
+
     /**
      * Get RSA public key from Base64 string.
-     * 
-     * @param base64RsaPublicKey
+     *
+     * @param base64RsaPublicKey Base64 RSA public key
      * @return Optional of publicKey is success,
      * empty optional otherwise.
      */
-    public static Optional<PublicKey> base64ToRsaPublicKey(String base64RsaPublicKey) {
-        String strippedBase64RsaPub = base64RsaPublicKey
+    public static Optional<PublicKey> base64ToRsaPublicKey(final String base64RsaPublicKey) {
+        final String strippedBase64RsaPub = base64RsaPublicKey
                 .replace("\n", "")
                 .replace("-----BEGIN PUBLIC KEY-----", "")
                 .replace("-----END PUBLIC KEY-----", "");
-        byte[] decodedKey = Base64.getDecoder().decode(strippedBase64RsaPub);
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(decodedKey);
+        final byte[] decodedKey = Base64.getDecoder().decode(strippedBase64RsaPub);
+        final X509EncodedKeySpec spec = new X509EncodedKeySpec(decodedKey);
         try {
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            final KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             return Optional.of(keyFactory.generatePublic(spec));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             log.error("Failed to get RSA public key from Base64 string", e);
@@ -365,19 +361,20 @@ public class CipherUtils {
 
     /**
      * Get RSA private key from Base64 text.
-     * @param base64RsaPrivateKey
+     *
+     * @param base64RsaPrivateKey Base64 RSA private key
      * @return Optional of privateKey if success,
      * empty optional otherwise.
      */
-    public static Optional<PrivateKey> base64ToRsaPrivateKey(String base64RsaPrivateKey) {
-        String strippedBase64RsaPriv = base64RsaPrivateKey
+    public static Optional<PrivateKey> base64ToRsaPrivateKey(final String base64RsaPrivateKey) {
+        final String strippedBase64RsaPriv = base64RsaPrivateKey
                 .replace("\n", "")
                 .replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "");
-        byte[] decodedKey = Base64.getDecoder().decode(strippedBase64RsaPriv);
-        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decodedKey);
+        final byte[] decodedKey = Base64.getDecoder().decode(strippedBase64RsaPriv);
+        final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decodedKey);
         try {
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            final KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             return Optional.of(keyFactory.generatePrivate(spec));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             log.error("Failed to get RSA private key from Base64 string", e);

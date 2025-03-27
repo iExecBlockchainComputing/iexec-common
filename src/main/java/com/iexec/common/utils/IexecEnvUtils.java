@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.iexec.common.worker.tee.TeeSessionEnvironmentVariable.*;
+
 /**
  * Provides environment variables for worker {@code AppComputeService} and SMS {@code SecretSessionBaseService}
  *
@@ -34,21 +36,7 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IexecEnvUtils {
 
-    public static final String IEXEC_TASK_ID = "IEXEC_TASK_ID";
-    public static final String IEXEC_IN = "IEXEC_IN";
-    public static final String IEXEC_OUT = "IEXEC_OUT";
-    // BoT
-    public static final String IEXEC_BOT_TASK_INDEX = "IEXEC_BOT_TASK_INDEX";
-    public static final String IEXEC_BOT_SIZE = "IEXEC_BOT_SIZE";
-    public static final String IEXEC_BOT_FIRST_INDEX = "IEXEC_BOT_FIRST_INDEX";
-    // dataset
-    public static final String IEXEC_DATASET_ADDRESS = "IEXEC_DATASET_ADDRESS";
-    public static final String IEXEC_DATASET_URL = "IEXEC_DATASET_URL";
-    public static final String IEXEC_DATASET_FILENAME = "IEXEC_DATASET_FILENAME";
-    public static final String IEXEC_DATASET_CHECKSUM = "IEXEC_DATASET_CHECKSUM";
     // input files
-    public static final String IEXEC_INPUT_FILES_NUMBER = "IEXEC_INPUT_FILES_NUMBER";
-    public static final String IEXEC_INPUT_FILES_FOLDER = "IEXEC_INPUT_FILES_FOLDER";
     public static final String IEXEC_INPUT_FILE_NAME_PREFIX = "IEXEC_INPUT_FILE_NAME_";
     public static final String IEXEC_INPUT_FILE_URL_PREFIX = "IEXEC_INPUT_FILE_URL_";
 
@@ -65,8 +53,8 @@ public class IexecEnvUtils {
     public static Map<String, String> getAllIexecEnv(final TaskDescription taskDescription) {
         final Map<String, String> envMap = new HashMap<>();
         envMap.putAll(getComputeStageEnvMap(taskDescription));
-        envMap.put(IEXEC_DATASET_URL, taskDescription.getDatasetUri());
-        envMap.put(IEXEC_DATASET_CHECKSUM, taskDescription.getDatasetChecksum());
+        envMap.put(IEXEC_DATASET_URL.name(), taskDescription.getDatasetUri());
+        envMap.put(IEXEC_DATASET_CHECKSUM.name(), taskDescription.getDatasetChecksum());
         if (!taskDescription.containsInputFiles()) {
             return envMap;
         }
@@ -89,25 +77,25 @@ public class IexecEnvUtils {
      */
     public static Map<String, String> getComputeStageEnvMap(final TaskDescription taskDescription) {
         final Map<String, String> map = new HashMap<>();
-        map.put(IEXEC_TASK_ID, taskDescription.getChainTaskId());
-        map.put(IEXEC_IN, IexecFileHelper.SLASH_IEXEC_IN);
-        map.put(IEXEC_OUT, IexecFileHelper.SLASH_IEXEC_OUT);
+        map.put(IEXEC_TASK_ID.name(), taskDescription.getChainTaskId());
+        map.put(IEXEC_IN.name(), IexecFileHelper.SLASH_IEXEC_IN);
+        map.put(IEXEC_OUT.name(), IexecFileHelper.SLASH_IEXEC_OUT);
         // BoT
-        map.put(IEXEC_BOT_SIZE, String.valueOf(taskDescription.getBotSize()));
-        map.put(IEXEC_BOT_FIRST_INDEX, String.valueOf(taskDescription.getBotFirstIndex()));
-        map.put(IEXEC_BOT_TASK_INDEX, String.valueOf(taskDescription.getBotIndex()));
+        map.put(IEXEC_BOT_SIZE.name(), String.valueOf(taskDescription.getBotSize()));
+        map.put(IEXEC_BOT_FIRST_INDEX.name(), String.valueOf(taskDescription.getBotFirstIndex()));
+        map.put(IEXEC_BOT_TASK_INDEX.name(), String.valueOf(taskDescription.getBotIndex()));
         // dataset
-        map.put(IEXEC_DATASET_ADDRESS, taskDescription.getDatasetAddress());
-        map.put(IEXEC_DATASET_FILENAME, taskDescription.getDatasetAddress());
+        map.put(IEXEC_DATASET_ADDRESS.name(), taskDescription.getDatasetAddress());
+        map.put(IEXEC_DATASET_FILENAME.name(), taskDescription.getDatasetAddress());
         // input files
         if (!taskDescription.containsInputFiles()) {
-            map.put(IEXEC_INPUT_FILES_NUMBER, "0");
+            map.put(IEXEC_INPUT_FILES_NUMBER.name(), "0");
             return map;
         }
         // We are sure input files are present
         final List<String> inputFiles = taskDescription.getDealParams().getIexecInputFiles();
-        map.put(IEXEC_INPUT_FILES_FOLDER, IexecFileHelper.SLASH_IEXEC_IN);
-        map.put(IEXEC_INPUT_FILES_NUMBER, String.valueOf(inputFiles.size()));
+        map.put(IEXEC_INPUT_FILES_FOLDER.name(), IexecFileHelper.SLASH_IEXEC_IN);
+        map.put(IEXEC_INPUT_FILES_NUMBER.name(), String.valueOf(inputFiles.size()));
         int index = 1;
         for (final String inputFileUrl : inputFiles) {
             map.put(IEXEC_INPUT_FILE_NAME_PREFIX + index, FileHashUtils.createFileNameFromUri(inputFileUrl));

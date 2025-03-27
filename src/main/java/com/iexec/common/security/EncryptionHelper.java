@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Optional;
 
-import static com.iexec.common.security.CipherHelper.*;
+import static com.iexec.common.security.CipherUtils.*;
 import static com.iexec.common.utils.FileHelper.*;
 
 @Slf4j
@@ -55,57 +58,57 @@ public class EncryptionHelper {
      * Returns: folder or zip path
      *
      * */
-    public static String encryptData(String inDataFilePath, String plainTextRsaPub, boolean produceZip) {
-        String inDataFilename = FilenameUtils.getName(inDataFilePath);
-        String outEncryptedDataFilename = inDataFilename + ".aes";
+    public static String encryptData(final String inDataFilePath, final String plainTextRsaPub, final boolean produceZip) throws GeneralSecurityException, IOException {
+        final String inDataFilename = FilenameUtils.getName(inDataFilePath);
+        final String outEncryptedDataFilename = inDataFilename + ".aes";
 
-        String workDir = Paths.get(inDataFilePath).getParent().toString(); //"/tmp/scone";
-        String outEncDir = workDir + "/" + ENCRYPTION_PREFIX + FilenameUtils.removeExtension(inDataFilename); //location of future encrypted files (./encrypted-0x1_result)
+        final String workDir = Paths.get(inDataFilePath).getParent().toString();
+        final String outEncDir = workDir + "/" + ENCRYPTION_PREFIX + FilenameUtils.removeExtension(inDataFilename); //location of future encrypted files (./encrypted-0x1_result)
 
         // Get data to encrypt
-        byte[] data = readAllBytes(inDataFilePath);
+        final byte[] data = readAllBytes(inDataFilePath);
         if (data == null) {
             log.error("Failed to encryptData (readFile error) [inDataFilePath:{}]", inDataFilePath);
             return "";
         }
         // Generate AES key for data encryption
-        byte[] aesKey = generateAesKey();
+        final byte[] aesKey = generateAesKey();
         if (aesKey == null) {
             log.error("Failed to encryptData (generateAesKey error) [inDataFilePath:{}]", inDataFilePath);
             return "";
         }
-        // Encrypt data with AES key
-        byte[] encryptedData = aesEncrypt(data, aesKey);
+        // Encrypt data with Base64 AES key
+        final byte[] encryptedData = aesEncrypt(data, aesKey);
         if (encryptedData == null) {
             log.error("Failed to encryptData (aesEncrypt error) [inDataFilePath:{}]", inDataFilePath);
             return "";
         }
         // Create folder for future outEncryptedData & outEncryptedAesKey
-        boolean isOutDirCreated = createFolder(outEncDir);
+        final boolean isOutDirCreated = createFolder(outEncDir);
         if (!isOutDirCreated) {
             log.error("Failed to encryptData (isOutDirCreated error) [inDataFilePath:{}]", inDataFilePath);
             return "";
         }
         // Store encrypted data in ./0xtask1 [outEncDir]
-        boolean isEncryptedDataStored = writeFile(outEncDir + "/" + outEncryptedDataFilename, encryptedData);
+        final boolean isEncryptedDataStored = writeFile(outEncDir + "/" + outEncryptedDataFilename, encryptedData);
         if (!isEncryptedDataStored) {
             log.error("Failed to encryptData (isEncryptedDataStored error) [inDataFilePath:{}]", inDataFilePath);
             return "";
         }
         // Get RSA public key
-        PublicKey rsaPublicKey = plainText2RsaPublicKey(plainTextRsaPub);
-        if (rsaPublicKey == null) {
+        final Optional<PublicKey> rsaPublicKey = base64ToRsaPublicKey(plainTextRsaPub);
+        if (rsaPublicKey.isEmpty()) {
             log.error("Failed to encryptData (getRsaPublicKey error) [inDataFilePath:{}]", inDataFilePath);
             return "";
         }
         // Encrypt AES key with RSA public key
-        byte[] encryptedAesKey = rsaEncrypt(aesKey, rsaPublicKey);
+        final byte[] encryptedAesKey = rsaEncrypt(aesKey, rsaPublicKey.get());
         if (encryptedAesKey == null) {
             log.error("Failed to encryptData (rsaEncrypt error) [inDataFilePath:{}]", inDataFilePath);
             return "";
         }
         // Store encrypted AES key in ./0xtask1 [outEncDir]
-        boolean isEncryptedAesKeyStored = writeFile(outEncDir + "/" + AES_KEY_RSA_FILENAME, encryptedAesKey);
+        final boolean isEncryptedAesKeyStored = writeFile(outEncDir + "/" + AES_KEY_RSA_FILENAME, encryptedAesKey);
         if (!isEncryptedAesKeyStored) {
             log.error("Failed to encryptData (isEncryptedAesKeyStored error) [inDataFilePath:{}]", inDataFilePath);
             return "";
@@ -113,7 +116,7 @@ public class EncryptionHelper {
 
         if (produceZip) {
             // Zip encrypted files folder
-            File outEncZip = zipFolder(outEncDir);
+            final File outEncZip = zipFolder(outEncDir);
             if (outEncZip == null) {
                 log.error("Failed to encryptData (outEncZip error) [inDataFilePath:{}]", inDataFilePath);
                 return "";
@@ -144,49 +147,49 @@ public class EncryptionHelper {
      * Returns: clear data path (zip here)
      *
      * */
-    public static String decryptData(String encryptedDataFilePath, String plainTextRsaPriv) {
-        String encryptedResultFolder = Paths.get(encryptedDataFilePath).getParent().toString();
-        String outClearDataFilename = DECRYPTION_PREFIX + FilenameUtils.getBaseName(encryptedDataFilePath);
-        String outClearDataFilePath = encryptedResultFolder + "/../" + outClearDataFilename;
+    public static String decryptData(final String encryptedDataFilePath, final String plainTextRsaPriv) throws GeneralSecurityException {
+        final String encryptedResultFolder = Paths.get(encryptedDataFilePath).getParent().toString();
+        final String outClearDataFilename = DECRYPTION_PREFIX + FilenameUtils.getBaseName(encryptedDataFilePath);
+        final String outClearDataFilePath = encryptedResultFolder + "/../" + outClearDataFilename;
 
         // Get encrypted AES key
-        byte[] encryptedAesKey = readAllBytes(encryptedResultFolder + "/" + AES_KEY_RSA_FILENAME);
+        final byte[] encryptedAesKey = readAllBytes(encryptedResultFolder + "/" + AES_KEY_RSA_FILENAME);
         if (encryptedAesKey == null) {
             log.error("Failed to decryptData (encryptedAesKey error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";
         }
         // Get RSA private key
-        PrivateKey rsaPrivateKey = plainText2RsaPrivateKey(plainTextRsaPriv);
-        if (rsaPrivateKey == null) {
+        final Optional<PrivateKey> rsaPrivateKey = base64ToRsaPrivateKey(plainTextRsaPriv);
+        if (rsaPrivateKey.isEmpty()) {
             log.error("Failed to decryptData (rsaPrivateKey error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";
         }
         // Decrypt encrypted AES key
-        byte[] aesKey = rsaDecrypt(encryptedAesKey, rsaPrivateKey);
+        final byte[] aesKey = rsaDecrypt(encryptedAesKey, rsaPrivateKey.get());
         if (aesKey == null) {
             log.error("Failed to decryptData (aesKey error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";
         }
         // Check is AES data
-        boolean isAesExtensionEncryptedData = FilenameUtils.getExtension(encryptedDataFilePath).equals("aes");
+        final boolean isAesExtensionEncryptedData = FilenameUtils.getExtension(encryptedDataFilePath).equals("aes");
         if (!isAesExtensionEncryptedData) {
             log.error("Failed to decryptData (isAesExtensionEncryptedData error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";
         }
         // Get encrypted data
-        byte[] encryptedData = readAllBytes(encryptedDataFilePath);
+        final byte[] encryptedData = readAllBytes(encryptedDataFilePath);
         if (encryptedData == null) {
             log.error("Failed to decryptData (encryptedData error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";
         }
-        // Decrypt data with AES key
-        byte[] clearData = aesDecrypt(encryptedData, aesKey);
+        // Decrypt data with Base64 AES key
+        final byte[] clearData = aesDecrypt(encryptedData, aesKey);
         if (clearData == null) {
             log.error("Failed to decryptData (clearData error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";
         }
         // Store clear data
-        boolean isClearDataStored = writeFile(outClearDataFilePath, clearData);
+        final boolean isClearDataStored = writeFile(outClearDataFilePath, clearData);
         if (!isClearDataStored) {
             log.error("Failed to decryptData (isClearDataStored error) [encryptedDataFilePath:{}]", encryptedDataFilePath);
             return "";
