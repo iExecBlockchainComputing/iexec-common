@@ -9,15 +9,12 @@ plugins {
 group = 'com.iexec.common'
 
 ext {
+    gitTag = 'git tag --points-at HEAD'.execute().text.trim()
     mockServerVersion = '5.11.2'
     openFeignVersion = '12.5'
 }
 
-if (!project.hasProperty('gitBranch')) {
-    ext.gitBranch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
-}
-
-if (gitBranch != 'main' && gitBranch != 'master' && !(gitBranch ==~ '(release|hotfix|support)/.*')) {
+if (gitTag.isEmpty()) {
     version += '-NEXT-SNAPSHOT'
 }
 
