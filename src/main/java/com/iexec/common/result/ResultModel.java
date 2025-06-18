@@ -39,7 +39,9 @@ public class ResultModel {
     String dealId = EMPTY_HEX_STRING_32;
     @Builder.Default
     int taskIndex = 0;
+    @Deprecated(forRemoval = true)
     String image;
+    @Deprecated(forRemoval = true)
     String cmd;
     @Builder.Default
     byte[] zip = new byte[0];
