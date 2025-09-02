@@ -32,21 +32,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 class FileHelperTests {
 
     private static final String TEST_FOLDER = "/tmp/iexec-test";
-    // http
+
     private static final String HTTP_URL = "http://icons.iconarchive.com/icons/" +
             "cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
-    // private static final String HTTP_FILENAME = "iExec-RLC-RLC-icon.png";
-    private static final String HTTP_FILE_DIGEST =
+    private static final String HTTPS_URL = "https://icons.iconarchive.com/icons/" +
+            "cjdowner/cryptocurrency-flat/512/iExec-RLC-RLC-icon.png";
+    private static final String FILE_DIGEST =
             "0x4d8401fd4484f07c202c0a2b9ce6907eabd69efae0cec3956f1a56a6b19a9daa";
-    // https
-    private static final String HTTPS_URL = "https://upload.wikimedia.org" +
-            "/wikipedia/commons/thumb/6/65/600px_Black_bordered_HEX-0082D6.svg/600px-600px_Black_bordered_HEX-0082D6.svg.png";
-    // private static final String HTTPS_FILENAME = "token.svg";
-    private static final String HTTPS_FILE_DIGEST =
-            "0x45a4b7a3666f3885f3e5ac0e8c865c6f841890d2beb8d279c2bab9578403e05f";
-    // redirection
-    // private static final String REDIRECTION_URL = "https://goo.gl/t8JxoX";
-    // private static final String REDIRECTION_FILE_DIGEST = "TODO";
 
     private static final String ICON_PNG = "icon.png";
 
@@ -73,6 +65,7 @@ class FileHelperTests {
         assertThat(content).isEqualTo(data);
     }
 
+    // region createFolder
     @Test
     void shouldCreateFolder() {
         String folderPath = TEST_FOLDER + "/folder";
@@ -114,8 +107,9 @@ class FileHelperTests {
                 .exists()
                 .isDirectory();
     }
+    // endregion
 
-    // region delete file or folder
+    // region deleteFile
     @Test
     void shouldDeleteFile() {
         String filePath = TEST_FOLDER + "/test.txt";
@@ -140,7 +134,9 @@ class FileHelperTests {
         assertThat(isDeleted).isFalse();
         assertThat(deletedFile).doesNotExist();
     }
+    // endregion
 
+    // region deleteFolder
     @Test
     void shouldDeleteFolder() {
         String folderPath = TEST_FOLDER + "/folder";
@@ -196,8 +192,7 @@ class FileHelperTests {
         assertThat(zipFile.getAbsolutePath()).isEqualTo(TEST_FOLDER + "/taskId.zip");
     }
 
-    // downloadFile(url, dir, name)
-
+    // region downloadFile(url, dir, name)
     @Test
     void shouldDownloadFileWithName() {
         String downloadedFilePath = FileHelper.downloadFile(
@@ -206,7 +201,7 @@ class FileHelperTests {
         assertThat(new File(downloadedFilePath)).exists();
         // check that the correct file is downloaded
         assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
-                .isEqualTo(HTTP_FILE_DIGEST);
+                .isEqualTo(FILE_DIGEST);
     }
 
     @Test
@@ -217,20 +212,8 @@ class FileHelperTests {
         assertThat(new File(TEST_FOLDER + "/token.svg")).exists();
         // check that the correct file is downloaded
         assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
-                .isEqualTo(HTTPS_FILE_DIGEST);
+                .isEqualTo(FILE_DIGEST);
     }
-
-    // TODO
-    // @Test
-    // void shouldDownloadFileWithNameWithHttpRedirection() {
-    //     String downloadedFilePath = FileHelper.downloadFile(
-    //             REDIRECTION_URL, TEST_FOLDER, ICON_PNG);
-    //     assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/icon.png");
-    //     assertThat(new File(TEST_FOLDER + "/icon.png")).exists();
-    //     // check that the correct file is downloaded
-    //     assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
-    //             .isEqualTo(REDIRECTION_FILE_DIGEST);
-    // }
 
     @Test
     void shouldNotDownloadFileWithEmptyUrl() {
@@ -263,13 +246,13 @@ class FileHelperTests {
                 HTTP_URL, "/unauthorized", ICON_PNG);
         assertThat(downloadedFilePath).isEmpty();
     }
+    // endregion
 
     // TODO
     // @Test
     // void shouldCleanCreatedParentFolderWhenFailingToWriteDownloadedFile() {}
 
-    // readFileBytesFromUri(url)
-
+    // region readFileBytesFromUrl(url)
     @Test
     void shouldReadFileBytesFromUrl() {
         byte[] bytes = FileHelper.readFileBytesFromUrl(HTTP_URL);
@@ -281,9 +264,9 @@ class FileHelperTests {
         byte[] bytes = FileHelper.readFileBytesFromUrl("http://bad-url");
         assertThat(bytes).isNull();
     }
+    // endregion
 
-    // downloadFile(url, dir)
-
+    // region downloadFile(url, dir)
     @Test
     void shouldDownloadFileWithHttpUrl() {
         String downloadedFilePath = downloadFile(HTTP_URL, TEST_FOLDER);
@@ -292,7 +275,7 @@ class FileHelperTests {
         assertThat(new File(TEST_FOLDER + "/" + filename)).exists();
         // check that the correct file is downloaded
         assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
-                .isEqualTo(HTTP_FILE_DIGEST);
+                .isEqualTo(FILE_DIGEST);
 
     }
 
@@ -304,23 +287,11 @@ class FileHelperTests {
         assertThat(new File(TEST_FOLDER + "/" + filename)).exists();
         // check that the correct file is downloaded
         assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
-                .isEqualTo(HTTPS_FILE_DIGEST);
+                .isEqualTo(FILE_DIGEST);
     }
+    // endregion
 
-    // TODO
-    // @Test
-    // void shouldDownloadFileWithRedirectionUrl() {
-    //     String downloadedFilePath = downloadFile(REDIRECTION_URL, TEST_FOLDER);
-    //     String filename = Paths.get(REDIRECTION_URL).getFileName().toString();
-    //     assertThat(downloadedFilePath).isEqualTo(TEST_FOLDER + "/" + filename);
-    //     assertThat(new File(TEST_FOLDER + "/" + filename)).exists();
-    //     // check that the correct file is downloaded
-    //     assertThat(FileHashUtils.sha256(new File(downloadedFilePath)))
-    //             .isEqualTo(REDIRECTION_FILE_DIGEST);
-    // }
-
-    // exists()
-
+    // region exists()
     @Test
     void shouldFindFolder() {
         assertThat(FileHelper.exists("/tmp")).isTrue();
@@ -336,9 +307,9 @@ class FileHelperTests {
     void shouldNotFindFolder() {
         assertThat(FileHelper.exists("/not-found")).isFalse();
     }
+    // endregion
 
-    // removeZipExtension(path)
-
+    // region removeZipExtension(path)
     @Test
     void shouldRemoveZipExtension() {
         String fileName = FileHelper.removeZipExtension("/some/where/file.zip");
@@ -356,5 +327,6 @@ class FileHelperTests {
         String fileName = FileHelper.removeZipExtension("/some/where/file.bla");
         assertThat(fileName).isEmpty();
     }
+    // endregion
 
 }
