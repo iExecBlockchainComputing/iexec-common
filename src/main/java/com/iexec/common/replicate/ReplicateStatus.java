@@ -19,6 +19,7 @@ package com.iexec.common.replicate;
 import com.iexec.commons.poco.chain.ChainContributionStatus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public enum ReplicateStatus {
@@ -310,7 +311,7 @@ public enum ReplicateStatus {
      */
     @Deprecated(forRemoval = true)
     public static List<ReplicateStatus> getStatusesBeforeContributed() {
-        return List.of(
+        return Arrays.asList(
                 CREATED,
                 STARTING,
                 START_FAILED,
@@ -346,7 +347,7 @@ public enum ReplicateStatus {
      */
     @Deprecated(forRemoval = true)
     public static List<ReplicateStatus> getSuccessStatusesBeforeComputed() {
-        return List.of(
+        return Arrays.asList(
                 CREATED,
                 STARTING,
                 STARTED,
