@@ -156,10 +156,11 @@ public enum ReplicateStatus {
     }
 
     /**
-     * Statuses that should be updated to COMPLETED at the end of a task.
+     * @deprecated not used in other projects
      */
+    @Deprecated(forRemoval = true)
     public static List<ReplicateStatus> getCompletableStatuses() {
-        return List.of(
+        return Arrays.asList(
                 REVEALED,
                 RESULT_UPLOAD_REQUESTED,
                 RESULT_UPLOADING,
