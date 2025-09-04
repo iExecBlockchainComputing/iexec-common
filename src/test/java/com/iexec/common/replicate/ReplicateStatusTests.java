@@ -18,6 +18,7 @@ package com.iexec.common.replicate;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.iexec.common.replicate.ReplicateStatus.*;
@@ -25,6 +26,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ReplicateStatusTests {
 
+    // region getWorkflowStatus
+    @Test
+    void checkWorkflowStatuses() {
+        final List<ReplicateStatus> finalStatuses = getFinalStatuses();
+        final List<ReplicateStatus> nonFinalStatuses = getNonFinalWorkflowStatuses();
+        final List<ReplicateStatus> expectedStatuses = new ArrayList<>(nonFinalStatuses);
+        expectedStatuses.addAll(finalStatuses);
+        assertThat(getWorkflowStatuses()).isEqualTo(expectedStatuses);
+    }
+    // endregion
+
+    // region getMissingStatuses
     @Test
     void shouldGetMissingStatuses() {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTING);
@@ -56,6 +69,7 @@ class ReplicateStatusTests {
         List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTE_FAILED);
         assertThat(missingStatuses).isEmpty();
     }
+    // endregion
 
     @Test
     void shouldBeFailedBeforeComputed() {
@@ -99,4 +113,12 @@ class ReplicateStatusTests {
         runningFailures.forEach(status -> assertThat(status.isFailedBeforeComputed()).isTrue());
         notRunningFailures.forEach(status -> assertThat(status.isFailedBeforeComputed()).isFalse());
     }
+
+    // region getUnCompletableStatuses
+    @Test
+    void checkUncompletableStatuses() {
+        assertThat(ReplicateStatus.getUncompletableStatuses())
+                .isEqualTo(List.of(CONTRIBUTE_FAILED, REVEAL_FAILED, CONTRIBUTE_AND_FINALIZE_FAILED));
+    }
+    // endregion
 }
