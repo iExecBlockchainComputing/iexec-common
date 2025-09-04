@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,7 @@ package com.iexec.common.replicate;
 import com.iexec.commons.poco.chain.ChainContributionStatus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 
 public enum ReplicateStatus {
 
@@ -60,37 +58,69 @@ public enum ReplicateStatus {
     RECOVERING,
     WORKER_LOST;
 
-
     public static boolean isSuccess(ReplicateStatus status) {
         return getSuccessStatuses().contains(status);
     }
 
+    /**
+     * @deprecated not used in other projects
+     */
+    @Deprecated(forRemoval = true)
     public static boolean isFailure(ReplicateStatus status) {
         return getFailureStatuses().contains(status);
     }
 
+    /**
+     * @deprecated Use non-static method on Enum member instead
+     */
+    @Deprecated(forRemoval = true)
     public static boolean isFailedBeforeComputed(ReplicateStatus status) {
         return status.ordinal() < COMPUTED.ordinal() && getFailureStatuses().contains(status);
     }
 
+    /**
+     * Covers START_FAILED, APP_DOWNLOAD_FAILED, DATA_DOWNLOAD_FAILED and COMPUTE_FAILED
+     *
+     * @return {@literal true} if the status is in the list, {@literal false} otherwise
+     */
+    public boolean isFailedBeforeComputed() {
+        return this.ordinal() < COMPUTED.ordinal() && getFailureStatuses().contains(this);
+    }
+
+    /**
+     * @deprecated not used in other projects
+     */
+    @Deprecated(forRemoval = true)
     public static boolean isCompletable(ReplicateStatus status) {
         return getCompletableStatuses().contains(status);
     }
 
+    /**
+     * @deprecated not used in other projects
+     */
+    @Deprecated(forRemoval = true)
     public static boolean isFailable(ReplicateStatus status) {
         return getFailableStatuses().contains(status);
     }
 
+    /**
+     * @deprecated not used in other projects
+     */
+    @Deprecated(forRemoval = true)
     public static boolean isAbortable(ReplicateStatus status) {
         return getAbortableStatuses().contains(status);
     }
 
+    /**
+     * @deprecated not used in other projects
+     */
+    @Deprecated(forRemoval = true)
     public static boolean isRecoverable(ReplicateStatus status) {
         return true;  // just temporary
     }
 
     public static List<ReplicateStatus> getSuccessStatuses() {
-        return new ArrayList<>(Arrays.asList(
+        return List.of(
                 CREATED,
                 STARTING,
                 STARTED,
@@ -107,11 +137,11 @@ public enum ReplicateStatus {
                 CONTRIBUTE_AND_FINALIZE_ONGOING,
                 CONTRIBUTE_AND_FINALIZE_DONE,
                 COMPLETING,
-                COMPLETED));
+                COMPLETED);
     }
 
     public static List<ReplicateStatus> getFailureStatuses() {
-        return Arrays.asList(
+        return List.of(
                 START_FAILED,
                 APP_DOWNLOAD_FAILED,
                 DATA_DOWNLOAD_FAILED,
@@ -121,15 +151,14 @@ public enum ReplicateStatus {
                 RESULT_UPLOAD_FAILED,
                 CONTRIBUTE_AND_FINALIZE_FAILED,
                 COMPLETE_FAILED,
-                FAILED);
+                FAILED); // FAILED can be set from ReplicateListener in scheduler
     }
 
-    /*
-     * Statuses that should be updated
-     * to COMPLETED at the end of a task. 
+    /**
+     * Statuses that should be updated to COMPLETED at the end of a task.
      */
     public static List<ReplicateStatus> getCompletableStatuses() {
-        return Arrays.asList(
+        return List.of(
                 REVEALED,
                 RESULT_UPLOAD_REQUESTED,
                 RESULT_UPLOADING,
@@ -140,12 +169,11 @@ public enum ReplicateStatus {
                 COMPLETE_FAILED);
     }
 
-    /*
-     * Statuses that should be updated
-     * to FAILED at the end of a task. 
+    /**
+     * Statuses that should be updated to FAILED at the end of a task.
      */
     public static List<ReplicateStatus> getFailableStatuses() {
-        return Arrays.asList(
+        return List.of(
                 CREATED,
                 STARTING,
                 START_FAILED,
@@ -169,21 +197,20 @@ public enum ReplicateStatus {
                 ABORTED);
     }
 
-    /*
-     * Statuses that can be updated
-     * to ABORTED by the worker. 
+    /**
+     * Statuses that can be updated to ABORTED by the worker.
      */
     public static List<ReplicateStatus> getAbortableStatuses() {
-        List<ReplicateStatus> nonFinal = new ArrayList<>(getNonFinalWorkflowStatuses());
+        final List<ReplicateStatus> nonFinal = new ArrayList<>(getNonFinalWorkflowStatuses());
         nonFinal.add(WORKER_LOST);
-        return nonFinal;
+        return List.copyOf(nonFinal);
     }
 
-    /*
-     * Statuses that can be recovered by the worker 
+    /**
+     * Statuses that can be recovered by the worker
      */
     public static List<ReplicateStatus> getRecoverableStatuses() {
-        return Arrays.asList(
+        return List.of(
                 CREATED,
                 STARTING,
                 STARTED,
@@ -215,14 +242,14 @@ public enum ReplicateStatus {
      * CREATED -> COMPLETED/FAILED
      */
     public static List<ReplicateStatus> getWorkflowStatuses() {
-        List<ReplicateStatus> nonFinal = new ArrayList<>(getNonFinalWorkflowStatuses());
+        final List<ReplicateStatus> nonFinal = new ArrayList<>(getNonFinalWorkflowStatuses());
         nonFinal.add(COMPLETED);
         nonFinal.add(FAILED);
-        return nonFinal;
+        return List.copyOf(nonFinal);
     }
 
     public static List<ReplicateStatus> getFinalStatuses() {
-        return Arrays.asList(
+        return List.of(
                 COMPLETED,
                 FAILED);
     }
@@ -232,7 +259,7 @@ public enum ReplicateStatus {
      * CREATED -> COMPLETING/COMPLETE_FAILED
      */
     public static List<ReplicateStatus> getNonFinalWorkflowStatuses() {
-        return Arrays.asList(
+        return List.of(
                 CREATED,
                 STARTING,
                 START_FAILED,
@@ -263,6 +290,10 @@ public enum ReplicateStatus {
                 COMPLETE_FAILED);
     }
 
+    /**
+     * @deprecated unused in other projects
+     */
+    @Deprecated(forRemoval = true)
     public static ChainContributionStatus getChainStatus(ReplicateStatus replicateStatus) {
         switch (replicateStatus) {
             case CONTRIBUTED:
@@ -274,8 +305,12 @@ public enum ReplicateStatus {
         }
     }
 
+    /**
+     * @deprecated unused in other projects
+     */
+    @Deprecated(forRemoval = true)
     public static List<ReplicateStatus> getStatusesBeforeContributed() {
-        return Arrays.asList(
+        return List.of(
                 CREATED,
                 STARTING,
                 START_FAILED,
@@ -306,8 +341,12 @@ public enum ReplicateStatus {
         return statuses.subList(statuses.indexOf(from) + 1, statuses.indexOf(to) + 1);
     }
 
+    /**
+     * @deprecated called once from a scheduler method itself never used
+     */
+    @Deprecated(forRemoval = true)
     public static List<ReplicateStatus> getSuccessStatusesBeforeComputed() {
-        return Arrays.asList(
+        return List.of(
                 CREATED,
                 STARTING,
                 STARTED,
@@ -319,7 +358,7 @@ public enum ReplicateStatus {
     }
 
     public static List<ReplicateStatus> getUncompletableStatuses() {
-        return Arrays.asList(
+        return List.of(
                 CONTRIBUTE_FAILED,
                 REVEAL_FAILED,
                 CONTRIBUTE_AND_FINALIZE_FAILED
