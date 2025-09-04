@@ -331,16 +331,16 @@ public enum ReplicateStatus {
     }
 
     public static List<ReplicateStatus> getMissingStatuses(ReplicateStatus from, ReplicateStatus to) {
-        List<ReplicateStatus> statuses = getSuccessStatuses();
+        final List<ReplicateStatus> statuses = getSuccessStatuses();
         if (!statuses.contains(from) || !statuses.contains(to)) {
-            return new ArrayList<>();
+            return List.of();
         }
 
         if (statuses.indexOf(from) >= statuses.indexOf(to)) {
-            return new ArrayList<>();
+            return List.of();
         }
 
-        return statuses.subList(statuses.indexOf(from) + 1, statuses.indexOf(to) + 1);
+        return List.copyOf(statuses.subList(statuses.indexOf(from) + 1, statuses.indexOf(to) + 1));
     }
 
     /**

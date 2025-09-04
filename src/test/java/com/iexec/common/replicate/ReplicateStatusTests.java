@@ -40,7 +40,7 @@ class ReplicateStatusTests {
     // region getMissingStatuses
     @Test
     void shouldGetMissingStatuses() {
-        List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTING);
+        final List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTING);
 
         assertThat(missingStatuses).hasSize(7);
         assertThat(missingStatuses.get(0)).isEqualTo(STARTING);
@@ -54,19 +54,19 @@ class ReplicateStatusTests {
 
     @Test
     void shouldNotGetMissingStatusesWhenFromGreaterThanTo() {
-        List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(COMPUTING, CREATED);
+        final List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(COMPUTING, CREATED);
         assertThat(missingStatuses).isEmpty();
     }
 
     @Test
     void shouldNotGetMissingStatusesWhenFromEqualsTo() {
-        List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, CREATED);
+        final List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, CREATED);
         assertThat(missingStatuses).isEmpty();
     }
 
     @Test
     void shouldNotGetMissingStatusesIfFromOrToIsNotInSuccessList() {
-        List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTE_FAILED);
+        final List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTE_FAILED);
         assertThat(missingStatuses).isEmpty();
     }
     // endregion
