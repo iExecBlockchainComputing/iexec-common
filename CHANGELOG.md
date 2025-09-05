@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.0.1](https://github.com/iExecBlockchainComputing/iexec-common/compare/v9.0.0...v9.0.1) (2025-09-05)
+
+
+### Bug Fixes
+
+* deprecate unused fields in `ResultModel`, covering data existing on-chain ([#486](https://github.com/iExecBlockchainComputing/iexec-common/issues/486)) ([739350f](https://github.com/iExecBlockchainComputing/iexec-common/commit/739350fa316c396aec2cf5a56da06b6e5e9396ac))
+
 ## [[9.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v9.0.0) 2025-03-27
 
 ### New Features
