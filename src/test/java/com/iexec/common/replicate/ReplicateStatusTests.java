@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2025 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.iexec.common.replicate;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.iexec.common.replicate.ReplicateStatus.*;
@@ -25,9 +26,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ReplicateStatusTests {
 
+    // region getWorkflowStatus
+    @Test
+    void checkWorkflowStatuses() {
+        final List<ReplicateStatus> finalStatuses = getFinalStatuses();
+        final List<ReplicateStatus> nonFinalStatuses = getNonFinalWorkflowStatuses();
+        final List<ReplicateStatus> expectedStatuses = new ArrayList<>(nonFinalStatuses);
+        expectedStatuses.addAll(finalStatuses);
+        assertThat(getWorkflowStatuses()).isEqualTo(expectedStatuses);
+    }
+    // endregion
+
+    // region getMissingStatuses
     @Test
     void shouldGetMissingStatuses() {
-        List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTING);
+        final List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTING);
 
         assertThat(missingStatuses).hasSize(7);
         assertThat(missingStatuses.get(0)).isEqualTo(STARTING);
@@ -41,21 +54,22 @@ class ReplicateStatusTests {
 
     @Test
     void shouldNotGetMissingStatusesWhenFromGreaterThanTo() {
-        List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(COMPUTING, CREATED);
+        final List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(COMPUTING, CREATED);
         assertThat(missingStatuses).isEmpty();
     }
 
     @Test
     void shouldNotGetMissingStatusesWhenFromEqualsTo() {
-        List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, CREATED);
+        final List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, CREATED);
         assertThat(missingStatuses).isEmpty();
     }
 
     @Test
     void shouldNotGetMissingStatusesIfFromOrToIsNotInSuccessList() {
-        List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTE_FAILED);
+        final List<ReplicateStatus> missingStatuses = ReplicateStatus.getMissingStatuses(CREATED, COMPUTE_FAILED);
         assertThat(missingStatuses).isEmpty();
     }
+    // endregion
 
     @Test
     void shouldBeFailedBeforeComputed() {
@@ -94,7 +108,17 @@ class ReplicateStatusTests {
                 WORKER_LOST
         );
 
-        runningFailures   .forEach(status -> assertThat(ReplicateStatus.isFailedBeforeComputed(status)).isTrue());
+        runningFailures.forEach(status -> assertThat(ReplicateStatus.isFailedBeforeComputed(status)).isTrue());
         notRunningFailures.forEach(status -> assertThat(ReplicateStatus.isFailedBeforeComputed(status)).isFalse());
+        runningFailures.forEach(status -> assertThat(status.isFailedBeforeComputed()).isTrue());
+        notRunningFailures.forEach(status -> assertThat(status.isFailedBeforeComputed()).isFalse());
     }
+
+    // region getUnCompletableStatuses
+    @Test
+    void checkUncompletableStatuses() {
+        assertThat(ReplicateStatus.getUncompletableStatuses())
+                .isEqualTo(List.of(CONTRIBUTE_FAILED, REVEAL_FAILED, CONTRIBUTE_AND_FINALIZE_FAILED));
+    }
+    // endregion
 }
