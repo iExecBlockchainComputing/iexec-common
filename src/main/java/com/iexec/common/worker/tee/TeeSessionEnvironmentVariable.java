@@ -36,6 +36,7 @@ public enum TeeSessionEnvironmentVariable {
     IEXEC_INPUT_FILES_NUMBER,
     IEXEC_INPUT_FILES_FOLDER,
     IEXEC_PRE_COMPUTE_OUT,
+    BULK_SIZE,
     // post-compute
     RESULT_ENCRYPTION,
     RESULT_ENCRYPTION_PUBLIC_KEY,
