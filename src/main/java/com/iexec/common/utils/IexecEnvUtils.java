@@ -36,6 +36,8 @@ import static com.iexec.common.worker.tee.TeeSessionEnvironmentVariable.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IexecEnvUtils {
 
+    // bulk processing
+    public static final String BULK_ENV_VAR_PREFIX = "BULK_DATASET_";
     // input files
     public static final String IEXEC_INPUT_FILE_NAME_PREFIX = "IEXEC_INPUT_FILE_NAME_";
     public static final String IEXEC_INPUT_FILE_URL_PREFIX = "IEXEC_INPUT_FILE_URL_";
