@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.1.0](https://github.com/iExecBlockchainComputing/iexec-common/compare/v9.0.0...v9.1.0) (2025-09-10)
+
+
+### Features
+
+* add new variables for bulk processing TEE sessions ([#492](https://github.com/iExecBlockchainComputing/iexec-common/issues/492)) ([4c84fa8](https://github.com/iExecBlockchainComputing/iexec-common/commit/4c84fa86db87706023d8368c7809705246096ccc))
+* move TeeSessionGenerationError to iexec-common ([#493](https://github.com/iExecBlockchainComputing/iexec-common/issues/493)) ([32db1c1](https://github.com/iExecBlockchainComputing/iexec-common/commit/32db1c1bac4b8a66ebcdcdaf17d3a14ef33476e2))
+
+
+### Bug Fixes
+
+* deprecate unused fields in `ResultModel`, covering data existing on-chain ([#486](https://github.com/iExecBlockchainComputing/iexec-common/issues/486)) ([739350f](https://github.com/iExecBlockchainComputing/iexec-common/commit/739350fa316c396aec2cf5a56da06b6e5e9396ac))
+
 ## [[9.0.0]](https://github.com/iExecBlockchainComputing/iexec-common/releases/tag/v9.0.0) 2025-03-27
 
 ### New Features
