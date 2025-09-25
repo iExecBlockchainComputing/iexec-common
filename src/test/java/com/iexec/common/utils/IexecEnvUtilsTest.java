@@ -16,20 +16,20 @@
 
 package com.iexec.common.utils;
 
+import com.iexec.common.worker.tee.TeeSessionEnvironmentVariable;
 import com.iexec.commons.poco.chain.DealParams;
 import com.iexec.commons.poco.task.TaskDescription;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static com.iexec.common.utils.IexecEnvUtils.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class IexecEnvUtilsTest {
 
+    private static final String CHAIN_DEAL_ID = "chainDealId";
     private static final String CHAIN_TASK_ID = "chainTaskId";
     private static final String DATASET_URL = "datasetUrl";
     private static final String DATASET_CHECKSUM = "datasetChecksum";
@@ -37,21 +37,26 @@ class IexecEnvUtilsTest {
     private static final String INPUT_FILE_1 = "http://host/filename";
     private static final String INPUT_FILE_NAME_1 = FileHashUtils.createFileNameFromUri(INPUT_FILE_1);
 
+    private final TaskDescription.TaskDescriptionBuilder taskDescriptionBuilder = TaskDescription.builder()
+            .chainDealId(CHAIN_DEAL_ID)
+            .chainTaskId(CHAIN_TASK_ID);
+
     // region getAllIexecEnv
     @Test
     void shouldGetAllIexecEnvWhenNoInputFiles() {
-        final TaskDescription taskDescription = TaskDescription.builder()
-                .chainTaskId(CHAIN_TASK_ID)
+        final TaskDescription taskDescription = taskDescriptionBuilder
+                .botIndex(0)
                 .datasetAddress(DATASET_ADDRESS)
                 .datasetUri(DATASET_URL)
                 .datasetChecksum(DATASET_CHECKSUM)
                 .dealParams(DealParams.builder().build())
                 .build();
         final Map<String, String> map = getAllIexecEnv(taskDescription);
-        assertEquals(DATASET_URL, map.get("IEXEC_DATASET_URL"));
-        assertEquals(DATASET_CHECKSUM, map.get("IEXEC_DATASET_CHECKSUM"));
-        checkComputeStageMap(map, taskDescription);
-        assertEquals("0", map.get("IEXEC_INPUT_FILES_NUMBER"));
+        assertThat(map)
+                .containsAllEntriesOf(getExpectedComputeStageMapValues(taskDescription))
+                .containsEntry(TeeSessionEnvironmentVariable.IEXEC_INPUT_FILES_NUMBER.name(), "0")
+                .containsEntry(TeeSessionEnvironmentVariable.IEXEC_DATASET_URL.name(), DATASET_URL)
+                .containsEntry(TeeSessionEnvironmentVariable.IEXEC_DATASET_CHECKSUM.name(), DATASET_CHECKSUM);
     }
 
     @Test
@@ -59,37 +64,37 @@ class IexecEnvUtilsTest {
         final DealParams dealParams = DealParams.builder()
                 .iexecInputFiles(List.of(INPUT_FILE_1))
                 .build();
-        final TaskDescription taskDescription = TaskDescription.builder()
-                .chainTaskId(CHAIN_TASK_ID)
+        final TaskDescription taskDescription = taskDescriptionBuilder
                 .datasetAddress(DATASET_ADDRESS)
                 .datasetUri(DATASET_URL)
                 .datasetChecksum(DATASET_CHECKSUM)
                 .dealParams(dealParams)
                 .build();
         final Map<String, String> map = getAllIexecEnv(taskDescription);
-        assertEquals(DATASET_URL, map.get("IEXEC_DATASET_URL"));
-        assertEquals(DATASET_CHECKSUM, map.get("IEXEC_DATASET_CHECKSUM"));
-        assertEquals(INPUT_FILE_1, map.get("IEXEC_INPUT_FILE_URL_1"));
-        checkComputeStageMap(map, taskDescription);
-        assertEquals("1", map.get("IEXEC_INPUT_FILES_NUMBER"));
-        assertEquals(IexecFileHelper.SLASH_IEXEC_IN, map.get("IEXEC_INPUT_FILES_FOLDER"));
-        assertEquals(INPUT_FILE_NAME_1, map.get("IEXEC_INPUT_FILE_NAME_1"));
+        assertThat(map)
+                .containsAllEntriesOf(getExpectedComputeStageMapValues(taskDescription))
+                .containsEntry(TeeSessionEnvironmentVariable.IEXEC_DATASET_URL.name(), DATASET_URL)
+                .containsEntry(TeeSessionEnvironmentVariable.IEXEC_DATASET_CHECKSUM.name(), DATASET_CHECKSUM)
+                .containsEntry(TeeSessionEnvironmentVariable.IEXEC_INPUT_FILES_FOLDER.name(), IexecFileHelper.SLASH_IEXEC_IN)
+                .containsEntry(TeeSessionEnvironmentVariable.IEXEC_INPUT_FILES_NUMBER.name(), "1")
+                .containsEntry("IEXEC_INPUT_FILE_URL_1", INPUT_FILE_1)
+                .containsEntry("IEXEC_INPUT_FILE_NAME_1", INPUT_FILE_NAME_1);
     }
     // endregion
 
     // region getComputeStageEnvMap
     @Test
     void shouldGetComputeStageEnvMapWhenNoInputFiles() {
-        final TaskDescription taskDescription = TaskDescription.builder()
-                .chainTaskId(CHAIN_TASK_ID)
+        final TaskDescription taskDescription = taskDescriptionBuilder
                 .datasetAddress(DATASET_ADDRESS)
                 .botSize(1)
                 .botFirstIndex(0)
                 .dealParams(DealParams.builder().build())
                 .build();
         final Map<String, String> map = getComputeStageEnvMap(taskDescription);
-        checkComputeStageMap(map, taskDescription);
-        assertEquals("0", map.get("IEXEC_INPUT_FILES_NUMBER"));
+        assertThat(map)
+                .containsAllEntriesOf(getExpectedComputeStageMapValues(taskDescription))
+                .containsEntry(TeeSessionEnvironmentVariable.IEXEC_INPUT_FILES_NUMBER.name(), "0");
     }
 
     @Test
@@ -97,18 +102,18 @@ class IexecEnvUtilsTest {
         final DealParams dealParams = DealParams.builder()
                 .iexecInputFiles(List.of(INPUT_FILE_1))
                 .build();
-        final TaskDescription taskDescription = TaskDescription.builder()
-                .chainTaskId(CHAIN_TASK_ID)
+        final TaskDescription taskDescription = taskDescriptionBuilder
                 .datasetAddress(DATASET_ADDRESS)
                 .botSize(1)
                 .botFirstIndex(0)
                 .dealParams(dealParams)
                 .build();
         final Map<String, String> map = getComputeStageEnvMap(taskDescription);
-        checkComputeStageMap(map, taskDescription);
-        assertEquals("1", map.get("IEXEC_INPUT_FILES_NUMBER"));
-        assertEquals(IexecFileHelper.SLASH_IEXEC_IN, map.get("IEXEC_INPUT_FILES_FOLDER"));
-        assertEquals(INPUT_FILE_NAME_1, map.get("IEXEC_INPUT_FILE_NAME_1"));
+        assertThat(map)
+                .containsAllEntriesOf(getExpectedComputeStageMapValues(taskDescription))
+                .containsEntry(TeeSessionEnvironmentVariable.IEXEC_INPUT_FILES_NUMBER.name(), "1")
+                .containsEntry(TeeSessionEnvironmentVariable.IEXEC_INPUT_FILES_FOLDER.name(), IexecFileHelper.SLASH_IEXEC_IN)
+                .containsEntry("IEXEC_INPUT_FILE_NAME_1", INPUT_FILE_NAME_1);
     }
     // endregion
 
@@ -117,14 +122,15 @@ class IexecEnvUtilsTest {
         final DealParams dealParams = DealParams.builder()
                 .iexecInputFiles(List.of(INPUT_FILE_1))
                 .build();
-        final TaskDescription taskDescription = TaskDescription.builder()
-                .chainTaskId(CHAIN_TASK_ID)
+        final TaskDescription taskDescription = taskDescriptionBuilder
                 .datasetAddress(DATASET_ADDRESS)
                 .botSize(1)
                 .botFirstIndex(0)
                 .dealParams(dealParams)
                 .build();
-        final List<String> expected = Arrays.asList(
+        final List<String> expected = List.of(
+                "DEAL_ID=chainDealId",
+                "TASK_INDEX=0",
                 "IEXEC_TASK_ID=chainTaskId",
                 "IEXEC_IN=/iexec_in",
                 "IEXEC_OUT=/iexec_out",
@@ -137,16 +143,18 @@ class IexecEnvUtilsTest {
                 "IEXEC_INPUT_FILES_NUMBER=1",
                 "IEXEC_INPUT_FILE_NAME_1=" + INPUT_FILE_NAME_1);
         final List<String> actual = getComputeStageEnvList(taskDescription);
-        Collections.sort(expected);
-        Collections.sort(actual);
-        assertEquals(expected, actual);
+        assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
     }
 
-    private void checkComputeStageMap(final Map<String, String> map, final TaskDescription taskDescription) {
-        assertEquals(taskDescription.getChainTaskId(), map.get("IEXEC_TASK_ID"));
-        assertEquals(IexecFileHelper.SLASH_IEXEC_IN, map.get("IEXEC_IN"));
-        assertEquals(IexecFileHelper.SLASH_IEXEC_OUT, map.get("IEXEC_OUT"));
-        assertEquals(taskDescription.getDatasetAddress(), map.get("IEXEC_DATASET_ADDRESS"));
-        assertEquals(taskDescription.getDatasetAddress(), map.get("IEXEC_DATASET_FILENAME"));
+    private Map<String, String> getExpectedComputeStageMapValues(final TaskDescription taskDescription) {
+        return Map.of(
+                TeeSessionEnvironmentVariable.DEAL_ID.name(), taskDescription.getChainDealId(),
+                TeeSessionEnvironmentVariable.TASK_INDEX.name(), String.valueOf(taskDescription.getBotIndex()),
+                TeeSessionEnvironmentVariable.IEXEC_TASK_ID.name(), taskDescription.getChainTaskId(),
+                TeeSessionEnvironmentVariable.IEXEC_IN.name(), IexecFileHelper.SLASH_IEXEC_IN,
+                TeeSessionEnvironmentVariable.IEXEC_OUT.name(), IexecFileHelper.SLASH_IEXEC_OUT,
+                TeeSessionEnvironmentVariable.IEXEC_DATASET_ADDRESS.name(), taskDescription.getDatasetAddress(),
+                TeeSessionEnvironmentVariable.IEXEC_DATASET_FILENAME.name(), taskDescription.getDatasetAddress()
+        );
     }
 }

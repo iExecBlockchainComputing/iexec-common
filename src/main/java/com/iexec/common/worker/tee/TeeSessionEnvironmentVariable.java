@@ -18,6 +18,8 @@ package com.iexec.common.worker.tee;
 
 public enum TeeSessionEnvironmentVariable {
     // common
+    DEAL_ID,
+    TASK_INDEX,
     IEXEC_TASK_ID,
     SIGN_WORKER_ADDRESS,
     SIGN_TEE_CHALLENGE_PRIVATE_KEY,

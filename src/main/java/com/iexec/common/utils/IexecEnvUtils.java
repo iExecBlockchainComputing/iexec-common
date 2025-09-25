@@ -53,10 +53,11 @@ public class IexecEnvUtils {
      * @see #getComputeStageEnvMap(TaskDescription)
      */
     public static Map<String, String> getAllIexecEnv(final TaskDescription taskDescription) {
-        final Map<String, String> envMap = new HashMap<>();
-        envMap.putAll(getComputeStageEnvMap(taskDescription));
-        envMap.put(IEXEC_DATASET_URL.name(), taskDescription.getDatasetUri());
-        envMap.put(IEXEC_DATASET_CHECKSUM.name(), taskDescription.getDatasetChecksum());
+        final Map<String, String> envMap = new HashMap<>(getComputeStageEnvMap(taskDescription));
+        if (taskDescription.containsDataset()) {
+            envMap.put(IEXEC_DATASET_URL.name(), taskDescription.getDatasetUri());
+            envMap.put(IEXEC_DATASET_CHECKSUM.name(), taskDescription.getDatasetChecksum());
+        }
         if (!taskDescription.containsInputFiles()) {
             return envMap;
         }
@@ -65,7 +66,7 @@ public class IexecEnvUtils {
             envMap.put(IEXEC_INPUT_FILE_URL_PREFIX + index, inputFileUrl);
             index++;
         }
-        return envMap;
+        return Map.copyOf(envMap);
     }
 
     /**
@@ -79,6 +80,8 @@ public class IexecEnvUtils {
      */
     public static Map<String, String> getComputeStageEnvMap(final TaskDescription taskDescription) {
         final Map<String, String> map = new HashMap<>();
+        map.put(DEAL_ID.name(), taskDescription.getChainDealId());
+        map.put(TASK_INDEX.name(), String.valueOf(taskDescription.getBotIndex()));
         map.put(IEXEC_TASK_ID.name(), taskDescription.getChainTaskId());
         map.put(IEXEC_IN.name(), IexecFileHelper.SLASH_IEXEC_IN);
         map.put(IEXEC_OUT.name(), IexecFileHelper.SLASH_IEXEC_OUT);
@@ -103,7 +106,7 @@ public class IexecEnvUtils {
             map.put(IEXEC_INPUT_FILE_NAME_PREFIX + index, FileHashUtils.createFileNameFromUri(inputFileUrl));
             index++;
         }
-        return map;
+        return Map.copyOf(map);
     }
 
     /**
@@ -114,8 +117,8 @@ public class IexecEnvUtils {
      * @see #getComputeStageEnvMap(TaskDescription)
      */
     public static List<String> getComputeStageEnvList(final TaskDescription taskDescription) {
-        List<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
         getComputeStageEnvMap(taskDescription).forEach((key, value) -> list.add(key + "=" + value));
-        return list;
+        return List.copyOf(list);
     }
 }
