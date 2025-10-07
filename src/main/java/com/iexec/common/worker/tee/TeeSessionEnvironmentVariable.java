@@ -18,8 +18,8 @@ package com.iexec.common.worker.tee;
 
 public enum TeeSessionEnvironmentVariable {
     // common
-    DEAL_ID,
-    TASK_INDEX,
+    IEXEC_DEAL_ID,
+    IEXEC_TASK_INDEX,
     IEXEC_TASK_ID,
     SIGN_WORKER_ADDRESS,
     SIGN_TEE_CHALLENGE_PRIVATE_KEY,
@@ -38,7 +38,7 @@ public enum TeeSessionEnvironmentVariable {
     IEXEC_INPUT_FILES_NUMBER,
     IEXEC_INPUT_FILES_FOLDER,
     IEXEC_PRE_COMPUTE_OUT,
-    BULK_SIZE,
+    IEXEC_BULK_SLICE_SIZE,
     // post-compute
     RESULT_ENCRYPTION,
     RESULT_ENCRYPTION_PUBLIC_KEY,

@@ -129,8 +129,8 @@ class IexecEnvUtilsTest {
                 .dealParams(dealParams)
                 .build();
         final List<String> expected = List.of(
-                "DEAL_ID=chainDealId",
-                "TASK_INDEX=0",
+                "IEXEC_DEAL_ID=chainDealId",
+                "IEXEC_TASK_INDEX=0",
                 "IEXEC_TASK_ID=chainTaskId",
                 "IEXEC_IN=/iexec_in",
                 "IEXEC_OUT=/iexec_out",
@@ -148,8 +148,8 @@ class IexecEnvUtilsTest {
 
     private Map<String, String> getExpectedComputeStageMapValues(final TaskDescription taskDescription) {
         return Map.of(
-                TeeSessionEnvironmentVariable.DEAL_ID.name(), taskDescription.getChainDealId(),
-                TeeSessionEnvironmentVariable.TASK_INDEX.name(), String.valueOf(taskDescription.getBotIndex()),
+                TeeSessionEnvironmentVariable.IEXEC_DEAL_ID.name(), taskDescription.getChainDealId(),
+                TeeSessionEnvironmentVariable.IEXEC_TASK_INDEX.name(), String.valueOf(taskDescription.getBotIndex()),
                 TeeSessionEnvironmentVariable.IEXEC_TASK_ID.name(), taskDescription.getChainTaskId(),
                 TeeSessionEnvironmentVariable.IEXEC_IN.name(), IexecFileHelper.SLASH_IEXEC_IN,
                 TeeSessionEnvironmentVariable.IEXEC_OUT.name(), IexecFileHelper.SLASH_IEXEC_OUT,
