@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.2.0](https://github.com/iExecBlockchainComputing/iexec-common/compare/v9.1.0...v9.2.0) (2025-10-07)
+
+
+### Features
+
+* add DEAL_ID and TASK_INDEX to TeeSessionEnvironmentVariable ([#496](https://github.com/iExecBlockchainComputing/iexec-common/issues/496)) ([7dab6f6](https://github.com/iExecBlockchainComputing/iexec-common/commit/7dab6f6946fa651f5a0de6e869fe9687c98d9b6a))
+* rename newly created variables with IEXEC_ prefix ([#498](https://github.com/iExecBlockchainComputing/iexec-common/issues/498)) ([9354478](https://github.com/iExecBlockchainComputing/iexec-common/commit/9354478a910ac868237b6a4a380a45feae95deb2))
+
 ## [9.1.0](https://github.com/iExecBlockchainComputing/iexec-common/compare/v9.0.0...v9.1.0) (2025-09-10)
 
 
