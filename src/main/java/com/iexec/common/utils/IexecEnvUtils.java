@@ -36,8 +36,8 @@ import static com.iexec.common.worker.tee.TeeSessionEnvironmentVariable.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IexecEnvUtils {
 
-    // bulk processing
-    public static final String BULK_ENV_VAR_PREFIX = "BULK_DATASET_";
+    // dataset prefix, mostly for bulk processing
+    public static final String IEXEC_DATASET_PREFIX = "IEXEC_DATASET_";
     // input files
     public static final String IEXEC_INPUT_FILE_NAME_PREFIX = "IEXEC_INPUT_FILE_NAME_";
     public static final String IEXEC_INPUT_FILE_URL_PREFIX = "IEXEC_INPUT_FILE_URL_";
@@ -80,8 +80,8 @@ public class IexecEnvUtils {
      */
     public static Map<String, String> getComputeStageEnvMap(final TaskDescription taskDescription) {
         final Map<String, String> map = new HashMap<>();
-        map.put(DEAL_ID.name(), taskDescription.getChainDealId());
-        map.put(TASK_INDEX.name(), String.valueOf(taskDescription.getBotIndex()));
+        map.put(IEXEC_DEAL_ID.name(), taskDescription.getChainDealId());
+        map.put(IEXEC_TASK_INDEX.name(), String.valueOf(taskDescription.getBotIndex()));
         map.put(IEXEC_TASK_ID.name(), taskDescription.getChainTaskId());
         map.put(IEXEC_IN.name(), IexecFileHelper.SLASH_IEXEC_IN);
         map.put(IEXEC_OUT.name(), IexecFileHelper.SLASH_IEXEC_OUT);
