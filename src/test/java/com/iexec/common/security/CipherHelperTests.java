@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 IEXEC BLOCKCHAIN TECH
+ * Copyright 2020-2026 IEXEC BLOCKCHAIN TECH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ class CipherHelperTests {
 
     @Test
     void errorExtractingRsaKeys() {
-        final String weirdCharacters = RandomStringUtils.randomAlphanumeric(256);
+        final String weirdCharacters = RandomStringUtils.secure().nextAlphanumeric(256);
         assertThat(plainText2RsaPrivateKey(weirdCharacters)).isNull();
         assertThat(plainText2RsaPublicKey(weirdCharacters)).isNull();
     }
