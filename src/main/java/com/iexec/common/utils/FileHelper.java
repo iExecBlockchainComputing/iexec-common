@@ -29,7 +29,8 @@ import org.web3j.crypto.Hash;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
@@ -109,9 +110,10 @@ public class FileHelper {
 
     /**
      * Download file with custom name in specified directory
-     * @param fileUrl URL of the file
+     *
+     * @param fileUrl          URL of the file
      * @param parentFolderPath directory path where the file will be downloaded
-     * @param outputFilename desired name for future downloaded file
+     * @param outputFilename   desired name for future downloaded file
      * @return downloaded file location path if successful download
      */
     public static String downloadFile(String fileUrl,
@@ -132,7 +134,7 @@ public class FileHelper {
             return "";
         }
         byte[] fileBytes = readFileBytesFromUrl(fileUrl);
-        if (fileBytes == null) {
+        if (fileBytes.length == 0) {
             log.error("Failed to download file [fileUrl:{}]", fileUrl);
             return "";
         }
@@ -158,23 +160,25 @@ public class FileHelper {
 
     /**
      * Read the content of the remote file located at the provided URL.
-     * @param url of the file
+     *
+     * @param uri URI of the file
      * @return the content of the file in a byte array if success,
-     * null otherwise.
+     * an empty byte array otherwise.
      */
-    public static byte[] readFileBytesFromUrl(String url) {
-        try {
-            return new URL(url).openStream().readAllBytes();
+    public static byte[] readFileBytesFromUrl(final String uri) {
+        try (final InputStream inputStream = new URI(uri).toURL().openStream()) {
+            return inputStream.readAllBytes();
         } catch (Exception e) {
-            log.error("Failed to read file bytes from url [url:{}]", url, e);
-            return null;
+            log.error("Failed to read file bytes from URI [uri:{}]", uri, e);
+            return new byte[0];
         }
     }
 
     /**
      * Download file and returns downloaded file location path if successful.
      * Downloaded file name is inferred from uri end path
-     * @param fileUri URI of the file
+     *
+     * @param fileUri               URI of the file
      * @param downloadDirectoryPath directory path where the file will be downloaded
      * @return downloaded file location path if successful download
      */
