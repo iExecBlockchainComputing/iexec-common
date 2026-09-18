@@ -22,13 +22,6 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url = 'https://docker-regis-adm.iex.ec/repository/maven-public/'
-        credentials {
-            username = nexusUser
-            password = nexusPassword
-        }
-    }
-    maven {
         url = "https://jitpack.io"
     }
 }
@@ -44,7 +37,7 @@ dependencies {
     api "io.github.openfeign:feign-slf4j:$openFeignVersion"
 
     // iexec
-    implementation "com.iexec.commons:iexec-commons-poco:$iexecCommonsPocoVersion"
+    implementation "com.github.iexecblockchaincomputing:iexec-commons-poco:$iexecCommonsPocoVersion"
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
@@ -127,10 +120,10 @@ publishing {
     repositories {
         maven {
             credentials {
-                username = nexusUser
-                password = nexusPassword
+                username = mvnRepositoryUsername
+                password = mvnRepositoryPassword
             }
-            url = project.hasProperty('nexusUrl') ? nexusUrl : ''
+            url = project.hasProperty('mvnRepositoryUrl') ? mvnRepositoryUrl : ''
         }
     }
 }
