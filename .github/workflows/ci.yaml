@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build, test and analyse
+    # java-build-v1.0.0
+    uses: iExecBlockchainComputing/github-actions-workflows/.github/workflows/java-build.yml@230e504041b25d1e45dad1651ac29a9b9f827dd5
+    with:
+      java-version: '21'
+      sonar: true
+      dockerhub-login: true
+      upload-jar: false
+    secrets:
+      dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN_PULL_ONLY }}
+      sonar-token: ${{ secrets.SONAR_TOKEN }}
