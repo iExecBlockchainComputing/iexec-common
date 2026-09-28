@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.3.1](https://github.com/iExecBlockchainComputing/iexec-common/compare/v9.3.0...v9.3.1) (2026-09-28)
+
+
+### Bug Fixes
+
+* upgrade to Spring Boot 3.5.16 ([2ffc9a1](https://github.com/iExecBlockchainComputing/iexec-common/commit/2ffc9a1d943353ab06cb251c52625c904616b181))
+
 ## [9.3.0](https://github.com/iExecBlockchainComputing/iexec-common/compare/v9.2.0...v9.3.0) (2026-09-18)
 
 
