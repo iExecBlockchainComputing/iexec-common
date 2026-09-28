@@ -6,16 +6,11 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'com.iexec.common'
+group = 'com.github.iExecBlockchainComputing'
 
 ext {
-    gitTag = 'git tag --points-at HEAD'.execute().text.trim()
-    mockServerVersion = '5.11.2'
-    openFeignVersion = '12.5'
-}
-
-if (gitTag.isEmpty()) {
-    version += '-NEXT-SNAPSHOT'
+    mockServerVersion = '5.15.0'
+    openFeignVersion = '13.6.1'
 }
 
 repositories {
@@ -30,14 +25,14 @@ repositories {
 // 'api' configuration allows to expose dependencies with 'compile' scope in pom
 // 'implementation' configuration allows to expose dependencies with 'runtime' scope in pom
 dependencies {
-    implementation platform('org.springframework.boot:spring-boot-dependencies:3.5.8')
+    implementation platform('org.springframework.boot:spring-boot-dependencies:3.5.16')
 
     // feign
     api "io.github.openfeign:feign-jackson:$openFeignVersion"
     api "io.github.openfeign:feign-slf4j:$openFeignVersion"
 
     // iexec
-    implementation "com.github.iexecblockchaincomputing:iexec-commons-poco:$iexecCommonsPocoVersion"
+    implementation "com.github.iExecBlockchainComputing:iexec-commons-poco:$iexecCommonsPocoVersion"
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
@@ -68,6 +63,7 @@ java {
 
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add('-parameters')
+    options.compilerArgs.add('-Xlint:all')
 }
 
 testing {
