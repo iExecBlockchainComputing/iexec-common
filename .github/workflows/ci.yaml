@@ -10,8 +10,8 @@ on:
 jobs:
   build-and-test:
     name: Build, test and analyse
-    # java-build-v1.0.0
-    uses: iExecBlockchainComputing/github-actions-workflows/.github/workflows/java-build.yml@230e504041b25d1e45dad1651ac29a9b9f827dd5
+    # java-build-v1.0.1
+    uses: iExecBlockchainComputing/github-actions-workflows/.github/workflows/java-build.yml@0ef3bbf01085d84dc96167b099e137f11857e43e
     with:
       java-version: '21'
       sonar: true
